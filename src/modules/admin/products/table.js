@@ -71,10 +71,13 @@ window.applyNewProductOrder = applyNewProductOrder;
 window.moveProductOrder = async (productId, direction) => {
     const pIdStr = String(productId);
     const rawList = [...(appData.products || [])];
-    const searchVal = (aSq || window.aSq || '').toLowerCase();
+    const rawSearch = (aSq || window.aSq || '').toLowerCase().trim();
+    const searchVal = rawSearch.replace(/^\][a-zA-Z0-9]{2}/, '').trim() || rawSearch;
     const currentList = rawList.filter(x => {
-        let m = (x.name || x.title || x.bankName || x.code || x.sku || x.phone || '').toLowerCase().includes(searchVal);
-        if (!m && x.variants) m = x.variants.some(v => v.sku && v.sku.toLowerCase().includes(searchVal));
+        let m = (x.name || x.title || x.bankName || x.code || x.sku || x.barcode || x.phone || String(x.id || '') || `sku-${x.id}`).toLowerCase().includes(searchVal);
+        if (!m && x.variants) {
+            m = x.variants.some((v, vIdx) => (v.sku && v.sku.toLowerCase().includes(searchVal)) || (v.barcode && v.barcode.toLowerCase().includes(searchVal)) || `${x.sku || x.id}-${vIdx + 1}`.toLowerCase().includes(searchVal));
+        }
         return m;
     });
 
@@ -409,17 +412,22 @@ window.rAdmItms = t => {
                 (Array.isArray(x.suppliers) && x.suppliers.some(s => String(s.supplierId) === String(selSupFilter)));
             if (!hasSup) return false;
         }
-        let m = (x.name||x.title||x.bankName||x.code||x.sku||x.phone||'').toLowerCase().includes(searchVal);
+        const rawClean = searchVal.replace(/^\][a-zA-Z0-9]{2}/, '').trim() || searchVal;
+        let m = (x.name || x.title || x.bankName || x.code || x.sku || x.barcode || x.phone || String(x.id || '') || `sku-${x.id}`).toLowerCase().includes(rawClean);
         if(t==='products' && !m) {
             if (x.supplierId && (appData.suppliers || []).length) {
                 const sObj = appData.suppliers.find(s => String(s.id) === String(x.supplierId));
-                if (sObj && (sObj.name || '').toLowerCase().includes(searchVal)) m = true;
+                if (sObj && (sObj.name || '').toLowerCase().includes(rawClean)) m = true;
             }
             if (!m && Array.isArray(x.suppliers)) {
-                m = x.suppliers.some(s => (s.supplierName || '').toLowerCase().includes(searchVal));
+                m = x.suppliers.some(s => (s.supplierName || '').toLowerCase().includes(rawClean));
             }
             if (!m && x.variants) {
-                m = x.variants.some(v => v.sku && v.sku.toLowerCase().includes(searchVal));
+                m = x.variants.some((v, vIdx) => 
+                    (v.sku && v.sku.toLowerCase().includes(rawClean)) ||
+                    (v.barcode && v.barcode.toLowerCase().includes(rawClean)) ||
+                    `${x.sku || x.id}-${vIdx + 1}`.toLowerCase().includes(rawClean)
+                );
             }
         }
         return m;

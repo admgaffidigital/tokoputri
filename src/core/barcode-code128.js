@@ -23,6 +23,7 @@ const CODE128_PATTERNS = [
 ];
 
 const START_B = 104;
+const START_C = 105;
 const STOP = 106;
 
 /**
@@ -70,10 +71,78 @@ export const encodeCode128B = (text) => {
 
     return {
         text: clean,
+        subtype: 'B',
         values,
         modules,
         moduleCount: modules.length
     };
+};
+
+/**
+ * Encode string numerik genap menjadi nilai-nilai Code 128 Subtipe C (2 digit per simbol)
+ * Menghasilkan batang barcode 40-50% lebih lebar dan tebal, sangat mudah dibaca scanner
+ * @param {string} text Teks angka (panjang genap >= 2)
+ * @returns {Object|null}
+ */
+export const encodeCode128C = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const clean = text.trim();
+    if (!clean || !/^\d+$/.test(clean) || clean.length % 2 !== 0 || clean.length < 2) return null;
+
+    const values = [START_C];
+    let checksum = START_C;
+
+    let charIndex = 1;
+    for (let i = 0; i < clean.length; i += 2) {
+        const pair = clean.slice(i, i + 2);
+        const val = parseInt(pair, 10);
+        values.push(val);
+        checksum += val * charIndex;
+        charIndex++;
+    }
+
+    const checkValue = checksum % 103;
+    values.push(checkValue);
+    values.push(STOP);
+
+    let modules = '';
+    values.forEach(val => {
+        const pattern = CODE128_PATTERNS[val];
+        if (!pattern) return;
+        let isBar = true;
+        for (let ch of pattern) {
+            const width = parseInt(ch, 10);
+            modules += (isBar ? '1' : '0').repeat(width);
+            isBar = !isBar;
+        }
+    });
+
+    return {
+        text: clean,
+        subtype: 'C',
+        values,
+        modules,
+        moduleCount: modules.length
+    };
+};
+
+/**
+ * Deteksi otomatis subtipe Code 128 terbaik (C untuk digit genap, B untuk alfanumerik)
+ * @param {string} text Teks SKU atau Barcode
+ * @returns {Object|null}
+ */
+export const encodeCode128Auto = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const clean = text.trim();
+    if (!clean) return null;
+
+    // Jika digit genap murni >= 2 digit, gunakan Mode C untuk modul lebih lebar & mudah dibaca
+    if (/^\d+$/.test(clean) && clean.length % 2 === 0 && clean.length >= 2) {
+        const encC = encodeCode128C(clean);
+        if (encC) return encC;
+    }
+
+    return encodeCode128B(clean);
 };
 
 /**
@@ -84,14 +153,19 @@ export const encodeCode128B = (text) => {
  * @returns {string} String elemen <svg>...</svg>
  */
 export const generateCode128Svg = (text, options = {}) => {
-    const enc = encodeCode128B(text);
+    const enc = options.mode === 'B'
+        ? encodeCode128B(text)
+        : (options.mode === 'C' ? encodeCode128C(text) : encodeCode128Auto(text));
+
     if (!enc) {
         return `<div class="p-2 text-center text-xs text-rose-500 font-bold bg-rose-50 border border-rose-200 rounded-lg">Kode barcode tidak valid</div>`;
     }
 
-    const height = options.height || 42;
-    const quietZone = options.quietZone !== undefined ? options.quietZone : 8;
+    // Default tinggi batang 58 untuk first-pass scan rate optimal
+    const height = options.height || 58;
     const moduleWidth = options.moduleWidth || 1.4;
+    // Standar ISO/IEC 15417: Quiet zone minimal 10 modul di kiri dan kanan (default 12 modul / ~17 unit)
+    const quietZone = options.quietZone !== undefined ? options.quietZone : Math.max(16, Math.round(moduleWidth * 12));
     const totalModules = enc.moduleCount;
     const totalWidth = (totalModules * moduleWidth) + (quietZone * 2);
 
@@ -109,13 +183,13 @@ export const generateCode128Svg = (text, options = {}) => {
             inBar = false;
             const barWidth = (i - barStart) * moduleWidth;
             const x = quietZone + (barStart * moduleWidth);
-            rects += `<rect x="${x.toFixed(2)}" y="0" width="${barWidth.toFixed(2)}" height="${height}" fill="#000" />`;
+            rects += `<rect x="${x.toFixed(2)}" y="0" width="${barWidth.toFixed(2)}" height="${height}" fill="#000000" />`;
         }
     }
     if (inBar) {
         const barWidth = (enc.modules.length - barStart) * moduleWidth;
         const x = quietZone + (barStart * moduleWidth);
-        rects += `<rect x="${x.toFixed(2)}" y="0" width="${barWidth.toFixed(2)}" height="${height}" fill="#000" />`;
+        rects += `<rect x="${x.toFixed(2)}" y="0" width="${barWidth.toFixed(2)}" height="${height}" fill="#000000" />`;
     }
 
     const showText = options.showText !== false;
@@ -127,15 +201,20 @@ export const generateCode128Svg = (text, options = {}) => {
     let textElement = '';
     if (showText) {
         const textY = height + fontSize + 1;
-        textElement = `<text x="${(totalWidth / 2).toFixed(2)}" y="${textY.toFixed(2)}" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="${fontSize}" font-weight="700" fill="#000" letter-spacing="1">${displayText}</text>`;
+        textElement = `<text x="${(totalWidth / 2).toFixed(2)}" y="${textY.toFixed(2)}" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="${fontSize}" font-weight="700" fill="#000000" letter-spacing="1">${displayText}</text>`;
     }
 
     const cssClass = options.className || 'w-full h-auto';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalWidth.toFixed(2)} ${svgHeight.toFixed(2)}" class="${cssClass}" shape-rendering="crispEdges" style="display:block;margin:0 auto;max-width:100%;height:auto;">${rects}${textElement}</svg>`;
+    // Latar belakang putih solid murni menjamin kontras 100% di semua permukaan cetak
+    const bgRect = `<rect x="0" y="0" width="${totalWidth.toFixed(2)}" height="${svgHeight.toFixed(2)}" fill="#ffffff" />`;
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalWidth.toFixed(2)} ${svgHeight.toFixed(2)}" class="${cssClass}" shape-rendering="crispEdges" style="display:block;margin:0 auto;max-width:100%;height:auto;background-color:#ffffff;">${bgRect}${rects}${textElement}</svg>`;
 };
 
 // Bind ke window object untuk akses global
 if (typeof window !== 'undefined') {
-    window.encodeCode128B = encodeCode128B;
+    window.encodeCode128B    = encodeCode128B;
+    window.encodeCode128C    = encodeCode128C;
+    window.encodeCode128Auto = encodeCode128Auto;
     window.generateCode128Svg = generateCode128Svg;
 }

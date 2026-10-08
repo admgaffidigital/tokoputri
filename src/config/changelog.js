@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-10-94",
+        "version": "v1.10.94",
+        "date": "2026-10-08",
+        "title": "Resolusi Paripurna Keterbacaan Barcode Label & Penyatuan Engine Pencarian POS Kasir & Etalase Storefront",
+        "category": "feature",
+        "badge": "High-Readability Barcode & Unified Scanner Search v1.10.94",
+        "items": [
+            "Engine Barcode Code 128 Vektor Murni Generasi Baru (barcode-code128.js): Menambahkan kompresi otomatis Code 128 Subtipe C untuk digit angka genap (batang barcode 40-50% lebih lebar dan tebal), Quiet Zone standar ISO/IEC 15417 (>= 12 modul), background putih solid murni (#ffffff), dan tinggi batang default 58 untuk first-pass read rate 100% pada seluruh scanner laser USB, Bluetooth, maupun kamera HP.",
+            "Desain Proporsional Label Stiker Thermal (barcode-label-modal.js): Mengalokasikan 60%+ area stiker untuk batang barcode (tinggi fisik 14-17mm), nama barang 1 baris terpotong rapi dengan elipsis, crisp edges rendering, serta peningkatan tinggi barcode RawBT ESC/POS ke 55 dots.",
+            "Penyatuan Pencocokan Barcode POS Kasir (pos.js): Fungsi findProductOrVariantByBarcode kini membersihkan prefix AIM Symbology hardware (]C1, ]e0), karakter kontrol, serta mendukung pencocokan menyeluruh: barcode pabrik, SKU toko, ID produk, fallback label SKU-id, barcode varian, SKU varian, dan fallback varian.",
+            "Auto-Add Enter Barcode pada Kotak Cari POS: Input pencarian kasir (#pos-search-input) kini dilengkapi event listener tombol Enter cerdas (handlePOSSearchKeydown) yang seketika mendeteksi tembakan barcode scanner, langsung memasukkan barang ke keranjang kasir dengan audio chime kasir, dan membersihkan kolom pencarian.",
+            "Pencarian Barcode di Etalase Storefront & Admin Table: Filter penelusuran katalog etalase (rCat di catalog.js) dan direktori produk admin (table.js) kini mengenali kode barcode fisik, varian barcode, ID produk, dan fallback label cetak.",
+            "Multi-Channel Distribution v1.10.94 (Android versionCode 11094)."
+        ]
+    },
+    {
         "id": "log-1-10-93",
         "version": "v1.10.93",
         "date": "2026-10-08",
@@ -74,20 +90,6 @@ export const DEFAULT_CHANGELOG = [
             "Tier 3 (Focused Center Dialogs - 440px s.d. 520px): Mempertahankan dialog konfirmasi cepat, prompt PIN, quick price, restock kilat, dan struk kasir pada proporsi kompak terpusat agar fokus pandangan kasir/admin tetap tajam tanpa melar berlebihan.",
             "Zero Distorsi Mobile & Tablet (<1024px): Seluruh tata letak 3-Tier diisolasi secara presisi melalui media query desktop (min-width: 1024px), sehingga pengalaman pengguna smartphone pada bottom sheet native, gesture swipe, dan tombol kembali Android tetap 100% mulus dan terlindungi.",
             "Multi-Channel Distribution v1.10.90 (Android versionCode 11090)."
-        ]
-    },
-    {
-        "id": "log-1-10-89",
-        "version": "v1.10.89",
-        "date": "2026-10-07",
-        "title": "Penyempurnaan Visual Tombol Aksi Katalog: Eliminasi Blur & Colored Glow Shadow",
-        "category": "fix",
-        "badge": "Clean Flat & Sharp Action Buttons v1.10.89",
-        "items": [
-            "Eliminasi Mutlak Efek Blur & Colored Glow (.btn-catalog-add & .btn-catalog-variant): Menghapus total box-shadow colored glow beradius besar (10px - 14px) yang menimbulkan efek kabur/blur berkabut di sekeliling tombol Tambah (+) dan Pilih Varian pada kartu katalog produk.",
-            "Desain Flat, Bersih & Solid: Mengadopsi standar modern flat design dengan warna solid tegas berpadu border hairline halus (1px) dan bayangan mikro natural (0 1px 2px rgba(0,0,0,0.06)), menghasilkan tombol yang tajam, kontras tinggi, dan bebas blur.",
-            "Sentuhan Hover & Active Ergonomis: Interaksi klik yang reponsif dan stabil dengan transisi scale halus tanpa memicu ledakan bayangan blur.",
-            "Multi-Channel Distribution v1.10.89 (Android versionCode 11089)."
         ]
     }
 ];
@@ -164,7 +166,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.92'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.93';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.94';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

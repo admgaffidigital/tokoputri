@@ -4,27 +4,58 @@
 
 import assert from 'node:assert';
 
+// Normalisasi dan bersihkan kode barcode dari prefix AIM symbology (misal ]C1, ]e0)
+const cleanBarcodeRaw = (raw) => {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    // Hapus prefix AIM Symbology (misal ]C1 untuk Code 128, ]e0 untuk EAN, dll)
+    str = str.replace(/^\][a-zA-Z0-9]{2}/, '');
+    // Hapus karakter non-printable / control character ASCII 0-31 dan 127
+    str = str.replace(/[\x00-\x1F\x7F]/g, '');
+    return str.trim();
+};
+
 // Helper findProductOrVariantByBarcode yang identik dengan src/modules/pos/pos.js
 const findProductOrVariantByBarcode = (rawCode, products) => {
     if (!rawCode) return null;
-    const c = String(rawCode).trim().toLowerCase();
+    const clean = cleanBarcodeRaw(rawCode);
+    if (!clean) return null;
+    const c = clean.toLowerCase();
 
     // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian
     for (const p of products) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
         if (Array.isArray(p.variants) && p.variants.length > 0) {
-            const vIdx = p.variants.findIndex(v =>
-                v && v.isActive !== false && v.isActive !== 'false' &&
-                ((v.barcode && String(v.barcode).trim().toLowerCase() === c) ||
-                 (v.sku && String(v.sku).trim().toLowerCase() === c))
-            );
-            if (vIdx > -1) {
-                return {
-                    product: p,
-                    variant: p.variants[vIdx],
-                    variantIdx: vIdx,
-                    isVariantMatch: true
-                };
+            const pIdStr = String(p.id || '').trim().toLowerCase();
+            const pSkuStr = String(p.sku || '').trim().toLowerCase();
+
+            for (let vIdx = 0; vIdx < p.variants.length; vIdx++) {
+                const v = p.variants[vIdx];
+                if (!v || v.isActive === false || v.isActive === 'false') continue;
+
+                const vBarcode = v.barcode ? cleanBarcodeRaw(v.barcode).toLowerCase() : '';
+                const vSku = v.sku ? String(v.sku).trim().toLowerCase() : '';
+
+                // Format fallback label yang dicetak oleh modal label:
+                // `${prod.sku || prod.id}-${idx + 1}` atau `${prod.id}-${idx + 1}`
+                const fallbackSku1 = `${pSkuStr || pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+
+                if (
+                    (vBarcode && vBarcode === c) ||
+                    (vSku && vSku === c) ||
+                    (c === fallbackSku1) ||
+                    (c === fallbackSku2) ||
+                    (c === fallbackSku3)
+                ) {
+                    return {
+                        product: p,
+                        variant: v,
+                        variantIdx: vIdx,
+                        isVariantMatch: true
+                    };
+                }
             }
         }
     }
@@ -32,10 +63,19 @@ const findProductOrVariantByBarcode = (rawCode, products) => {
     // 2. Cocokkan SKU/Barcode/ID di level produk induk
     for (const p of products) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
-        const bMatch = (p.barcode && String(p.barcode).trim().toLowerCase() === c);
-        const sMatch = (p.sku && String(p.sku).trim().toLowerCase() === c);
-        const iMatch = (p.id && String(p.id).trim().toLowerCase() === c);
-        if (bMatch || sMatch || iMatch) {
+        const pIdStr = String(p.id || '').trim().toLowerCase();
+        const pSkuStr = p.sku ? String(p.sku).trim().toLowerCase() : '';
+        const pBarcode = p.barcode ? cleanBarcodeRaw(p.barcode).toLowerCase() : '';
+
+        // Fallback label produk tanpa SKU/barcode: `SKU-${prod.id}`
+        const fallbackSku = `sku-${pIdStr}`.toLowerCase();
+
+        const bMatch = pBarcode && pBarcode === c;
+        const sMatch = pSkuStr && pSkuStr === c;
+        const iMatch = pIdStr && pIdStr === c;
+        const fMatch = fallbackSku && fallbackSku === c;
+
+        if (bMatch || sMatch || iMatch || fMatch) {
             return {
                 product: p,
                 variant: null,
@@ -94,6 +134,12 @@ const mockProducts = [
                 isActive: true
             },
             {
+                name: 'Varian Polos Tanpa SKU/Barcode',
+                price: 70000,
+                stock: 10,
+                isActive: true
+            },
+            {
                 name: 'Varian Nonaktif',
                 sku: 'VAR-ND-NONAKTIF',
                 barcode: '8992002999',
@@ -102,6 +148,12 @@ const mockProducts = [
                 isActive: false
             }
         ]
+    },
+    {
+        id: '1004',
+        name: 'Paku Beton 5cm (Tanpa Barcode/SKU Manual)',
+        price: 25000,
+        isActive: 'true'
     },
     {
         id: 'PROD-003',
@@ -151,25 +203,50 @@ const t5 = findProductOrVariantByBarcode('SKU-NODROP-PARENT', mockProducts);
 assert.ok(t5, 'Produk induk harus ditemukan');
 assert.strictEqual(t5.isVariantMatch, false);
 assert.strictEqual(t5.variant, null);
-assert.strictEqual(t5.product.variants.length, 4);
+assert.strictEqual(t5.product.variants.length, 5);
 console.log('  ✅ PASS: Barcode induk produk ber-varian terdeteksi sebagai induk (membuka sheet varian)');
 
-// Test 6: Varian Nonaktif Tidak Boleh Terdeteksi
-console.log('\n🚫 4. Uji Proteksi Status Nonaktif & Data Hilang:');
-const t6 = findProductOrVariantByBarcode('8992002999', mockProducts);
-assert.strictEqual(t6, null, 'Varian nonaktif tidak boleh terdeteksi');
+// Test 6: Pembersihan Otomatis Prefix AIM Symbology (misal ]C1, ]e0 dari scanner USB/Bluetooth)
+console.log('\n📡 4. Uji Pembersihan Prefix AIM Symbology:');
+const t6 = findProductOrVariantByBarcode(']C1SKU-SMN-001\r', mockProducts);
+assert.ok(t6, 'Prefix ]C1 dan CR harus dibersihkan otomatis');
+assert.strictEqual(t6.product.name, 'Semen Gresik 50kg');
+console.log('  ✅ PASS: Prefix ]C1Code128 berhasil dinormalisasi dan produk ditemukan');
+
+const t6b = findProductOrVariantByBarcode(']C18992002002', mockProducts);
+assert.ok(t6b, 'Prefix ]C1 pada barcode varian berhasil dinormalisasi');
+assert.strictEqual(t6b.variant.name, '1kg Abu-abu 002');
+console.log('  ✅ PASS: Prefix ]C1 pada varian berhasil dinormalisasi');
+
+// Test 7: Fallback Label SKU Produk Tanpa Barcode/SKU Manual
+console.log('\n🏷️ 5. Uji Fallback Label SKU & Varian:');
+const t7 = findProductOrVariantByBarcode('SKU-1004', mockProducts);
+assert.ok(t7, 'Label SKU fallback "SKU-1004" harus cocok dengan produk id 1004');
+assert.strictEqual(t7.product.name, 'Paku Beton 5cm (Tanpa Barcode/SKU Manual)');
+console.log('  ✅ PASS: Fallback label "SKU-1004" berhasil dicocokkan ke produk');
+
+// Test 8: Fallback Label SKU Varian Tanpa SKU/Barcode Manual
+const t8 = findProductOrVariantByBarcode('SKU-NODROP-PARENT-4', mockProducts);
+assert.ok(t8, 'Label varian fallback "SKU-NODROP-PARENT-4" harus cocok');
+assert.strictEqual(t8.variant.name, 'Varian Polos Tanpa SKU/Barcode');
+console.log('  ✅ PASS: Fallback label varian "SKU-NODROP-PARENT-4" terdeteksi tepat');
+
+// Test 9: Varian Nonaktif Tidak Boleh Terdeteksi
+console.log('\n🚫 6. Uji Proteksi Status Nonaktif & Data Hilang:');
+const t9 = findProductOrVariantByBarcode('8992002999', mockProducts);
+assert.strictEqual(t9, null, 'Varian nonaktif tidak boleh terdeteksi');
 console.log('  ✅ PASS: Varian nonaktif diabaikan');
 
-// Test 7: Produk Nonaktif Tidak Boleh Terdeteksi
-const t7 = findProductOrVariantByBarcode('8993003001', mockProducts);
-assert.strictEqual(t7, null, 'Produk nonaktif tidak boleh terdeteksi');
+// Test 10: Produk Nonaktif Tidak Boleh Terdeteksi
+const t10 = findProductOrVariantByBarcode('8993003001', mockProducts);
+assert.strictEqual(t10, null, 'Produk nonaktif tidak boleh terdeteksi');
 console.log('  ✅ PASS: Produk nonaktif diabaikan');
 
-// Test 8: Barcode Tidak Dikenal
-const t8 = findProductOrVariantByBarcode('BARCODE-ACAK-TIDAK-ADA', mockProducts);
-assert.strictEqual(t8, null, 'Barcode liar harus mengembalikan null');
+// Test 11: Barcode Tidak Dikenal
+const t11 = findProductOrVariantByBarcode('BARCODE-ACAK-TIDAK-ADA', mockProducts);
+assert.strictEqual(t11, null, 'Barcode liar harus mengembalikan null');
 console.log('  ✅ PASS: Barcode acak mengembalikan null');
 
 console.log('\n============================================================');
-console.log('🎯 HASIL UJI COBA: Seluruh 8 Pengujian Barcode & SKU PASS! ✅');
+console.log('🎯 HASIL UJI COBA: Seluruh 11 Pengujian Barcode & SKU PASS! ✅');
 console.log('============================================================\n');

@@ -145,13 +145,25 @@ export const rCat = () => {
         if (aSubCat !== 'Semua Jenis' && (p.subCategory || '').trim().toLowerCase() !== aSubCat.trim().toLowerCase()) return false;
         if (aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
         if (!sQ) return true;
-        let q = sQ.toLowerCase();
-        return (p.name || '').toLowerCase().includes(q) || 
-               (p.sku || '').toLowerCase().includes(q) || 
-               (p.category || '').toLowerCase().includes(q) || 
-               (p.subCategory || '').toLowerCase().includes(q) || 
-               (p.brand || '').toLowerCase().includes(q) || 
-               (p.variants && p.variants.some(v => (v.name || '').toLowerCase().includes(q) || (v.sku || '').toLowerCase().includes(q)));
+        const rawQ = sQ.toLowerCase().trim();
+        const q = rawQ.replace(/^\][a-zA-Z0-9]{2}/, '').replace(/[\x00-\x1F\x7F]/g, '').trim() || rawQ;
+        const name = (p.name || '').toLowerCase();
+        const sku = (p.sku || '').toLowerCase();
+        const barcode = (p.barcode || '').toLowerCase().replace(/^\][a-zA-Z0-9]{2}/, '').trim();
+        const pIdStr = String(p.id || '').toLowerCase();
+        const skuFallback = `sku-${pIdStr}`;
+        const cat = (p.category || '').toLowerCase();
+        const subCat = (p.subCategory || '').toLowerCase();
+        const brand = (p.brand || '').toLowerCase();
+        const hasMatchingVariant = Array.isArray(p.variants) && p.variants.some((v, vIdx) => {
+            const vName = (v.name || '').toLowerCase();
+            const vSku = (v.sku || '').toLowerCase();
+            const vBarcode = (v.barcode || '').toLowerCase().replace(/^\][a-zA-Z0-9]{2}/, '').trim();
+            const vFallback1 = `${sku || pIdStr}-${vIdx + 1}`.toLowerCase();
+            const vFallback2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
+            return vName.includes(q) || vSku.includes(q) || vBarcode.includes(q) || vFallback1.includes(q) || vFallback2.includes(q);
+        });
+        return name.includes(q) || sku.includes(q) || barcode.includes(q) || pIdStr === q || skuFallback === q || cat.includes(q) || subCat.includes(q) || brand.includes(q) || hasMatchingVariant;
     }).sort((a, b) => {
         if (cSort === 'cheapest') return (a.price || 0) - (b.price || 0);
         if (cSort === 'expensive') return (b.price || 0) - (a.price || 0);

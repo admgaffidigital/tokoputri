@@ -331,40 +331,84 @@ export const destroyBarcodeListener = () => {
 };
 
 /**
+ * Normalisasi dan bersihkan kode barcode dari prefix AIM symbology (misal ]C1, ]e0)
+ * serta control character non-printable dari scanner hardware
+ */
+export const cleanBarcodeRaw = (raw) => {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    // Hapus prefix AIM Symbology (misal ]C1 untuk Code 128, ]e0 untuk EAN, dll)
+    str = str.replace(/^\][a-zA-Z0-9]{2}/, '');
+    // Hapus karakter non-printable / control character ASCII 0-31 dan 127
+    str = str.replace(/[\x00-\x1F\x7F]/g, '');
+    return str.trim();
+};
+
+/**
  * Temukan produk atau varian spesifik berdasarkan kode barcode / SKU / ID
+ * Mendukung pencocokan barcode pabrik, SKU toko, fallback label cetak, dan varian
  */
 export const findProductOrVariantByBarcode = (rawCode) => {
     if (!rawCode) return null;
-    const c = String(rawCode).trim().toLowerCase();
+    const clean = cleanBarcodeRaw(rawCode);
+    if (!clean) return null;
+    const c = clean.toLowerCase();
     const products = appData.products || [];
 
     // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian
     for (const p of products) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
         if (Array.isArray(p.variants) && p.variants.length > 0) {
-            const vIdx = p.variants.findIndex(v =>
-                v && v.isActive !== false && v.isActive !== 'false' &&
-                ((v.barcode && String(v.barcode).trim().toLowerCase() === c) ||
-                 (v.sku && String(v.sku).trim().toLowerCase() === c))
-            );
-            if (vIdx > -1) {
-                return {
-                    product: p,
-                    variant: p.variants[vIdx],
-                    variantIdx: vIdx,
-                    isVariantMatch: true
-                };
+            const pIdStr = String(p.id || '').trim().toLowerCase();
+            const pSkuStr = String(p.sku || '').trim().toLowerCase();
+
+            for (let vIdx = 0; vIdx < p.variants.length; vIdx++) {
+                const v = p.variants[vIdx];
+                if (!v || v.isActive === false || v.isActive === 'false') continue;
+
+                const vBarcode = v.barcode ? cleanBarcodeRaw(v.barcode).toLowerCase() : '';
+                const vSku = v.sku ? String(v.sku).trim().toLowerCase() : '';
+
+                // Format fallback label yang dicetak oleh modal label:
+                // `${prod.sku || prod.id}-${idx + 1}` atau `${prod.id}-${idx + 1}`
+                const fallbackSku1 = `${pSkuStr || pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+
+                if (
+                    (vBarcode && vBarcode === c) ||
+                    (vSku && vSku === c) ||
+                    (c === fallbackSku1) ||
+                    (c === fallbackSku2) ||
+                    (c === fallbackSku3)
+                ) {
+                    return {
+                        product: p,
+                        variant: v,
+                        variantIdx: vIdx,
+                        isVariantMatch: true
+                    };
+                }
             }
         }
     }
 
     // 2. Cocokkan SKU/Barcode/ID di level produk induk
     for (const p of products) {
-        if (!p || p.isActive === 'false' || p.isActive !== false) continue;
-        const bMatch = (p.barcode && String(p.barcode).trim().toLowerCase() === c);
-        const sMatch = (p.sku && String(p.sku).trim().toLowerCase() === c);
-        const iMatch = (p.id && String(p.id).trim().toLowerCase() === c);
-        if (bMatch || sMatch || iMatch) {
+        if (!p || p.isActive === 'false' || p.isActive === false) continue;
+        const pIdStr = String(p.id || '').trim().toLowerCase();
+        const pSkuStr = p.sku ? String(p.sku).trim().toLowerCase() : '';
+        const pBarcode = p.barcode ? cleanBarcodeRaw(p.barcode).toLowerCase() : '';
+
+        // Fallback label produk tanpa SKU/barcode: `SKU-${prod.id}`
+        const fallbackSku = `sku-${pIdStr}`.toLowerCase();
+
+        const bMatch = pBarcode && pBarcode === c;
+        const sMatch = pSkuStr && pSkuStr === c;
+        const iMatch = pIdStr && pIdStr === c;
+        const fMatch = fallbackSku && fallbackSku === c;
+
+        if (bMatch || sMatch || iMatch || fMatch) {
             return {
                 product: p,
                 variant: null,
@@ -543,7 +587,7 @@ const initBarcodeListener = () => {
         } else if (e.key && e.key.length === 1) {
             barcodeBuffer = (barcodeBuffer || '') + e.key;
             clearTimeout(barcodeTimer);
-            barcodeTimer = setTimeout(() => { barcodeBuffer = ''; }, 150);
+            barcodeTimer = setTimeout(() => { barcodeBuffer = ''; }, 450);
         }
     };
     document.addEventListener('keydown', window.__posBarcodeFn);
@@ -1369,19 +1413,25 @@ export const renderCatalog = (isLoadMore = false) => {
             if (posCatFilterVal && p.category !== posCatFilterVal) return false;
             if (posSubCatFilterVal && (p.subCategory || '').trim().toLowerCase() !== posSubCatFilterVal.toLowerCase()) return false;
             if (posSearch) {
-                const q = String(posSearch).toLowerCase();
+                const rawQ = String(posSearch).toLowerCase();
+                const q = cleanBarcodeRaw(rawQ) || rawQ;
                 const name = String(p.name || '').toLowerCase();
-                const barcode = String(p.barcode || '').toLowerCase();
+                const barcode = cleanBarcodeRaw(p.barcode || '').toLowerCase();
                 const sku = String(p.sku || '').toLowerCase();
+                const pIdStr = String(p.id || '').toLowerCase();
+                const skuFallback = `sku-${pIdStr}`;
                 const cat = String(p.category || '').toLowerCase();
                 const subCat = String(p.subCategory || '').toLowerCase();
                 const brand = String(p.brand || '').toLowerCase();
-                const hasMatchingVariant = Array.isArray(p.variants) && p.variants.some(v => 
-                    (v.name || '').toLowerCase().includes(q) || 
-                    (v.sku || '').toLowerCase().includes(q) || 
-                    (v.barcode || '').toLowerCase().includes(q)
-                );
-                return name.includes(q) || barcode.includes(q) || sku.includes(q) || cat.includes(q) || subCat.includes(q) || brand.includes(q) || hasMatchingVariant;
+                const hasMatchingVariant = Array.isArray(p.variants) && p.variants.some((v, vIdx) => {
+                    const vName = String(v.name || '').toLowerCase();
+                    const vSku = String(v.sku || '').toLowerCase();
+                    const vBarcode = cleanBarcodeRaw(v.barcode || '').toLowerCase();
+                    const vFallback1 = `${sku || pIdStr}-${vIdx + 1}`.toLowerCase();
+                    const vFallback2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
+                    return vName.includes(q) || vSku.includes(q) || vBarcode.includes(q) || vFallback1.includes(q) || vFallback2.includes(q);
+                });
+                return name.includes(q) || barcode.includes(q) || sku.includes(q) || pIdStr === q || skuFallback === q || cat.includes(q) || subCat.includes(q) || brand.includes(q) || hasMatchingVariant;
             }
             return true;
         });
@@ -3587,6 +3637,60 @@ export const posClearSearch = () => {
     if (firstInp) firstInp.focus();
 };
 
+/**
+ * Tangani penekanan tombol pada kolom pencarian POS kasir.
+ * Mendeteksi otomatis sinyal 'Enter' dari barcode scanner USB/Bluetooth
+ * dan langsung memasukkan produk/varian ke keranjang belanja kasir.
+ */
+export const handlePOSSearchKeydown = (e) => {
+    if (!e) return;
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const inp = e.target || el('pos-search-input');
+        const rawVal = (inp ? inp.value : '').trim();
+        if (!rawVal) return;
+
+        const match = findProductOrVariantByBarcode(rawVal);
+        if (match) {
+            const prod = match.product;
+            let added = false;
+            if (match.isVariantMatch && match.variant) {
+                const vPrice = parseFloat(match.variant.price) || 0;
+                added = addToCartWithVariant(prod.id, match.variant.name, vPrice, match.variantIdx, 1);
+                if (added) {
+                    showToast(`Ditambahkan: ${prod.name} — ${match.variant.name}`, 'success');
+                    if (typeof playCashierChime === 'function') playCashierChime();
+                }
+            } else {
+                const hasVariants = Array.isArray(prod.variants) && prod.variants.length > 0;
+                if (hasVariants) {
+                    ensurePOSVariantSheet().then(() => {
+                        if (typeof window.openPOSVariantSheet === 'function') {
+                            window.openPOSVariantSheet(prod.id);
+                        }
+                    });
+                    added = true;
+                } else {
+                    added = addToCart(prod.id);
+                    if (added) {
+                        showToast(`Ditambahkan: ${prod.name}`, 'success');
+                        if (typeof playCashierChime === 'function') playCashierChime();
+                    }
+                }
+            }
+
+            if (added) {
+                posClearSearch();
+            }
+        } else {
+            showToast(`Kode "${rawVal}" tidak ditemukan sebagai barcode/SKU produk. Menampilkan filter teks...`, 'info');
+        }
+    } else if (e.key === 'Escape') {
+        posClearSearch();
+        e.target?.blur();
+    }
+};
+
 export const posLoadMoreProducts = () => {
     posCatalogPage += 1;
     renderCatalog(true);
@@ -3854,7 +3958,8 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                             <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode... [F2]" 
                                 class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
-                                oninput="window.posSearchFn(this.value)">
+                                oninput="window.posSearchFn(this.value)"
+                                onkeydown="window.handlePOSSearchKeydown(event)">
                             <button type="button" onclick="window.posClearSearch()" class="pos-search-clear-btn hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 text-xs p-1 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian (Esc)">
                                 <i class="fa-solid fa-circle-xmark"></i>
                             </button>
@@ -4773,6 +4878,8 @@ window.printShiftSettlementReceipt = printShiftSettlementReceipt;
 window.executeShiftPrintDirect = executeShiftPrintDirect;
 window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; renderCatalog(); };
 window.getPOSCart              = () => posCart;
+window.cleanBarcodeRaw         = cleanBarcodeRaw;
+window.handlePOSSearchKeydown  = handlePOSSearchKeydown;
 window.posSearchFn             = posSearchFn;
 window.posClearSearch          = posClearSearch;
 window.posLoadMoreProducts     = posLoadMoreProducts;

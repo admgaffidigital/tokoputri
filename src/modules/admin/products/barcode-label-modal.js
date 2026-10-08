@@ -21,7 +21,7 @@ let labelSettings = {
     showUnit: true,
     showSkuText: true,
     showBorderGuide: false,
-    barcodeHeight: 38
+    barcodeHeight: 58
 };
 
 /**
@@ -391,12 +391,12 @@ export const renderBarcodeLabelModalContent = () => {
                                 ` : ''}
 
                                 <!-- NAMA BARANG & VARIAN -->
-                                <div class="my-auto w-full px-1">
-                                    <p class="text-[10.5px] font-black leading-tight line-clamp-2 text-slate-900">
+                                <div class="w-full px-1 pt-0.5">
+                                    <p class="text-[10px] font-black leading-tight truncate text-slate-900" title="${esc(activePreviewItem.name)}">
                                         ${esc(activePreviewItem.name)}
                                     </p>
                                     ${activePreviewItem.variantName ? `
-                                        <p class="text-[9.5px] font-bold text-indigo-600 leading-tight truncate mt-0.5">
+                                        <p class="text-[9px] font-bold text-indigo-600 leading-tight truncate mt-0.5">
                                             [${esc(activePreviewItem.variantName)}]
                                         </p>
                                     ` : ''}
@@ -404,7 +404,7 @@ export const renderBarcodeLabelModalContent = () => {
 
                                 <!-- BARCODE VEKTOR CODE 128 -->
                                 <div class="w-full my-auto px-1 flex flex-col items-center justify-center">
-                                    <div class="w-full max-w-[180px]">
+                                    <div class="w-full max-w-[195px]">
                                         ${previewSvg}
                                     </div>
                                 </div>
@@ -668,22 +668,27 @@ export const printBarcodeLabelsBrowser = () => {
                 border-bottom: 0.5px solid #000; width: 100%; padding-bottom: 1px; margin-bottom: 1px;
                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             }
-            .lbl-info { width: 100%; margin: auto 0; }
+            .lbl-info { width: 100%; margin: 0.5mm 0; }
             .lbl-name {
-                font-size: 9.5px; font-weight: 800; line-height: 1.1; max-height: 2.2em;
-                overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+                font-size: 9px; font-weight: 800; line-height: 1.1;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             }
             .lbl-variant {
-                font-size: 8.5px; font-weight: 700; line-height: 1.1; margin-top: 1px;
+                font-size: 8px; font-weight: 700; line-height: 1.1; margin-top: 0.5px;
                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             }
             .lbl-barcode {
-                width: 100%; max-width: 95%; margin: auto 0;
+                width: 100%; max-width: 98%; margin: auto 0;
+                display: flex; align-items: center; justify-content: center;
             }
-            .lbl-barcode svg { width: 100%; height: auto; display: block; margin: 0 auto; }
+            .lbl-barcode svg {
+                width: 100%; height: auto; max-height: 17mm;
+                display: block; margin: 0 auto;
+                shape-rendering: crispEdges;
+            }
             .lbl-price {
                 font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: 900;
-                border-top: 0.5px solid #000; width: 100%; padding-top: 1px; margin-top: 1px;
+                border-top: 0.5px solid #000; width: 100%; padding-top: 0.8px; margin-top: 0.5px;
             }
             .lbl-unit { font-size: 8px; font-weight: bold; margin-left: 2px; }
             ${pageCss}
@@ -763,7 +768,7 @@ export const printBarcodeLabelsThermalRawbt = async () => {
             if (it.variantName) {
                 builder.line(`[${it.variantName}]`, { size: 'normal' });
             }
-            builder.barcode(it.sku, 'CODE128', 42);
+            builder.barcode(it.sku, 'CODE128', 55);
             if (labelSettings.showPrice) {
                 builder.line(fCur(it.price) + (labelSettings.showUnit ? `/${it.unit || 'pcs'}` : ''), { bold: true, size: 'large' });
             }
