@@ -6,7 +6,7 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.96 s.d. v1.10.92). Setiap rilis baru ditambahkan di posisi
+ * terkini (v1.10.97 s.d. v1.10.93). Setiap rilis baru ditambahkan di posisi
  * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
@@ -15,6 +15,21 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-10-97",
+        "version": "v1.10.97",
+        "date": "2026-10-08",
+        "title": "Resolusi Tuntas Transisi Modal Cetak Label Barcode & Penutupan Otomatis Modal Induk (FIFO & PO)",
+        "category": "feature",
+        "badge": "Seamless Barcode Modal Transition & Parent Auto-Closing v1.10.97",
+        "items": [
+            "Auto-Closing & Resolusi Modal Menutupi (barcode-label-modal.js & fifo-modal.js): Memperbaiki bug di mana modal Cetak Label tidak muncul karena terhalang oleh modal Pelacak FIFO yang tidak mau menutup. Fungsi openProductBarcodeLabelModal kini secara otomatis mendeteksi dan menutup modal induk yang sedang aktif (modal-product-fifo dan modal-po-detail) secara mulus tanpa konflik history.back().",
+            "Peningkatan Z-Index Prioritas Tertinggi (z-[200]): Mengangkat lapisan modal Cetak Label Barcode ke z-[200] dan menjamin posisinya selalu berada di urutan anak paling atas DOM body (document.body.appendChild), mengeliminasi risiko modal tertutup atau terperangkap di belakang dialog lain.",
+            "Sinkronisasi Siklus Hidup Modal History API: Memperbaiki registrasi window.pushModalHistory('productBarcodeLabel') dan window.requestCloseModal('productBarcodeLabel') dengan animasi standar openModalAnim / closeModalAnim (double rAF GPU acceleration) untuk konsistensi penutupan tombol fisik Back Android.",
+            "Integrasi Cetak Label Barang PO Kulakan (purchases.js): Tombol 'Cetak Label Barang' pada rincian Purchase Order kini juga otomatis menutup modal PO Detail secara elegan sebelum membuka antrean cetak label barcode.",
+            "Multi-Channel Distribution v1.10.97 (Android versionCode 11097)."
+        ]
+    },
     {
         "id": "log-1-10-96",
         "version": "v1.10.96",
@@ -76,21 +91,6 @@ export const DEFAULT_CHANGELOG = [
             "Otomasi Pesan WhatsApp Pelanggan & Logistik: Template notifikasi resmi berstruktur rapi (Kop Toko, No. Referensi, Status Pemrosesan, Alamat Proyek) untuk status Baru, Diproses, Selesai, dan Drop-Point Armada, menggantikan gaya percakapan kaku/bot.",
             "POS Kasir & Struk Termal Resmi: Penyelarasan notifikasi kasir (validasi stok persediaan, penahanan antrean, pengosongan keranjang) dan standarisasi teks penutup struk/nota retur resmi untuk membangun kepercayaan pelanggan ritel maupun grosir.",
             "Multi-Channel Distribution v1.10.93 (Android versionCode 11093)."
-        ]
-    },
-    {
-        "id": "log-1-10-92",
-        "version": "v1.10.92",
-        "date": "2026-10-08",
-        "title": "Sistem Cetak Label Barcode & Harga Universal (Thermal Stiker Roll & Kertas A4)",
-        "category": "feature",
-        "badge": "Universal Barcode Label Printer v1.10.92",
-        "items": [
-            "Engine Barcode Code 128 Vektor Murni (barcode-code128.js): Menghadirkan generator barcode Code 128 native SVG beresolusi tinggi tanpa dependensi eksternal, menghasilkan garis barcode hitam pekat kristal yang 100% terbaca instan oleh seluruh pemindai laser kasir POS.",
-            "Modal Pintar Cetak Label Universal (barcode-label-modal.js): Modal konfigurasi cetak stiker label dengan pratinjau live skala 1:1, dukungan multi-varian dengan input jumlah cetak mandiri per varian, opsi stepper (+1, +5, +10, Set Sesuai Stok Fisik), dan tombol toggle informasi stiker (Kop Toko, Harga, Satuan, Teks SKU).",
-            "Multi-Printer & Preset Kertas Lengkap: Mendukung Printer Thermal Stiker Roll khusus (40x30mm, 50x30mm, continuous 58mm & 80mm) via isolasi CSS @page peramban maupun transmisi langsung ESC/POS Bluetooth / RawBT Android, serta format kisi Kertas Stiker A4 Lembaran (Grid 3x10 / 30 label & Grid 2x7 / 14 label) untuk printer inkjet/laser standar.",
-            "Aksesibilitas 1-Klik di Katalog & PO: Tombol 'Label' pada baris produk admin table, chip SKU berkemampuan interaktif, tombol cetak di header modal Bento FIFO, serta tombol cetak kilat pada dokumen penerimaan barang PO kulakan.",
-            "Multi-Channel Distribution v1.10.92 (Android versionCode 11092)."
         ]
     }
 ];
@@ -167,7 +167,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.92'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.96';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.97';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

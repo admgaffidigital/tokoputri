@@ -4425,4 +4425,10 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     }
 }
 
+/* Proteksi Z-Index Modal Cetak Label Barcode agar selalu di atas modal lain */
+#modal-product-barcode-label {
+    z-index: 200 !important;
+}
+
+
 

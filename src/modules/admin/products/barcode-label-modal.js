@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { el, esc, fCur, showToast } from '../../../core/utils.js';
+import { el, esc, fCur, showToast, openModalAnim, closeModalAnim } from '../../../core/utils.js';
 import { appData } from '../../../core/state.js';
 import { generateCode128Svg } from '../../../core/barcode-code128.js';
 
@@ -28,16 +28,20 @@ let labelSettings = {
  * Pastikan kontainer modal terpasang di DOM
  */
 export const ensureProductBarcodeLabelModal = () => {
-    if (!el('modal-product-barcode-label')) {
-        const m = document.createElement('div');
+    let m = el('modal-product-barcode-label');
+    if (!m) {
+        m = document.createElement('div');
         m.id = 'modal-product-barcode-label';
-        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300';
+        m.className = 'fixed inset-0 z-[200] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closeProductBarcodeLabelModal?.(); };
         m.innerHTML = `
             <div id="modal-product-barcode-label-box" class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-5xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-product-barcode-label-content" class="flex-1 flex flex-col overflow-hidden min-h-0"></div>
             </div>
         `;
+        document.body.appendChild(m);
+    } else {
+        m.className = 'fixed inset-0 z-[200] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 opacity-0 transition-opacity duration-300';
         document.body.appendChild(m);
     }
 };
@@ -48,6 +52,25 @@ export const ensureProductBarcodeLabelModal = () => {
  * @param {Object} [initialQtyMap] Peta kuantitas awal { [sku/variantIndex]: qty }
  */
 export const openProductBarcodeLabelModal = (productId, initialQtyMap = null) => {
+    // 1. Deteksi & tutup modal induk yang sedang terbuka (FIFO / PO Detail) agar tidak menutupi tampilan
+    const fifoModal = el('modal-product-fifo');
+    if (fifoModal && !fifoModal.classList.contains('hidden')) {
+        const fifoBox = el('modal-product-fifo-box');
+        if (fifoBox) closeModalAnim(fifoModal, fifoBox);
+        if (typeof window.requestCloseModal === 'function') {
+            window.requestCloseModal('productFifo', true);
+        }
+    }
+
+    const poModal = el('modal-po-detail');
+    if (poModal && !poModal.classList.contains('hidden')) {
+        const poBox = el('modal-po-detail-box');
+        if (poBox) closeModalAnim(poModal, poBox);
+        if (typeof window.requestCloseModal === 'function') {
+            window.requestCloseModal('purchaseDetail', true);
+        }
+    }
+
     ensureProductBarcodeLabelModal();
 
     const prod = (appData.products || []).find(p => String(p.id) === String(productId));
@@ -111,37 +134,27 @@ export const openProductBarcodeLabelModal = (productId, initialQtyMap = null) =>
     const box = el('modal-product-barcode-label-box');
     if (!m || !box) return;
 
-    m.classList.remove('hidden');
-    requestAnimationFrame(() => {
-        m.classList.remove('opacity-0');
-        box.classList.remove('translate-y-full', 'sm:translate-y-10');
-    });
+    // Pastikan modal selalu berada di posisi paling atas DOM body saat dibuka
+    document.body.appendChild(m);
 
-    if (typeof pushModalHistory === 'function') {
-        pushModalHistory('productBarcodeLabel', closeProductBarcodeLabelModal);
+    if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('productBarcodeLabel');
     }
+    openModalAnim(m, box);
 };
 
 /**
  * Tutup modal generator label barcode
  */
 export const closeProductBarcodeLabelModal = (fH = false) => {
-    const doClose = () => {
-        const m = el('modal-product-barcode-label');
-        const box = el('modal-product-barcode-label-box');
-        if (!m || !box) return;
+    const m = el('modal-product-barcode-label');
+    const box = el('modal-product-barcode-label-box');
+    if (!m || !box) return;
 
-        m.classList.add('opacity-0');
-        box.classList.add('translate-y-full', 'sm:translate-y-10');
-        setTimeout(() => {
-            m.classList.add('hidden');
-        }, 300);
-    };
-
-    if (typeof requestCloseModal === 'function') {
-        requestCloseModal('productBarcodeLabel', fH, doClose);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('productBarcodeLabel', false, () => closeModalAnim(m, box));
     } else {
-        doClose();
+        closeModalAnim(m, box);
     }
 };
 

@@ -3031,6 +3031,7 @@ window.printPOLabels = (poId) => {
     const qtyMap = {};
     if (item.variantName) qtyMap[item.variantName] = item.qty;
     else qtyMap[item.productId] = item.qty;
+    window.closePurchaseDetailModal?.();
     window.openProductBarcodeLabelModal?.(item.productId, qtyMap);
 };
 
