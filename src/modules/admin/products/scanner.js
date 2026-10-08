@@ -20,35 +20,61 @@ window.openCameraScanner = async (targetId='search-input') => {
     if (mScan && mScan.classList.contains('hidden')) pushModalHistory('scanner');
     openModalAnim(mScan, mScan?.firstElementChild);
 
-    // Muat library scanner secara lazy — hanya saat benar-benar diperlukan
+    // Muat library scanner secara lazy — utamakan aset lokal dengan fallback ke CDN
     try {
         await ensureScriptLoaded(
+            '/html5-qrcode.min.js',
+            () => typeof Html5Qrcode !== 'undefined'
+        ).catch(() => ensureScriptLoaded(
             'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js',
             () => typeof Html5Qrcode !== 'undefined'
-        );
+        ));
     } catch(e) {
-        showToast('Gagal memuat modul kamera. Cek koneksi internet Anda.');
+        showToast('Gagal memuat modul kamera. Cek koneksi atau izin kamera.');
         closeCameraScanner();
         return;
     }
 
     if(!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+    const formats = typeof Html5QrcodeSupportedFormats !== 'undefined' ? [
+        Html5QrcodeSupportedFormats.CODE_128,
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+        Html5QrcodeSupportedFormats.CODE_39,
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.QR_CODE
+    ] : undefined;
+
+    const config = {
+        fps: 15,
+        qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const width = Math.min(Math.floor(viewfinderWidth * 0.88), 340);
+            const height = Math.min(Math.floor(viewfinderHeight * 0.45), 150);
+            return { width: Math.max(width, 220), height: Math.max(height, 90) };
+        },
+        ...(formats ? { formatsToSupport: formats } : {}),
+        experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true
+        }
+    };
 
     setTimeout(() => {
         if(html5QrCode){
             html5QrCode.start({facingMode:"environment"}, config, (decodedText) => {
+                const cleanCode = typeof window.cleanBarcodeRaw === 'function' ? window.cleanBarcodeRaw(decodedText) : (decodedText || '').trim();
                 let tEl = el(targetId);
                 if(tEl){
-                    tEl.value = decodedText;
+                    tEl.value = cleanCode;
                     if(targetId === 'search-input' || targetId === 'mobile-header-search') {
-                        window.handleSearch?.(decodedText);
+                        window.handleSearch?.(cleanCode);
                     } else {
                         tEl.dispatchEvent(new Event('input',{bubbles:true}));
                         tEl.dispatchEvent(new Event('change',{bubbles:true}));
                     }
                 }
-                showToast("Barcode discan!");
+                showToast("Barcode terbaca!");
                 closeCameraScanner();
             },(err)=>{}).catch(err => {
                 showToast("Akses kamera ditolak/gagal!");

@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-10-95",
+        "version": "v1.10.95",
+        "date": "2026-10-08",
+        "title": "Universal Dual-Engine Scanner Kamera HP & Toleransi Presisi Barcode Label Anti Gagal Temukan",
+        "category": "feature",
+        "badge": "Universal Dual-Engine Camera Scanner & Barcode Matcher v1.10.95",
+        "items": [
+            "Universal Dual-Engine Barcode Scanner POS Kasir (pos.js): Mengintegrasikan engine Html5Qrcode (ZXing) lokal berkinerja tinggi sebagai pemindai utama yang kompatibel 100% di semua browser smartphone (Android Chrome, iOS Safari, WebView Capacitor, Firefox) dengan fallback otomatis ke native BarcodeDetector jika offline.",
+            "Area Bidik Horizontal Optimal Barcode 1D (qrbox aspect 2.2:1): Viewfinder kamera HP dikalibrasi khusus untuk barcode memanjang (Code 128 / EAN-13) dengan reticle aspect-[2.2/1] dan resolusi dinamis, menghilangkan kendala kamera HP yang sebelumnya tidak bisa memindai atau terpotong area kubus sempit.",
+            "Aset Lokal html5-qrcode.min.js Anti-Gagal Offline: Pustaka scanner kini tersimpan langsung di public/html5-qrcode.min.js sehingga kamera scanner dapat berjalan instan tanpa tergantung koneksi CDN internet.",
+            "Engine Pencocokan Barcode Bertoleransi Tinggi (getBarcodeVariations & matchCodeAny): Mendukung pembersihan otomatis awalan nol scanner (leading zeroes 0899... vs 899...), padding format UPC-A/EAN-13 (12 digit ke 13 digit), barcode bertipe data numerik di database, serta toleransi variasi spasi dan tanda hubung SKU.",
+            "Feedback Cerdas Kasir & Deteksi Produk Nonaktif: Jika barcode terbaca namun berstatus nonaktif di master admin, kasir mendapatkan notifikasi spesifik sehingga tidak bingung. Dilengkapi tombol kilat 'Cari Teks di POS' untuk mencari produk terdekat dalam 1 ketukan.",
+            "Pencarian Etalase Storefront Bebas Hambat Kategori: Filter penelusuran katalog etalase (catalog.js) otomatis mengizinkan produk yang discan lewat kamera tampil seketika meskipun pembeli sedang berada di tab kategori yang berbeda.",
+            "Multi-Channel Distribution v1.10.95 (Android versionCode 11095)."
+        ]
+    },
+    {
         "id": "log-1-10-94",
         "version": "v1.10.94",
         "date": "2026-10-08",
@@ -75,21 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Pilar B — Cetak Rekap Buku Piutang Toko A4 & Ekspor CSV (tempo.js & documents.js): Menghadirkan cetak Rekap Buku Besar Piutang Toko resmi standar A4 (type: 'tempo_recap') dengan nomor registrasi AR, aging keterlambatan debitur, kop toko, rekening pelunasan resmi, dan tanda tangan Owner/Penagih, serta ekspor file CSV instan (Rekap_Piutang_Toko_Putri.csv) ber-BOM UTF-8 kompatibel Excel.",
             "Pilar B — Kartu Riwayat Mutasi Stok (Stock Card Ledger di fifo-modal.js): Tab baru 'Kartu Mutasi Stok' pada modal Bento FIFO produk yang merekonsiliasi barang masuk kulakan PO, barang keluar penjualan kasir/online, filter segmented (Semua, Masuk, Keluar), dan ringkasan kuantitas fisik real-time.",
             "Multi-Channel Distribution v1.10.91 (Android versionCode 11091)."
-        ]
-    },
-    {
-        "id": "log-1-10-90",
-        "version": "v1.10.90",
-        "date": "2026-10-08",
-        "title": "Arsitektur Modal 3-Tier Responsive Desktop: Widescreen Workspace & Split-View Produk",
-        "category": "feature",
-        "badge": "3-Tier Desktop Modal Architecture v1.10.90",
-        "items": [
-            "Tier 1 (Widescreen Workspace Canvas - 94vw, Max-W-7xl / 1360px): Menghadirkan kanvas kerja desktop yang ultra lapang dan luas untuk modal padat data (Pelacak FIFO & Multi-Supplier, PO Kulakan Builder & Detail, Direktori Rekanan Supplier, Stock Opname Dua Lokasi, Detail Piutang Tempo, Rekap Shift Kasir, Form & Detail Order Admin, hingga Kartu Member Digital). Mengeliminasi rasa sempit/terjepit saat mengelola tabel dan formulir kompleks di monitor PC/Laptop.",
-            "Tier 2 (Spacious 2-Column Split-View - 1160px & 88vh): Merombak tampilan modal detail produk storefront (#product-modal-content) di layar desktop menjadi tata letak 2 kolom elegan setaraf marketplace tier-1 dunia. Kolom kiri selebar 460px didedikasikan untuk galeri foto produk sticky yang luas, sementara kolom kanan menyajikan informasi harga, badge Inc. PPN kapsul, katalog swatch kartu cat, dan pinned bottom buy bar yang selalu siap dieksekusi tanpa perlu scroll bolak-balik.",
-            "Tier 3 (Focused Center Dialogs - 440px s.d. 520px): Mempertahankan dialog konfirmasi cepat, prompt PIN, quick price, restock kilat, dan struk kasir pada proporsi kompak terpusat agar fokus pandangan kasir/admin tetap tajam tanpa melar berlebihan.",
-            "Zero Distorsi Mobile & Tablet (<1024px): Seluruh tata letak 3-Tier diisolasi secara presisi melalui media query desktop (min-width: 1024px), sehingga pengalaman pengguna smartphone pada bottom sheet native, gesture swipe, dan tombol kembali Android tetap 100% mulus dan terlindungi.",
-            "Multi-Channel Distribution v1.10.90 (Android versionCode 11090)."
         ]
     }
 ];

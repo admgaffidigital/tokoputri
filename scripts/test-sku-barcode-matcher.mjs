@@ -6,7 +6,7 @@ import assert from 'node:assert';
 
 // Normalisasi dan bersihkan kode barcode dari prefix AIM symbology (misal ]C1, ]e0)
 const cleanBarcodeRaw = (raw) => {
-    if (!raw) return '';
+    if (raw === null || raw === undefined) return '';
     let str = String(raw).trim();
     // Hapus prefix AIM Symbology (misal ]C1 untuk Code 128, ]e0 untuk EAN, dll)
     str = str.replace(/^\][a-zA-Z0-9]{2}/, '');
@@ -15,15 +15,73 @@ const cleanBarcodeRaw = (raw) => {
     return str.trim();
 };
 
+/**
+ * Dapatkan variasi kode normalisasi untuk toleransi pencocokan scanner:
+ * - Kode bersih asli (lowercase)
+ * - Kode tanpa leading zeros (misal '0899...' -> '899...')
+ * - Kode UPC-A ke EAN-13 padding (misal 12 digit ditambah '0')
+ * - Kode tanpa spasi/tanda hubung/titik
+ */
+const getBarcodeVariations = (raw) => {
+    const clean = cleanBarcodeRaw(raw);
+    if (!clean) return [];
+    const lower = clean.toLowerCase();
+    const set = new Set();
+    set.add(lower);
+
+    // Variasi tanpa leading zeroes (misal scanner membaca '0899...' padahal di database '899...')
+    const noZero = lower.replace(/^0+/, '');
+    if (noZero && noZero !== lower) {
+        set.add(noZero);
+    }
+
+    // Variasi padding nol jika 12 digit angka (UPC-A to EAN-13)
+    if (/^\d{12}$/.test(lower)) {
+        set.add('0' + lower);
+    }
+
+    // Variasi tanpa pemisah spasi, strip, underscore, titik
+    const noDelim = lower.replace(/[\s\-_.]/g, '');
+    if (noDelim && noDelim !== lower) {
+        set.add(noDelim);
+        const noDelimNoZero = noDelim.replace(/^0+/, '');
+        if (noDelimNoZero) set.add(noDelimNoZero);
+    }
+
+    return Array.from(set);
+};
+
+const matchCodeAny = (needleVariations, candidateStr) => {
+    if (candidateStr === null || candidateStr === undefined || candidateStr === '') return false;
+    const candClean = cleanBarcodeRaw(candidateStr).toLowerCase();
+    if (!candClean) return false;
+
+    // Kecocokan langsung
+    if (needleVariations.includes(candClean)) return true;
+
+    // Kecocokan tanpa leading zeroes
+    const candNoZero = candClean.replace(/^0+/, '');
+    if (candNoZero && needleVariations.includes(candNoZero)) return true;
+
+    // Kecocokan padding EAN 12 digit
+    if (/^\d{12}$/.test(candClean) && needleVariations.includes('0' + candClean)) return true;
+
+    // Kecocokan tanpa pembatas
+    const candNoDelim = candClean.replace(/[\s\-_.]/g, '');
+    if (candNoDelim && needleVariations.includes(candNoDelim)) return true;
+
+    return false;
+};
+
 // Helper findProductOrVariantByBarcode yang identik dengan src/modules/pos/pos.js
 const findProductOrVariantByBarcode = (rawCode, products) => {
-    if (!rawCode) return null;
-    const clean = cleanBarcodeRaw(rawCode);
-    if (!clean) return null;
-    const c = clean.toLowerCase();
+    if (rawCode === null || rawCode === undefined || rawCode === '') return null;
+    const variations = getBarcodeVariations(rawCode);
+    if (!variations.length) return null;
+    const list = products || [];
 
-    // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian
-    for (const p of products) {
+    // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian aktif
+    for (const p of list) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
         if (Array.isArray(p.variants) && p.variants.length > 0) {
             const pIdStr = String(p.id || '').trim().toLowerCase();
@@ -33,21 +91,19 @@ const findProductOrVariantByBarcode = (rawCode, products) => {
                 const v = p.variants[vIdx];
                 if (!v || v.isActive === false || v.isActive === 'false') continue;
 
-                const vBarcode = v.barcode ? cleanBarcodeRaw(v.barcode).toLowerCase() : '';
-                const vSku = v.sku ? String(v.sku).trim().toLowerCase() : '';
-
                 // Format fallback label yang dicetak oleh modal label:
-                // `${prod.sku || prod.id}-${idx + 1}` atau `${prod.id}-${idx + 1}`
                 const fallbackSku1 = `${pSkuStr || pIdStr}-${vIdx + 1}`.toLowerCase();
                 const fallbackSku2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
                 const fallbackSku3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku4 = pSkuStr ? `sku-${pSkuStr}-${vIdx + 1}`.toLowerCase() : '';
 
                 if (
-                    (vBarcode && vBarcode === c) ||
-                    (vSku && vSku === c) ||
-                    (c === fallbackSku1) ||
-                    (c === fallbackSku2) ||
-                    (c === fallbackSku3)
+                    matchCodeAny(variations, v.barcode) ||
+                    matchCodeAny(variations, v.sku) ||
+                    matchCodeAny(variations, fallbackSku1) ||
+                    matchCodeAny(variations, fallbackSku2) ||
+                    matchCodeAny(variations, fallbackSku3) ||
+                    (fallbackSku4 && matchCodeAny(variations, fallbackSku4))
                 ) {
                     return {
                         product: p,
@@ -60,28 +116,91 @@ const findProductOrVariantByBarcode = (rawCode, products) => {
         }
     }
 
-    // 2. Cocokkan SKU/Barcode/ID di level produk induk
-    for (const p of products) {
+    // 2. Cocokkan SKU/Barcode/ID di level produk induk aktif
+    for (const p of list) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
         const pIdStr = String(p.id || '').trim().toLowerCase();
-        const pSkuStr = p.sku ? String(p.sku).trim().toLowerCase() : '';
-        const pBarcode = p.barcode ? cleanBarcodeRaw(p.barcode).toLowerCase() : '';
-
-        // Fallback label produk tanpa SKU/barcode: `SKU-${prod.id}`
         const fallbackSku = `sku-${pIdStr}`.toLowerCase();
 
-        const bMatch = pBarcode && pBarcode === c;
-        const sMatch = pSkuStr && pSkuStr === c;
-        const iMatch = pIdStr && pIdStr === c;
-        const fMatch = fallbackSku && fallbackSku === c;
-
-        if (bMatch || sMatch || iMatch || fMatch) {
+        if (
+            matchCodeAny(variations, p.barcode) ||
+            matchCodeAny(variations, p.sku) ||
+            matchCodeAny(variations, pIdStr) ||
+            matchCodeAny(variations, fallbackSku)
+        ) {
             return {
                 product: p,
                 variant: null,
                 variantIdx: -1,
                 isVariantMatch: false
             };
+        }
+    }
+
+    return null;
+};
+
+// Deteksi produk/varian nonaktif untuk memberikan feedback jelas di kasir
+const findInactiveProductByBarcode = (rawCode, products) => {
+    if (rawCode === null || rawCode === undefined || rawCode === '') return null;
+    const variations = getBarcodeVariations(rawCode);
+    if (!variations.length) return null;
+    const list = products || [];
+
+    for (const p of list) {
+        if (!p) continue;
+        const pIsInactive = p.isActive === 'false' || p.isActive === false;
+
+        if (Array.isArray(p.variants) && p.variants.length > 0) {
+            const pIdStr = String(p.id || '').trim().toLowerCase();
+            const pSkuStr = String(p.sku || '').trim().toLowerCase();
+
+            for (let vIdx = 0; vIdx < p.variants.length; vIdx++) {
+                const v = p.variants[vIdx];
+                if (!v) continue;
+                const vIsInactive = pIsInactive || v.isActive === false || v.isActive === 'false';
+                if (!vIsInactive) continue;
+
+                const fallbackSku1 = `${pSkuStr || pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+
+                if (
+                    matchCodeAny(variations, v.barcode) ||
+                    matchCodeAny(variations, v.sku) ||
+                    matchCodeAny(variations, fallbackSku1) ||
+                    matchCodeAny(variations, fallbackSku2) ||
+                    matchCodeAny(variations, fallbackSku3)
+                ) {
+                    return {
+                        product: p,
+                        variant: v,
+                        variantIdx: vIdx,
+                        isVariantMatch: true,
+                        isInactive: true
+                    };
+                }
+            }
+        }
+
+        if (pIsInactive) {
+            const pIdStr = String(p.id || '').trim().toLowerCase();
+            const fallbackSku = `sku-${pIdStr}`.toLowerCase();
+
+            if (
+                matchCodeAny(variations, p.barcode) ||
+                matchCodeAny(variations, p.sku) ||
+                matchCodeAny(variations, pIdStr) ||
+                matchCodeAny(variations, fallbackSku)
+            ) {
+                return {
+                    product: p,
+                    variant: null,
+                    variantIdx: -1,
+                    isVariantMatch: false,
+                    isInactive: true
+                };
+            }
         }
     }
 
@@ -247,6 +366,54 @@ const t11 = findProductOrVariantByBarcode('BARCODE-ACAK-TIDAK-ADA', mockProducts
 assert.strictEqual(t11, null, 'Barcode liar harus mengembalikan null');
 console.log('  ✅ PASS: Barcode acak mengembalikan null');
 
+// Test 12: Kamera HP Membaca Barcode EAN dengan Leading Zero Tambahan
+console.log('\n📱 7. Uji Toleransi Kamera HP (Leading Zero & Format Scanner):');
+const t12 = findProductOrVariantByBarcode('08991001001', mockProducts);
+assert.ok(t12, 'Barcode dengan leading zero dari kamera HP harus cocok ke 8991001001');
+assert.strictEqual(t12.product.id, 'PROD-001');
+console.log('  ✅ PASS: Scanner HP membaca 08991001001 berhasil dicocokkan ke 8991001001');
+
+// Test 13: Kamera HP Membaca Barcode Varian dengan Leading Zero
+const t13 = findProductOrVariantByBarcode('08992002002', mockProducts);
+assert.ok(t13, 'Barcode varian dengan leading zero harus cocok');
+assert.strictEqual(t13.variant.name, '1kg Abu-abu 002');
+console.log('  ✅ PASS: Scanner HP membaca 08992002002 cocok ke varian 1kg Abu-abu 002');
+
+// Test 14: Barcode Bertipe Number (Angka Murni Tanpa String)
+const mockProductsWithNumber = [
+    {
+        id: 'PROD-NUM',
+        name: 'Cat Dasar Anti Karat (Barcode Number)',
+        barcode: 8995550001, // Tipe number di DB
+        price: 45000,
+        isActive: true
+    }
+];
+const t14 = findProductOrVariantByBarcode('8995550001', mockProductsWithNumber);
+assert.ok(t14, 'Barcode bertipe number harus ditemukan tanpa TypeError');
+assert.strictEqual(t14.product.name, 'Cat Dasar Anti Karat (Barcode Number)');
+console.log('  ✅ PASS: Barcode tipe angka murni di database berhasil dicocokkan');
+
+// Test 15: SKU dengan Variasi Spasi atau Strip
+const t15 = findProductOrVariantByBarcode('SKU SMN 001', mockProducts);
+assert.ok(t15, 'SKU dengan variasi spasi harus cocok ke SKU-SMN-001');
+assert.strictEqual(t15.product.id, 'PROD-001');
+console.log('  ✅ PASS: Variasi spasi/strip SKU berhasil dicocokkan');
+
+// Test 16: Deteksi Produk Nonaktif untuk Feedback Informatif di Kasir
+console.log('\n💡 8. Uji Deteksi Produk Nonaktif (Feedback Cerdas Kasir):');
+const t16 = findInactiveProductByBarcode('8993003001', mockProducts);
+assert.ok(t16, 'Produk nonaktif harus terdeteksi oleh helper inactive');
+assert.strictEqual(t16.isInactive, true);
+assert.strictEqual(t16.product.name, 'Produk Discontinued');
+console.log('  ✅ PASS: Produk nonaktif terdeteksi dengan tepat untuk notifikasi kasir');
+
+const t16b = findInactiveProductByBarcode('8992002999', mockProducts);
+assert.ok(t16b, 'Varian nonaktif harus terdeteksi oleh helper inactive');
+assert.strictEqual(t16b.isInactive, true);
+assert.strictEqual(t16b.variant.name, 'Varian Nonaktif');
+console.log('  ✅ PASS: Varian nonaktif terdeteksi dengan tepat untuk notifikasi kasir');
+
 console.log('\n============================================================');
-console.log('🎯 HASIL UJI COBA: Seluruh 11 Pengujian Barcode & SKU PASS! ✅');
+console.log('🎯 HASIL UJI COBA: Seluruh 17 Pengujian Barcode & SKU PASS! ✅');
 console.log('============================================================\n');

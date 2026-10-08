@@ -74,9 +74,20 @@ window.moveProductOrder = async (productId, direction) => {
     const rawSearch = (aSq || window.aSq || '').toLowerCase().trim();
     const searchVal = rawSearch.replace(/^\][a-zA-Z0-9]{2}/, '').trim() || rawSearch;
     const currentList = rawList.filter(x => {
-        let m = (x.name || x.title || x.bankName || x.code || x.sku || x.barcode || x.phone || String(x.id || '') || `sku-${x.id}`).toLowerCase().includes(searchVal);
+        const xName = String(x.name || x.title || x.bankName || x.code || '');
+        const xSku = String(x.sku || '');
+        const xBarcode = String(x.barcode || '');
+        const xPhone = String(x.phone || '');
+        const xId = String(x.id || '');
+        const xFallbackSku = `sku-${xId}`;
+        let m = (xName + ' ' + xSku + ' ' + xBarcode + ' ' + xPhone + ' ' + xId + ' ' + xFallbackSku).toLowerCase().includes(searchVal);
         if (!m && x.variants) {
-            m = x.variants.some((v, vIdx) => (v.sku && v.sku.toLowerCase().includes(searchVal)) || (v.barcode && v.barcode.toLowerCase().includes(searchVal)) || `${x.sku || x.id}-${vIdx + 1}`.toLowerCase().includes(searchVal));
+            m = x.variants.some((v, vIdx) => {
+                const vSku = String(v.sku || '').toLowerCase();
+                const vBarcode = String(v.barcode || '').toLowerCase();
+                const vFallback = `${xSku || xId}-${vIdx + 1}`.toLowerCase();
+                return (vSku && vSku.includes(searchVal)) || (vBarcode && vBarcode.includes(searchVal)) || vFallback.includes(searchVal);
+            });
         }
         return m;
     });
@@ -413,21 +424,42 @@ window.rAdmItms = t => {
             if (!hasSup) return false;
         }
         const rawClean = searchVal.replace(/^\][a-zA-Z0-9]{2}/, '').trim() || searchVal;
-        let m = (x.name || x.title || x.bankName || x.code || x.sku || x.barcode || x.phone || String(x.id || '') || `sku-${x.id}`).toLowerCase().includes(rawClean);
+        const rawCleanNoZero = rawClean.replace(/^0+/, '');
+        const rawCleanNoDelim = rawClean.replace(/[\s\-_.]/g, '');
+
+        const xName = String(x.name || x.title || x.bankName || x.code || '');
+        const xSku = String(x.sku || '');
+        const xBarcode = String(x.barcode || '');
+        const xPhone = String(x.phone || '');
+        const xId = String(x.id || '');
+        const xFallbackSku = `sku-${xId}`;
+
+        let m = (xName + ' ' + xSku + ' ' + xBarcode + ' ' + xPhone + ' ' + xId + ' ' + xFallbackSku).toLowerCase().includes(rawClean);
+        if (!m && rawCleanNoZero && xBarcode) {
+            m = xBarcode.replace(/^0+/, '').toLowerCase() === rawCleanNoZero;
+        }
+        if (!m && rawCleanNoDelim && xSku) {
+            m = xSku.replace(/[\s\-_.]/g, '').toLowerCase() === rawCleanNoDelim;
+        }
+
         if(t==='products' && !m) {
             if (x.supplierId && (appData.suppliers || []).length) {
                 const sObj = appData.suppliers.find(s => String(s.id) === String(x.supplierId));
-                if (sObj && (sObj.name || '').toLowerCase().includes(rawClean)) m = true;
+                if (sObj && String(sObj.name || '').toLowerCase().includes(rawClean)) m = true;
             }
             if (!m && Array.isArray(x.suppliers)) {
-                m = x.suppliers.some(s => (s.supplierName || '').toLowerCase().includes(rawClean));
+                m = x.suppliers.some(s => String(s.supplierName || '').toLowerCase().includes(rawClean));
             }
-            if (!m && x.variants) {
-                m = x.variants.some((v, vIdx) => 
-                    (v.sku && v.sku.toLowerCase().includes(rawClean)) ||
-                    (v.barcode && v.barcode.toLowerCase().includes(rawClean)) ||
-                    `${x.sku || x.id}-${vIdx + 1}`.toLowerCase().includes(rawClean)
-                );
+            if (!m && Array.isArray(x.variants)) {
+                m = x.variants.some((v, vIdx) => {
+                    const vSku = String(v.sku || '').toLowerCase();
+                    const vBarcode = String(v.barcode || '').toLowerCase();
+                    const vFallback = `${xSku || xId}-${vIdx + 1}`.toLowerCase();
+                    const vBarcodeNoZero = vBarcode.replace(/^0+/, '');
+                    return (vSku && vSku.includes(rawClean)) ||
+                           (vBarcode && (vBarcode.includes(rawClean) || (rawCleanNoZero && vBarcodeNoZero === rawCleanNoZero))) ||
+                           vFallback.includes(rawClean);
+                });
             }
         }
         return m;

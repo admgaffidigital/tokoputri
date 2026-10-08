@@ -141,29 +141,61 @@ export const rCat = () => {
 
     let f = appData.products.filter(p => {
         if (p.isActive === false || p.isActive === 'false') return false;
-        if (aCat !== 'Semua Produk' && p.category !== aCat) return false;
-        if (aSubCat !== 'Semua Jenis' && (p.subCategory || '').trim().toLowerCase() !== aSubCat.trim().toLowerCase()) return false;
-        if (aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
-        if (!sQ) return true;
+
+        if (!sQ) {
+            if (aCat !== 'Semua Produk' && p.category !== aCat) return false;
+            if (aSubCat !== 'Semua Jenis' && String(p.subCategory || '').trim().toLowerCase() !== aSubCat.trim().toLowerCase()) return false;
+            if (aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
+            return true;
+        }
+
         const rawQ = sQ.toLowerCase().trim();
         const q = rawQ.replace(/^\][a-zA-Z0-9]{2}/, '').replace(/[\x00-\x1F\x7F]/g, '').trim() || rawQ;
-        const name = (p.name || '').toLowerCase();
-        const sku = (p.sku || '').toLowerCase();
-        const barcode = (p.barcode || '').toLowerCase().replace(/^\][a-zA-Z0-9]{2}/, '').trim();
+        const qNoZero = q.replace(/^0+/, '');
+        const qNoDelim = q.replace(/[\s\-_.]/g, '');
+
+        const name = String(p.name || '').toLowerCase();
+        const sku = String(p.sku || '').toLowerCase();
+        const barcode = String(p.barcode || '').toLowerCase().replace(/^\][a-zA-Z0-9]{2}/, '').trim();
+        const barcodeNoZero = barcode.replace(/^0+/, '');
         const pIdStr = String(p.id || '').toLowerCase();
         const skuFallback = `sku-${pIdStr}`;
-        const cat = (p.category || '').toLowerCase();
-        const subCat = (p.subCategory || '').toLowerCase();
-        const brand = (p.brand || '').toLowerCase();
+        const cat = String(p.category || '').toLowerCase();
+        const subCat = String(p.subCategory || '').toLowerCase();
+        const brand = String(p.brand || '').toLowerCase();
+
+        // Cek kecocokan varian
+        let hasDirectCodeVariant = false;
         const hasMatchingVariant = Array.isArray(p.variants) && p.variants.some((v, vIdx) => {
-            const vName = (v.name || '').toLowerCase();
-            const vSku = (v.sku || '').toLowerCase();
-            const vBarcode = (v.barcode || '').toLowerCase().replace(/^\][a-zA-Z0-9]{2}/, '').trim();
+            const vName = String(v.name || '').toLowerCase();
+            const vSku = String(v.sku || '').toLowerCase();
+            const vBarcode = String(v.barcode || '').toLowerCase().replace(/^\][a-zA-Z0-9]{2}/, '').trim();
+            const vBarcodeNoZero = vBarcode.replace(/^0+/, '');
             const vFallback1 = `${sku || pIdStr}-${vIdx + 1}`.toLowerCase();
             const vFallback2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
-            return vName.includes(q) || vSku.includes(q) || vBarcode.includes(q) || vFallback1.includes(q) || vFallback2.includes(q);
+            const vFallback3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+
+            const isCodeMatch = (vBarcode && (vBarcode === q || (qNoZero && vBarcodeNoZero && qNoZero === vBarcodeNoZero))) ||
+                (vSku && (vSku === q || (qNoDelim && vSku.replace(/[\s\-_.]/g, '') === qNoDelim))) ||
+                vFallback1 === q || vFallback2 === q || vFallback3 === q;
+
+            if (isCodeMatch) hasDirectCodeVariant = true;
+
+            return isCodeMatch || vName.includes(q) || vSku.includes(q) || vBarcode.includes(q);
         });
-        return name.includes(q) || sku.includes(q) || barcode.includes(q) || pIdStr === q || skuFallback === q || cat.includes(q) || subCat.includes(q) || brand.includes(q) || hasMatchingVariant;
+
+        const isDirectCodeMatch = (barcode && (barcode === q || (qNoZero && barcodeNoZero && qNoZero === barcodeNoZero))) ||
+            (sku && (sku === q || (qNoDelim && sku.replace(/[\s\-_.]/g, '') === qNoDelim))) ||
+            pIdStr === q || skuFallback === q || hasDirectCodeVariant;
+
+        // Jika barcode/SKU cocok eksak atau hasil scan, lewati filter kategori agar produk tidak hilang
+        if (!isDirectCodeMatch) {
+            if (aCat !== 'Semua Produk' && p.category !== aCat) return false;
+            if (aSubCat !== 'Semua Jenis' && String(p.subCategory || '').trim().toLowerCase() !== aSubCat.trim().toLowerCase()) return false;
+            if (aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
+        }
+
+        return isDirectCodeMatch || name.includes(q) || sku.includes(q) || barcode.includes(q) || cat.includes(q) || subCat.includes(q) || brand.includes(q) || hasMatchingVariant;
     }).sort((a, b) => {
         if (cSort === 'cheapest') return (a.price || 0) - (b.price || 0);
         if (cSort === 'expensive') return (b.price || 0) - (a.price || 0);

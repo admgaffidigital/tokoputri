@@ -10,7 +10,7 @@
 
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
-import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, isPlaceholderImg, fixD, extractOrderTaxInfo } from '../../core/utils.js';
+import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, isPlaceholderImg, fixD, extractOrderTaxInfo, ensureScriptLoaded } from '../../core/utils.js';
 import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { deductFifoStock } from '../../core/fifo-inventory.js';
@@ -77,6 +77,7 @@ let barcodeTimer    = null;
 let clockInterval   = null;
 
 // State Pemindai Barcode Kamera
+let posHtml5QrCode       = null;
 let posScannerStream     = null;
 let posScannerDetector   = null;
 let posScannerInterval   = null;
@@ -335,7 +336,7 @@ export const destroyBarcodeListener = () => {
  * serta control character non-printable dari scanner hardware
  */
 export const cleanBarcodeRaw = (raw) => {
-    if (!raw) return '';
+    if (raw === null || raw === undefined) return '';
     let str = String(raw).trim();
     // Hapus prefix AIM Symbology (misal ]C1 untuk Code 128, ]e0 untuk EAN, dll)
     str = str.replace(/^\][a-zA-Z0-9]{2}/, '');
@@ -345,17 +346,74 @@ export const cleanBarcodeRaw = (raw) => {
 };
 
 /**
+ * Dapatkan variasi kode normalisasi untuk toleransi pencocokan scanner:
+ * - Kode bersih asli (lowercase)
+ * - Kode tanpa leading zeros (misal '0899...' -> '899...')
+ * - Kode UPC-A ke EAN-13 padding (misal 12 digit ditambah '0')
+ * - Kode tanpa spasi/tanda hubung/titik
+ */
+export const getBarcodeVariations = (raw) => {
+    const clean = cleanBarcodeRaw(raw);
+    if (!clean) return [];
+    const lower = clean.toLowerCase();
+    const set = new Set();
+    set.add(lower);
+
+    // Variasi tanpa leading zeroes (misal scanner membaca '0899...' padahal di database '899...')
+    const noZero = lower.replace(/^0+/, '');
+    if (noZero && noZero !== lower) {
+        set.add(noZero);
+    }
+
+    // Variasi padding nol jika 12 digit angka (UPC-A to EAN-13)
+    if (/^\d{12}$/.test(lower)) {
+        set.add('0' + lower);
+    }
+
+    // Variasi tanpa pemisah spasi, strip, underscore, titik
+    const noDelim = lower.replace(/[\s\-_.]/g, '');
+    if (noDelim && noDelim !== lower) {
+        set.add(noDelim);
+        const noDelimNoZero = noDelim.replace(/^0+/, '');
+        if (noDelimNoZero) set.add(noDelimNoZero);
+    }
+
+    return Array.from(set);
+};
+
+export const matchCodeAny = (needleVariations, candidateStr) => {
+    if (candidateStr === null || candidateStr === undefined || candidateStr === '') return false;
+    const candClean = cleanBarcodeRaw(candidateStr).toLowerCase();
+    if (!candClean) return false;
+
+    // Kecocokan langsung
+    if (needleVariations.includes(candClean)) return true;
+
+    // Kecocokan tanpa leading zeroes
+    const candNoZero = candClean.replace(/^0+/, '');
+    if (candNoZero && needleVariations.includes(candNoZero)) return true;
+
+    // Kecocokan padding EAN 12 digit
+    if (/^\d{12}$/.test(candClean) && needleVariations.includes('0' + candClean)) return true;
+
+    // Kecocokan tanpa pembatas
+    const candNoDelim = candClean.replace(/[\s\-_.]/g, '');
+    if (candNoDelim && needleVariations.includes(candNoDelim)) return true;
+
+    return false;
+};
+
+/**
  * Temukan produk atau varian spesifik berdasarkan kode barcode / SKU / ID
  * Mendukung pencocokan barcode pabrik, SKU toko, fallback label cetak, dan varian
  */
 export const findProductOrVariantByBarcode = (rawCode) => {
-    if (!rawCode) return null;
-    const clean = cleanBarcodeRaw(rawCode);
-    if (!clean) return null;
-    const c = clean.toLowerCase();
+    if (rawCode === null || rawCode === undefined || rawCode === '') return null;
+    const variations = getBarcodeVariations(rawCode);
+    if (!variations.length) return null;
     const products = appData.products || [];
 
-    // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian
+    // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian aktif
     for (const p of products) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
         if (Array.isArray(p.variants) && p.variants.length > 0) {
@@ -366,21 +424,19 @@ export const findProductOrVariantByBarcode = (rawCode) => {
                 const v = p.variants[vIdx];
                 if (!v || v.isActive === false || v.isActive === 'false') continue;
 
-                const vBarcode = v.barcode ? cleanBarcodeRaw(v.barcode).toLowerCase() : '';
-                const vSku = v.sku ? String(v.sku).trim().toLowerCase() : '';
-
                 // Format fallback label yang dicetak oleh modal label:
-                // `${prod.sku || prod.id}-${idx + 1}` atau `${prod.id}-${idx + 1}`
                 const fallbackSku1 = `${pSkuStr || pIdStr}-${vIdx + 1}`.toLowerCase();
                 const fallbackSku2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
                 const fallbackSku3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku4 = pSkuStr ? `sku-${pSkuStr}-${vIdx + 1}`.toLowerCase() : '';
 
                 if (
-                    (vBarcode && vBarcode === c) ||
-                    (vSku && vSku === c) ||
-                    (c === fallbackSku1) ||
-                    (c === fallbackSku2) ||
-                    (c === fallbackSku3)
+                    matchCodeAny(variations, v.barcode) ||
+                    matchCodeAny(variations, v.sku) ||
+                    matchCodeAny(variations, fallbackSku1) ||
+                    matchCodeAny(variations, fallbackSku2) ||
+                    matchCodeAny(variations, fallbackSku3) ||
+                    (fallbackSku4 && matchCodeAny(variations, fallbackSku4))
                 ) {
                     return {
                         product: p,
@@ -393,28 +449,94 @@ export const findProductOrVariantByBarcode = (rawCode) => {
         }
     }
 
-    // 2. Cocokkan SKU/Barcode/ID di level produk induk
+    // 2. Cocokkan SKU/Barcode/ID di level produk induk aktif
     for (const p of products) {
         if (!p || p.isActive === 'false' || p.isActive === false) continue;
         const pIdStr = String(p.id || '').trim().toLowerCase();
-        const pSkuStr = p.sku ? String(p.sku).trim().toLowerCase() : '';
-        const pBarcode = p.barcode ? cleanBarcodeRaw(p.barcode).toLowerCase() : '';
-
-        // Fallback label produk tanpa SKU/barcode: `SKU-${prod.id}`
         const fallbackSku = `sku-${pIdStr}`.toLowerCase();
 
-        const bMatch = pBarcode && pBarcode === c;
-        const sMatch = pSkuStr && pSkuStr === c;
-        const iMatch = pIdStr && pIdStr === c;
-        const fMatch = fallbackSku && fallbackSku === c;
-
-        if (bMatch || sMatch || iMatch || fMatch) {
+        if (
+            matchCodeAny(variations, p.barcode) ||
+            matchCodeAny(variations, p.sku) ||
+            matchCodeAny(variations, pIdStr) ||
+            matchCodeAny(variations, fallbackSku)
+        ) {
             return {
                 product: p,
                 variant: null,
                 variantIdx: -1,
                 isVariantMatch: false
             };
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Deteksi produk/varian nonaktif untuk memberikan feedback jelas di kasir
+ * (mencegah kasir bingung mengapa barcode tidak terdaftar)
+ */
+export const findInactiveProductByBarcode = (rawCode) => {
+    if (rawCode === null || rawCode === undefined || rawCode === '') return null;
+    const variations = getBarcodeVariations(rawCode);
+    if (!variations.length) return null;
+    const products = appData.products || [];
+
+    for (const p of products) {
+        if (!p) continue;
+        const pIsInactive = p.isActive === 'false' || p.isActive === false;
+
+        if (Array.isArray(p.variants) && p.variants.length > 0) {
+            const pIdStr = String(p.id || '').trim().toLowerCase();
+            const pSkuStr = String(p.sku || '').trim().toLowerCase();
+
+            for (let vIdx = 0; vIdx < p.variants.length; vIdx++) {
+                const v = p.variants[vIdx];
+                if (!v) continue;
+                const vIsInactive = pIsInactive || v.isActive === false || v.isActive === 'false';
+                if (!vIsInactive) continue;
+
+                const fallbackSku1 = `${pSkuStr || pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku2 = `${pIdStr}-${vIdx + 1}`.toLowerCase();
+                const fallbackSku3 = `sku-${pIdStr}-${vIdx + 1}`.toLowerCase();
+
+                if (
+                    matchCodeAny(variations, v.barcode) ||
+                    matchCodeAny(variations, v.sku) ||
+                    matchCodeAny(variations, fallbackSku1) ||
+                    matchCodeAny(variations, fallbackSku2) ||
+                    matchCodeAny(variations, fallbackSku3)
+                ) {
+                    return {
+                        product: p,
+                        variant: v,
+                        variantIdx: vIdx,
+                        isVariantMatch: true,
+                        isInactive: true
+                    };
+                }
+            }
+        }
+
+        if (pIsInactive) {
+            const pIdStr = String(p.id || '').trim().toLowerCase();
+            const fallbackSku = `sku-${pIdStr}`.toLowerCase();
+
+            if (
+                matchCodeAny(variations, p.barcode) ||
+                matchCodeAny(variations, p.sku) ||
+                matchCodeAny(variations, pIdStr) ||
+                matchCodeAny(variations, fallbackSku)
+            ) {
+                return {
+                    product: p,
+                    variant: null,
+                    variantIdx: -1,
+                    isVariantMatch: false,
+                    isInactive: true
+                };
+            }
         }
     }
 
@@ -4513,26 +4635,27 @@ export const openPOSCameraScanner = async () => {
                 </div>
             </div>
 
-            <!-- Viewport Kamera -->
+            <!-- Viewport Kamera Universal (Html5Qrcode + Native Fallback) -->
             <div class="relative w-full bg-black flex items-center justify-center overflow-hidden aspect-[4/3] sm:h-72">
-                <video id="pos-camera-video" playsinline autoplay muted class="w-full h-full object-cover"></video>
+                <div id="pos-camera-reader" class="w-full h-full overflow-hidden flex items-center justify-center"></div>
+                <video id="pos-camera-video" playsinline autoplay muted class="w-full h-full object-cover hidden"></video>
                 
-                <!-- Reticle Target Aiming Box -->
-                <div id="pos-scanner-reticle" class="absolute w-[72%] max-w-[260px] aspect-[1.3/1] border-2 border-emerald-400/90 rounded-2xl shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] pointer-events-none transition-all duration-200">
+                <!-- Reticle Target Aiming Box Horizontal untuk Barcode 1D (Code 128 / EAN-13) -->
+                <div id="pos-scanner-reticle" class="absolute w-[86%] max-w-[320px] aspect-[2.2/1] border-2 border-emerald-400/90 rounded-2xl shadow-[0_0_0_9999px_rgba(15,23,42,0.6)] pointer-events-none transition-all duration-200">
                     <!-- Corner Brackets -->
                     <span class="absolute -top-1 -left-1 w-4 h-4 border-t-4 border-l-4 border-emerald-400 rounded-tl-lg"></span>
                     <span class="absolute -top-1 -right-1 w-4 h-4 border-t-4 border-r-4 border-emerald-400 rounded-tr-lg"></span>
                     <span class="absolute -bottom-1 -left-1 w-4 h-4 border-b-4 border-l-4 border-emerald-400 rounded-bl-lg"></span>
                     <span class="absolute -bottom-1 -right-1 w-4 h-4 border-b-4 border-r-4 border-emerald-400 rounded-br-lg"></span>
                     
-                    <!-- Laser Scanline Animation -->
+                    <!-- Laser Scanline Animation Horizontal -->
                     <div class="pos-scanline"></div>
                 </div>
 
                 <!-- Floating Feedback Pill -->
-                <div id="pos-scanner-status-pill" class="absolute bottom-3 px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-[10px] font-bold text-slate-300 flex items-center gap-1.5 shadow-md">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span>Menunggu barcode...</span>
+                <div id="pos-scanner-status-pill" class="absolute bottom-3 px-3.5 py-1.5 rounded-full bg-slate-900/95 border border-slate-700 text-[11px] font-bold text-slate-300 flex items-center gap-1.5 shadow-xl max-w-[92%] text-center">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
+                    <span>Menyiapkan kamera HP...</span>
                 </div>
             </div>
 
@@ -4580,7 +4703,99 @@ export const openPOSCameraScanner = async () => {
 };
 
 const _startPOSCamera = async () => {
+    const pill = el('pos-scanner-status-pill');
+
+    // 1. Muat pustaka Html5Qrcode (lokal /html5-qrcode.min.js lebih dulu, fallback ke CDN)
+    try {
+        await ensureScriptLoaded(
+            '/html5-qrcode.min.js',
+            () => typeof Html5Qrcode !== 'undefined'
+        ).catch(() => ensureScriptLoaded(
+            'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js',
+            () => typeof Html5Qrcode !== 'undefined'
+        ));
+    } catch (e) {
+        console.warn('[POS Scanner] Fallback script loader:', e);
+    }
+
+    // 2. Engine Utama: Html5Qrcode (Universal ZXing — bekerja di 100% browser HP & Android/iOS)
+    if (typeof Html5Qrcode !== 'undefined') {
+        try {
+            if (posHtml5QrCode) {
+                try {
+                    if (posHtml5QrCode.getState() === 2 || posHtml5QrCode.getState() === 3) {
+                        await posHtml5QrCode.stop();
+                    }
+                    posHtml5QrCode.clear();
+                } catch(e) {}
+                posHtml5QrCode = null;
+            }
+
+            const readerContainer = el('pos-camera-reader');
+            const videoNative = el('pos-camera-video');
+            if (readerContainer) {
+                readerContainer.classList.remove('hidden');
+                readerContainer.innerHTML = '';
+            }
+            if (videoNative) videoNative.classList.add('hidden');
+
+            posHtml5QrCode = new Html5Qrcode('pos-camera-reader');
+
+            const formats = typeof Html5QrcodeSupportedFormats !== 'undefined' ? [
+                Html5QrcodeSupportedFormats.CODE_128,
+                Html5QrcodeSupportedFormats.EAN_13,
+                Html5QrcodeSupportedFormats.EAN_8,
+                Html5QrcodeSupportedFormats.CODE_39,
+                Html5QrcodeSupportedFormats.UPC_A,
+                Html5QrcodeSupportedFormats.UPC_E,
+                Html5QrcodeSupportedFormats.QR_CODE
+            ] : undefined;
+
+            const qrConfig = {
+                fps: 15,
+                qrbox: (viewfinderWidth, viewfinderHeight) => {
+                    const width = Math.min(Math.floor(viewfinderWidth * 0.88), 340);
+                    const height = Math.min(Math.floor(viewfinderHeight * 0.45), 150);
+                    return { width: Math.max(width, 220), height: Math.max(height, 90) };
+                },
+                ...(formats ? { formatsToSupport: formats } : {}),
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                }
+            };
+
+            await posHtml5QrCode.start(
+                { facingMode: posScannerFacing },
+                qrConfig,
+                (decodedText) => {
+                    if (decodedText && decodedText.trim()) {
+                        _handleBarcodeResult(decodedText.trim());
+                    }
+                },
+                () => {} // Abaikan per-frame mismatch
+            );
+
+            if (pill) {
+                pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span><span>Arahkan ke barcode produk...</span>`;
+            }
+
+            const torchBtn = el('pos-scanner-torch-btn');
+            if (torchBtn) torchBtn.classList.remove('hidden');
+            return;
+        } catch (err) {
+            console.warn('[POS Scanner] Html5Qrcode gagal dijalankan, mencoba Native Video stream:', err);
+            if (posHtml5QrCode) {
+                try { posHtml5QrCode.clear(); } catch(e) {}
+                posHtml5QrCode = null;
+            }
+        }
+    }
+
+    // 3. Fallback Engine: Native getUserMedia + BarcodeDetector
     const video = el('pos-camera-video');
+    const readerEl = el('pos-camera-reader');
+    if (readerEl) readerEl.classList.add('hidden');
+    if (video) video.classList.remove('hidden');
     if (!video) return;
 
     try {
@@ -4634,11 +4849,13 @@ const _startPOSCamera = async () => {
                     }
                 }
             } catch (err) {}
-        }, 180);
+        }, 150);
 
+        if (pill) {
+            pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span><span>Menunggu barcode...</span>`;
+        }
     } catch (err) {
         console.warn('[POS Scanner] Gagal akses kamera:', err);
-        const pill = el('pos-scanner-status-pill');
         if (pill) {
             pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Kamera tidak dapat diakses</span>`;
         }
@@ -4719,19 +4936,62 @@ const _handleBarcodeResult = (code) => {
             }
         }
     } else {
+        // Cek apakah produk atau varian ada tetapi berstatus nonaktif
+        const inactiveMatch = findInactiveProductByBarcode(code);
+
         if (reticle) {
             reticle.classList.add('border-rose-500', 'bg-rose-500/20');
             setTimeout(() => {
                 reticle.classList.remove('border-rose-500', 'bg-rose-500/20');
             }, 400);
         }
+
         if (pill) {
-            pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-xmark mr-1"></i>Barcode "${code}" tidak ditemukan</span>`;
+            if (inactiveMatch) {
+                const inactName = inactiveMatch.isVariantMatch && inactiveMatch.variant
+                    ? `${inactiveMatch.product.name} — ${inactiveMatch.variant.name}`
+                    : inactiveMatch.product.name;
+                pill.innerHTML = `
+                    <div class="flex flex-col items-center gap-1 py-0.5 max-w-full">
+                        <span class="text-amber-300 font-bold text-[11px] leading-tight truncate">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i>"${esc(inactName)}" NON-AKTIF
+                        </span>
+                        <span class="text-slate-400 text-[9px]">Produk dinonaktifkan di master admin</span>
+                    </div>`;
+            } else {
+                pill.innerHTML = `
+                    <div class="flex flex-col items-center gap-1 py-0.5 max-w-full">
+                        <span class="text-rose-400 font-bold text-[11px] leading-tight truncate">
+                            <i class="fa-solid fa-xmark mr-1"></i>Barcode "${esc(code)}" tidak ditemukan
+                        </span>
+                        <button onclick="window.posSearchScannedCode('${esc(code).replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black shadow-xs active:scale-95 cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-magnifying-glass text-[9px]"></i>Cari Teks di POS
+                        </button>
+                    </div>`;
+            }
         }
     }
 };
 
 export const closePOSCameraScanner = (skipHistory = false) => {
+    if (posHtml5QrCode) {
+        try {
+            if (posHtml5QrCode.getState() === 2 || posHtml5QrCode.getState() === 3) {
+                posHtml5QrCode.stop().then(() => {
+                    try { posHtml5QrCode.clear(); } catch(e) {}
+                    posHtml5QrCode = null;
+                }).catch(() => {
+                    try { posHtml5QrCode.clear(); } catch(e) {}
+                    posHtml5QrCode = null;
+                });
+            } else {
+                try { posHtml5QrCode.clear(); } catch(e) {}
+                posHtml5QrCode = null;
+            }
+        } catch(e) {
+            posHtml5QrCode = null;
+        }
+    }
     if (posScannerInterval) {
         clearInterval(posScannerInterval);
         posScannerInterval = null;
@@ -4756,34 +5016,67 @@ export const closePOSCameraScanner = (skipHistory = false) => {
 };
 
 export const togglePOSScannerTorch = async () => {
-    if (!posScannerTrack) return;
-    try {
-        const cap = posScannerTrack.getCapabilities ? posScannerTrack.getCapabilities() : {};
-        if (!cap.torch) {
-            showToast('Lampu senter (torch) tidak didukung kamera ini.');
-            return;
-        }
-        posScannerTorchOn = !posScannerTorchOn;
-        await posScannerTrack.applyConstraints({
-            advanced: [{ torch: posScannerTorchOn }]
-        });
-        const btn = el('pos-scanner-torch-btn');
-        if (btn) {
-            if (posScannerTorchOn) {
-                btn.classList.add('bg-amber-500', 'text-white');
-                btn.classList.remove('bg-slate-800', 'text-slate-300');
-            } else {
-                btn.classList.remove('bg-amber-500', 'text-white');
-                btn.classList.add('bg-slate-800', 'text-slate-300');
+    posScannerTorchOn = !posScannerTorchOn;
+    const btn = el('pos-scanner-torch-btn');
+
+    if (posHtml5QrCode) {
+        try {
+            await posHtml5QrCode.applyVideoConstraints({
+                advanced: [{ torch: posScannerTorchOn }]
+            });
+            if (btn) {
+                if (posScannerTorchOn) {
+                    btn.classList.add('bg-amber-500', 'text-white');
+                    btn.classList.remove('bg-slate-800', 'text-slate-300');
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-white');
+                    btn.classList.add('bg-slate-800', 'text-slate-300');
+                }
             }
+            return;
+        } catch (e) {
+            console.warn('Torch via Html5Qrcode gagal:', e);
         }
-    } catch (e) {
-        console.warn('Gagal toggle torch:', e);
+    }
+
+    if (posScannerTrack) {
+        try {
+            const cap = posScannerTrack.getCapabilities ? posScannerTrack.getCapabilities() : {};
+            if (!cap.torch) {
+                showToast('Lampu senter (torch) tidak didukung kamera ini.');
+                return;
+            }
+            await posScannerTrack.applyConstraints({
+                advanced: [{ torch: posScannerTorchOn }]
+            });
+            if (btn) {
+                if (posScannerTorchOn) {
+                    btn.classList.add('bg-amber-500', 'text-white');
+                    btn.classList.remove('bg-slate-800', 'text-slate-300');
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-white');
+                    btn.classList.add('bg-slate-800', 'text-slate-300');
+                }
+            }
+        } catch (e) {
+            console.warn('Gagal toggle torch:', e);
+        }
     }
 };
 
 export const togglePOSScannerFacing = async () => {
     posScannerFacing = posScannerFacing === 'environment' ? 'user' : 'environment';
+    if (posHtml5QrCode) {
+        try {
+            if (posHtml5QrCode.getState() === 2 || posHtml5QrCode.getState() === 3) {
+                await posHtml5QrCode.stop();
+            }
+            posHtml5QrCode.clear();
+            posHtml5QrCode = null;
+        } catch (e) {
+            posHtml5QrCode = null;
+        }
+    }
     if (posScannerStream) {
         posScannerStream.getTracks().forEach(t => t.stop());
         posScannerStream = null;
@@ -4879,6 +5172,8 @@ window.executeShiftPrintDirect = executeShiftPrintDirect;
 window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; renderCatalog(); };
 window.getPOSCart              = () => posCart;
 window.cleanBarcodeRaw         = cleanBarcodeRaw;
+window.getBarcodeVariations    = getBarcodeVariations;
+window.findInactiveProductByBarcode = findInactiveProductByBarcode;
 window.handlePOSSearchKeydown  = handlePOSSearchKeydown;
 window.posSearchFn             = posSearchFn;
 window.posClearSearch          = posClearSearch;
