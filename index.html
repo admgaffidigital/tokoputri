@@ -464,7 +464,20 @@
               </div>
             </button>
 
-            <!-- 9. Akses Seller -->
+            <!-- 9. Kalkulator Estimator Bahan Bangunan -->
+            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(() => openMaterialEstimatorModal('storefront'))">
+              <div class="flex items-start justify-between w-full mb-2">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                  <i class="fa-solid fa-calculator"></i>
+                </div>
+              </div>
+              <div>
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Kalkulator Material</h4>
+                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Estimasi cat, keramik &amp; bata</p>
+              </div>
+            </button>
+
+            <!-- 10. Akses Seller -->
             <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(checkAdminAccess)">
               <div class="flex items-start justify-between w-full mb-2">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
@@ -1030,6 +1043,62 @@
               <i class="fa-solid fa-bag-shopping"></i> Ke Etalase
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Material Estimator Modal (Kalkulator Kebutuhan Cat, Keramik, Semen & Bata) -->
+    <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-material-estimator" onclick="if (event.target === this) closeMaterialEstimatorModal();">
+      <div class="relative flex max-h-[92dvh] w-full max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-material-estimator-content">
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
+        <!-- Header -->
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
+                Kalkulator Estimasi Bahan Bangunan
+                <span class="text-[9px] font-black px-2 py-0.5 rounded-full primary-bg text-white shadow-2xs uppercase">PRO TOOLS</span>
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Hitung kebutuhan cat, keramik lantai, dan semen dinding proyek secara instan
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95 cursor-pointer" onclick="closeMaterialEstimatorModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Material Category Tabs -->
+        <div class="px-4 sm:px-5 pt-3 pb-2.5 shrink-0 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-100 dark:border-slate-800/80">
+          <div class="flex items-center gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-800/90 rounded-2xl">
+            <button id="estimator-tab-btn-paint" onclick="switchEstimatorTab('paint')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-black text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white">
+              <i class="fa-solid fa-paintbrush text-xs"></i> <span>Cat &amp; Plafon</span>
+            </button>
+            <button id="estimator-tab-btn-tile" onclick="switchEstimatorTab('tile')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <i class="fa-solid fa-table-cells text-xs"></i> <span>Keramik &amp; Granit</span>
+            </button>
+            <button id="estimator-tab-btn-brick" onclick="switchEstimatorTab('brick')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <i class="fa-solid fa-cubes-stacked text-xs"></i> <span>Dinding &amp; Semen</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Modal Body -->
+        <div class="custom-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-6 dark:bg-[#0b1121]" id="modal-material-estimator-body">
+          <!-- Diisi dinamis oleh renderMaterialEstimatorModalContent() -->
+        </div>
+
+        <!-- Footer Action Bar -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+          <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 hidden sm:flex">
+            <i class="fa-solid fa-shield-halved text-[var(--color-primary)] text-xs"></i>
+            <span>Standar Daya Sebar Standar Industri &bull; Akurat &amp; Bebas Rugi</span>
+          </div>
+          <button onclick="closeMaterialEstimatorModal()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-all cursor-pointer shadow-2xs">
+            Tutup
+          </button>
         </div>
       </div>
     </div>
@@ -1752,6 +1821,12 @@
               </div>
             </div>
             <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <!-- MATERIAL ESTIMATOR QUICK ACCESS -->
+              <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('storefront')"
+                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95 cursor-pointer shadow-xs"
+                title="Kalkulator Estimasi Bahan Bangunan (Cat, Keramik, Semen, Bata)">
+                <i class="fa-solid fa-calculator text-xs sm:text-sm"></i>
+              </button>
               <!-- POS KASIR TOGGLE -->
               <button id="pos-cashier-header-btn"
                 onclick="window.openPOSCashierMode && window.openPOSCashierMode()"

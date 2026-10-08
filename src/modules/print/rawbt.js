@@ -22,7 +22,7 @@ export const fRpNum = (n) => Math.round(Number(n || 0)).toLocaleString('id-ID');
 export const formatQty = (q) => {
     const num = parseFloat(q);
     if (isNaN(num)) return '0';
-    return Number.isInteger(num) ? String(num) : num.toFixed(2).replace(/\.?0+$/, '');
+    return Number.isInteger(num) ? String(num) : num.toFixed(3).replace(/\.?0+$/, '');
 };
 
 /**

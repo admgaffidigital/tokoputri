@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-11-00",
+        "version": "v1.11.0",
+        "date": "2026-10-08",
+        "title": "Kalkulator Estimator Material Bangunan & Presisi Kuantitas Desimal POS Kasir",
+        "category": "feature",
+        "badge": "Material Estimator Tool & POS Decimal Precision v1.11.0",
+        "items": [
+            "Kalkulator Estimator Bahan Bangunan Interaktif (material-estimator.js): Modul kalkulator material bangunan interaktif dengan formula presisi untuk 3 kategori pekerjaan konstruksi: (1) Cat Dinding & Plafon (luas m², daya sebar cat, alkali sealer, rekomendasi pail/galon); (2) Keramik & Granit Lantai/Dinding (ukuran ubin 30x30 s.d. 60x120, luas m², cadangan potongan 5-15%, dus keramik, sak semen perekat, kg nat); (3) Pasangan Dinding Bata Ringan/Hebel & Bata Merah (luas dinding dikurangi bukaan pintu/jendela, pcs hebel/bata, m³ hebel, sak semen mortar perekat thinbed/adukan semen pasir).",
+            "Akses Multi-Channel Cepat & Pintar: Estimator dapat diakses instan melalui tombol header etalase Storefront, menu ubin Quick Menu di beranda toko, header POS Kasir, dan pintasan hotkey keyboard [F3] saat kasir sedang melayani pembeli.",
+            "Otomasi Integrasi Keranjang & Transaksi Kasir POS: Tombol aksi cerdas pada setiap hasil kalkulasi estimator memungkinkan kasir/pelanggan langsung memasukkan seluruh kebutuhan material ke antrean keranjang kasir POS atau keranjang belanja etalase, menyalin rincian teks rapi ke clipboard, atau langsung berkonsultasi via WhatsApp Resmi Toko.",
+            "Dukungan Kuantitas Desimal & Barang Curah Kiloan (pos.js): Kasir POS kini mendukung penjualan barang curah/timbangan (seperti paku kiloan, kawat, tiner eceran, selang/kabel per meter) dengan kuantitas desimal. Dilengkapi stepper adaptif 0.25 (untuk qty < 1) dan 0.5 (untuk pecahan), tombol cepat pecahan instan (¼, ½, ¾, 1), serta pelebaran input kuantitas antrean kasir.",
+            "Presisi Rupiah Anti-Floating Point & Format Struk 3 Desimal: Mengeliminasi pembulatan pecahan JS Math.round pada subtotal item dan diskon kasir POS (misal 0.3 kg × Rp 24.000 terhitung tepat Rp 7.200). Struk thermal dan dokumen cetak kini mendukung format kuantitas hingga 3 desimal tanpa angka nol buntut (misal 0.25 kg, 1.5 m).",
+            "Multi-Channel Distribution v1.11.0 (Android versionCode 11100)."
+        ]
+    },
+    {
         "id": "log-1-10-99",
         "version": "v1.10.99",
         "date": "2026-10-08",
@@ -73,23 +89,6 @@ export const DEFAULT_CHANGELOG = [
             "Elevasi Desain Dokumen Eksekutif PSAK A4 (finance.js & documents.js): Dokumen Laporan Laba Rugi A4 kini dibungkus lembar kertas fisik putih bersih resmi (.a4-page 794x1123px) berbayangan 3D realistis, dilengkapi Kop Resmi Toko Putri (Logo, NPWP, Alamat, Kontak), Badge Executive Statement, No. Registrasi Dokumen resmi, 4 KPI Cards Eksekutif lengkap rasio margin %, tabel Ledger Akuntansi bergaris tajam dengan garis ganda pada saldo akhir, serta kolom tanda tangan pengesahan ganda (Staf Keuangan & Pemilik Toko).",
             "Formatter Angka Akuntansi PSAK Deterministik (utils.js): Memperkenalkan fAccounting() untuk menyajikan angka finansial standar akuntansi resmi di mana nilai pengurang/negatif dibungkus kurung kurawal (Rp 35.800) dan nol tampil bersih (Rp 0), serta menyempurnakan fCur() dengan separator titik ASCII murni (code 46) yang 100% kebal dari distorsi locale browser/WebView Android.",
             "Multi-Channel Distribution v1.10.96 (Android versionCode 11096)."
-        ]
-    },
-    {
-        "id": "log-1-10-95",
-        "version": "v1.10.95",
-        "date": "2026-10-08",
-        "title": "Universal Dual-Engine Scanner Kamera HP & Toleransi Presisi Barcode Label Anti Gagal Temukan",
-        "category": "feature",
-        "badge": "Universal Dual-Engine Camera Scanner & Barcode Matcher v1.10.95",
-        "items": [
-            "Universal Dual-Engine Barcode Scanner POS Kasir (pos.js): Mengintegrasikan engine Html5Qrcode (ZXing) lokal berkinerja tinggi sebagai pemindai utama yang kompatibel 100% di semua browser smartphone (Android Chrome, iOS Safari, WebView Capacitor, Firefox) dengan fallback otomatis ke native BarcodeDetector jika offline.",
-            "Area Bidik Horizontal Optimal Barcode 1D (qrbox aspect 2.2:1): Viewfinder kamera HP dikalibrasi khusus untuk barcode memanjang (Code 128 / EAN-13) dengan reticle aspect-[2.2/1] dan resolusi dinamis, menghilangkan kendala kamera HP yang sebelumnya tidak bisa memindai atau terpotong area kubus sempit.",
-            "Aset Lokal html5-qrcode.min.js Anti-Gagal Offline: Pustaka scanner kini tersimpan langsung di public/html5-qrcode.min.js sehingga kamera scanner dapat berjalan instan tanpa tergantung koneksi CDN internet.",
-            "Engine Pencocokan Barcode Bertoleransi Tinggi (getBarcodeVariations & matchCodeAny): Mendukung pembersihan otomatis awalan nol scanner (leading zeroes 0899... vs 899...), padding format UPC-A/EAN-13 (12 digit ke 13 digit), barcode bertipe data numerik di database, serta toleransi variasi spasi dan tanda hubung SKU.",
-            "Feedback Cerdas Kasir & Deteksi Produk Nonaktif: Jika barcode terbaca namun berstatus nonaktif di master admin, kasir mendapatkan notifikasi spesifik sehingga tidak bingung. Dilengkapi tombol kilat 'Cari Teks di POS' untuk mencari produk terdekat dalam 1 ketukan.",
-            "Pencarian Etalase Storefront Bebas Hambat Kategori: Filter penelusuran katalog etalase (catalog.js) otomatis mengizinkan produk yang discan lewat kamera tampil seketika meskipun pembeli sedang berada di tab kategori yang berbeda.",
-            "Multi-Channel Distribution v1.10.95 (Android versionCode 11095)."
         ]
     }
 ];

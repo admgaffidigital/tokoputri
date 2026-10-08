@@ -1,13 +1,14 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.10.99` | **Target Jangka Panjang:** `v2.0.0`
+> **Target Baseline Saat Ini:** `v1.11.0` | **Target Jangka Panjang:** `v2.0.0`
 
 ---
 
 ## 📌 Visi & Orientasi Pengembangan
-Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.10.99` dengan integrasi hulu-ke-hilir:
-- Kasir POS responsif berkecepatan tinggi dengan Dual-Engine Scanner Kamera & Barcode Vektor Code 128.
+Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.11.0` dengan integrasi hulu-ke-hilir:
+- Kasir POS responsif berkecepatan tinggi dengan Dual-Engine Scanner Kamera, Barcode Vektor Code 128, dan Presisi Kuantitas Desimal untuk barang curah/kiloan.
+- Alat Kalkulator Estimator Material Bangunan interaktif (Cat & Plafon, Keramik & Granit, Pasangan Dinding Hebel/Bata).
 - Penilaian persediaan akurat berstandar akuntansi PSAK dengan FIFO (*First-In, First-Out*) berbasis batch kulakan.
 - Inventori dua lokasi independen (*Floor-First Deduction*: Rak Toko vs Gudang Cadangan).
 - Buku Kas Laci Kasir (*Cash Movement*), Rekap Shift X/Z Report, dan Manajemen Piutang Tempo (AR Ledger).
@@ -17,31 +18,31 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
 
 ---
 
-## 🚀 FASE 1: Keluwesan Transaksi Eceran & Daya Tarik Konsumen
+## 🚀 FASE 1: Keluwesan Transaksi Eceran & Daya Tarik Konsumen (SELESAI - v1.11.0)
 > **Fokus Utama:** Fleksibilitas kasir melayani barang curah/kiloan dan modul interaktif pikat pembeli.  
-> **Target Rilis:** `v1.11.0` - `v1.11.5`
+> **Status:** Selesai & Terverifikasi di `v1.11.0`
 
 ### 1.1 Dukungan Kuantitas Desimal & Barang Curah Kiloan (*Decimal Precision POS*)
 * **Latar Belakang:** Penjualan bahan bangunan sarat dengan barang curah/kiloan (misal: paku 0.5 kg, kawat bendrat 1.25 kg, kabel 2.5 meter, thinner 0.75 liter).
 * **Fitur & Spesifikasi:**
-  - [ ] Input kuantitas keranjang POS mendukung nilai desimal (cth: `0.5`, `1.25`, `2.75`) tanpa pembulatan otomatis ke integer.
-  - [ ] Validasi stepper qty (+ / -) yang adaptif terhadap tipe satuan (pcs = step 1, kg/meter = step 0.25 / 0.5).
-  - [ ] Perhitungan subtotal, diskon member, dan pemotongan stok persediaan FIFO mendukung kalkulasi floating point aman (`roundToDecimals`).
-  - [ ] Cetak struk belanja thermal menampilkan kuantitas desimal rapi (cth: `0.50 kg @ Rp 24.000 = Rp 12.000`).
+  - [x] Input kuantitas keranjang POS mendukung nilai desimal (cth: `0.5`, `1.25`, `2.75`) tanpa pembulatan otomatis ke integer.
+  - [x] Validasi stepper qty (+ / -) yang adaptif terhadap tipe satuan (pcs = step 1, kg/meter = step 0.25 / 0.5).
+  - [x] Perhitungan subtotal, diskon member, dan pemotongan stok persediaan FIFO mendukung kalkulasi floating point aman (`roundToDecimals` & `Math.round`).
+  - [x] Cetak struk belanja thermal menampilkan kuantitas desimal rapi (cth: `0.5 kg @ Rp 24.000 = Rp 12.000`).
 
 ### 1.2 Kalkulator Estimator Bahan Bangunan Interaktif (*Interactive Material Estimator*)
 * **Latar Belakang:** Konsumen/mandor sering bertanya estimasi bahan yang dibutuhkan untuk proyek renovasi.
 * **Fitur & Spesifikasi:**
-  - [ ] **Kalkulator Cat Tembok & Plafon**:
+  - [x] **Kalkulator Cat Tembok & Plafon**:
     - Input: Panjang dinding $\times$ Tinggi dinding (m²), jumlah layer (1x lapis / 2x lapis standar / 3x lapis warna gelap).
     - Output: Rekomendasi kaleng kecil (2.5 kg/liter) atau pail besar (20 kg/liter) + estimasi cat dasar alkali sealer.
-  - [ ] **Kalkulator Keramik & Granit**:
+  - [x] **Kalkulator Keramik & Granit**:
     - Input: Luas lantai (P $\times$ L m²), ukuran keramik (40x40, 50x50, 60x60), margin potongan/sudut (10%).
-    - Output: Jumlah dus keramik yang dibutuhkan + estimasi sak semen instan tile adhesive.
-  - [ ] **Kalkulator Pasangan Dinding (Bata & Semen)**:
+    - Output: Jumlah dus keramik yang dibutuhkan + estimasi sak semen instan tile adhesive & pengisi nat.
+  - [x] **Kalkulator Pasangan Dinding (Bata & Semen)**:
     - Input: Luas dinding bata (m²).
     - Output: Estimasi bata merah / hebel ringan dan kebutuhan sak semen mortar.
-  - [ ] **Aksi 1-Klik**: Tombol *"Tambahkan Semua Bahan ke Keranjang"* langsung mengisi daftar belanja kasir / etalase online.
+  - [x] **Aksi 1-Klik**: Tombol *"Tambahkan Semua Bahan ke Keranjang"* langsung mengisi daftar belanja kasir / etalase online, salin rincian ke clipboard, & konsultasi WhatsApp Resmi.
 
 ---
 

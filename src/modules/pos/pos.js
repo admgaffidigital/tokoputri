@@ -289,10 +289,10 @@ const recalcItem = (item) => {
             item.discount = maxAllowedDisc;
         }
     } else {
-        item.discount = Math.min(fNum(item.discount), item.price * item.qty);
+        item.discount = Math.min(fNum(item.discount), Math.round(item.price * item.qty));
     }
 
-    item.subtotal = Math.max(0, item.price * item.qty - fNum(item.discount));
+    item.subtotal = Math.max(0, Math.round(item.price * item.qty - fNum(item.discount)));
     return item;
 };
 
@@ -554,11 +554,20 @@ const initBarcodeListener = () => {
         const inPos = curView === 'view-pos-cashier' || (curView === 'view-admin' && window.cTab === 'pos');
         if (!inPos) return;
 
-        // 1. Pintasan F1 / F2 / F3: Fokus ke Pencarian Produk / Barcode
-        if (e.key === 'F1' || e.key === 'F2' || e.key === 'F3') {
+        // 1. Pintasan F1 / F2: Fokus ke Pencarian Produk / Barcode
+        if (e.key === 'F1' || e.key === 'F2') {
             e.preventDefault();
             const sf = el('pos-search-input');
             if (sf) { sf.focus(); sf.select(); }
+            return;
+        }
+
+        // Pintasan F3: Buka Kalkulator Estimator Bahan Bangunan Proyek
+        if (e.key === 'F3') {
+            e.preventDefault();
+            if (typeof window.openMaterialEstimatorModal === 'function') {
+                window.openMaterialEstimatorModal('pos');
+            }
             return;
         }
 
@@ -903,12 +912,25 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
 export const updateQty = (cartKey, delta) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
-    const nextQty = parseFloat((item.qty + delta).toFixed(3));
+
+    // Stepper adaptif untuk barang curah/desimal (kg, meter, liter, dll)
+    let actualDelta = parseFloat(delta) || 0;
+    const unitStr = (item.unit || '').trim().toLowerCase();
+    const isDecimalUnit = /^(kg|kilo|kilogram|meter|m|ltr|liter|m2|m3|ons|gram|g)$/i.test(unitStr);
+    if (isDecimalUnit && Math.abs(actualDelta) === 1) {
+        if (item.qty < 1) {
+            actualDelta = actualDelta > 0 ? 0.25 : -0.25;
+        } else if (item.qty % 1 !== 0) {
+            actualDelta = actualDelta > 0 ? 0.5 : -0.5;
+        }
+    }
+
+    const nextQty = parseFloat((item.qty + actualDelta).toFixed(3));
     if (nextQty <= 0) {
         removeFromCart(cartKey);
         return;
     }
-    if (delta > 0) {
+    if (actualDelta > 0) {
         const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
         if (p) {
             const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
@@ -932,7 +954,7 @@ export const updateQty = (cartKey, delta) => {
     }
     item.qty = nextQty;
     recalcItem(item);
-    if (delta > 0) playCashierBeep();
+    if (actualDelta > 0) playCashierBeep();
     renderCart();
 };
 
@@ -1014,6 +1036,37 @@ export const clearCart = () => {
     } else {
         executeClear();
     }
+};
+
+/**
+ * Tambah Item Hasil Estimasi Material Proyek ke Keranjang Kasir
+ */
+export const addEstimatorToPOSCart = (name, qty, unit, estPrice = 0) => {
+    const numQty = fQty(qty) || 1;
+    const price = parseFloat(estPrice) || 0;
+    const cartKey = `EST-${Date.now().toString(36).toUpperCase()}`;
+
+    posCart.push(recalcItem({
+        id: cartKey,
+        cartKey,
+        name: `[Estimasi] ${name}`,
+        price,
+        basePrice: price,
+        hpp: 0,
+        qty: numQty,
+        unit: unit || 'pcs',
+        poTime: '',
+        discount: 0,
+        subtotal: Math.round(price * numQty),
+        isVariant: false,
+        isWholesale: false,
+        isEstimatorItem: true
+    }));
+
+    playCashierBeep();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    renderCart();
+    showToast(`"${name}" (${formatQty(numQty)} ${unit || 'pcs'}) dimasukkan ke transaksi kasir!`, 'success');
 };
 
 // ─── Sound Chime Sintetis Kasir (Web Audio API) ─────────────
@@ -1943,14 +1996,22 @@ const renderCart = () => {
                     <div class="flex items-center gap-1">
                         <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
                             <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
-                            <input type="number" step="any" min="0.01" value="${formatQty(item.qty)}" onchange="window.posSetQty('${ckey}',this.value)"
-                                class="w-11 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-0.5">
+                            <input type="number" step="any" min="0.001" value="${formatQty(item.qty)}" onchange="window.posSetQty('${ckey}',this.value)"
+                                class="w-14 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-0.5" title="Kuantitas (${esc(item.unit || 'pcs')})">
                             <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
                         </div>
                         <button onclick="window.posRemoveItem('${ckey}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer" title="Hapus item">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
+                    ${/^(kg|kilo|kilogram|meter|m|ltr|liter|m2|m3|ons|gram|g)$/i.test((item.unit || '').trim()) ? `
+                    <div class="flex items-center gap-0.5 mt-1 justify-end">
+                        <button type="button" onclick="window.posSetQty('${ckey}', 0.25)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.25 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.25 (1/4)">¼</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 0.5)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.5 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.5 (1/2)">½</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 0.75)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.75 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.75 (3/4)">¾</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 1)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 1 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 1">1</button>
+                    </div>
+                    ` : ''}
                     <div class="flex items-baseline gap-1 mt-1.5">
                         ${hasItemDisc ? `<span class="line-through text-[10px] text-slate-400">${fRp(item.price * item.qty)}</span>` : ''}
                         <p class="text-xs font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
@@ -4038,6 +4099,9 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-storefront" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-storefront" class="flex items-center shrink-0"></div>
+                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen) [F3]">
+                    <i class="fa-solid fa-calculator"></i>
+                </button>
                 <button onclick="window.openShoppingGuideModal && window.openShoppingGuideModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Buku Panduan Kasir POS">
                     <i class="fa-solid fa-circle-question"></i>
                 </button>
@@ -4072,6 +4136,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
+                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen) [F3]">
+                    <i class="fa-solid fa-calculator text-xs text-amber-500"></i>
+                    <span class="hidden sm:inline">Estimator</span>
+                </button>
                 <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Pengaturan Printer Kasir & Thermal">
                     <i class="fa-solid fa-print text-xs text-sky-500"></i>
                     <span class="hidden sm:inline">Printer</span>
@@ -4470,6 +4538,7 @@ const exposeToWindow = () => {
     window.setPOSViewMode          = setPOSViewMode;
     window.posAddToCart            = addToCart;
     window.posAddToCartQty         = posAddToCartQty;
+    window.addEstimatorToPOSCart   = addEstimatorToPOSCart;
     window.addToCartPOSWithVariant = addToCartWithVariant;
     window.posUpdateQty            = updateQty;
     window.posSetQty               = setQty;
