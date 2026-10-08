@@ -152,7 +152,7 @@ export const ensureProductFifoModal = () => {
         m.onclick = (e) => { if (e.target === m) window.closeProductFifoModal?.(); };
         m.innerHTML = `
             <div id="modal-product-fifo-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-product-fifo-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
+                <div id="modal-product-fifo-content" class="flex-1 flex flex-col overflow-hidden min-h-0"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -273,8 +273,11 @@ export const renderProductFifoContent = () => {
         : (activeLedgerFilter === 'out' ? mutationsOut : allMutations);
 
     box.innerHTML = `
-        <!-- HEADER MODAL -->
-        <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-5 py-4 backdrop-blur-md">
+        <!-- DRAG PULL INDICATOR (MOBILE BOTTOM SHEET) -->
+        <div class="pull-indicator sm:hidden shrink-0"></div>
+
+        <!-- 1. HEADER MODAL (SOLID PINNED / NON-SCROLLING) -->
+        <div class="shrink-0 px-5 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                     <i class="fa-solid fa-boxes-packing"></i>
@@ -288,23 +291,25 @@ export const renderProductFifoContent = () => {
                     </p>
                 </div>
             </div>
-            <button onclick="window.closeProductFifoModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-90 shrink-0">
+            <button onclick="window.closeProductFifoModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-90 shrink-0" aria-label="Tutup">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
 
-        <!-- TABS NAVIGASI MODAL FIFO -->
-        <div class="px-5 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/40 flex items-center gap-2 shrink-0">
-            <button type="button" onclick="window.switchFifoTab('overview')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${activeFifoTab === 'overview' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-2xs border border-slate-200 dark:border-slate-600' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}" style="${activeFifoTab === 'overview' ? 'color: var(--color-primary); font-weight: 800;' : ''}">
+        <!-- 2. TABS NAVIGASI MODAL FIFO (SOLID PINNED / NON-SCROLLING) -->
+        <div class="shrink-0 px-5 sm:px-6 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-800/40 flex items-center gap-2 z-10 overflow-x-auto hide-scrollbar">
+            <button type="button" onclick="window.switchFifoTab('overview')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0 ${activeFifoTab === 'overview' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs border border-slate-200 dark:border-slate-600 font-extrabold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}" style="${activeFifoTab === 'overview' ? 'color: var(--color-primary);' : ''}">
                 <i class="fa-solid fa-layer-group text-amber-500"></i>
                 <span>Ikhtisar &amp; Antrean Batch FIFO</span>
             </button>
-            <button type="button" onclick="window.switchFifoTab('ledger')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${activeFifoTab === 'ledger' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-2xs border border-slate-200 dark:border-slate-600' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}" style="${activeFifoTab === 'ledger' ? 'color: var(--color-primary); font-weight: 800;' : ''}">
+            <button type="button" onclick="window.switchFifoTab('ledger')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0 ${activeFifoTab === 'ledger' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs border border-slate-200 dark:border-slate-600 font-extrabold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}" style="${activeFifoTab === 'ledger' ? 'color: var(--color-primary);' : ''}">
                 <i class="fa-solid fa-book-journal-whills text-teal-500"></i>
                 <span>Kartu Mutasi Stok (${allMutations.length})</span>
             </button>
         </div>
 
+        <!-- 3. KONTEN UTAMA (BODY INDEPENDENT OVERFLOW-Y SCROLLABLE) -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 bg-white dark:bg-slate-900">
         ${activeFifoTab === 'overview' ? `
         <div class="p-5 sm:p-6 space-y-6">
             <!-- 1. BENTO STATS CARDS (DUAL-LOCATION & FIFO VALUATION) -->
@@ -555,31 +560,31 @@ export const renderProductFifoContent = () => {
         ` : `
         <!-- TAB KARTU MUTASI STOK (STOCK CARD LEDGER) -->
         <div class="p-5 sm:p-6 space-y-5">
-            <!-- 1. BENTO STATS MUTASI STOK -->
+            <!-- 1. BENTO STATS MUTASI STOK (KOMPAK 3-KOLOM DENGAN IKON VALID) -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div class="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/70 shadow-2xs">
-                    <span class="text-[9.5px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-down-left"></i> Total Barang Masuk (PO Kulakan)
+                <div class="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/90 dark:border-emerald-800/70 shadow-2xs">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-down-to-bracket text-emerald-600 dark:text-emerald-400"></i> Total Barang Masuk (PO)
                     </span>
-                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-1 font-mono">
+                    <p class="text-lg sm:text-xl font-black mt-1 font-mono" style="color: #059669;">
                         +${totalIn} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
                     </p>
-                    <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">${mutationsIn.length} Dokumen Kulakan Masuk</p>
+                    <p class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">${mutationsIn.length} Dokumen Kulakan Masuk</p>
                 </div>
 
-                <div class="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-800/70 shadow-2xs">
-                    <span class="text-[9.5px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-up-right"></i> Total Barang Keluar (Penjualan)
+                <div class="p-4 rounded-2xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200/90 dark:border-rose-800/70 shadow-2xs">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider text-rose-700 dark:text-rose-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-from-bracket text-rose-600 dark:text-rose-400"></i> Total Barang Keluar (Penjualan)
                     </span>
-                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-1 font-mono">
+                    <p class="text-lg sm:text-xl font-black mt-1 font-mono" style="color: #e11d48;">
                         -${totalOut} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
                     </p>
-                    <p class="text-[10px] font-bold text-rose-600 dark:text-rose-400 mt-0.5">${mutationsOut.length} Transaksi Kasir &amp; Web</p>
+                    <p class="text-[10px] font-bold text-rose-700 dark:text-rose-400 mt-0.5">${mutationsOut.length} Transaksi Kasir &amp; Web</p>
                 </div>
 
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
-                    <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-boxes-stacked"></i> Saldo Stok Fisik Realtime
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/70 shadow-2xs">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked text-slate-500 dark:text-slate-400"></i> Saldo Stok Fisik Realtime
                     </span>
                     <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-1 font-mono">
                         ${netStock} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
@@ -588,23 +593,23 @@ export const renderProductFifoContent = () => {
                 </div>
             </div>
 
-            <!-- 2. FILTER SEGMENTED KARTU MUTASI -->
+            <!-- 2. FILTER SEGMENTED KARTU MUTASI (DENGAN IKON VALID) -->
             <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-xs font-bold">
                     <button type="button" onclick="window.setLedgerFilter('all')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'all' ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'}">
                         Semua Riwayat (${allMutations.length})
                     </button>
-                    <button type="button" onclick="window.setLedgerFilter('in')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'in' ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs' : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-transparent'}">
-                        <i class="fa-solid fa-arrow-down-left mr-1"></i>Barang Masuk (${mutationsIn.length})
+                    <button type="button" onclick="window.setLedgerFilter('in')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'in' ? 'text-white border-transparent shadow-2xs' : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-transparent'}" style="${activeLedgerFilter === 'in' ? 'background-color: #059669;' : ''}">
+                        <i class="fa-solid fa-arrow-down-to-bracket mr-1"></i>Barang Masuk (${mutationsIn.length})
                     </button>
-                    <button type="button" onclick="window.setLedgerFilter('out')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'out' ? 'bg-rose-600 text-white border-rose-600 shadow-2xs' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 border-transparent'}">
-                        <i class="fa-solid fa-arrow-up-right mr-1"></i>Barang Keluar (${mutationsOut.length})
+                    <button type="button" onclick="window.setLedgerFilter('out')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'out' ? 'text-white border-transparent shadow-2xs' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 border-transparent'}" style="${activeLedgerFilter === 'out' ? 'background-color: #e11d48;' : ''}">
+                        <i class="fa-solid fa-arrow-up-from-bracket mr-1"></i>Barang Keluar (${mutationsOut.length})
                     </button>
                 </div>
                 <span class="text-[11px] text-slate-400 font-medium">Buku Mutasi Stok Riil Berbasis Dokumen Transaksi</span>
             </div>
 
-            <!-- 3. TABEL / LIST MUTASI KARTU STOK -->
+            <!-- 3. TABEL / LIST MUTASI KARTU STOK (DENGAN IKON SOLID & WARNA TEGAS) -->
             <div class="space-y-2">
                 ${displayMutations.length === 0 ? `
                     <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700 text-center">
@@ -618,19 +623,19 @@ export const renderProductFifoContent = () => {
                     return `
                         <div class="p-3.5 sm:p-4 rounded-2xl border transition-all bg-white dark:bg-slate-800 border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div class="flex items-start gap-3 min-w-0">
-                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 ${isIn ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800'}">
-                                    <i class="fa-solid ${isIn ? 'fa-arrow-down-left' : 'fa-arrow-up-right'}"></i>
+                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shrink-0" style="${isIn ? 'background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;' : 'background-color: #fff1f2; color: #e11d48; border: 1px solid #fecdd3;'}">
+                                    <i class="fa-solid ${isIn ? 'fa-arrow-down-to-bracket' : 'fa-arrow-up-from-bracket'}"></i>
                                 </div>
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2 flex-wrap">
-                                        <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${isIn ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}">
+                                        <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider shadow-2xs" style="${isIn ? 'background-color: #059669; color: #ffffff;' : 'background-color: #e11d48; color: #ffffff;'}">
                                             ${isIn ? 'Masuk' : 'Keluar'}
                                         </span>
                                         <span class="font-black text-xs sm:text-sm text-slate-800 dark:text-white font-mono">${esc(m.refNo)}</span>
                                         <span class="text-[10px] text-slate-400 font-medium">• ${dateStr}</span>
                                     </div>
                                     <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 font-medium truncate">
-                                        ${esc(m.title)} • <span class="text-slate-500">${esc(m.party)}</span>
+                                        ${esc(m.title)} • <span class="text-slate-500 font-bold">${esc(m.party)}</span>
                                     </p>
                                     <p class="text-[10px] text-slate-400 mt-0.5">
                                         Lokasi: <b class="text-slate-700 dark:text-slate-300">${esc(m.location)}</b> ${m.notes ? `• ${esc(m.notes)}` : ''}
@@ -638,7 +643,7 @@ export const renderProductFifoContent = () => {
                                 </div>
                             </div>
                             <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 w-full sm:w-auto border-slate-100 dark:border-slate-700 flex sm:flex-col justify-between sm:justify-center items-center sm:items-end">
-                                <span class="text-base sm:text-lg font-black font-mono ${isIn ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                                <span class="text-base sm:text-lg font-black font-mono" style="${isIn ? 'color: #059669;' : 'color: #e11d48;'}">
                                     ${isIn ? `+${m.qty}` : `-${m.qty}`} <span class="text-xs font-bold text-slate-400">${esc(m.unit)}</span>
                                 </span>
                                 ${m.price > 0 ? `<span class="text-[10px] text-slate-400 block font-mono">@ ${fCur(m.price)}</span>` : ''}
@@ -649,9 +654,16 @@ export const renderProductFifoContent = () => {
             </div>
         </div>
         `}
+        </div>
 
-        <!-- FOOTER MODAL -->
-        <div class="sticky bottom-0 z-20 flex items-center justify-end border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-5 py-3.5 backdrop-blur-md">
+        <!-- 4. FOOTER MODAL (SOLID PINNED / NON-SCROLLING) -->
+        <div class="shrink-0 px-5 sm:px-6 py-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <i class="fa-solid fa-box text-[10px] text-slate-400"></i>
+                    <span>Sisa Stok Fisik: <b class="text-slate-900 dark:text-white font-mono">${netStock}</b> ${esc(prod.unit || 'pcs')}</span>
+                </span>
+            </div>
             <button onclick="window.closeProductFifoModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-black text-xs transition-all cursor-pointer active:scale-95">
                 Tutup
             </button>
