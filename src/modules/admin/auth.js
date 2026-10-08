@@ -66,6 +66,7 @@ export const applyStaffMenuPermissions = () => {
         'tax': 'reports',
         'expenses': 'expenses',
         'stock_opname': 'stock_opname',
+        'returns': 'returns',
         'piutang': 'piutang',
         'changelog': 'changelog',
         'pos': 'pos',

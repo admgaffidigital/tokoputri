@@ -64,6 +64,8 @@ export const loadAppData = async () => {
         appData.suppliers = Array.isArray(appData.suppliers) ? appData.suppliers : [];
         appData.purchases = Array.isArray(appData.purchases) ? appData.purchases : [];
         appData.expenses = Array.isArray(appData.expenses) ? appData.expenses : [];
+        appData.salesReturns = Array.isArray(appData.salesReturns) ? appData.salesReturns : [];
+        appData.vendorReturns = Array.isArray(appData.vendorReturns) ? appData.vendorReturns : [];
         if(appData.rewards) appData.rewards.forEach(r => { if(r.img) r.img = fixD(r.img); });
         appData.products.forEach(p => { 
             if(p.img) p.img = fixD(p.img); 
@@ -366,7 +368,7 @@ export const loadAppData = async () => {
 // =====================================================================
 // Field-field ini bersifat sensitif dan HARUS disimpan ke cms_private, bukan cms_data.
 // Diakses oleh saveApp dan attachPrivateDataListener.
-const PRIVATE_APP_KEYS = new Set(['suppliers', 'purchases', 'expenses', 'taxSettings', 'stockOpnameHistory']);
+const PRIVATE_APP_KEYS = new Set(['suppliers', 'purchases', 'expenses', 'taxSettings', 'stockOpnameHistory', 'salesReturns', 'vendorReturns']);
 
 export const saveApp = async (changedKeys = null, updateMeta = null) => {
     try {
@@ -842,6 +844,8 @@ export const attachPrivateDataListener = () => {
             if (Array.isArray(d.purchases))           appData.purchases           = d.purchases;
             if (Array.isArray(d.expenses))            appData.expenses            = d.expenses;
             if (Array.isArray(d.stockOpnameHistory))  appData.stockOpnameHistory  = d.stockOpnameHistory;
+            if (Array.isArray(d.salesReturns))        appData.salesReturns        = d.salesReturns;
+            if (Array.isArray(d.vendorReturns))       appData.vendorReturns       = d.vendorReturns;
             if (d.taxSettings && typeof d.taxSettings === 'object') {
                 appData.taxSettings = { ...defApp.taxSettings, ...d.taxSettings };
             }
@@ -865,6 +869,8 @@ export const attachPrivateDataListener = () => {
                     window.renderExpensesAdminView();
                 } else if ((curTab === 'stock_opname' || curTab === 'stockOpname') && typeof window.renderStockOpnameView === 'function') {
                     window.renderStockOpnameView();
+                } else if (curTab === 'returns' && typeof window.renderReturnsView === 'function') {
+                    window.renderReturnsView();
                 } else if (typeof window.rAdmItms === 'function') {
                     window.rAdmItms(curTab);
                 }
@@ -887,6 +893,8 @@ export const detachPrivateDataListener = () => {
     appData.purchases          = [];
     appData.expenses           = [];
     appData.stockOpnameHistory = [];
+    appData.salesReturns       = [];
+    appData.vendorReturns      = [];
     appData.taxSettings        = { ...defApp.taxSettings };
 };
 

@@ -531,3 +531,111 @@ export const computeFifoValuation = (product) => {
         batches: activeBatches
     };
 };
+
+/**
+ * Merestorasi stok fisik produk dari transaksi Retur Penjualan (RMA Konsumen).
+ * Jika kondisi baik, stok dikembalikan ke Rak Toko (store) dan dibuatkan lot batch baru.
+ * Jika kondisi rusak/cacat, barang dimasukkan ke Karantina Rusak (damagedStock) tanpa menambah stok jual.
+ * 
+ * @param {Object} product Objek produk
+ * @param {Object} returnData { returnNumber, orderId, qty, buyPrice, variantName, condition, restockLocation }
+ * @returns {Object} Hasil restorasi { restoredLocation, qty, batch }
+ */
+export const restoreFifoStock = (product, returnData = {}) => {
+    if (!product) return null;
+    normalizeProductInventory(product);
+
+    const qty = parseFloat(returnData.qty) || 0;
+    if (qty <= 0) return null;
+
+    const condition = returnData.condition || 'good';
+    const variantName = returnData.variantName || '';
+    const unitPrice = parseFloat(returnData.buyPrice) || parseFloat(product.hpp) || 0;
+
+    let targetObj = product;
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) targetObj = v;
+    }
+
+    if (condition === 'damaged') {
+        // Masuk karantina barang rusak (tidak menambah stok jual)
+        targetObj.damagedStock = parseFloat(((parseFloat(targetObj.damagedStock) || 0) + qty).toFixed(3));
+        if (targetObj !== product) {
+            product.damagedStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.damagedStock) || 0), 0);
+        }
+        return { restoredLocation: 'quarantine', qty };
+    }
+
+    // Kondisi baik: masuk ke rak toko (store)
+    const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const batchId = `BATCH-RETUR-${Date.now().toString(36).toUpperCase()}-${randomSuffix}`;
+    const newBatch = {
+        batchId,
+        poId: null,
+        poNumber: returnData.returnNumber || `RETUR-${returnData.orderId || 'SALES'}`,
+        supplierId: product.supplierId || '',
+        supplierName: 'Retur Pelanggan',
+        receivedAt: new Date().toISOString(),
+        buyPrice: unitPrice,
+        initialQty: qty,
+        remainingQty: qty,
+        variantName,
+        location: 'store'
+    };
+
+    if (!Array.isArray(product.stockBatches)) product.stockBatches = [];
+    product.stockBatches.push(newBatch);
+    product.stockBatches.sort((a, b) => new Date(a.receivedAt || 0) - new Date(b.receivedAt || 0));
+
+    targetObj.storeStock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + qty).toFixed(3));
+    targetObj.stock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + (parseFloat(targetObj.warehouseStock) || 0)).toFixed(3));
+
+    if (variantName && Array.isArray(product.variants)) {
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    } else {
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    }
+
+    return { restoredLocation: 'store', batch: newBatch, qty };
+};
+
+/**
+ * Memotong kuantitas stok fisik saat melakukan pengembalian barang retur ke supplier (Vendor Return).
+ * 
+ * @param {Object} product Objek produk
+ * @param {Object} returnData { qty, variantName, fromLocation }
+ * @returns {Object} Hasil pemotongan { fromLocation, qty }
+ */
+export const deductVendorReturnStock = (product, returnData = {}) => {
+    if (!product) return null;
+    normalizeProductInventory(product);
+
+    const qty = parseFloat(returnData.qty) || 0;
+    if (qty <= 0) return null;
+
+    const fromLocation = returnData.fromLocation === 'warehouse' ? 'warehouse' : 'store';
+    const variantName = returnData.variantName || '';
+
+    let targetObj = product;
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) targetObj = v;
+    }
+
+    const locKey = fromLocation === 'warehouse' ? 'warehouseStock' : 'storeStock';
+    targetObj[locKey] = Math.max(0, parseFloat(((parseFloat(targetObj[locKey]) || 0) - qty).toFixed(3)));
+    targetObj.stock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + (parseFloat(targetObj.warehouseStock) || 0)).toFixed(3));
+
+    if (variantName && Array.isArray(product.variants)) {
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    } else {
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    }
+
+    return { fromLocation, qty };
+};

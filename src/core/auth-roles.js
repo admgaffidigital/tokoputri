@@ -28,6 +28,7 @@ export const PERMISSION_DEFINITIONS = [
     { key: 'pos', label: 'Kasir POS', desc: 'Akses antarmuka penjualan kasir toko fisik dan shift kasir', group: 'operasional', icon: 'fa-cash-register' },
     { key: 'expenses', label: 'Biaya Operasional Toko', desc: 'Buku kas pengeluaran operasional toko harian & nota kas', group: 'operasional', icon: 'fa-money-bill-transfer' },
     { key: 'stock_opname', label: 'Stock Opname (Audit Fisik)', desc: 'Audit stok fisik rak/gudang, rekonsiliasi selisih & terapkan penyesuaian stok', group: 'operasional', icon: 'fa-clipboard-check' },
+    { key: 'returns', label: 'Retur Barang & RMA', desc: 'Kelola retur penjualan pelanggan, klaim cacat supplier & stok karantina', group: 'operasional', icon: 'fa-right-left' },
 
     // 2. Modul Konten & Etalase
     { key: 'categories', label: 'Kategori Produk', desc: 'Tambah dan susun kategori etalase produk', group: 'konten', icon: 'fa-tags' },
@@ -52,9 +53,9 @@ export const PERMISSION_DEFINITIONS = [
 
 // ─── Preset Hak Akses Siap Pakai ─────────────────────────────
 export const ROLE_PRESETS = {
-    // 🛒 KASIR: Hanya POS kasir
+    // 🛒 KASIR: Hanya POS kasir & retur di meja kasir
     [ROLES.CASHIER]: {
-        pos: true,
+        pos: true, returns: true,
         orders: false, products: false, suppliers: false, purchases: false,
         piutang: false, customers: false, categories: false, brands: false,
         colors: false, vouchers: false, banners: false, rewards: false,
@@ -65,7 +66,7 @@ export const ROLE_PRESETS = {
     },
     // 🛡️ ADMIN OPERASIONAL: Operasional & konten aktif, finansial & pengaturan toko dibatasi
     [ROLES.ADMIN]: {
-        pos: true,
+        pos: true, returns: true,
         orders: true, products: true, suppliers: true, purchases: true,
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,

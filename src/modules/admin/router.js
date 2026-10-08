@@ -110,6 +110,7 @@ export const openAdminTab = (t, fH = false) => {
         'tax': 'Pusat Laporan & Keuangan',
         'expenses': 'Biaya Operasional Toko',
         'stock_opname': 'Stock Opname (Audit Fisik)',
+        'returns': 'Retur Barang (RMA)',
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
@@ -157,6 +158,11 @@ export const openAdminTab = (t, fH = false) => {
         // Lazy load modul Stock Opname & Audit Inventori Fisik
         import('./stock-opname.js').then(m => m.renderStockOpnameView()).catch(err => {
             renderModuleLoadError('Stock Opname (Audit Fisik)', t, err);
+        });
+    } else if (t === 'returns') {
+        // Lazy load modul Retur Barang (RMA) Penjualan & Supplier
+        import('./returns.js').then(m => m.renderReturnsView()).catch(err => {
+            renderModuleLoadError('Retur Barang & RMA', t, err);
         });
     } else if (t === 'customers') {
         setH('admin-content', `<div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>`);

@@ -6,8 +6,8 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.99 s.d. v1.10.95). Setiap rilis baru ditambahkan di posisi
- * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
+ * terkini (${top5[0]?.version} s.d. ${top5[top5.length - 1]?.version}). Setiap rilis baru ditambahkan di posisi
+ * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~8KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
  */
@@ -15,6 +15,22 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-12-00",
+        "version": "v1.12.0",
+        "date": "2026-10-08",
+        "title": "Manajemen Retur & Rekonsiliasi Inventori (RMA Engine Customer & Supplier)",
+        "category": "feature",
+        "badge": "RMA Engine & Inventory Returns Reconciliation v1.12.0",
+        "items": [
+            "Modul Retur Penjualan Konsumen (Customer Sales Return): Modul terpadu untuk menangani pengembalian barang berbasis nomor struk kasir / Order ID. Dilengkapi checklist barang, validasi kuantitas maksimum retur (tidak melebihi sisa kuota beli), dan 3 opsi penyelesaian kompensasi: Pengembalian Tunai (Cash Refund), Saldo Kredit Toko (Store Credit), atau Tukar Barang (Exchange).",
+            "Restorasi Stok Fisik & FIFO Lot Adaptif (fifo-inventory.js): Barang berkondisi baik dikembalikan ke Rak Toko (storeStock) dan dibuatkan tiket batch FIFO baru dengan prefix 'BATCH-RETUR-', sedangkan barang rusak/cacat dialokasikan ke Karantina Rusak (damagedStock) tanpa menambah stok jual agar kasir POS tidak menjual kembali barang rusak.",
+            "Rekonsiliasi Finansial Kas Laci Otomatis: Pengembalian tunai (cash refund) secara otomatis mencatat pengeluaran di Buku Kas Operasional Toko (appData.expenses) kategori 'Retur Penjualan' bersumber kas laci (pos_cashier) agar rekonsiliasi kas dan X/Z report kasir tetap berimbang.",
+            "Modul Retur Pembelian ke Supplier (Vendor Purchase Return): Pengembalian barang cacat pabrik langsung ke rekanan supplier dan rujukan PO Kulakan. Dilengkapi pemilihan alokasi stok asal (Rak Toko atau Gudang Cadangan), pemotongan inventori otomatis, dan opsi penyesuaian finansial (Potong Hutang PO / AP Deduction atau Pengembalian Dana Kas).",
+            "Cetak Struk Thermal & Dokumen Resmi A4 (documents.js): Dukungan cetak bukti retur instan via printer thermal kasir (58mm/80mm) dan dokumen standar A4 resmi untuk Nota Retur Penjualan serta Surat Pengembalian Barang ke Pemasok lengkap tanda tangan serah terima.",
+            "Multi-Channel Distribution v1.12.0 (Android versionCode 11200)."
+        ]
+    },
     {
         "id": "log-1-11-00",
         "version": "v1.11.0",
@@ -74,21 +90,6 @@ export const DEFAULT_CHANGELOG = [
             "Sinkronisasi Siklus Hidup Modal History API: Memperbaiki registrasi window.pushModalHistory('productBarcodeLabel') dan window.requestCloseModal('productBarcodeLabel') dengan animasi standar openModalAnim / closeModalAnim (double rAF GPU acceleration) untuk konsistensi penutupan tombol fisik Back Android.",
             "Integrasi Cetak Label Barang PO Kulakan (purchases.js): Tombol 'Cetak Label Barang' pada rincian Purchase Order kini juga otomatis menutup modal PO Detail secara elegan sebelum membuka antrean cetak label barcode.",
             "Multi-Channel Distribution v1.10.97 (Android versionCode 11097)."
-        ]
-    },
-    {
-        "id": "log-1-10-96",
-        "version": "v1.10.96",
-        "date": "2026-10-08",
-        "title": "Anti-Flicker Pengaturan Toko, Harmonisasi Tombol Modal & Elevasi Dokumen Eksekutif PSAK A4",
-        "category": "feature",
-        "badge": "Anti-Flicker Settings, Button Harmony & Executive PSAK Documents v1.10.96",
-        "items": [
-            "Anti-Flicker & Stabilisasi Layout Pengaturan Toko (subscription.js & style.css): Membasmi layar berkedip-kedip (flickering/jitter) pada bagian bawah Pengaturan Toko CMS Seller dengan mengisolasi layer GPU kartu lisensi SaaS (isolation: isolate; contain: paint;), merestrukturisasi elemen dekoratif blur ke batas aman koordinat positif, menerapkan overflow-anchor: none dan scrollbar-gutter: stable, serta mengeliminasi scrollbar reflow oscillation loop pada Chromium/WebView.",
-            "Harmonisasi & Standardisasi Ukuran Tombol Modal (barcode-label-modal.js & index.html): Menyelaraskan seluruh tombol aksi footer modal agar proporsional dan konsisten tinggi (h-11 sm:h-12 / min-h-[44px]). Tombol 'Batal' pada Modal Cetak Label Barcode kini sejajar simetris dengan tombol 'RawBT' dan 'Cetak Sekarang', serta tombol 'Gambar' dan 'PDF' pada Modal Preview Dokumen A4 kini memiliki label teks jelas dan berukuran ergonomis seimbang dengan 'Cetak Sekarang'.",
-            "Elevasi Desain Dokumen Eksekutif PSAK A4 (finance.js & documents.js): Dokumen Laporan Laba Rugi A4 kini dibungkus lembar kertas fisik putih bersih resmi (.a4-page 794x1123px) berbayangan 3D realistis, dilengkapi Kop Resmi Toko Putri (Logo, NPWP, Alamat, Kontak), Badge Executive Statement, No. Registrasi Dokumen resmi, 4 KPI Cards Eksekutif lengkap rasio margin %, tabel Ledger Akuntansi bergaris tajam dengan garis ganda pada saldo akhir, serta kolom tanda tangan pengesahan ganda (Staf Keuangan & Pemilik Toko).",
-            "Formatter Angka Akuntansi PSAK Deterministik (utils.js): Memperkenalkan fAccounting() untuk menyajikan angka finansial standar akuntansi resmi di mana nilai pengurang/negatif dibungkus kurung kurawal (Rp 35.800) dan nol tampil bersih (Rp 0), serta menyempurnakan fCur() dengan separator titik ASCII murni (code 46) yang 100% kebal dari distorsi locale browser/WebView Android.",
-            "Multi-Channel Distribution v1.10.96 (Android versionCode 11096)."
         ]
     }
 ];
@@ -162,10 +163,10 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * Mendapatkan nomor versi terbaru yang aktif
  * Menjamin tidak pernah tertahan pada versi lama meskipun ada log dinamis atau tanggal kembar
  * @param {Object} appData 
- * @returns {String} Contoh: 'v1.10.92'
+ * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.98';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.91';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

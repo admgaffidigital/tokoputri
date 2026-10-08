@@ -1441,6 +1441,301 @@ export const openDocPreview = (type, targetId = null) => {
     }
 
     // ────────────────────────────────────────────────────────────
+    // 5B. NOTA RETUR PENJUALAN KONSUMEN (RMA SALES RETURN A4)
+    // ────────────────────────────────────────────────────────────
+    if (type === 'sales_return') {
+        const returnId = typeof targetId === 'object' && targetId !== null ? targetId.returnId : targetId;
+        const retList = appData.salesReturns || [];
+        const ret = retList.find(x => String(x.id) === String(returnId)) || retList[0];
+
+        if (!ret) {
+            if (typeof window.showToast === 'function') window.showToast('Data retur penjualan tidak ditemukan!');
+            return;
+        }
+
+        setIn('doc-modal-title', 'Preview Nota Retur Penjualan (A4)');
+        const logoHTML = getStoreLogoHtml('w-16 h-16');
+        const retDate = formatDate(ret.createdAt, true);
+        const methodLabel = ret.refundMethod === 'cash' ? 'Pengembalian Tunai (Cash Refund)' 
+            : (ret.refundMethod === 'credit' ? 'Saldo Kredit Toko (Store Credit)' 
+            : (ret.refundMethod === 'exchange' ? 'Tukar Barang (Exchange)' : 'Lainnya'));
+
+        const kopHtml = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
+            <div class="flex items-center gap-4">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store?.slogan || 'Pusat Alat Teknik, Bangunan & Perlengkapan')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store?.address || 'Alamat fisik toko')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || appData.store?.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-2xl tracking-widest text-slate-900 uppercase">NOTA RETUR</h2>
+                <h3 class="font-bold text-sm tracking-wider text-indigo-600 uppercase">PENJUALAN KONSUMEN</h3>
+                <p class="text-sm font-bold text-slate-700 mt-1 font-mono">#${esc(ret.id)}</p>
+                <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${retDate}</p>
+                <p class="text-xs font-bold text-slate-600 mt-0.5">Rujukan Nota: <b class="font-mono text-slate-900">#${esc(ret.orderId || '-')}</b></p>
+            </div>
+        </div>
+        `;
+
+        const metaHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-5">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Identitas Pelanggan / Konsumen</span>
+                <p class="font-bold text-slate-900 text-sm">${esc(ret.customerName || 'Pelanggan Umum')}</p>
+                ${ret.customerPhone ? `<p class="text-slate-600 font-mono text-[11px]"><i class="fa-brands fa-whatsapp text-emerald-600"></i> ${esc(ret.customerPhone)}</p>` : ''}
+                <p class="text-slate-500 text-[11px]">Saluran Transaksi: <span class="font-semibold text-slate-700">${ret.source === 'pos' ? 'Kasir POS' : 'Website Online'}</span></p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Penyelesaian Finansial</span>
+                <p class="font-bold text-slate-900 text-sm">${esc(methodLabel)}</p>
+                <p class="text-slate-500 text-[11px]">Petugas Pelaksana: <span class="font-semibold text-slate-700">${esc(ret.cashierName || 'Kasir Toko')}</span></p>
+                <p class="text-slate-500 text-[11px]">Status Retur: <span class="font-bold text-emerald-600 uppercase">SELESAI (COMPLETED)</span></p>
+            </div>
+        </div>
+        `;
+
+        const tableHeaderHtml = `
+        <tr class="border-b-2 border-slate-800 text-[10px] font-black text-white uppercase tracking-wider bg-slate-900">
+            <th class="py-2.5 px-3 rounded-tl-xl text-center w-10 border-r border-slate-700">No</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Nama Barang &amp; Spesifikasi</th>
+            <th class="py-2.5 px-3 text-center w-28 border-r border-slate-700">Kondisi &amp; Alokasi</th>
+            <th class="py-2.5 px-3 text-center w-16 border-r border-slate-700">Qty Retur</th>
+            <th class="py-2.5 px-3 text-right w-24 border-r border-slate-700">Harga Jual</th>
+            <th class="py-2.5 px-3 text-right w-28 border-r border-slate-700">Subtotal Retur</th>
+            <th class="py-2.5 px-3 rounded-tr-xl w-36">Alasan Pengembalian</th>
+        </tr>
+        `;
+
+        const items = ret.items || [];
+        const rows = items.map((it, idx) => `
+        <tr class="hover:bg-slate-50">
+            <td class="py-2 px-3 text-center font-mono text-slate-500">${idx + 1}</td>
+            <td class="py-2 px-3 font-bold text-slate-900 uppercase">
+                ${esc(it.name)}
+                ${it.variantName ? `<span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[9px] border border-slate-300 ml-1 font-semibold">${esc(it.variantName)}</span>` : ''}
+                ${it.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(it.sku)}</span>` : ''}
+            </td>
+            <td class="py-2 px-3 text-center text-[10.5px]">
+                ${it.condition === 'good' 
+                    ? `<span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 block text-[9.5px]">Baik (Restok Rak)</span>` 
+                    : `<span class="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 block text-[9.5px]">Rusak (Karantina)</span>`}
+            </td>
+            <td class="py-2 px-3 text-center font-mono font-bold text-slate-900">${formatQty(it.qty)}</td>
+            <td class="py-2 px-3 text-right font-mono text-slate-600">${fCur(it.soldPrice || 0)}</td>
+            <td class="py-2 px-3 text-right font-mono font-bold text-slate-900">${fCur(it.subtotalRefund || (it.qty * it.soldPrice) || 0)}</td>
+            <td class="py-2 px-3 text-[10.5px] text-slate-600">
+                ${esc(it.reason || '-')}
+            </td>
+        </tr>
+        `);
+
+        const summaryHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-4 items-start">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[10px] space-y-1">
+                <p class="font-bold text-slate-700 uppercase tracking-wider text-[9px] mb-1">Ketentuan Retur Resmi Toko:</p>
+                <p class="text-slate-600 leading-snug">1. Barang retur telah diverifikasi fisik dan dicocokkan dengan struk pembelian asli.</p>
+                <p class="text-slate-600 leading-snug">2. Kompensasi diberikan sesuai metode yang disepakati dan tidak dapat dibatalkan.</p>
+                ${ret.notes ? `<p class="mt-2 text-slate-700 font-semibold border-t border-slate-200 pt-1">Catatan: "${esc(ret.notes)}"</p>` : ''}
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="flex justify-between items-center text-slate-600">
+                    <span>Total Item Diretur:</span>
+                    <span class="font-mono font-bold text-slate-800">${items.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0)} Unit</span>
+                </div>
+                <div class="flex justify-between items-center border-t-2 border-slate-800 pt-2 font-bold text-slate-900">
+                    <span class="uppercase tracking-wider">TOTAL NILAI RETUR:</span>
+                    <span class="text-rose-600 font-black text-base font-mono">${fCur(ret.totalRefund || 0)}</span>
+                </div>
+            </div>
+        </div>
+        `;
+
+        const signaturesHtml = `
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-auto pt-5 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Konsumen / Pembeli:</span>
+                <div class="w-44 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(ret.customerName || 'Konsumen')}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Kasir / Petugas Toko:</span>
+                <div class="w-44 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(ret.cashierName || appData.store?.name || 'Toko Putri')}</span>
+            </div>
+        </div>
+        `;
+
+        const pages = paginateTableDocument({
+            docTitle: 'Nota Retur Penjualan',
+            docNumber: `#${ret.id}`,
+            docDate: retDate,
+            kopHtml,
+            metaHtml,
+            tableHeaderHtml,
+            rows,
+            summaryHtml,
+            signaturesHtml,
+            singlePageMax: 7,
+            itemsFirstPage: 6,
+            itemsMiddlePage: 14,
+            itemsLastPage: 6
+        });
+
+        renderPagesToContainer(pages);
+        return;
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // 5C. SURAT PENGEMBALIAN BARANG KE SUPPLIER (RMA VENDOR RETURN A4)
+    // ────────────────────────────────────────────────────────────
+    if (type === 'vendor_return') {
+        const returnId = typeof targetId === 'object' && targetId !== null ? targetId.returnId : targetId;
+        const retList = appData.vendorReturns || [];
+        const ret = retList.find(x => String(x.id) === String(returnId)) || retList[0];
+
+        if (!ret) {
+            if (typeof window.showToast === 'function') window.showToast('Data retur supplier tidak ditemukan!');
+            return;
+        }
+
+        setIn('doc-modal-title', 'Preview Surat Pengembalian Barang ke Supplier (A4)');
+        const logoHTML = getStoreLogoHtml('w-16 h-16');
+        const retDate = formatDate(ret.createdAt, true);
+        const methodLabel = ret.settlementMethod === 'ap_deduction' 
+            ? 'Potong Hutang PO (AP Deduction)' 
+            : (ret.settlementMethod === 'cash_refund' ? 'Pengembalian Dana Kas / Transfer' : 'Lainnya');
+
+        const kopHtml = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
+            <div class="flex items-center gap-4">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store?.slogan || 'Pusat Alat Teknik, Bangunan & Perlengkapan')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store?.address || 'Alamat fisik toko')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || appData.store?.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-2xl tracking-widest text-slate-900 uppercase">SURAT PENGEMBALIAN</h2>
+                <h3 class="font-bold text-sm tracking-wider text-amber-600 uppercase">BARANG KE PEMASOK (VENDOR RETURN)</h3>
+                <p class="text-sm font-bold text-slate-700 mt-1 font-mono">#${esc(ret.id)}</p>
+                <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${retDate}</p>
+                <p class="text-xs font-bold text-slate-600 mt-0.5">Rujukan PO: <b class="font-mono text-slate-900">#${esc(ret.poId || 'Non-PO')}</b></p>
+            </div>
+        </div>
+        `;
+
+        const metaHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-5">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Ditujukan Kepada Rekanan Supplier</span>
+                <p class="font-bold text-slate-900 text-sm uppercase">${esc(ret.supplierName || 'Pemasok Toko')}</p>
+                <p class="text-slate-500 text-[11px]">Rujukan Kulakan PO: <span class="font-mono font-bold text-slate-800">${esc(ret.poId || '-')}</span></p>
+                <p class="text-slate-500 text-[11px]">Status Dokumen: <span class="font-bold text-amber-600 uppercase">TERBIT / DISERAHKAN</span></p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Penyelesaian Finansial Supplier</span>
+                <p class="font-bold text-slate-900 text-sm">${esc(methodLabel)}</p>
+                <p class="text-slate-500 text-[11px]">Estimasi Nilai Klaim HPP: <span class="font-mono font-bold text-amber-600">${fCur(ret.totalClaim || 0)}</span></p>
+                ${ret.notes ? `<p class="text-slate-600 text-[10.5px] italic mt-1">Catatan: "${esc(ret.notes)}"</p>` : ''}
+            </div>
+        </div>
+        `;
+
+        const tableHeaderHtml = `
+        <tr class="border-b-2 border-slate-800 text-[10px] font-black text-white uppercase tracking-wider bg-slate-900">
+            <th class="py-2.5 px-3 rounded-tl-xl text-center w-10 border-r border-slate-700">No</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Nama Barang &amp; Spesifikasi</th>
+            <th class="py-2.5 px-3 text-center w-24 border-r border-slate-700">Asal Lokasi</th>
+            <th class="py-2.5 px-3 text-center w-16 border-r border-slate-700">Qty Retur</th>
+            <th class="py-2.5 px-3 text-right w-24 border-r border-slate-700">Harga Beli/HPP</th>
+            <th class="py-2.5 px-3 text-right w-28 border-r border-slate-700">Total Klaim</th>
+            <th class="py-2.5 px-3 rounded-tr-xl w-36">Alasan Klaim Cacat</th>
+        </tr>
+        `;
+
+        const items = ret.items || [];
+        const rows = items.map((it, idx) => `
+        <tr class="hover:bg-slate-50">
+            <td class="py-2 px-3 text-center font-mono text-slate-500">${idx + 1}</td>
+            <td class="py-2 px-3 font-bold text-slate-900 uppercase">
+                ${esc(it.name)}
+                ${it.variantName ? `<span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[9px] border border-slate-300 ml-1 font-semibold">${esc(it.variantName)}</span>` : ''}
+                ${it.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(it.sku)}</span>` : ''}
+            </td>
+            <td class="py-2 px-3 text-center text-[10px] font-semibold text-slate-600">
+                ${it.fromLocation === 'warehouse' ? 'Gudang' : 'Rak Toko'}
+            </td>
+            <td class="py-2 px-3 text-center font-mono font-bold text-slate-900">${formatQty(it.qty)}</td>
+            <td class="py-2 px-3 text-right font-mono text-slate-600">${fCur(it.buyPrice || 0)}</td>
+            <td class="py-2 px-3 text-right font-mono font-bold text-amber-600">${fCur(it.subtotalClaim || (it.qty * it.buyPrice) || 0)}</td>
+            <td class="py-2 px-3 text-[10.5px] text-slate-600">
+                ${esc(it.reason || 'Barang Cacat Pabrik')}
+            </td>
+        </tr>
+        `);
+
+        const summaryHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-4 items-start">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[10px] space-y-1">
+                <p class="font-bold text-slate-700 uppercase tracking-wider text-[9px] mb-1">Ketentuan Pengembalian Barang:</p>
+                <p class="text-slate-600 leading-snug">1. Barang fisik diserahkan kepada pihak ekspedisi / perwakilan resmi supplier.</p>
+                <p class="text-slate-600 leading-snug">2. Nilai klaim memotong saldo hutang PO atau diganti dana/barang baru.</p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="flex justify-between items-center text-slate-600">
+                    <span>Total Kuantitas Barang:</span>
+                    <span class="font-mono font-bold text-slate-800">${items.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0)} Unit</span>
+                </div>
+                <div class="flex justify-between items-center border-t-2 border-slate-800 pt-2 font-bold text-slate-900">
+                    <span class="uppercase tracking-wider">TOTAL NILAI KLAIM HPP:</span>
+                    <span class="text-amber-600 font-black text-base font-mono">${fCur(ret.totalClaim || 0)}</span>
+                </div>
+            </div>
+        </div>
+        `;
+
+        const signaturesHtml = `
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-auto pt-5 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Pengirim (Purchasing Toko):</span>
+                <div class="w-44 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(appData.store?.name || 'Toko Putri')}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Penerima (Supir / Supplier):</span>
+                <div class="w-44 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(ret.supplierName || 'Pemasok / Distributor')}</span>
+            </div>
+        </div>
+        `;
+
+        const pages = paginateTableDocument({
+            docTitle: 'Surat Pengembalian Barang Supplier',
+            docNumber: `#${ret.id}`,
+            docDate: retDate,
+            kopHtml,
+            metaHtml,
+            tableHeaderHtml,
+            rows,
+            summaryHtml,
+            signaturesHtml,
+            singlePageMax: 7,
+            itemsFirstPage: 6,
+            itemsMiddlePage: 14,
+            itemsLastPage: 6
+        });
+
+        renderPagesToContainer(pages);
+        return;
+    }
+
+    // ────────────────────────────────────────────────────────────
     // 6 & 7. FAKTUR INVOICE & SURAT JALAN PESANAN
     // ────────────────────────────────────────────────────────────
     const targetOrderId = targetId || window.cVOrd;
@@ -2058,7 +2353,7 @@ export const printDocA4 = () => {
     }
 
     const printWindow = window.open('', '_blank');
-    const docTitleLabel = currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : 'Dokumen Resmi A4')))));
+    const docTitleLabel = currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : (currentDocType === 'sales_return' ? 'Nota Retur Penjualan' : (currentDocType === 'vendor_return' ? 'Surat Pengembalian Barang' : 'Dokumen Resmi A4')))))));
 
     const printHtml = `<!DOCTYPE html>
 <html lang="id">

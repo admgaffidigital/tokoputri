@@ -70,6 +70,7 @@ export const defApp = {
     banks: [], banners: [], categories: [], brands: [], products: [],
     vouchers: [], colors: [], rewards: [], faqs: [], customers: [], changelog: [], deletedChangelogIds: [], productOrder: [],
     suppliers: [], purchases: [], expenses: [], stockOpnameHistory: [],
+    salesReturns: [], vendorReturns: [],
     taxSettings: {
         companyName: "", npwp: "",
         taxScheme: "umkm_final",  // 'umkm_final' | 'badan_normal' | 'custom'
