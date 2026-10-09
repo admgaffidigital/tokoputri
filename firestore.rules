@@ -67,11 +67,12 @@ service cloud.firestore {
     // cms_private di bawah, BUKAN di dokumen ini.
     match /freshmart/cms_data {
       allow read: if true;
-      // Checkout publik hanya boleh menaikkan penanda sinkronisasi stok.
-      allow write: if isAdmin() || (
+      // Admin & Kasir boleh menulis. Checkout publik dibatasi: menaikkan penanda sinkronisasi stok dan memperbarui kuota flash sale.
+      allow write: if isAdmin() || isCashier() || (
         resource != null &&
-        changed().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds']) &&
-        (!('updateType' in changed()) || request.resource.data.updateType == 'stock_change')
+        changed().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds', 'flashSales']) &&
+        (!('updateType' in changed()) || request.resource.data.updateType == 'stock_change') &&
+        (!('flashSales' in changed()) || request.resource.data.flashSales is list)
       );
 
       // ─── Produk ───────────────────────────────────────────
