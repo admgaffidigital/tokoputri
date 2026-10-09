@@ -164,6 +164,11 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 * **Estimator Interaktif 3 Formula**: Cat Tembok & Plafon, Keramik & Granit, serta Pasangan Dinding Hebel/Bata dengan tombol 1-klik tambah paket material ke keranjang kasir POS/Web atau konsultasi WhatsApp.
 * **Presisi Desimal & Curah Kiloan**: Penjualan barang timbangan (paku 0.5 kg, kabel 2.5 meter) dengan stepper adaptif dan tombol cepat pecahan (¼, ½, ¾, 1).
 
+### 15. Flash Sale Engine & Real-Time Omnichannel (v1.15.0)
+* **Panggung Promo Kilat Storefront (`src/modules/catalog/flash-sale-section.js`)**: Dilengkapi live countdown timer per detik, progress bar kuota keterjualan dinamis, badge diskon petir hemat %, dan tombol beli kilat 1-sentuhan.
+* **Integrasi Omnichannel POS Kasir & Web**: Evaluasi otomatis harga diskon promo kilat via `getEffP`, tag penanda hijau `⚡ FLASH SALE (-XX%)` di kasir, pemotongan kuota real-time saat transaksi terbit, dan graceful fallback ke harga reguler/grosir saat kuota habis.
+* **CMS Manajemen Admin & Margin Guard (`src/modules/admin/flash-sale.js`)**: Pembuatan sesi dengan preset durasi cepat (+2 Jam s.d. +3 Hari), filter kanal (Web, Kasir POS, Omnichannel), dan proteksi visual Margin Guard pendeteksi harga jual di bawah modal kulakan (HPP).
+
 ### 15. Sistem Cetak Label Barcode SKU & Harga Universal
 * **Multi-Printer Universal**: Kompatibel dengan printer Thermal Stiker Roll (`40x30 mm`, `50x30 mm`, continuous roll) dan Kertas Lembaran A4 biasa (`Grid 3x10` 30 label & `Grid 2x7` 14 label) menggunakan barcode vektor Code 128 murni.
 
@@ -176,8 +181,8 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 
 Seluruh panduan operasional sistem dan berkas komersial telah disusun rapi pada direktori `DOCS_SAAS_BISNIS/`:
 
-1. **[Panduan Lengkap Penggunaan Aplikasi Toko & Kasir (21 Bab Non-Teknis)](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md)**:
-   * Panduan operasional komprehensif untuk pemilik toko, manajer, dan kasir (login, profil/QRIS, master produk, kasir POS, shift kasir & laci kas, RBAC & HPP lockdown, stock opname, cetak Bluetooth & A4, piutang tempo, buku kas, laporan laba rugi, aktivasi lisensi, UOM multi-satuan, logistik DO, retur RMA, estimator bahan, label barcode, stok dua lokasi FIFO, serta **Panduan Cara Menjelaskan Sistem** ke konsumen, staf, dan investor).
+1. **[Panduan Lengkap Penggunaan Aplikasi Toko & Kasir (22 Bab Non-Teknis)](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md)**:
+   * Panduan operasional komprehensif untuk pemilik toko, manajer, dan kasir (login, profil/QRIS, master produk, kasir POS, shift kasir & laci kas, RBAC & HPP lockdown, stock opname, cetak Bluetooth & A4, piutang tempo, buku kas, laporan laba rugi, aktivasi lisensi, UOM multi-satuan, logistik DO, retur RMA, estimator bahan, label barcode, stok dua lokasi FIFO, **Flash Sale & Promo Kilat**, serta **Panduan Cara Menjelaskan Sistem** ke konsumen, staf, dan investor).
 2. **[Proposal Penawaran Managed SaaS (HTML Interaktif)](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/1_PROPOSAL_PENAWARAN_MANAGED_SAAS.html)**:
    * Lembar proposal eksekutif A4/PDF interaktif dengan penyesuaian nama klien, hitung biaya sewa, dan tombol salin WhatsApp penawaran 1-klik.
 3. **[Surat Perjanjian Sewa Software & SLA Legalitas](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.html)**:
@@ -259,6 +264,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.15.0 — Flash Sale Engine (Promo Kilat Berbatas Waktu & Kuota), Omnichannel Sync & Proteksi Margin Guard (10 Okt 2026)
+- **Panggung Flash Sale Storefront (`src/modules/catalog/flash-sale-section.js`)**: Live countdown timer per detik, progress bar kuota keterjualan dinamis, badge diskon petir hemat %, dan tombol Beli Kilat 1-sentuhan.
+- **Integrasi Omnichannel POS Kasir & Web Checkout**: Evaluasi prioritas harga promo kilat via `getEffP`, tag chip hijau `⚡ FLASH SALE (-XX%)` di keranjang kasir POS, pemotongan kuota real-time saat transaksi terbit, dan graceful fallback kembali ke harga normal/grosir saat kuota habis atau sesi berakhir.
+- **Admin CMS Flash Sale & Margin Guard (`src/modules/admin/flash-sale.js`)**: Pembuatan sesi dengan preset durasi cepat (+2 Jam s.d. +3 Hari), filter kanal (Web, Kasir POS, Omnichannel), dan proteksi visual Margin Guard pendeteksi harga jual di bawah modal kulakan (HPP).
+- **Aturan Keamanan Cloud Firestore (`firestore.rules`)**: Mengizinkan kasir dan checkout publik memperbarui kuota keterjualan `flashSales` secara real-time.
+- **Test Suite Otomatis**: 28 pengujian unit lolos 100% pada `scripts/test-flash-sale.mjs`.
+- **Sinkronisasi Multi-Channel v1.15.0**: Android VersionCode `11500`, versionName `1.15.0`, bundler Vite, PWA, dan Capacitor.
+
+---
 
 ### v1.14.0 — Multi-Satuan Bertingkat (UOM Hierarchy), Harga Grosir Fleksibel & Proteksi UI/UX Anti-Gepeng (09 Okt 2026)
 - **Master Multi-Satuan Kemasan (`src/core/uom.js`)**: Mendukung satuan dasar terkecil (Meter, Pcs, Kg, Keping) dan kemasan bertingkat (Roll, Dus, Sak, Kotak) dengan rasio konversi akurat dan harga khusus per kemasan.
