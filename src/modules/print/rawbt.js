@@ -1733,6 +1733,146 @@ export const executeRawBTTestPrint = () => {
     });
 };
 
+/**
+ * ============================================================
+ * GENERATOR STRUK NOTA RETUR PENJUALAN (RMA) — THERMAL 58/80MM
+ * ============================================================
+ */
+export const buildSalesReturnReceiptPayload = (record, config = null) => {
+    const cfg = config || getPrinterConfig();
+    const cols = getPaperCols(cfg.paperSize);
+    const is80 = cols >= 40;
+
+    const builder = new EscPosBuilder(cols);
+    builder.init();
+
+    const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const storeAddr = cleanLineAscii(cfg.storeAddress !== undefined && cfg.storeAddress !== '' ? cfg.storeAddress : (appData.store?.address || '')).trim();
+    const storeWa   = cleanLineAscii(cfg.storePhone !== undefined && cfg.storePhone !== '' ? cfg.storePhone : (appData.store?.wa || '')).trim();
+
+    const maxDoubleWidth = Math.floor(cols / 2);
+    if (storeName.length <= maxDoubleWidth) {
+        builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
+        builder.size('normal').bold(false);
+    } else {
+        builder.align('center').bold(true).size('tall');
+        wrapWords(storeName.toUpperCase(), cols).forEach(l => builder.line(l, 'center'));
+        builder.size('normal').bold(false);
+    }
+
+    if (cfg.showAddress !== false && storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
+    if (cfg.showPhone !== false && storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    const npwpStr = appData.store?.taxNpwp;
+    if (cfg.showNpwp !== false && npwpStr) builder.line(`NPWP: ${npwpStr}`, 'center');
+    builder.separator('-');
+
+    const title = is80 ? '*** NOTA RETUR PENJUALAN (RMA) ***' : '** NOTA RETUR PENJUALAN **';
+    builder.bold(true).line(title, 'center').bold(false);
+    builder.separator('-');
+
+    const dateStr = formatCompactDate(record.createdAt || Date.now(), is80);
+    builder.twoColumn(`No Retur: #${record.id}`, dateStr, false, true);
+    builder.twoColumn(`No Nota : #${record.orderId || '-'}`, `Ksr: ${(record.cashierName || 'Kasir').substring(0, is80 ? 14 : 8)}`, false, true);
+
+    const custName = (record.customerName || 'Pelanggan Umum').substring(0, is80 ? 22 : 14);
+    builder.twoColumn(`Plg     : ${custName}`, 'Status: Selesai', false, true);
+    if (record.customerPhone) {
+        builder.line(`HP      : ${record.customerPhone}`, 'left');
+    }
+
+    builder.separator('-');
+
+    // Daftar Barang Diretur
+    (record.items || []).forEach(it => {
+        const vText = it.variantName ? ` (${it.variantName})` : '';
+        const itemName = (it.name || 'Barang') + vText;
+
+        builder.bold(true);
+        wrapWords(itemName, cols).forEach(l => builder.line(l, 'left'));
+        builder.bold(false);
+
+        const qStr = `  ${formatQty(it.qty)} ${it.unit || 'pcs'} x ${fRpNum(it.soldPrice)}`;
+        const tStr = fRpNum(it.subtotalRefund);
+        builder.twoColumn(qStr, tStr, false, false);
+
+        if (it.reason) {
+            builder.line(`  * Alasan: ${it.reason}`, 'left');
+        }
+        const condLabel = it.condition === 'bad' ? 'Cacat/Rusak (Karantina)' : 'Kondisi Baik (Rak Toko)';
+        builder.line(`  * ${condLabel}`, 'left');
+    });
+
+    builder.doubleSeparator();
+    builder.bold(true).size('tall').twoColumn('TOTAL RETUR', fRp(record.totalRefund)).size('normal').bold(false);
+    builder.doubleSeparator();
+
+    let methodLabel = 'REFUND TUNAI';
+    if (record.refundMethod === 'credit') methodLabel = 'SALDO KREDIT TOKO';
+    else if (record.refundMethod === 'exchange') methodLabel = 'TUKAR BARANG LAIN';
+    else if (record.refundMethod) methodLabel = String(record.refundMethod).toUpperCase();
+
+    builder.twoColumn('Kompensasi', methodLabel);
+
+    if (record.notes) {
+        builder.separator('-');
+        wrapWords(`Catatan: ${record.notes}`, cols).forEach(l => builder.line(l, 'left'));
+    }
+
+    if (cfg.showBarcode) {
+        builder.separator('-');
+        builder.barcode(`RMA-${record.id}`, 'CODE128', 45);
+        builder.line(`*RMA-${record.id}*`, 'center');
+        builder.line('(BUKTI RETUR RESMI)', 'center');
+    }
+
+    builder.separator('-');
+    builder.line('Barang retur telah diverifikasi oleh toko.', 'center');
+    builder.line('Terima kasih atas kerja samanya.', 'center');
+
+    builder.feed(cfg.feedLines || 3);
+    if (cfg.autoCut) builder.cut();
+
+    return {
+        base64: builder.toBase64(),
+        plainText: builder.toPlainText(),
+        previewLines: builder.previewLines,
+        html: builder.toHtml()
+    };
+};
+
+/**
+ * Cetak Struk Nota Retur Penjualan Seketika (Direct Print)
+ */
+export const printSalesReturnReceiptDirect = (returnId = null) => {
+    const list = appData.salesReturns || [];
+    let record = null;
+    if (typeof returnId === 'object' && returnId !== null) {
+        record = returnId;
+    } else if (returnId) {
+        record = list.find(r => String(r.id) === String(returnId));
+    }
+    if (!record) {
+        showToast('Data nota retur tidak ditemukan.', 'warning');
+        return;
+    }
+
+    const cfg = getPrinterConfig();
+    const payload = buildSalesReturnReceiptPayload(record, cfg);
+    const fromPreview = isPreviewModalOpen('receipt-preview-modal');
+
+    sendToRawBT(payload.base64, payload.plainText, payload.html, {
+        skipPreview: fromPreview,
+        previewLines: payload.previewLines,
+        title: `Nota Retur Penjualan #${record.id}`,
+        rebuild: () => buildSalesReturnReceiptPayload(record, getPrinterConfig()),
+        onConfirm: () => {
+            if (typeof window.closeReceiptPreviewModal === 'function' && fromPreview) {
+                window.closeReceiptPreviewModal();
+            }
+        }
+    });
+};
+
 // ─── Expose Global ke window ──────────────────────────────────
 window.cleanLineAscii             = cleanLineAscii;
 window.wrapWords                  = wrapWords;
@@ -1747,8 +1887,11 @@ window.buildShiftReceiptPayload   = buildShiftReceiptPayload;
 window.buildOrderReceiptPayload   = buildOrderReceiptPayload;
 window.buildTempoReceiptPayload   = buildTempoReceiptPayload;
 window.buildTestReceiptPayload    = buildTestReceiptPayload;
+window.buildSalesReturnReceiptPayload = buildSalesReturnReceiptPayload;
 window.printPOSReceiptDirect      = printPOSReceiptDirect;
 window.printShiftSettlementDirect = printShiftSettlementDirect;
 window.printCustomerReceiptDirect = printCustomerReceiptDirect;
 window.printTempoReceiptDirect    = printTempoReceiptDirect;
+window.printSalesReturnReceiptDirect = printSalesReturnReceiptDirect;
 window.executeRawBTTestPrint      = executeRawBTTestPrint;
+

@@ -1737,36 +1737,78 @@ export const printSalesReturnThermal = (returnId) => {
     const record = (appData.salesReturns || []).find(r => r.id === returnId);
     if (!record) return showToast('Data retur tidak ditemukan!');
 
-    if (typeof window.executePrintRawBTData === 'function') {
-        const storeName = appData.store?.name || 'TOKO PUTRI';
-        const address = appData.store?.address || '';
-        const phone = appData.store?.wa || '';
+    // 1. Prioritas 1: Gunakan Engine Direct Print Struk Thermal Resmi (RawBT / Bluetooth / Mobile)
+    if (typeof window.printSalesReturnReceiptDirect === 'function') {
+        window.printSalesReturnReceiptDirect(record);
+        return;
+    }
 
-        let receiptText = `${storeName}\n${address}\nTelp/WA: ${phone}\n`;
-        receiptText += `--------------------------------\n`;
-        receiptText += `NOTA RETUR PENJUALAN\n`;
-        receiptText += `No Retur: ${record.id}\n`;
-        receiptText += `No Nota : ${record.orderId || '-'}\n`;
-        receiptText += `Tanggal : ${new Date(record.createdAt).toLocaleString('id-ID')}\n`;
-        receiptText += `Konsumen: ${record.customerName || 'Umum'}\n`;
-        receiptText += `--------------------------------\n`;
+    // 2. Prioritas 2: Buka Preview Struk Thermal via Generator Payload Resmi
+    if (typeof window.buildSalesReturnReceiptPayload === 'function') {
+        const payload = window.buildSalesReturnReceiptPayload(record);
+        if (typeof window.sendToRawBT === 'function') {
+            window.sendToRawBT(payload.base64, payload.plainText, payload.html, {
+                title: `Nota Retur Penjualan #${record.id}`,
+                previewLines: payload.previewLines,
+                rebuild: () => window.buildSalesReturnReceiptPayload(record)
+            });
+            return;
+        }
+    }
 
-        (record.items || []).forEach(it => {
-            receiptText += `${it.name}${it.variantName ? ` (${it.variantName})` : ''}\n`;
-            receiptText += `  ${it.qty} x ${fCur(it.soldPrice)} = ${fCur(it.subtotalRefund)}\n`;
-            receiptText += `  [${it.reason}]\n`;
-        });
+    // 3. Prioritas 3: Buka Modal Struk Kasir Universal (receipt-preview-modal)
+    const storeName = appData.store?.name || 'TOKO PUTRI';
+    const storeAddr = appData.store?.address || '';
+    const storeWa   = appData.store?.wa || '';
 
-        receiptText += `--------------------------------\n`;
-        receiptText += `TOTAL RETUR: ${fCur(record.totalRefund)}\n`;
-        receiptText += `METODE     : ${record.refundMethod.toUpperCase()}\n`;
-        receiptText += `--------------------------------\n`;
-        receiptText += `Barang telah diverifikasi toko.\n`;
-        receiptText += `Terima kasih atas kerja samanya.\n\n\n`;
+    let h = `<div class="text-center font-bold" style="font-size:14px;margin-bottom:2px;">${esc(storeName)}</div>`;
+    if (storeAddr) h += `<div class="text-center" style="font-size:10px;color:#475569;margin-bottom:2px;">${esc(storeAddr)}</div>`;
+    if (storeWa) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(storeWa)}</div>`;
+    h += `<div class="utp-separator"></div>`;
+    h += `<div class="text-center font-bold" style="font-size:12px;margin:2px 0;">NOTA RETUR PENJUALAN</div>`;
+    h += `<div class="utp-separator"></div>`;
+    h += `<div class="utp-row"><div class="utp-col-left">No Retur</div><div class="utp-col-right">#${esc(record.id)}</div></div>`;
+    h += `<div class="utp-row"><div class="utp-col-left">No Nota</div><div class="utp-col-right">#${esc(record.orderId || '-')}</div></div>`;
+    h += `<div class="utp-row"><div class="utp-col-left">Tanggal</div><div class="utp-col-right">${new Date(record.createdAt).toLocaleDateString('id-ID')}</div></div>`;
+    h += `<div class="utp-row"><div class="utp-col-left">Pelanggan</div><div class="utp-col-right">${esc(record.customerName || 'Umum')}</div></div>`;
+    h += `<div class="utp-separator"></div>`;
 
-        window.executePrintRawBTData(receiptText);
+    (record.items || []).forEach(it => {
+        h += `<div style="font-weight:bold;white-space:pre-wrap;">${esc(it.name)}${it.variantName ? ` (${esc(it.variantName)})` : ''}</div>`;
+        h += `<div class="utp-row"><div class="utp-col-left">  ${it.qty} x ${fCur(it.soldPrice)}</div><div class="utp-col-right">${fCur(it.subtotalRefund)}</div></div>`;
+        if (it.reason) h += `<div style="font-size:9.5px;color:#64748b;font-style:italic;">  * Alasan: ${esc(it.reason)}</div>`;
+        const condLbl = it.condition === 'bad' ? 'Cacat/Rusak (Karantina)' : 'Kondisi Baik (Rak Toko)';
+        h += `<div style="font-size:9.5px;color:#64748b;font-style:italic;">  * ${condLbl}</div>`;
+    });
+
+    h += `<div class="utp-double-separator"></div>`;
+    h += `<div class="utp-row font-bold text-[12px]"><div class="utp-col-left">TOTAL RETUR</div><div class="utp-col-right">${fCur(record.totalRefund)}</div></div>`;
+    h += `<div class="utp-double-separator"></div>`;
+
+    let methodLbl = 'REFUND TUNAI';
+    if (record.refundMethod === 'credit') methodLbl = 'SALDO KREDIT TOKO';
+    else if (record.refundMethod === 'exchange') methodLbl = 'TUKAR BARANG LAIN';
+    else if (record.refundMethod) methodLbl = String(record.refundMethod).toUpperCase();
+    h += `<div class="utp-row"><div class="utp-col-left">Kompensasi</div><div class="utp-col-right">${methodLbl}</div></div>`;
+
+    h += `<div class="utp-separator"></div>`;
+    h += `<div class="text-center" style="font-size:9.5px;margin:4px 0;">Barang retur telah diverifikasi oleh toko.<br>Terima kasih atas kerja samanya.</div>`;
+    h += `<div style="height:15px;"></div>`;
+
+    const paperEl = document.getElementById('receipt-paper-content');
+    const mRec = document.getElementById('receipt-preview-modal');
+    const bRec = document.getElementById('receipt-preview-modal-box');
+    if (paperEl && mRec) {
+        paperEl.innerHTML = h;
+        if (mRec.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('receipt');
+        }
+        if (typeof window.openModalAnim === 'function') window.openModalAnim(mRec, bRec);
+        else mRec.classList.remove('hidden');
+    } else if (typeof window.renderThermalDOMAndPrint === 'function') {
+        window.renderThermalDOMAndPrint(h);
     } else {
-        window.printSalesReturnA4(returnId);
+        window.print();
     }
 };
 
