@@ -1,7 +1,7 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.13.2` | **Target Jangka Panjang:** `v2.0.0`
+> **Target Baseline Saat Ini:** `v1.14.0` | **Target Jangka Panjang:** `v2.0.0`
  
 ---
  
@@ -109,23 +109,34 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
 
 ---
 
-## 🏷️ FASE 4: Multi-Satuan Bertingkat & Harga Grosir Fleksibel (UOM Hierarchy)
+## 🏷️ FASE 4: Multi-Satuan Bertingkat & Harga Grosir Fleksibel (UOM Hierarchy) (SELESAI - v1.14.0)
 > **Fokus Utama:** 1 Master Barang dapat dijual dalam satuan kemasan besar (Dus/Roll/Sak) maupun eceran.  
-> **Target Rilis:** `v1.14.0` - `v1.14.5`
+> **Status:** Selesai & Terverifikasi 100% di `v1.14.0`
 
 ### 4.1 Master Satuan Bertingkat (*Unit of Measure Conversion*)
 * **Fitur & Spesifikasi:**
-  - [ ] Definisi Satuan Terkecil / Dasar (*Base UOM*) vs Satuan Kemasan (*Packaging UOM*):
+  - [x] Definisi Satuan Terkecil / Dasar (*Base UOM*) vs Satuan Kemasan (*Packaging UOM*):
     - Contoh: Kabel $\rightarrow$ Satuan Dasar: `Meter`, Satuan Kemasan: `Roll` (Konversi: 1 Roll = 100 Meter).
     - Contoh: Keramik $\rightarrow$ Satuan Dasar: `Keping`, Satuan Kemasan: `Dus` (Konversi: 1 Dus = 6 Keping).
     - Contoh: Baut $\rightarrow$ Satuan Dasar: `Pcs`, Satuan Kemasan: `Kotak` (Konversi: 1 Kotak = 100 Pcs).
-  - [ ] Selector Satuan di Kasir POS: Kasir dapat memilih satuan `Roll` atau `Meter` langsung dari baris keranjang dengan konversi harga otomatis.
-  - [ ] Pengurangan stok persediaan otomatis selalu mengacu pada satuan dasar terkecil di gudang.
+    - Contoh: Semen $\rightarrow$ Satuan Dasar: `Kg`, Satuan Kemasan: `Sak` (Konversi: 1 Sak = 50 Kg).
+  - [x] **Multi-Units Builder di Admin CMS Produk**: Input nama satuan kemasan, rasio konversi pengali ke satuan dasar, harga jual kemasan, barcode kemasan dus/roll, dan HPP kemasan ekuivalen.
+  - [x] **Selector Satuan Interaktif di Kasir POS (*UOM Pill Selector*)**: Kasir dapat memilih satuan `Roll` atau `Meter` langsung dari baris keranjang kasir (`posCart`) dengan konversi harga dan subtotal otomatis.
+  - [x] **Kalkulasi Pemotongan Stok Aktual**: Pengurangan stok fisik persediaan (Rak Toko, Gudang Cadangan, dan Tiket Batch FIFO) selalu akurat mengacu ke satuan dasar terkecil di gudang (`qty * unitMultiplier`).
+  - [x] **Pilihan Satuan Kemasan di Modal Detail Produk**: Etalase web menampilkan ringkasan satuan kemasan dan harga paket untuk kemudahan kontraktor/proyek.
 
-### 4.2 Tier Harga Grosir Bertingkat (*Tiered Wholesale Pricing*)
+### 4.2 Tier Harga Grosir Bertingkat (*Tiered Wholesale Pricing*) & Proteksi Margin HPP
 * **Fitur & Spesifikasi:**
-  - [ ] Aturan harga grosir otomatis (Cth: Beli 1-9 meter @ Rp 8.000, Beli $\ge$ 10 meter @ Rp 7.200, Beli 1 Roll @ Rp 680.000).
-  - [ ] Proteksi margin HPP: Sistem memberi indikator peringatan jika harga grosir mendekati atau berada di bawah HPP FIFO barang.
+  - [x] Aturan harga grosir otomatis (Cth: Beli 1-9 meter @ Rp 8.000, Beli $\ge$ 10 meter @ Rp 7.200, Beli 1 Roll @ Rp 680.000).
+  - [x] **Proteksi Margin HPP (*HPP Negative Margin Guard*)**:
+    - Sistem memberi indikator peringatan visual real-time di form admin dan keranjang kasir jika harga grosir atau harga kemasan mendekati atau berada di bawah HPP modal barang.
+    - Pembatasan diskon per-item agar total transaksi tidak pernah berada di bawah modal HPP FIFO toko.
+
+### 4.3 Integrasi Barcode Scanner Kemasan (*Packaging Barcode Scan*)
+* **Fitur & Spesifikasi:**
+  - [x] Pencocokan Barcode Khusus Kemasan pada Hardware Laser Reader, Kotak Pencarian POS (`handlePOSSearchKeydown`), dan Universal Camera Scanner HP (`Html5Qrcode`).
+  - [x] Otomasi Penambahan Item POS: Memindai barcode kardus/dus/roll langsung memasukkan produk ke keranjang kasir dalam satuan kemasan terkait secara instan tanpa perlu klik manual.
+  - [x] Test Suite Otomatis: `test-uom-and-wholesale.mjs` (24 skenario uji lulus 100%).
 
 ---
 

@@ -17,6 +17,7 @@ import { deductFifoStock } from '../../core/fifo-inventory.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown } from '../../core/paylater.js';
 import { getMemberTier } from '../member/reward.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
+import { getAvailableUnits, resolveEffectivePrice, checkHppMarginStatus, findProductByMultiUnitBarcode } from '../../core/uom.js';
 import {
     getActiveShift,
     isShiftActive,
@@ -262,16 +263,30 @@ const getWholesalePrice = (product, qty) => {
 };
 
 const recalcItem = (item) => {
-    // Jika bukan varian, hitung harga grosir otomatis
-    if (!item.isVariant) {
-        const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+    // Selesaikan harga efektif multi-satuan & tingkatan grosir bertingkat
+    const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+    if (p) {
+        const resolved = resolveEffectivePrice(
+            p, 
+            item.selectedUnit || item.unit, 
+            item.qty, 
+            item.isVariant ? item.variantName : ''
+        );
+        item.price           = resolved.price;
+        item.isWholesale     = resolved.isWholesale;
+        item.isPackagingUnit = resolved.isPackagingUnit;
+        item.unitMultiplier  = resolved.unitMultiplier;
+        item.unit            = resolved.unit;
+        item.baseUnit        = resolved.baseUnit;
+        if (resolved.hpp > 0) item.hpp = resolved.hpp;
+    } else if (!item.isVariant && !item.isEstimatorItem) {
         const wPrice = p ? getWholesalePrice(p, item.qty) : null;
         if (wPrice !== null) {
-            item.basePrice   = item.basePrice || item.price; // simpan harga asli
+            item.basePrice   = item.basePrice || item.price;
             item.price       = wPrice;
             item.isWholesale = true;
         } else {
-            if (item.basePrice) item.price = item.basePrice; // kembalikan harga asli
+            if (item.basePrice) item.price = item.basePrice;
             item.isWholesale = false;
         }
     }
@@ -282,7 +297,7 @@ const recalcItem = (item) => {
     }
     const itemHpp = parseFloat(item.hpp) || 0;
 
-    // Proteksi: Diskon item TIDAK BOLEH melebihi batas modal (harga jual < HPP)
+    // Proteksi Margin HPP: Diskon item TIDAK BOLEH melebihi batas modal (harga jual < HPP)
     if (itemHpp > 0) {
         const maxAllowedDisc = Math.max(0, Math.round((item.price - itemHpp) * item.qty));
         if (fNum(item.discount) > maxAllowedDisc) {
@@ -444,6 +459,25 @@ export const findProductOrVariantByBarcode = (rawCode) => {
                         variant: v,
                         variantIdx: vIdx,
                         isVariantMatch: true
+                    };
+                }
+            }
+        }
+    }
+
+    // 1b. Cocokkan Barcode Kemasan Bertingkat (Packaging Barcode Dus/Roll/Sak)
+    for (const p of products) {
+        if (!p || p.isActive === 'false' || p.isActive === false) continue;
+        if (Array.isArray(p.multiUnits)) {
+            for (const mu of p.multiUnits) {
+                if (mu && mu.barcode && matchCodeAny(variations, mu.barcode)) {
+                    return {
+                        product: p,
+                        variant: null,
+                        variantIdx: -1,
+                        isVariantMatch: false,
+                        matchedUnit: mu,
+                        isPackagingMatch: true
                     };
                 }
             }
@@ -693,7 +727,12 @@ const initBarcodeListener = () => {
                 const match = findProductOrVariantByBarcode(barcodeBuffer);
                 if (match) {
                     const prod = match.product;
-                    if (match.isVariantMatch && match.variant) {
+                    if (match.isPackagingMatch && match.matchedUnit) {
+                        const added = addToCartWithUnit(prod.id, match.matchedUnit.name, 1);
+                        if (added) {
+                            showToast(`Ditambahkan: ${prod.name} (${match.matchedUnit.name})`, 'success');
+                        }
+                    } else if (match.isVariantMatch && match.variant) {
                         const vPrice = parseFloat(match.variant.price) || 0;
                         const added = addToCartWithVariant(prod.id, match.variant.name, vPrice, match.variantIdx, 1);
                         if (added) {
@@ -909,6 +948,92 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
     return true;
 };
 
+export const addToCartWithUnit = (productId, unitName, qty = 1) => {
+    const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
+    if (!p) return false;
+
+    // 1. Validasi Produk Aktif
+    const pActive = p.isActive !== 'false' && p.isActive !== false;
+    if (!pActive) {
+        showToast('Produk ini sedang dinonaktifkan atau tidak tersedia.', 'warning');
+        return false;
+    }
+
+    const availUnits = getAvailableUnits(p);
+    const targetUnit = availUnits.find(u => u.name.toLowerCase() === (unitName || '').toLowerCase()) || availUnits[0];
+    const multiplier = targetUnit.multiplier || 1;
+    const numQty = fQty(qty) || 1;
+    const neededBaseQty = numQty * multiplier;
+
+    // 2. Validasi Stok Tersedia (dalam Satuan Dasar)
+    const sInfo = getProductStockInfo(p);
+    if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
+        showToast(`Persediaan "${p.name}" sedang kosong.`, 'warning');
+        return false;
+    }
+
+    const cartKey = `${p.id}__u_${targetUnit.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+    const existing = posCart.find(i => (i.cartKey || String(i.id)) === cartKey);
+    if (existing) {
+        const nextQty = parseFloat((existing.qty + numQty).toFixed(3));
+        const totalNeededBase = nextQty * multiplier;
+        if (sInfo.isManaged && !sInfo.isPreorder && totalNeededBase > sInfo.totalStock) {
+            const maxUnits = multiplier > 1 ? Math.floor(sInfo.totalStock / multiplier) : formatQty(sInfo.totalStock);
+            showToast(`Persediaan tidak mencukupi. Sisa stok: ${maxUnits} ${targetUnit.name} (${formatQty(sInfo.totalStock)} ${availUnits[0].name})`, 'warning');
+            return false;
+        }
+        existing.qty = nextQty;
+        recalcItem(existing);
+    } else {
+        if (sInfo.isManaged && !sInfo.isPreorder && neededBaseQty > sInfo.totalStock) {
+            const maxUnits = multiplier > 1 ? Math.floor(sInfo.totalStock / multiplier) : formatQty(sInfo.totalStock);
+            showToast(`Persediaan tidak mencukupi. Sisa stok: ${maxUnits} ${targetUnit.name} (${formatQty(sInfo.totalStock)} ${availUnits[0].name})`, 'warning');
+            return false;
+        }
+        const item = recalcItem({
+            id: p.id,
+            cartKey,
+            name: p.name,
+            price: targetUnit.price,
+            basePrice: targetUnit.price,
+            hpp: targetUnit.hpp,
+            qty: numQty,
+            unit: targetUnit.name,
+            selectedUnit: targetUnit.name,
+            baseUnit: availUnits[0].name,
+            unitMultiplier: multiplier,
+            poTime: p.poTime || '',
+            discount: 0,
+            subtotal: targetUnit.price * numQty,
+            isVariant: false,
+            isWholesale: false,
+            isPackagingUnit: !targetUnit.isBase
+        });
+        posCart.push(item);
+    }
+
+    playCashierBeep();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    renderCart();
+    return true;
+};
+
+export const posChangeItemUnit = (cartKey, newUnitName) => {
+    const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
+    if (!item) return;
+    const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+    if (!p) return;
+
+    item.selectedUnit = newUnitName;
+    item.unit = newUnitName;
+    recalcItem(item);
+    item.cartKey = `${p.id}__u_${newUnitName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+
+    playCashierBeep();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    renderCart();
+};
+
 export const updateQty = (cartKey, delta) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
@@ -944,8 +1069,11 @@ export const updateQty = (cartKey, delta) => {
                     }
                 } else {
                     const sInfo = getProductStockInfo(p);
-                    if (sInfo.isManaged && nextQty > sInfo.totalStock) {
-                        showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+                    const itemMultiplier = parseFloat(item.unitMultiplier) || 1;
+                    const neededBaseNext = nextQty * itemMultiplier;
+                    if (sInfo.isManaged && !sInfo.isPreorder && neededBaseNext > sInfo.totalStock) {
+                        const maxUnits = itemMultiplier > 1 ? Math.floor(sInfo.totalStock / itemMultiplier) : formatQty(sInfo.totalStock);
+                        showToast(`Stok maksimal tersedia: ${maxUnits} ${item.unit || 'pcs'} (${formatQty(sInfo.totalStock)} ${item.baseUnit || p.unit || 'pcs'})`, 'warning');
                         return;
                     }
                 }
@@ -979,9 +1107,12 @@ export const setQty = (cartKey, val) => {
                 }
             } else {
                 const sInfo = getProductStockInfo(p);
-                if (sInfo.isManaged && targetQty > sInfo.totalStock) {
-                    showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
-                    targetQty = sInfo.totalStock;
+                const itemMultiplier = parseFloat(item.unitMultiplier) || 1;
+                const neededBase = targetQty * itemMultiplier;
+                if (sInfo.isManaged && !sInfo.isPreorder && neededBase > sInfo.totalStock) {
+                    const maxUnits = itemMultiplier > 1 ? Math.floor(sInfo.totalStock / itemMultiplier) : sInfo.totalStock;
+                    showToast(`Stok maksimal tersedia: ${maxUnits} ${item.unit || 'pcs'} (${formatQty(sInfo.totalStock)} ${item.baseUnit || p.unit || 'pcs'})`, 'warning');
+                    targetQty = maxUnits;
                 }
             }
         }
@@ -1953,6 +2084,26 @@ const renderCart = () => {
             const coverThumbHtml = renderProductCoverHtml(item, { size: 'thumb' });
             const hasItemDisc = (parseFloat(item.discount) || 0) > 0;
             const isDiscOpen = posOpenItemDiscKeys.has(String(item.cartKey || item.id)) || hasItemDisc;
+            const origProd = (appData.products || []).find(p => String(p.id) === String(item.id));
+            const availUnits = origProd ? getAvailableUnits(origProd, item.variantName) : [];
+            const hasMultiUnits = availUnits.length > 1;
+
+            let uomPillHtml = '';
+            if (hasMultiUnits) {
+                uomPillHtml = `
+                <div class="flex items-center gap-1 mt-1.5 flex-wrap">
+                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mr-0.5">Satuan:</span>
+                    ${availUnits.map(u => {
+                        const isSelected = (item.unit || '').toLowerCase() === u.name.toLowerCase();
+                        return `
+                        <button type="button" onclick="window.posChangeItemUnit('${ckey}', '${esc(u.name)}')" 
+                            class="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-lg border transition-all cursor-pointer active:scale-95 ${isSelected ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-2xs' : 'bg-slate-50 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-[var(--color-primary)]/50'}">
+                            <span>${esc(u.name)}</span>
+                            ${!u.isBase ? `<span class="text-[7.5px] opacity-80">(${u.multiplier} ${esc(availUnits[0].name)})</span>` : ''}
+                        </button>`;
+                    }).join('')}
+                </div>`;
+            }
 
             return `
             <div class="group flex items-start gap-2.5 p-2 sm:p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
@@ -1967,14 +2118,17 @@ const renderCart = () => {
                 <div class="flex-1 min-w-0 pr-1">
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${esc(item.name)}">${baseName}</p>
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                        ${item.isPackagingUnit ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs bg-indigo-600 dark:bg-indigo-500"><i class="fa-solid fa-box text-[7px]"></i>1 ${esc(item.unit)} = ${item.unitMultiplier} ${esc(item.baseUnit || 'pcs')}</span>` : ''}
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
+                        ${itemHpp > 0 && item.price < itemHpp ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-rose-600 bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800" title="Harga Jual di bawah HPP Modal!"><i class="fa-solid fa-triangle-exclamation text-[7px]"></i>DI BAWAH HPP</span>` : ''}
                         ${item.poTime ? `<span class="inline-flex items-center gap-1 text-[8px] font-bold px-1.5 py-0.5 rounded text-amber-700 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs uppercase tracking-wide"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(item.poTime)}</span>` : ''}
                         ${canViewHpp() && itemHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700 shadow-2xs" title="Harga Modal (HPP)"><i class="fa-solid fa-coins text-[7px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(itemHpp)}</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
+                    ${uomPillHtml}
 
                     <!-- Smart Item Discount Toggle / Input (Ramping & Bebas Sesak) -->
                     ${isDiscOpen ? `
@@ -2004,6 +2158,9 @@ const renderCart = () => {
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
+                    ${item.isPackagingUnit ? `
+                        <span class="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold mt-1" title="Kuantitas satuan dasar yang dipotong">= ${formatQty(item.qty * (item.unitMultiplier || 1))} ${esc(item.baseUnit || 'pcs')}</span>
+                    ` : ''}
                     ${/^(kg|kilo|kilogram|meter|m|ltr|liter|m2|m3|ons|gram|g)$/i.test((item.unit || '').trim()) ? `
                     <div class="flex items-center gap-0.5 mt-1 justify-end">
                         <button type="button" onclick="window.posSetQty('${ckey}', 0.25)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.25 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.25 (1/4)">¼</button>
@@ -3488,7 +3645,8 @@ export const processPOSTx = async () => {
                 const pId = ci.id != null ? ci.id.toString() : null;
                 if (!pId) return;
                 if (!qtyMap[pId]) qtyMap[pId] = { main: 0, variants: {} };
-                const q = parseFloat(ci.qty) || 0;
+                const multiplier = parseFloat(ci.unitMultiplier) || 1;
+                const q = (parseFloat(ci.qty) || 0) * multiplier;
                 if (ci.variantName) qtyMap[pId].variants[ci.variantName] = (qtyMap[pId].variants[ci.variantName] || 0) + q;
                 else qtyMap[pId].main += q;
             });
@@ -3859,7 +4017,13 @@ export const handlePOSSearchKeydown = (e) => {
         if (match) {
             const prod = match.product;
             let added = false;
-            if (match.isVariantMatch && match.variant) {
+            if (match.isPackagingMatch && match.matchedUnit) {
+                added = addToCartWithUnit(prod.id, match.matchedUnit.name, 1);
+                if (added) {
+                    showToast(`Ditambahkan: ${prod.name} (${match.matchedUnit.name})`, 'success');
+                    if (typeof playCashierChime === 'function') playCashierChime();
+                }
+            } else if (match.isVariantMatch && match.variant) {
                 const vPrice = parseFloat(match.variant.price) || 0;
                 added = addToCartWithVariant(prod.id, match.variant.name, vPrice, match.variantIdx, 1);
                 if (added) {
@@ -4538,6 +4702,8 @@ const exposeToWindow = () => {
     window.setPOSViewMode          = setPOSViewMode;
     window.posAddToCart            = addToCart;
     window.posAddToCartQty         = posAddToCartQty;
+    window.addToCartWithUnit       = addToCartWithUnit;
+    window.posChangeItemUnit       = posChangeItemUnit;
     window.addEstimatorToPOSCart   = addEstimatorToPOSCart;
     window.addToCartPOSWithVariant = addToCartWithVariant;
     window.posUpdateQty            = updateQty;
@@ -4983,7 +5149,11 @@ const _handleBarcodeResult = (code) => {
         let itemName = prod.name;
         let itemPrice = parseFloat(prod.price) || 0;
 
-        if (match.isVariantMatch && match.variant) {
+        if (match.isPackagingMatch && match.matchedUnit) {
+            itemName = `${prod.name} (${match.matchedUnit.name})`;
+            itemPrice = parseFloat(match.matchedUnit.price) || 0;
+            added = addToCartWithUnit(prod.id, match.matchedUnit.name, 1);
+        } else if (match.isVariantMatch && match.variant) {
             itemName = `${prod.name} — ${match.variant.name}`;
             itemPrice = parseFloat(match.variant.price) || 0;
             added = addToCartWithVariant(prod.id, match.variant.name, itemPrice, match.variantIdx, 1);
@@ -5271,6 +5441,8 @@ window.posClearSearch          = posClearSearch;
 window.posLoadMoreProducts     = posLoadMoreProducts;
 window.posSyncOfflineTransactions = posSyncOfflineTransactions;
 window.renderOfflineQueueBadge = renderOfflineQueueBadge;
+window.addToCartWithUnit       = addToCartWithUnit;
+window.posChangeItemUnit       = posChangeItemUnit;
 window.initPOSNetworkMonitoring= initPOSNetworkMonitoring;
 window.getOfflineTxQueue       = getOfflineTxQueue;
 

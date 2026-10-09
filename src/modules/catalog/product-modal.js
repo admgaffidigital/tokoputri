@@ -786,17 +786,40 @@ export const rProdMod = () => {
 
     setH('product-modal-badges', bH);
     
-    // Wholesale Section
-    setH('product-modal-wholesale-container', (p.wholesale?.length && !p.variants?.length) ? `
+    // Wholesale & Multi-Units Section
+    let wholesaleAndUnitsHtml = '';
+    if (p.multiUnits && p.multiUnits.length > 0) {
+        wholesaleAndUnitsHtml += `
+        <div class="mb-4 bg-indigo-50/70 dark:bg-indigo-950/20 rounded-2xl p-4 border border-indigo-200/80 dark:border-indigo-800/40 shadow-xs">
+            <p class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 mb-2.5 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-boxes-stacked"></i> Pilihan Satuan Kemasan</p>
+            <div class="space-y-2">${p.multiUnits.map(mu => {
+                const uMultiplier = parseFloat(mu.multiplier != null ? mu.multiplier : mu.conversionRatio) || 1;
+                const uPrice = parseFloat(mu.price) || 0;
+                return `
+                <div class="flex justify-between items-center text-xs font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-indigo-100 dark:border-slate-700 shadow-2xs">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-md bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-box"></i></span>
+                        <span class="text-slate-700 dark:text-slate-200">${esc(mu.name || mu.unitName)} <span class="text-[10px] text-slate-400 font-medium">(${uMultiplier} ${esc(unt)})</span></span>
+                    </div>
+                    <span class="font-extrabold text-indigo-600 dark:text-indigo-400">${fCur(uPrice)}</span>
+                </div>`;
+            }).join('')}
+            </div>
+        </div>`;
+    }
+    if (p.wholesale?.length && !p.variants?.length) {
+        wholesaleAndUnitsHtml += `
         <div class="mb-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl p-4 border border-amber-200 dark:border-amber-800/50 shadow-inner">
-            <p class="text-[10px] font-bold text-amber-600 dark:text-amber-500 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Harga Grosir</p>
+            <p class="text-[10px] font-bold text-amber-600 dark:text-amber-500 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Harga Grosir Eceran</p>
             <div class="space-y-2">${p.wholesale.slice().sort((a, b) => a.minQty - b.minQty).map(w => `
                 <div class="flex justify-between items-center text-sm font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-amber-100 dark:border-slate-700 shadow-sm">
                     <span class="text-slate-600 dark:text-slate-300">≥ ${parseFloat(w.minQty)} <span class="text-[10px] uppercase tracking-wider">${esc(unt)}</span></span>
                     <span class="text-[var(--color-primary)] font-bold">${fCur(w.price)}</span>
                 </div>`).join('')}
             </div>
-        </div>` : '');
+        </div>`;
+    }
+    setH('product-modal-wholesale-container', wholesaleAndUnitsHtml);
     
     // Info Seller (HPP & Stok khusus admin)
     const adminInfoEl = el('product-modal-admin-info');

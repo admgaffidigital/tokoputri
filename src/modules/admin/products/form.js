@@ -20,6 +20,7 @@ import {
     tVars, setTVars,
     tWhol, setTWhol,
     tSpec, setTSpec,
+    tMultiUnits, setTMultiUnits,
     tSubCats, setTSubCats,
 } from './index.js';
 
@@ -60,6 +61,7 @@ window.oAEd = (t, id) => {
         setTVars(d && d.variants ? JSON.parse(JSON.stringify(d.variants)) : []);
         setTWhol(d && d.wholesale ? JSON.parse(JSON.stringify(d.wholesale)) : []);
         setTSpec(d && d.specTable ? JSON.parse(JSON.stringify(d.specTable)) : []);
+        setTMultiUnits(d && d.multiUnits ? JSON.parse(JSON.stringify(d.multiUnits)) : []);
     }
     if(t==='categories'){
         const existingSubs = Array.isArray(d?.subCategories) 
@@ -69,7 +71,7 @@ window.oAEd = (t, id) => {
     }
 
     // Kelompokkan field dalam grid 2-kolom responsive
-    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder','spec_table_builder','subcategories_builder'];
+    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder','multi_units_builder','spec_table_builder','subcategories_builder'];
     const FULL_WIDTH_KEYS  = ['img','desc','name','isActive','tag','poTime','video'];
     const isFullWidth = k => FULL_WIDTH_TYPES.includes(k.type) || FULL_WIDTH_KEYS.includes(k.key);
 
@@ -109,6 +111,8 @@ window.oAEd = (t, id) => {
             h += `<div id="variants-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'wholesale_builder') {
             h += `<div id="wholesale-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
+        } else if(k.type === 'multi_units_builder') {
+            h += `<div id="multi-units-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'spec_table_builder') {
             h += `<div id="spec-table-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'subcategories_builder') {
@@ -199,6 +203,7 @@ window.oAEd = (t, id) => {
     if(t==='products') { 
         window.rVarsB?.(); 
         window.rWholB?.(); 
+        window.rMultiUnitsB?.();
         window.rSpecB?.(); 
         window.updateProductSubCategoryOptions?.(d ? d.category : '', d ? d.subCategory : '');
     }
@@ -234,6 +239,14 @@ window.submitAdminForm = async () => {
             d.variants = tVars.filter(v => v.name.trim() !== '');
         } else if (k.type === 'wholesale_builder') {
             d.wholesale = tWhol.filter(w => parseFloat(w.minQty) > 0.01 && w.price > 0);
+        } else if (k.type === 'multi_units_builder') {
+            d.multiUnits = (tMultiUnits || []).filter(u => ((u.name || u.unitName || '').trim() !== '') && (parseFloat(u.multiplier != null ? u.multiplier : u.conversionRatio) > 0.001)).map(u => ({
+                name: (u.name || u.unitName || '').trim(),
+                multiplier: parseFloat(u.multiplier != null ? u.multiplier : u.conversionRatio) || 1,
+                price: parseFloat(u.price) || 0,
+                hpp: parseFloat(u.hpp) || 0,
+                barcode: (u.barcode || '').trim()
+            }));
         } else if (k.type === 'spec_table_builder') {
             d.specTable = tSpec.filter(s => s.key.trim() !== '');
         } else if (k.type === 'subcategories_builder') {
@@ -320,6 +333,9 @@ window.submitAdminForm = async () => {
                 }
                 if (oldProd.suppliers && !d.suppliers) {
                     d.suppliers = oldProd.suppliers;
+                }
+                if (oldProd.multiUnits && !d.multiUnits) {
+                    d.multiUnits = oldProd.multiUnits;
                 }
                 if (d.supplierId && Array.isArray(d.suppliers)) {
                     const supIdx = d.suppliers.findIndex(s => String(s.supplierId) === String(d.supplierId));

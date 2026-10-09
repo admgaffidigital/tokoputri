@@ -24,7 +24,7 @@ export const aF = {
         {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'subCategory', label:'Jenis / Sub-Kategori (Cth: Cat Tembok, Pipa PVC, Power Tools)', type:'text'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
         {key:'supplierId', label:'Supplier / Rekanan Pemasok', type:'dynamic_select_supplier'},
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
-        {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'specTable', label:'Tabel Spesifikasi (Opsional)', type:'spec_table_builder'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
+        {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'specTable', label:'Tabel Spesifikasi (Opsional)', type:'spec_table_builder'}, {key:'wholesale', label:'Grosir Eceran', type:'wholesale_builder'}, {key:'multiUnits', label:'Multi-Satuan Kemasan Bertingkat (Opsional)', type:'multi_units_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
     ],
     suppliers: [
         {key:'code', label:'Kode Supplier (Cth: SUP-001)', type:'text'},

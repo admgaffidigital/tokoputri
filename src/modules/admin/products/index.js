@@ -35,6 +35,9 @@ export const setTWhol = (v) => { tWhol = v; };
 export let tSpec = [];
 export const setTSpec = (v) => { tSpec = v; };
 
+export let tMultiUnits = [];
+export const setTMultiUnits = (v) => { tMultiUnits = v; window.tMultiUnits = v; };
+
 export let tSubCats = [];
 export const setTSubCats = (v) => { tSubCats = v; window.tSubCats = v; };
 
@@ -43,6 +46,7 @@ window.setCTab = setCTab;
 window.setASq  = setASq;
 window.setEId  = setEId;
 window.setTSubCats = setTSubCats;
+window.setTMultiUnits = setTMultiUnits;
 
 // ─── Import Sub-Modul ─────────────────────────────────────────────────────────
 import './table.js';

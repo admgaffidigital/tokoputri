@@ -766,7 +766,8 @@ export const processOrder = async () => {
                 const pId = ci.id != null ? ci.id.toString() : null;
                 if (!pId) return;
                 if (!qtyMap[pId]) qtyMap[pId] = { main: 0, variants: {} };
-                const q = parseFloat(ci.qty) || 0;
+                const multiplier = parseFloat(ci.unitMultiplier) || 1;
+                const q = (parseFloat(ci.qty) || 0) * multiplier;
                 if (ci.variantName) qtyMap[pId].variants[ci.variantName] = (qtyMap[pId].variants[ci.variantName] || 0) + q;
                 else qtyMap[pId].main += q;
             });
