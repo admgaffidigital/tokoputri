@@ -70,6 +70,19 @@ if (typeof window.openDeliveryModal !== 'function') {
     };
 }
 
+if (typeof window.openSalesReturnModal !== 'function') {
+    window.openSalesReturnModal = (orderId = null) => {
+        import('./returns.js').then(m => {
+            if (m && typeof m.openSalesReturnModal === 'function') {
+                m.openSalesReturnModal(orderId);
+            }
+        }).catch(err => {
+            console.error('[Returns] Gagal memuat modul retur via proxy:', err);
+            showToast('Gagal memuat form retur.');
+        });
+    };
+}
+
 export const openAdminTab = (t, fH = false) => {
     // Verifikasi hak akses pengguna untuk modul ini
     const permKey = t === 'staff' ? 'cashiers' : t;

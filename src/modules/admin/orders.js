@@ -228,6 +228,9 @@ export const renderOrdersList = () => {
         let itemCount = o.items ? parseFloat(o.items.reduce((sum, item) => sum + (parseFloat(item.qty) || 0), 0).toFixed(2)) : 0;
         const dStr = o.dateString ? new Date(o.dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '';
         const shortId = (o.orderId || '').split('-').pop();
+        const orderReturns = (appData.salesReturns || []).filter(r => String(r.orderId) === String(o.orderId || o.id));
+        const hasReturn = orderReturns.length > 0;
+        const totalRefundVal = orderReturns.reduce((sum, r) => sum + (parseFloat(r.totalRefund) || 0), 0);
         
         return `
         <div class="card-native p-4 sm:p-5 rounded-2xl sm:rounded-3xl relative overflow-hidden group cursor-pointer active:scale-[0.99] transition-all duration-200" onclick="openOrderDetail('${o.orderId}')">
@@ -257,6 +260,7 @@ export const renderOrdersList = () => {
                         <span class="text-[9px] font-bold ${o.customerType === 'Member' ? 'text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] border border-[rgba(var(--color-primary-rgb),0.25)]' : 'text-slate-500 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700'} px-2 py-0.5 rounded-lg uppercase tracking-widest shrink-0">${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-[var(--color-primary)] mr-1"></i>Member' : 'Umum'}</span>
                         ${o.customer?.lat ? `<span class="text-[9px] font-bold text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-lg border border-[rgba(var(--color-primary-rgb),0.2)] uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
                         ${o.delivery?.doNumber ? `<span class="text-[9px] font-bold ${o.delivery.status === 'delivered' ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' : o.delivery.status === 'out_for_delivery' ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800' : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800'} px-2 py-0.5 rounded-lg border uppercase tracking-widest shrink-0 flex items-center gap-1"><i class="fa-solid fa-truck-fast text-[8px]"></i> DO #${esc(o.delivery.doNumber.split('-').pop())}</span>` : ''}
+                        ${hasReturn ? `<span class="text-[9px] font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 px-2 py-0.5 rounded-lg uppercase tracking-widest shrink-0 flex items-center gap-1"><i class="fa-solid fa-right-left text-[8px]"></i> Retur: ${fCur(totalRefundVal)}</span>` : ''}
                         ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-lg border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
                     </div>
                 </div>
@@ -367,6 +371,7 @@ export const openOrderDetail = (i) => {
     if (!o) return; 
     setCVOrd(i);
     const taxInfo = extractOrderTaxInfo(o);
+    const orderReturns = (appData.salesReturns || []).filter(r => String(r.orderId) === String(o.orderId || o.id));
     
     const isPOS = o.source === 'pos' || o.channel === 'pos';
     const hasWA = !!(o.customer?.wa);
@@ -498,6 +503,10 @@ export const openOrderDetail = (i) => {
                         <i class="fa-solid fa-print text-amber-500 text-sm"></i>
                         <span>Cetak DO A4</span>
                     </button>
+                    <button type="button" onclick="if(typeof window.closeOrderDetailModal==='function') window.closeOrderDetailModal(); if(window.openSalesReturnModal){window.openSalesReturnModal('${esc(o.orderId)}');} else if(window.openAdminTab){window.openAdminTab('returns');}" class="btn-native-action w-full sm:w-auto px-4 h-11 py-2.5 rounded-xl border border-rose-200 dark:border-rose-800 bg-rose-50/80 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer active:scale-95 shrink-0 transition-transform" title="Proses Pengembalian Barang Nota Ini">
+                        <i class="fa-solid fa-right-left text-rose-500 text-sm"></i>
+                        <span>Retur (RMA)</span>
+                    </button>
                 </div>
             </div>
 
@@ -507,7 +516,12 @@ export const openOrderDetail = (i) => {
 
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl primary-light-icon-box flex items-center justify-center border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
-                <div class="space-y-3">${o.items.map(t => `
+                <div class="space-y-3">${o.items.map(t => {
+                    const itemReturns = orderReturns.reduce((sum, r) => {
+                        const found = (r.items || []).find(it => String(it.id) === String(t.id) && (it.variantName || '') === (t.variantName || ''));
+                        return sum + (found ? (parseFloat(found.qty) || 0) : 0);
+                    }, 0);
+                    return `
                     <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm min-w-0">
                         <div class="flex items-center gap-3 min-w-0">
                             <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
@@ -519,13 +533,57 @@ export const openOrderDetail = (i) => {
                                     ${t.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-lg text-[8px] font-bold uppercase">PO ${esc(t.poTime)}</span>` : ''}
                                 </div>
                                 ` : ''}
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold">${parseFloat(t.qty)} ${esc(t.unit || 'pcs')} x ${fCur(t.effectivePrice)}</p>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 flex-wrap">
+                                    <span>${parseFloat(t.qty)} ${esc(t.unit || 'pcs')} x ${fCur(t.effectivePrice)}</span>
+                                    ${itemReturns > 0 ? `
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md border border-rose-200 dark:border-rose-800">
+                                        <i class="fa-solid fa-right-left text-[9px]"></i> Diretur: ${itemReturns} ${esc(t.unit || 'pcs')}
+                                    </span>` : ''}
+                                </p>
                             </div>
                         </div>
                         <div class="font-bold text-sm text-slate-900 dark:text-white ml-3 shrink-0">${fCur(t.effectivePrice * parseFloat(t.qty))}</div>
-                    </div>`).join('')}
+                    </div>`;
+                }).join('')}
                 </div>
             </div>
+
+            ${orderReturns.length > 0 ? `
+            <div class="bg-rose-50/60 dark:bg-rose-950/20 p-5 sm:p-6 rounded-[1.5rem] border border-rose-200/80 dark:border-rose-800/60 shadow-sm">
+                <div class="flex items-center justify-between border-b border-rose-200/80 dark:border-rose-800/60 pb-3.5 mb-3.5">
+                    <h4 class="font-bold text-rose-700 dark:text-rose-300 text-sm flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-200 dark:border-rose-800">
+                            <i class="fa-solid fa-right-left"></i>
+                        </div>
+                        Riwayat Retur Barang (RMA)
+                    </h4>
+                    <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                        ${orderReturns.length}x Retur Selesai
+                    </span>
+                </div>
+                <div class="space-y-2.5">
+                    ${orderReturns.map(ret => `
+                        <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-black text-xs text-rose-700 dark:text-rose-400 font-mono">${esc(ret.id)}</span>
+                                    <span class="text-[10px] font-bold text-slate-400">&middot; ${new Date(ret.createdAt).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
+                                </div>
+                                <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+                                    Kompensasi: <b class="capitalize">${ret.refundMethod === 'cash' ? 'Pengembalian Tunai' : (ret.refundMethod === 'credit' ? 'Store Credit' : 'Tukar Barang')}</b>
+                                    ${ret.notes ? `&middot; <i>"${esc(ret.notes)}"</i>` : ''}
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2.5 justify-between sm:justify-end">
+                                <span class="text-xs font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(ret.totalRefund)}</span>
+                                <button type="button" onclick="if(typeof window.closeOrderDetailModal==='function') window.closeOrderDetailModal(); if(window.openAdminTab){window.openAdminTab('returns');}" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-[10px] font-bold transition-all cursor-pointer">
+                                    Buka RMA
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>` : ''}
 
             ${o.claimedReward ? `
             <div class="bg-violet-50 dark:bg-violet-900/10 p-5 sm:p-6 rounded-[1.5rem] border border-violet-200 dark:border-violet-800 shadow-sm">
