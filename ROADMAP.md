@@ -1,12 +1,12 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.13.0` | **Target Jangka Panjang:** `v2.0.0`
-
+> **Target Baseline Saat Ini:** `v1.13.1` | **Target Jangka Panjang:** `v2.0.0`
+ 
 ---
-
+ 
 ## 📌 Visi & Orientasi Pengembangan
-Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.12.2` dengan integrasi hulu-ke-hilir:
+Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.13.1` dengan integrasi hulu-ke-hilir:
 - Kasir POS responsif berkecepatan tinggi dengan Dual-Engine Scanner Kamera, Barcode Vektor Code 128, dan Presisi Kuantitas Desimal untuk barang curah/kiloan.
 - Alat Kalkulator Estimator Material Bangunan interaktif (Cat & Plafon, Keramik & Granit, Pasangan Dinding Hebel/Bata).
 - Manajemen Retur Barang & RMA Terpadu (Customer Sales Return & Vendor Purchase Return) dengan dukungan produk multi-varian, pemilih varian dinamis, HPP spesifik varian, alokasi karantina rusak, rekonsiliasi kas laci, serta Universal Native Card View & Dual-View responsif.
@@ -14,15 +14,16 @@ Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitekt
 - Inventori dua lokasi independen (*Floor-First Deduction*: Rak Toko vs Gudang Cadangan).
 - Buku Kas Laci Kasir (*Cash Movement*), Rekap Shift X/Z Report, dan Manajemen Piutang Tempo (AR Ledger).
 - Cetak label barcode mandiri (Thermal Roll 40x30, 50x30, Continuous Roll, & Kertas A4 Grid).
-
+- Manajemen Logistik, Pengiriman Proyek, Surat Jalan (DO) Barcode Code 128, Verifikasi Tanda Tangan Digital Mandor, dan UI Native Mobile App Touch-Friendly berbalut tema toko dinamis.
+ 
 Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjawab kebutuhan nyata operasional toko bahan bangunan dan alat teknik di lapangan, meningkatkan efisiensi logistik proyek, mempercepat perputaran kas, serta memperkuat kepuasan pelanggan ritel maupun kontraktor.
-
+ 
 ---
-
+ 
 ## 🚀 FASE 1: Keluwesan Transaksi Eceran & Daya Tarik Konsumen (SELESAI - v1.11.0)
 > **Fokus Utama:** Fleksibilitas kasir melayani barang curah/kiloan dan modul interaktif pikat pembeli.  
 > **Status:** Selesai & Terverifikasi di `v1.11.0`
-
+ 
 ### 1.1 Dukungan Kuantitas Desimal & Barang Curah Kiloan (*Decimal Precision POS*)
 * **Latar Belakang:** Penjualan bahan bangunan sarat dengan barang curah/kiloan (misal: paku 0.5 kg, kawat bendrat 1.25 kg, kabel 2.5 meter, thinner 0.75 liter).
 * **Fitur & Spesifikasi:**
@@ -30,7 +31,7 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
   - [x] Validasi stepper qty (+ / -) yang adaptif terhadap tipe satuan (pcs = step 1, kg/meter = step 0.25 / 0.5).
   - [x] Perhitungan subtotal, diskon member, dan pemotongan stok persediaan FIFO mendukung kalkulasi floating point aman (`roundToDecimals` & `Math.round`).
   - [x] Cetak struk belanja thermal menampilkan kuantitas desimal rapi (cth: `0.5 kg @ Rp 24.000 = Rp 12.000`).
-
+ 
 ### 1.2 Kalkulator Estimator Bahan Bangunan Interaktif (*Interactive Material Estimator*)
 * **Latar Belakang:** Konsumen/mandor sering bertanya estimasi bahan yang dibutuhkan untuk proyek renovasi.
 * **Fitur & Spesifikasi:**
@@ -44,13 +45,13 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
     - Input: Luas dinding bata (m²).
     - Output: Estimasi bata merah / hebel ringan dan kebutuhan sak semen mortar.
   - [x] **Aksi 1-Klik**: Tombol *"Tambahkan Semua Bahan ke Keranjang"* langsung mengisi daftar belanja kasir / etalase online, salin rincian ke clipboard, & konsultasi WhatsApp Resmi.
-
+ 
 ---
-
+ 
 ## 📦 FASE 2: Manajemen Retur & Rekonsiliasi Inventori (RMA Engine) (SELESAI - v1.12.2)
 > **Fokus Utama:** Ketertiban penukaran barang, klaim cacat supplier, dan akurasi stok fisik.  
 > **Status:** Selesai & Terverifikasi di `v1.12.2`
-
+ 
 ### 2.1 Modul Retur Penjualan (*Customer Sales Return*)
 * **Latar Belakang:** Kasus tukang kelebihan beli fitting pipa, salah ukuran kran, atau sisa semen proyek.
 * **Fitur & Spesifikasi:**
@@ -63,7 +64,7 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
     3. **Saldo Deposit / Store Credit**: Disimpan sebagai saldo belanja member yang dapat dipakai pada transaksi berikutnya.
   - [x] Restorasi otomatis ke kartu stok persediaan (bisa memilih dikembalikan ke Rak Toko atau Karantina Rusak).
   - [x] Cetak Nota Retur Penjualan resmi A4 / Struk Termal Retur.
-
+ 
 ### 2.2 Modul Retur Pembelian ke Supplier (*Vendor Purchase Return*)
 * **Latar Belakang:** Pengembalian barang cacat/rusak pabrik (kaleng cat bocor, saklar mati) ke distributor/supplier.
 * **Fitur & Spesifikasi:**
@@ -73,24 +74,31 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
   - [x] Otomasi pemotongan Saldo Hutang Dagang (*Accounts Payable*) ke supplier terkait berdasarkan HPP spesifik varian.
   - [x] Pencatatan jurnal pembalik HPP dan histori mutasi barang keluar di kartu stok.
   - [x] Cetak Surat Pengembalian Barang ke Supplier resmi A4 dengan tanda tangan serah terima.
-
+ 
 ---
-
-## 🚚 FASE 3: Logistik, Pengiriman Proyek & Surat Jalan (Delivery Management) (SELESAI - v1.13.0)
-> **Fokus Utama:** Penataan alur distribusi barang berat/bervolume ke lokasi proyek.  
-> **Status:** Selesai & Terverifikasi di `v1.13.0`
-
+ 
+## 🚚 FASE 3: Logistik, Pengiriman Proyek & Surat Jalan (Delivery Management) (SELESAI - v1.13.1)
+> **Fokus Utama:** Penataan alur distribusi barang berat/bervolume ke lokasi proyek & antarmuka native app.  
+> **Status:** Selesai, Terverifikasi & UI Native App Harmonis di `v1.13.1`
+ 
 ### 3.1 Dokumen Surat Jalan Resmi (*Delivery Order / DO*)
 * **Fitur & Spesifikasi:**
   - [x] Penerbitan Surat Jalan ber-barcode Code 128 terpisah dari Struk Kasir (`DO-YYMM-XXXXX`).
   - [x] Format cetak standar logistik proyek (Kertas A4 / rangkap) memuat: Alamat Proyek/Drop Point, Kontak Mandor, Catatan Bongkar, Tabel Checklist Muatan, dan 4 kolom tanda tangan.
   - [x] Manajemen Armada: Penugasan jenis armada (Mobil Pick-up L300, Truk Engkel, Motor Roda Tiga Toko, dsb) dan nama supir/helper beserta kontak WhatsApp.
-
+ 
 ### 3.2 Pelacakan Status Pengiriman Real-Time & Tanda Tangan Mandor
 * **Fitur & Spesifikasi:**
   - [x] Siklus status pengiriman: `Menunggu Muat (Pending Dispatch)` $\rightarrow$ `Dalam Perjalanan (Out for Delivery)` $\rightarrow$ `Terkirim (Delivered)`.
   - [x] Konfirmasi serah terima di aplikasi: Input nama penerima di proyek, catatan kondisi muatan, dan kanvas tanda tangan digital di layar sentuh (*Interactive Touch Signature Pad*).
   - [x] Otomasi pesan WhatsApp pengiriman rute armada ke supir dan notifikasi keberangkatan ke mandor/pemesan proyek.
+ 
+### 3.3 Transformasi Desain Native App & Harmonisasi Tema Toko (v1.13.1)
+* **Fitur & Spesifikasi:**
+  - [x] **Grid Kartu Armada Sentuh (*Touch Fleet Cards Grid*)**: Menggantikan dropdown `<select>` web jadul dengan 6 kartu armada interaktif (Pick-up, Truk Engkel, Truk Dobel, Roda Tiga, Ekspedisi Luar, Ambil Mandor) ber-border tema toko.
+  - [x] **Checklist Muatan Tile Interaktif (*Zero HTML Table*)**: Mengeliminasi tabel kaku di smartphone, diganti dengan kartu item touch-friendly 1-ketukan, squircle checkbox tema toko, kuantitas kapsul, chip varian, counter real-time, dan tombol Pilih Semua.
+  - [x] **Fixed Pinned Bottom Action Bar**: Tombol aksi utama (Tutup, Cetak A4, WA Mandor, Simpan) dipin melayang di bawah layar sentuh (thumb-friendly).
+  - [x] **Segmented Status Stepper**: Stepper 3 tahap bertema toko (`var(--color-primary)`) berpadu kanvas tanda tangan sentuh yang lapang dan collapsible barcode drawer.
 
 ---
 
