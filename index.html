@@ -1228,6 +1228,24 @@
         <!-- Scrollable Content -->
         <div class="custom-scrollbar flex-1 overflow-y-auto bg-slate-50/60 p-4 sm:p-6 dark:bg-[#0b1121]" id="modal-delivery-order-content">
         </div>
+
+        <!-- Footer Action Bar (Fixed Pinned) -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white/95 dark:bg-[#0b1121]/95 backdrop-blur-md flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 shrink-0" style="padding-bottom: max(0.9rem, env(safe-area-inset-bottom));">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button type="button" onclick="closeDeliveryModal()" class="btn-native-action px-3.5 h-11 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 shadow-2xs">
+              Tutup
+            </button>
+            <button type="button" onclick="printOfficialDeliveryOrderA4(window._activeDeliveryOrderId)" class="btn-native-action flex-1 sm:flex-none px-3.5 h-11 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 shadow-2xs flex items-center justify-center gap-1.5" title="Cetak Surat Jalan A4">
+              <i class="fa-solid fa-print text-amber-500"></i> Cetak A4
+            </button>
+            <button type="button" onclick="sendDeliveryWhatsAppToMandor(window._activeDeliveryOrderId)" class="btn-native-action flex-1 sm:flex-none px-3.5 h-11 rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 shadow-2xs flex items-center justify-center gap-1.5" title="WhatsApp Mandor">
+              <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i> WA Mandor
+            </button>
+          </div>
+          <button type="button" onclick="saveDeliveryDetails(window._activeDeliveryOrderId)" class="btn-native-action w-full sm:w-auto flex-1 h-11 px-5 rounded-2xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Data Pengiriman
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1256,6 +1274,16 @@
 
         <!-- Scrollable Content -->
         <div class="custom-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-5 dark:bg-[#0b1121]" id="modal-delivery-signature-content">
+        </div>
+
+        <!-- Footer Action Bar (Fixed Pinned) -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white/95 dark:bg-[#0b1121]/95 backdrop-blur-md flex items-center justify-between gap-3 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+          <button type="button" onclick="closeDeliverySignatureModal()" class="btn-native-action border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 shadow-2xs">
+            Batal
+          </button>
+          <button type="button" onclick="saveDeliverySignature()" class="btn-native-action flex-1 text-white uppercase tracking-wider font-black text-xs sm:text-sm shadow-sm active:scale-95 cursor-pointer hover:opacity-95 flex items-center justify-center gap-2 h-11 rounded-2xl" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <i class="fa-solid fa-circle-check"></i> Selesaikan Serah Terima
+          </button>
         </div>
       </div>
     </div>
