@@ -241,6 +241,11 @@ export const rDyn = () => {
         hide('dynamic-banners-container');
     }
 
+    // --- RENDER PANGGUNG FLASH SALE PROMO KILAT (Live Countdown & Kuota) ---
+    if (typeof window.renderStorefrontFlashSale === 'function') {
+        window.renderStorefrontFlashSale();
+    }
+
     // --- RENDER VOUCHERS PROMO (Dynamic Theme Luxury Ticket Style) ---
     const activeVouchers = (appData.vouchers || []).filter(v => v.isShow === 'true' || v.isShow === true);
     const vC = el('dynamic-vouchers-container');

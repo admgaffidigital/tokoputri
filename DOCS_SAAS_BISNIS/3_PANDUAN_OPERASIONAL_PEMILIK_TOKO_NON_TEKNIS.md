@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.14.0**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.15.0**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -23,11 +23,12 @@ Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), mana
 14. [Perpanjangan Masa Aktif Layanan Toko, Masa Tenggang & Keamanan Data](#bab-14--perpanjangan-masa-aktif-layanan-toko-masa-tenggang--keamanan-data)
 15. [Multi-Satuan Bertingkat (UOM) & Harga Grosir Fleksibel (Dus/Roll vs Eceran)](#bab-15--multi-satuan-bertingkat-uom--harga-grosir-fleksibel-dusroll-vs-eceran)
 16. [Logistik Pengiriman Proyek, Surat Jalan (DO) & Tanda Tangan Digital Mandor](#bab-16--logistik-pengiriman-proyek-surat-jalan-do--tanda-tangan-digital-mandor)
-17. [Manajemen Retur Barang Konsumen & Klaim Cacat Supplier (RMA Engine)](#bab-17--manajemen-retur-barang-konsumen--klaim-cacat-supplier-rma-engine)
+17: [Manajemen Retur Barang Konsumen & Klaim Cacat Supplier (RMA Engine)](#bab-17--manajemen-retur-barang-konsumen--klaim-cacat-supplier-rma-engine)
 18. [Kalkulator Estimator Material Bangunan & Penjualan Curah Kiloan Desimal](#bab-18--kalkulator-estimator-material-bangunan--penjualan-curah-kiloan-desimal)
 19. [Sistem Cetak Label Barcode SKU & Harga Universal (Thermal Roll & Kertas A4)](#bab-19--sistem-cetak-label-barcode-sku--harga-universal-thermal-roll--kertas-a4)
 20. [Manajemen Dua Lokasi Stok (Rak Toko vs Gudang Cadangan) & Metode FIFO](#bab-20--manajemen-dua-lokasi-stok-rak-toko-vs-gudang-cadangan--metode-fifo)
 21. [Panduan Lengkap Cara Menjelaskan Sistem (Untuk Konsumen, Staf & Mitra Bisnis)](#bab-21--panduan-lengkap-cara-menjelaskan-sistem-untuk-konsumen-staf--mitra-bisnis)
+22. [Operasional Flash Sale & Promo Kilat (Storefront, POS & Margin Guard)](#bab-22--operasional-flash-sale--promo-kilat-storefront-pos--margin-guard)
 
 ---
 
@@ -532,6 +533,48 @@ Gunakan kerangka nilai bisnis ini untuk mendemonstrasikan keunggulan sistem:
 > 5. **Multi-Platform (Web, Mobile PWA & Native Android APK):**
 >    *Dapat diakses dari laptop kasir, tablet Android toko, hingga HP pribadi pemilik toko dari mana saja di seluruh dunia."*
 
+## BAB 22 — OPERASIONAL FLASH SALE & PROMO KILAT (STOREFRONT, POS & MARGIN GUARD)
+
+Fitur **Flash Sale (Promo Kilat)** dirancang untuk memicu lonjakan omzet penjualan secara terencana tanpa risiko boncos/rugi akibat kesalahan pemberian harga diskon.
+
+### A. Cara Membuat Sesi Flash Sale Baru
+1. Di Panel Pemilik (CMS Admin), pilih menu **"Flash Sale"** (ikon petir ⚡).
+2. Klik tombol **"+ Buat Sesi Baru"**.
+3. Isi data sesi:
+   - **Judul Sesi**: Misal *"Promo Kilat Gajian"* atau *"Flash Sale Cat & Semen"*.
+   - **Kanal Penjualan**: 
+     - *Semua Kanal (Web & POS)*: Berlaku untuk pembeli online dan transaksi kasir offline toko.
+     - *Website Toko Saja*: Khusus pembeli di web/HP.
+     - *Kasir Toko Saja (POS)*: Khusus promo datang langsung ke toko fisik.
+   - **Jadwal Mulai & Berakhir**: Gunakan tombol preset cepat (+2 Jam, +6 Jam, +12 Jam, +24 Jam, +3 Hari) untuk mengatur rentang waktu secara instan.
+4. **Pilih Produk & Atur Harga Kilat**:
+   - Klik **"+ Tambah Produk"** dan pilih barang dari katalog toko.
+   - Tentukan **Kuota Promo** (misal: 10 sak semen). Kuota ini membatasi berapa banyak barang yang boleh ditebus dengan harga murah.
+   - Ketik **Harga Flash Sale**. Sistem otomatis menghitung persentase diskon % secara real-time.
+5. **Perhatikan Indikator Margin Guard (Perisai Modal HPP)**:
+   - Jika harga flash sale yang Anda ketik berada **di bawah modal HPP** kulakan, sistem akan memunculkan kotak peringatan merah: *"⚠️ PERINGATAN HPP: Harga diskon di bawah modal kulakan! Potensi rugi Rp XXX per unit"*.
+   - Ini memastikan Anda atau staf tidak pernah teledor mengetik angka diskon yang menyebabkan kerugian modal.
+6. Klik **"Simpan & Terbitkan Sesi"**.
+
+### B. Apa yang Terjadi di Layar Pembeli (Website)?
+- Di halaman utama toko, muncul **Panggung Flash Sale** megah bernuansa ungu-indigo lengkap dengan:
+  - **Live Countdown Timer**: Penghitung mundur detik demi detik (`04 : 28 : 15`) yang memicu psikologi urgensi (*Fear of Missing Out / FOMO*).
+  - **Badge Diskon Petir**: Persentase hemat (misal `Diskon 25%`).
+  - **Progress Bar Keterjualan**: Batang indikator visual *"Terjual 7 / 10"* yang bergerak dinamis saat kuota dibeli orang lain.
+  - **Tombol Beli Kilat ⚡**: 1-ketukan langsung memasukkan produk promo ke keranjang belanja.
+
+### C. Apa yang Terjadi di Kasir Toko Fisik (POS)?
+- Jika sesi Flash Sale aktif pada kanal kasir:
+  - Kasir cukup melakukan scan barcode atau memilih produk seperti biasa.
+  - Sistem kasir otomatis menerapkan harga Flash Sale dan menyematkan label hijau `⚡ FLASH SALE (-25%)` pada struk belanja kasir.
+  - Setiap kali transaksi kasir diselesaikan (*Selesai Bayar*), sisa kuota flash sale langsung berkurang secara otomatis.
+
+### D. Otomatisasi Kembali ke Harga Normal (Fallback Pintar)
+- Begitu kuota flash sale terpenuhi (*Ludes Terjual*) ATAU waktu sesi berakhir:
+  - Sistem secara otomatis mengembalikan harga barang ke harga reguler (atau harga grosir jika memenuhi syarat).
+  - Pembeli berikutnya tidak lagi mendapatkan harga diskon dan tombol di etalase berubah menjadi *"Kuota Habis"*.
+  - Anda tidak perlu panik harus mematikan promo secara manual di tengah malam!
+
 ---
 
 ### D. Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)
@@ -544,6 +587,7 @@ Gunakan kerangka nilai bisnis ini untuk mendemonstrasikan keunggulan sistem:
 | **Manajemen Retur (RMA Engine)** | Stok berantakan dan rugi uang saat pembeli mengembalikan barang sisa proyek | Validasi kuota struk beli asli; barang rusak masuk karantina; pemotongan kas refund tercatat akurat. |
 | **Kalkulator Estimator Material** | Pelanggan ragu membeli karena tidak tahu berapa banyak sak semen/cat yang harus dibeli | Meningkatkan nilai transaksi (*basket size*) dengan tombol 1-klik masukkan seluruh paket bahan ke keranjang. |
 | **Multi-Satuan Kemasan (UOM)** | Harus membuat master produk ganda (Kabel Eceran vs Kabel Roll) yang membingungkan | 1 Master produk untuk semua satuan; barcode kardus otomatis memotong kuantitas eceran yang tepat. |
+| **Flash Sale Omnichannel & Margin Guard** | Toko sepi pembeli; risiko staf salah ketik harga diskon di bawah modal kulakan | Membakar antusiasme pembeli via countdown timer & kuota terbatas; margin HPP terlindungi 100%. |
 | **Dua Lokasi Stok (Rak vs Gudang)** | Barang di rak habis padahal di gudang masih menumpuk; kasir menolak pembeli | Prioritas pengurangan stok rak etalase (*floor-first*); notifikasi transfer stok internal gudang. |
 | **Cetak Barcode Label Sendiri** | Biaya cetak stiker mahal atau toko tidak memiliki barcode untuk produk lokal | Cetak stiker label thermal atau kertas A4 mandiri dengan barcode Code 128 tajam terbaca scanner. |
 

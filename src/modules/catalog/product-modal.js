@@ -662,13 +662,20 @@ export const rProdMod = () => {
     } else {
         let actPrice = v?.price ?? p.price;
         let actNormal = v?.priceNormal ?? p.priceNormal;
+
+        const fsItem = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(p.id, v?.name, 'web') : null;
+        if (fsItem && !fsItem.isSoldOut && fsItem.flashSalePrice > 0) {
+            actPrice = fsItem.flashSalePrice;
+            actNormal = fsItem.normalPrice || actNormal || p.price;
+        }
         
         const isIncPpn = (appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true') && appData.store.ppnType === 'inclusive';
         
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)}</span></div>`;
+            const fsTag = (fsItem && !fsItem.isSoldOut) ? `<span class="bg-gradient-to-r from-rose-600 to-red-600 text-white px-2 py-0.5 rounded-full ml-1.5 text-[9px] font-black no-underline tracking-widest shadow-2xs inline-flex items-center gap-1"><i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i> FLASH SALE</span>` : '';
+            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 px-1.5 py-0.5 rounded-full ml-1 text-[9px] no-underline tracking-widest border border-rose-200 dark:border-rose-800">-${pct}%</span>${fsTag}</span><span class="text-rose-600 dark:text-rose-400 font-black">${fCur(actPrice)}</span></div>`;
         } else {
             pHtml = `<span>${fCur(actPrice)}</span>`;
         }
@@ -745,6 +752,10 @@ export const rProdMod = () => {
     
     // Header Badge
     let bH = ``;
+    const fsItemBadge = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(p.id, v?.name, 'web') : null;
+    if (fsItemBadge && !fsItemBadge.isSoldOut) {
+        bH += `<span class="bg-gradient-to-r from-rose-600 to-red-600 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm animate-pulse"><i class="fa-solid fa-bolt text-amber-300"></i> Flash Sale ${fsItemBadge.remainingQuota ? `(Sisa ${fsItemBadge.remainingQuota})` : ''}</span>`;
+    }
     const activeSku = (hV && cVar !== null && v && v.sku) ? v.sku : (p.sku || '');
     if (activeSku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(activeSku)}</span>`;
     if (p.tag) bH += `<span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;

@@ -11,14 +11,114 @@ import { appData, cart } from './state.js';
 import { setV, showToast } from './utils.js';
 
 /**
- * Ambil harga jual efektif produk/varian saat ini (memperhitungkan grosir)
+ * Status sesi Flash Sale: 'upcoming' | 'active' | 'ended'
  */
-export const getEffP = (i) => {
+export const checkFlashSaleStatus = (session) => {
+    if (!session || session.isActive === false || session.isActive === 'false') return 'ended';
+    const now = Date.now();
+    const start = session.startTime ? new Date(session.startTime).getTime() : 0;
+    const end = session.endTime ? new Date(session.endTime).getTime() : 0;
+    
+    if (start && now < start) return 'upcoming';
+    if (end && now > end) return 'ended';
+    return 'active';
+};
+
+/**
+ * Ambil sesi Flash Sale yang sedang aktif (atau upcoming jika diminta)
+ */
+export const getActiveFlashSaleSession = (targetChannel = 'all') => {
+    const list = Array.isArray(appData.flashSales) ? appData.flashSales : [];
+    for (const session of list) {
+        if (!session || session.isActive === false || session.isActive === 'false') continue;
+        const channel = session.channel || 'both';
+        if (targetChannel !== 'all' && channel !== 'both' && channel !== targetChannel) continue;
+        
+        if (checkFlashSaleStatus(session) === 'active') {
+            return session;
+        }
+    }
+    return null;
+};
+
+/**
+ * Cek apakah produk/varian terdaftar dalam sesi Flash Sale aktif
+ */
+export const getFlashSaleItem = (productId, variantName = null, targetChannel = 'all') => {
+    if (!productId) return null;
+    const session = getActiveFlashSaleSession(targetChannel);
+    if (!session || !Array.isArray(session.items)) return null;
+
+    const item = session.items.find(it => {
+        if (!it || String(it.productId) !== String(productId)) return false;
+        if (variantName && it.variantName) {
+            return String(it.variantName).trim().toLowerCase() === String(variantName).trim().toLowerCase();
+        }
+        return true;
+    });
+
+    if (!item) return null;
+
+    const quota = parseFloat(item.quota) || 0;
+    const sold = parseFloat(item.soldCount) || 0;
+    const isSoldOut = quota > 0 && sold >= quota;
+    const remainingQuota = Math.max(0, quota - sold);
+    const normalPrice = parseFloat(item.normalPrice) || 0;
+    const flashSalePrice = parseFloat(item.flashSalePrice) || 0;
+    const discountPercent = normalPrice > 0 ? Math.round(((normalPrice - flashSalePrice) / normalPrice) * 100) : (item.discountPercent || 0);
+
+    return {
+        ...item,
+        session,
+        quota,
+        soldCount: sold,
+        isSoldOut,
+        remainingQuota,
+        normalPrice,
+        flashSalePrice,
+        discountPercent: Math.max(0, discountPercent)
+    };
+};
+
+/**
+ * Catat penjualan Flash Sale (menambah soldCount)
+ */
+export const recordFlashSaleSale = (productId, variantName = null, qty = 1) => {
+    if (!productId || !Array.isArray(appData.flashSales)) return false;
+    let modified = false;
+    const numQty = parseFloat(qty) || 1;
+
+    for (const session of appData.flashSales) {
+        if (!session || !Array.isArray(session.items)) continue;
+        if (checkFlashSaleStatus(session) !== 'active') continue;
+
+        for (const it of session.items) {
+            if (String(it.productId) === String(productId)) {
+                if (!variantName || !it.variantName || String(it.variantName).trim().toLowerCase() === String(variantName).trim().toLowerCase()) {
+                    it.soldCount = (parseFloat(it.soldCount) || 0) + numQty;
+                    modified = true;
+                }
+            }
+        }
+    }
+    return modified;
+};
+
+/**
+ * Ambil harga jual efektif produk/varian saat ini (memperhitungkan flash sale & grosir)
+ */
+export const getEffP = (i, channel = 'web') => {
+    // 1. Prioritas Utama: Cek apakah item sedang aktif dalam sesi Flash Sale
+    const fsItem = getFlashSaleItem(i.id, i.variantName, channel);
+    if (fsItem && !fsItem.isSoldOut && fsItem.flashSalePrice > 0) {
+        return fsItem.flashSalePrice;
+    }
+
     const p = appData.products?.find(x => x && x.id != null && String(x.id) === String(i.id));
-    let basePrice = i.price || 0;
+    let basePrice = (i.price != null && !isNaN(i.price) && i.price !== '') ? parseFloat(i.price) : (p ? parseFloat(p.price) || 0 : 0);
     if (i.variantName && p && p.variants) {
         const v = p.variants.find(vv => vv.name === i.variantName);
-        if (v && v.price != null) basePrice = v.price;
+        if (v && v.price != null) basePrice = parseFloat(v.price) || 0;
     }
     // Grosir hanya berlaku untuk item tanpa varian
     if (i.variantName) return basePrice;
@@ -321,13 +421,19 @@ export const computeTotalProductStock = (p) => {
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
-window.getEffP = getEffP;
-window.getEffHpp = getEffHpp;
-window.getEffPoin = getEffPoin;
-window.calculateCartPoints = calculateCartPoints;
-window.computeInventoryStats = computeInventoryStats;
-window.computeTotalProductStock = computeTotalProductStock;
-window.getDist = getDist;
-window.parseGeoCoordinates = parseGeoCoordinates;
-window.autoParseCoords = autoParseCoords;
+if (typeof window !== 'undefined') {
+    window.getEffP = getEffP;
+    window.getEffHpp = getEffHpp;
+    window.getEffPoin = getEffPoin;
+    window.calculateCartPoints = calculateCartPoints;
+    window.computeInventoryStats = computeInventoryStats;
+    window.computeTotalProductStock = computeTotalProductStock;
+    window.getDist = getDist;
+    window.parseGeoCoordinates = parseGeoCoordinates;
+    window.autoParseCoords = autoParseCoords;
+    window.checkFlashSaleStatus = checkFlashSaleStatus;
+    window.getActiveFlashSaleSession = getActiveFlashSaleSession;
+    window.getFlashSaleItem = getFlashSaleItem;
+    window.recordFlashSaleSale = recordFlashSaleSale;
+}
 

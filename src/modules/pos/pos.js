@@ -279,15 +279,26 @@ const recalcItem = (item) => {
         item.unit            = resolved.unit;
         item.baseUnit        = resolved.baseUnit;
         if (resolved.hpp > 0) item.hpp = resolved.hpp;
-    } else if (!item.isVariant && !item.isEstimatorItem) {
-        const wPrice = p ? getWholesalePrice(p, item.qty) : null;
-        if (wPrice !== null) {
-            item.basePrice   = item.basePrice || item.price;
-            item.price       = wPrice;
-            item.isWholesale = true;
-        } else {
-            if (item.basePrice) item.price = item.basePrice;
-            item.isWholesale = false;
+    }
+
+    // Cek Prioritas Promo Kilat Flash Sale POS
+    const fsItem = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(item.id, item.variantName, 'pos') : null;
+    if (fsItem && !fsItem.isSoldOut && fsItem.flashSalePrice > 0) {
+        item.price = fsItem.flashSalePrice;
+        item.isFlashSale = true;
+        item.flashSaleDiscount = fsItem.discountPercent || 0;
+    } else {
+        item.isFlashSale = false;
+        if (!item.isVariant && !item.isEstimatorItem) {
+            const wPrice = p ? getWholesalePrice(p, item.qty) : null;
+            if (wPrice !== null) {
+                item.basePrice   = item.basePrice || item.price;
+                item.price       = wPrice;
+                item.isWholesale = true;
+            } else {
+                if (item.basePrice) item.price = item.basePrice;
+                item.isWholesale = false;
+            }
         }
     }
 
@@ -2119,6 +2130,7 @@ const renderCart = () => {
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${esc(item.name)}">${baseName}</p>
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
                         ${item.isPackagingUnit ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs bg-indigo-600 dark:bg-indigo-500"><i class="fa-solid fa-box text-[7px]"></i>1 ${esc(item.unit)} = ${item.unitMultiplier} ${esc(item.baseUnit || 'pcs')}</span>` : ''}
+                        ${item.isFlashSale ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs bg-gradient-to-r from-rose-600 to-red-600 animate-pulse"><i class="fa-solid fa-bolt text-[7px] text-amber-300"></i>FLASH SALE ${item.flashSaleDiscount ? `-${item.flashSaleDiscount}%` : ''}</span>` : ''}
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
                         ${itemHpp > 0 && item.price < itemHpp ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-rose-600 bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800" title="Harga Jual di bawah HPP Modal!"><i class="fa-solid fa-triangle-exclamation text-[7px]"></i>DI BAWAH HPP</span>` : ''}
@@ -3711,6 +3723,25 @@ export const processPOSTx = async () => {
                         updatedProductIds
                     });
                 } catch(e) {}
+            }
+        }
+
+        // Catat kuota Flash Sale yang terjual pada transaksi kasir POS
+        let hasFsUpdate = false;
+        (orderData.items || []).forEach(it => {
+            if (typeof window.recordFlashSaleSale === 'function') {
+                const recorded = window.recordFlashSaleSale(it.id, it.variantName, it.qty);
+                if (recorded) hasFsUpdate = true;
+            }
+        });
+        if (hasFsUpdate && Array.isArray(appData.flashSales)) {
+            try {
+                await db.collection("freshmart").doc("cms_data").update({
+                    flashSales: appData.flashSales,
+                    lastUpdate: firebase.firestore.FieldValue.increment(1)
+                });
+            } catch(fsErr) {
+                console.warn('[POS] Gagal sinkron kuota Flash Sale:', fsErr);
             }
         }
 

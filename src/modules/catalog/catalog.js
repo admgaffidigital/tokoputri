@@ -21,6 +21,10 @@ export const rCat = () => {
     const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '' || aSubCat !== 'Semua Jenis');
     
     toggleCls('dynamic-banners-container', 'hidden', isFiltered);
+    toggleCls('dynamic-flashsale-container', 'hidden', isFiltered);
+    if (!isFiltered && typeof window.renderStorefrontFlashSale === 'function') {
+        window.renderStorefrontFlashSale();
+    }
     const isShowRewards = (appData.store.showRewardCatalog !== false && appData.store.showRewardCatalog !== 'false') && (appData.rewards || []).some(r => r.isActive !== 'false' && r.isActive !== false);
     toggleCls('reward-catalog-container', 'hidden', isFiltered || !isShowRewards);
     toggleCls('dynamic-vouchers-container', 'hidden', isFiltered);

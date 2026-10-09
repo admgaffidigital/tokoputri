@@ -137,6 +137,7 @@ export const openAdminTab = (t, fH = false) => {
         'expenses': 'Biaya Operasional Toko',
         'stock_opname': 'Stock Opname (Audit Fisik)',
         'returns': 'Retur Barang (RMA)',
+        'flash_sale': 'Flash Sale (Promo Kilat)',
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
@@ -165,6 +166,11 @@ export const openAdminTab = (t, fH = false) => {
         });
     } else if (t === 'piutang') {
         if (typeof window.rAdmPiutang === 'function') window.rAdmPiutang();
+    } else if (t === 'flash_sale') {
+        // Lazy load modul Flash Sale & Promo Kilat
+        import('./flash-sale.js').then(m => m.renderFlashSaleAdminView()).catch(err => {
+            renderModuleLoadError('Flash Sale & Promo Kilat', t, err);
+        });
     } else if (t === 'suppliers') {
         // Lazy load modul master data supplier & asal-usul barang
         import('./suppliers.js').then(m => m.renderSuppliersView()).catch(err => {

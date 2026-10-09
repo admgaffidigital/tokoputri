@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-00",
+        "version": "v1.15.0",
+        "date": "2026-10-10",
+        "title": "Flash Sale Engine (Promo Kilat Berbatas Waktu & Kuota), Omnichannel Sync & Proteksi Margin Guard",
+        "category": "feature",
+        "badge": "Flash Sale Engine & Real-Time Omnichannel v1.15.0",
+        "items": [
+            "Panggung Flash Sale Storefront Interaktif (flash-sale-section.js): Live countdown timer per detik, progress bar kuota keterjualan, badge petir hemat diskon %, dan aksi Beli Kilat 1-ketukan.",
+            "Integrasi Kasir POS Toko & Keranjang Belanja Web: Evaluasi otomatis harga diskon flash sale pada POS kasir offline toko dan keranjang belanja online dengan tag penanda khusus ⚡ FLASH SALE.",
+            "CMS Manajemen Admin & Margin Guard (flash-sale.js): Dashboard admin untuk membuat sesi promo kilat (preset durasi 2 jam s.d. 3 hari), filter kanal (Web/POS/Semua), dan deteksi otomatis jual rugi (harga flash sale < HPP modal).",
+            "Sinkronisasi Kuota Real-Time: Pengurangan sisa kuota otomatis setiap transaksi web/POS terbit, dan otomatis fallback ke harga normal/grosir begitu kuota promo ludes.",
+            "Test Suite Otomatis: 28 test cases mencakup status sesi, filter kanal, evaluasi harga efektif, pembatasan kuota, dan validasi HPP lolos 100%.",
+            "Multi-Channel Distribution v1.15.0 (Android versionCode 11500)."
+        ]
+    },
+    {
         "id": "log-1-14-00",
         "version": "v1.14.0",
         "date": "2026-10-09",
@@ -73,21 +89,6 @@ export const DEFAULT_CHANGELOG = [
             "Pelacakan Status Pengiriman Real-Time: Transisi Menunggu Muat -> Dalam Perjalanan -> Terkirim.",
             "Verifikasi Tanda Tangan Mandor: Kanvas tanda tangan digital di layar sentuh untuk bukti serah terima proyek.",
             "Multi-Channel Distribution v1.13.0 (Android versionCode 11300)."
-        ]
-    },
-    {
-        "id": "log-1-12-02",
-        "version": "v1.12.2",
-        "date": "2026-10-08",
-        "title": "Harmonisasi Desain Native App, Dual-View Riwayat Retur, Tab Bar Estimator & Konfirmasi Cetak Pintar",
-        "category": "feature",
-        "badge": "Native Design System Harmonization & Responsive Dual-View v1.12.2",
-        "items": [
-            "Universal Card View & Dual-View Riwayat Retur (returns.js): Memperkenalkan tampilan Native Card View (.card-native) bebas tabel kaku di HP dan tabel analitis di desktop.",
-            "Dialog Konfirmasi Cerdas (ui.js): Deteksi konteks cetak vs bahaya hapus sehingga cetak nota tidak lagi memicu tombol 'Ya, Hapus'.",
-            "Tab Bar Estimator Anti-Potong Mobile (index.html): Scroll horizontal halus dan shrink-0 pada tab kategori material.",
-            "Optimalisasi Bottom-Sheet Modal Retur & Tombol Aksi Sentuh 40px: Wadah modal lapang dan tombol sentuh ergonomis.",
-            "Multi-Channel Distribution v1.12.2 (Android versionCode 11202)."
         ]
     }
 ];

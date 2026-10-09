@@ -975,6 +975,25 @@ export const processOrder = async () => {
             await orderRef.set(oD);
         }
 
+        // Catat kuota Flash Sale yang terjual dari checkout storefront web
+        let hasFsUpdate = false;
+        (oD.items || []).forEach(it => {
+            if (typeof window.recordFlashSaleSale === 'function') {
+                const recorded = window.recordFlashSaleSale(it.id, it.variantName, it.qty);
+                if (recorded) hasFsUpdate = true;
+            }
+        });
+        if (hasFsUpdate && Array.isArray(appData.flashSales)) {
+            try {
+                await db.collection("freshmart").doc("cms_data").update({
+                    flashSales: appData.flashSales,
+                    lastUpdate: firebase.firestore.FieldValue.increment(1)
+                });
+            } catch(fsErr) {
+                console.warn('[Checkout] Gagal update kuota Flash Sale:', fsErr);
+            }
+        }
+
         // Simpan ke riwayat lokal pesanan secara komprehensif (termasuk items & payment untuk struk)
         const myOrderEntry = {
             orderId: oI, 

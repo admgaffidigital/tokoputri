@@ -380,7 +380,8 @@ export const MODAL_ELEMENT_MAP = {
     salesReturn: ['modal-sales-return', 'sales-return-modal'],
     vendorReturn: ['modal-vendor-return', 'vendor-return-modal'],
     deliveryOrder: ['modal-delivery-order', 'delivery-order-modal'],
-    deliverySignature: ['modal-delivery-signature', 'delivery-signature-modal']
+    deliverySignature: ['modal-delivery-signature', 'delivery-signature-modal'],
+    flashSaleForm: ['modal-flash-sale-form', 'flash-sale-form-modal']
 };
 
 /**
@@ -656,6 +657,9 @@ export const closeModalByName = (m) => {
         case 'deliverySignature':
             if (typeof window.closeDeliverySignatureModal === 'function') { window.closeDeliverySignatureModal(true); return true; }
             break;
+        case 'flashSaleForm':
+            if (typeof window.closeFlashSaleModal === 'function') { window.closeFlashSaleModal(true); return true; }
+            break;
         default:
             break;
     }
@@ -816,6 +820,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
+        'flashSaleForm',
         'deliveryOrder', 'deliverySignature',
         'salesReturn', 'vendorReturn',
         'materialEstimator', 'productBarcodeLabel', 'productFifo', 'sessionKicked', 'exitConfirm',
