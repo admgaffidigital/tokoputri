@@ -138,6 +138,13 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
   - [x] Otomasi Penambahan Item POS: Memindai barcode kardus/dus/roll langsung memasukkan produk ke keranjang kasir dalam satuan kemasan terkait secara instan tanpa perlu klik manual.
   - [x] Test Suite Otomatis: `test-uom-and-wholesale.mjs` (24 skenario uji lulus 100%).
 
+### 4.4 Harmonisasi UI/UX Native App & Proteksi Global Anti-Gepeng (*Zero Squashed Layout*)
+* **Fitur & Spesifikasi:**
+  - [x] **Proteksi Global Anti-Gepeng (.btn-native-action & .btn-native-icon)**: Penegasan `min-height: 2.5rem !important` (40px–44px standar sentuh jari Apple & Google), `flex-shrink: 0 !important`, serta `aspect-ratio: 1 / 1 !important` untuk tombol silang/close dan ikon.
+  - [x] **Anti-Wrap Badge Status**: Perlindungan `white-space: nowrap; flex-shrink: 0` di seluruh badge status pesanan, pengiriman DO, dan retur RMA agar teks tidak terlipat canggung menjadi dua baris.
+  - [x] **Integrasi Dokumen Cetak & Struk Terpusat**: Seluruh dokumen A4 (Invoice, DO, RMA, PO, Tempo, SO) dan struk thermal (POS, RMA, Shift Z-Report, BKK) terhubung dengan nomor referensi unik, barcode Code 128 vektor murni, dan kop toko *single source of truth*.
+  - [x] **Verifikasi Kualitas Sistem**: 77 modal sistem terisolasi dan tersinkronisasi 100%, 0 regression errors.
+
 ---
 
 ## ⚡ FASE 5: Otomasi Pengadaan Pintar & Notifikasi Gateway (Procurement & Gateway)
@@ -182,6 +189,6 @@ RENDAH ────────────────────────�
 ---
 
 ## 🛡️ Prinsip Mutu & Komitmen Arsitektur
-1. **Zero Regression**: Penambahan modul baru wajib melalui pengujian `npm run audit` (72 modal sistem tetap terisolasi).
+1. **Zero Regression**: Penambahan modul baru wajib melalui pengujian `npm run audit` (77 modal sistem tetap terisolasi).
 2. **Offline-First & Kecepatan Native**: POS Kasir dan etalase harus tetap berjalan secepat kilat tanpa ketergantungan koneksi lambat.
 3. **Desain Sistem Konsisten**: Menggunakan token tema terpadu (`var(--color-primary)`), standar tombol sentuh $\ge 40$px, dan tipografi enterprise profesional.
