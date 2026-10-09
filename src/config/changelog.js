@@ -16,6 +16,66 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-14-00",
+        "version": "v1.14.0",
+        "date": "2026-10-09",
+        "title": "Multi-Satuan Bertingkat (UOM Hierarchy), Harga Grosir Fleksibel & Proteksi UI/UX Anti-Gepeng",
+        "category": "feature",
+        "badge": "Multi-Unit Packaging & Wholesale Pricing v1.14.0",
+        "items": [
+            "Master Satuan Bertingkat & Konversi Kemasan (uom.js): Mendukung penjualan eceran maupun kemasan besar (Dus, Roll, Sak, Kotak) dari satu master barang dengan rasio konversi akurat dan pemotongan stok otomatis ke satuan dasar.",
+            "Tier Harga Grosir Bertingkat & Proteksi Margin HPP: Aturan harga bertingkat kuantitas dengan indikator peringatan margin negatif jika harga jual mendekati HPP barang.",
+            "Barcode Kemasan Dus/Roll & Scan Otomatis POS: Pemindaian barcode kemasan via scanner laser maupun kamera smartphone langsung menambahkan barang dalam satuan kemasan terkait.",
+            "Proteksi Global Anti-Gepeng (.btn-native-action & .btn-native-icon): Penguncian tinggi minimal 40px-44px (touch standard) dan rasio 1:1 kaku pada tombol close modal dan tombol ikon agar tidak pernah gepeng di layar ponsel berukuran apapun.",
+            "Anti-Wrap Badge Status: Menjamin seluruh badge status pesanan, pengiriman DO, dan retur RMA tidak terlipat canggung menjadi 2 baris.",
+            "Multi-Channel Distribution v1.14.0 (Android versionCode 11400)."
+        ]
+    },
+    {
+        "id": "log-1-13-02",
+        "version": "v1.13.2",
+        "date": "2026-10-09",
+        "title": "Resolusi Tombol Anti-Gepeng & Ergonomi Detail Pengiriman Proyek",
+        "category": "feature",
+        "badge": "Anti-Squash Buttons & Delivery Card Ergonomics v1.13.2",
+        "items": [
+            "Eliminasi Tombol Gepeng (orders.js): Menghapus flex-1 dalam layout vertikal pada tombol Kelola Pengiriman & DO, digantikan w-full sm:flex-1 dengan tinggi sentuh ergonomis h-11 (44px) dan shrink-0.",
+            "Proteksi Global .btn-native-action (style.css): Penegasan min-height 2.5rem (40px) dan flex-shrink: 0 agar tombol tidak terkompresi di smartphone.",
+            "Perapian Badge Status Pengiriman: Penambahan shrink-0 whitespace-nowrap agar badge status MENUNGGU MUAT tidak terlipat.",
+            "Ikon Vektor Valid: Memperbarui ikon dari fa-truck-gear ke fa-truck-fast text-sm resmi FontAwesome.",
+            "Multi-Channel Distribution v1.13.2 (Android versionCode 11302)."
+        ]
+    },
+    {
+        "id": "log-1-13-01",
+        "version": "v1.13.1",
+        "date": "2026-10-09",
+        "title": "Harmonisasi Desain Native App Surat Jalan (DO), Touch Fleet Grid & Checklist Muatan Proyek",
+        "category": "feature",
+        "badge": "Native Fleet Grid & Interactive DO Checklist v1.13.1",
+        "items": [
+            "Grid Kartu Armada Sentuh: Menggantikan dropdown kaku dengan 6 kartu armada interaktif (Pick-up, Truk Engkel, Dobel, Roda Tiga, dll) ber-border tema toko.",
+            "Checklist Muatan Tile Interaktif: Menghilangkan tabel kaku di HP, digantikan tile sentuh 1-ketukan, squircle checkbox, kapsul kuantitas, chip varian, dan tombol Pilih Semua.",
+            "Fixed Pinned Bottom Action Bar: Tombol aksi utama dipin melayang di bawah layar sentuh (thumb-friendly) dengan safe area inset.",
+            "Stepper Status Pengiriman Segmented: Stepper 3 tahap bertema toko berpadu kanvas tanda tangan sentuh lapang.",
+            "Multi-Channel Distribution v1.13.1 (Android versionCode 11301)."
+        ]
+    },
+    {
+        "id": "log-1-13-00",
+        "version": "v1.13.0",
+        "date": "2026-10-09",
+        "title": "Logistik, Pengiriman Proyek & Surat Jalan Resmi (DO Barcode Code 128)",
+        "category": "feature",
+        "badge": "Delivery Order Logistics & Project Signatures v1.13.0",
+        "items": [
+            "Dokumen Surat Jalan Resmi A4 (DO-YYMM-XXXXX): Ber-barcode Code 128 unik, rujukan Drop-Point mandor, armada & supir, dan 4 kolom tanda tangan.",
+            "Pelacakan Status Pengiriman Real-Time: Transisi Menunggu Muat -> Dalam Perjalanan -> Terkirim.",
+            "Verifikasi Tanda Tangan Mandor: Kanvas tanda tangan digital di layar sentuh untuk bukti serah terima proyek.",
+            "Multi-Channel Distribution v1.13.0 (Android versionCode 11300)."
+        ]
+    },
+    {
         "id": "log-1-12-02",
         "version": "v1.12.2",
         "date": "2026-10-08",
@@ -23,75 +83,11 @@ export const DEFAULT_CHANGELOG = [
         "category": "feature",
         "badge": "Native Design System Harmonization & Responsive Dual-View v1.12.2",
         "items": [
-            "Universal Card View & Dual-View Riwayat Retur (returns.js): Memperkenalkan tampilan Native Card View (.card-native) bergrid 2-kolom lapang di desktop dan 1-kolom di mobile sebagai default, bebas tabel kaku, dilengkapi avatar monogram pelanggan/supplier, cuplikan item rapi + badge alokasi fisik (Rak Toko / Karantina), serta tombol switcher Card vs Table di toolbar desktop.",
-            "Harmonisasi Tema Toko & Metrik KPI Eksekutif (returns.js): Menyelaraskan 4 kartu metrik RMA (Retur Konsumen, Kasus Nota, Klaim Supplier, Karantina Rusak) dengan token tema toko aktif var(--color-primary), mengeliminasi icon box warna-warni tajam yang jomplang dari tema toko.",
-            "Dialog Konfirmasi Cerdas & Tombol Cetak Selaras Tema (ui.js): Menyempurnakan showConfirm agar secara cerdas mendeteksi konteks cetak dokumen/surat/nota. Eliminasi tombol merah keliru 'Ya, Hapus' dengan ikon bahaya ⚠️ pada alur cetak dokumen retur, digantikan tombol dinamis bertema toko aktif var(--color-primary) dengan teks 'Ya, Cetak' dan ikon fa-print.",
-            "Tab Bar Estimator Anti-Potong Mobile (index.html): Menambahkan dukungan scroll horizontal halus (overflow-x-auto custom-scrollbar) dan shrink-0 pada tab bar kategori Kalkulator Estimator Material Bangunan sehingga teks tab 'Dinding & Semen' dan lainnya tampil utuh tanpa terpotong di layar smartphone.",
-            "Optimalisasi Bottom-Sheet Modal Retur & Tombol Aksi Sentuh 40px: Memperlebar wadah modal retur penjualan dan supplier di layar HP (w-full max-w-full sm:max-w-2xl) serta menstandarkan tombol cetak berukuran ergonomis sentuh 40px (.btn-native-action) dengan label teks dan ikon jelas (Cetak Nota A4 & Struk Thermal).",
+            "Universal Card View & Dual-View Riwayat Retur (returns.js): Memperkenalkan tampilan Native Card View (.card-native) bebas tabel kaku di HP dan tabel analitis di desktop.",
+            "Dialog Konfirmasi Cerdas (ui.js): Deteksi konteks cetak vs bahaya hapus sehingga cetak nota tidak lagi memicu tombol 'Ya, Hapus'.",
+            "Tab Bar Estimator Anti-Potong Mobile (index.html): Scroll horizontal halus dan shrink-0 pada tab kategori material.",
+            "Optimalisasi Bottom-Sheet Modal Retur & Tombol Aksi Sentuh 40px: Wadah modal lapang dan tombol sentuh ergonomis.",
             "Multi-Channel Distribution v1.12.2 (Android versionCode 11202)."
-        ]
-    },
-    {
-        "id": "log-1-12-01",
-        "version": "v1.12.1",
-        "date": "2026-10-08",
-        "title": "Penyempurnaan Dukungan Retur Multi-Varian Produk & Alokasi Karantina Cacat Pemasok",
-        "category": "feature",
-        "badge": "Variant RMA & Supplier Defect Quarantine v1.12.1",
-        "items": [
-            "Dukungan Penuh Retur Produk Multi-Varian ke Pemasok (returns.js): Formulir Retur Pembelian Supplier kini secara otomatis mendeteksi jika produk memiliki varian dan menyuguhkan pemilih varian dinamis. Setiap opsi menampilkan stok rak, stok gudang, karantina rusak, serta HPP spesifik varian.",
-            "Kalkulasi HPP Presisi per Varian: Pemotongan nilai klaim hutang PO (AP deduction) atau pengembalian dana kas supplier kini menggunakan HPP spesifik dari varian yang dipilih (bukan HPP produk induk).",
-            "Dukungan Retur dari Karantina Rusak (Quarantine to Vendor): Menambahkan opsi lokasi asal 'Karantina Rusak (damagedStock)' pada form retur supplier sehingga toko dapat mengembalikan barang cacat pabrik hasil retur konsumen langsung ke pabrik/distributor tanpa mengurangi stok jual yang aktif.",
-            "Sinkronisasi Inventori Varian Real-Time (fifo-inventory.js): Pemotongan retur vendor pada produk bervarian otomatis memotong stok varian target dan mengagregasi kembali total persediaan produk induk di rak toko, gudang cadangan, dan karantina rusak.",
-            "Label Visual Varian pada Ringkasan Tabel & Struk Thermal: Riwayat retur penjualan dan pembelian kini menampilkan badge nama varian [Varian] di tabel admin dan struk kasir thermal.",
-            "Multi-Channel Distribution v1.12.1 (Android versionCode 11201)."
-        ]
-    },
-    {
-        "id": "log-1-12-00",
-        "version": "v1.12.0",
-        "date": "2026-10-08",
-        "title": "Manajemen Retur & Rekonsiliasi Inventori (RMA Engine Customer & Supplier)",
-        "category": "feature",
-        "badge": "RMA Engine & Inventory Returns Reconciliation v1.12.0",
-        "items": [
-            "Modul Retur Penjualan Konsumen (Customer Sales Return): Modul terpadu untuk menangani pengembalian barang berbasis nomor struk kasir / Order ID. Dilengkapi checklist barang, validasi kuantitas maksimum retur (tidak melebihi sisa kuota beli), dan 3 opsi penyelesaian kompensasi: Pengembalian Tunai (Cash Refund), Saldo Kredit Toko (Store Credit), atau Tukar Barang (Exchange).",
-            "Restorasi Stok Fisik & FIFO Lot Adaptif (fifo-inventory.js): Barang berkondisi baik dikembalikan ke Rak Toko (storeStock) dan dibuatkan tiket batch FIFO baru dengan prefix 'BATCH-RETUR-', sedangkan barang rusak/cacat dialokasikan ke Karantina Rusak (damagedStock) tanpa menambah stok jual agar kasir POS tidak menjual kembali barang rusak.",
-            "Rekonsiliasi Finansial Kas Laci Otomatis: Pengembalian tunai (cash refund) secara otomatis mencatat pengeluaran di Buku Kas Operasional Toko (appData.expenses) kategori 'Retur Penjualan' bersumber kas laci (pos_cashier) agar rekonsiliasi kas dan X/Z report kasir tetap berimbang.",
-            "Modul Retur Pembelian ke Supplier (Vendor Purchase Return): Pengembalian barang cacat pabrik langsung ke rekanan supplier dan rujukan PO Kulakan. Dilengkapi pemilihan alokasi stok asal (Rak Toko atau Gudang Cadangan), pemotongan inventori otomatis, dan opsi penyesuaian finansial (Potong Hutang PO / AP Deduction atau Pengembalian Dana Kas).",
-            "Cetak Struk Thermal & Dokumen Resmi A4 (documents.js): Dukungan cetak bukti retur instan via printer thermal kasir (58mm/80mm) dan dokumen standar A4 resmi untuk Nota Retur Penjualan serta Surat Pengembalian Barang ke Pemasok lengkap tanda tangan serah terima.",
-            "Multi-Channel Distribution v1.12.0 (Android versionCode 11200)."
-        ]
-    },
-    {
-        "id": "log-1-11-00",
-        "version": "v1.11.0",
-        "date": "2026-10-08",
-        "title": "Kalkulator Estimator Material Bangunan & Presisi Kuantitas Desimal POS Kasir",
-        "category": "feature",
-        "badge": "Material Estimator Tool & POS Decimal Precision v1.11.0",
-        "items": [
-            "Kalkulator Estimator Bahan Bangunan Interaktif (material-estimator.js): Modul kalkulator material bangunan interaktif dengan formula presisi untuk 3 kategori pekerjaan konstruksi: (1) Cat Dinding & Plafon (luas m², daya sebar cat, alkali sealer, rekomendasi pail/galon); (2) Keramik & Granit Lantai/Dinding (ukuran ubin 30x30 s.d. 60x120, luas m², cadangan potongan 5-15%, dus keramik, sak semen perekat, kg nat); (3) Pasangan Dinding Bata Ringan/Hebel & Bata Merah (luas dinding dikurangi bukaan pintu/jendela, pcs hebel/bata, m³ hebel, sak semen mortar perekat thinbed/adukan semen pasir).",
-            "Akses Multi-Channel Cepat & Pintar: Estimator dapat diakses instan melalui tombol header etalase Storefront, menu ubin Quick Menu di beranda toko, header POS Kasir, dan pintasan hotkey keyboard [F3] saat kasir sedang melayani pembeli.",
-            "Otomasi Integrasi Keranjang & Transaksi Kasir POS: Tombol aksi cerdas pada setiap hasil kalkulasi estimator memungkinkan kasir/pelanggan langsung memasukkan seluruh kebutuhan material ke antrean keranjang kasir POS atau keranjang belanja etalase, menyalin rincian teks rapi ke clipboard, atau langsung berkonsultasi via WhatsApp Resmi Toko.",
-            "Dukungan Kuantitas Desimal & Barang Curah Kiloan (pos.js): Kasir POS kini mendukung penjualan barang curah/timbangan (seperti paku kiloan, kawat, tiner eceran, selang/kabel per meter) dengan kuantitas desimal. Dilengkapi stepper adaptif 0.25 (untuk qty < 1) dan 0.5 (untuk pecahan), tombol cepat pecahan instan (¼, ½, ¾, 1), serta pelebaran input kuantitas antrean kasir.",
-            "Presisi Rupiah Anti-Floating Point & Format Struk 3 Desimal: Mengeliminasi pembulatan pecahan JS Math.round pada subtotal item dan diskon kasir POS (misal 0.3 kg × Rp 24.000 terhitung tepat Rp 7.200). Struk thermal dan dokumen cetak kini mendukung format kuantitas hingga 3 desimal tanpa angka nol buntut (misal 0.25 kg, 1.5 m).",
-            "Multi-Channel Distribution v1.11.0 (Android versionCode 11100)."
-        ]
-    },
-    {
-        "id": "log-1-10-99",
-        "version": "v1.10.99",
-        "date": "2026-10-08",
-        "title": "Resolusi Paripurna Bocor Tag HTML Badge Tier Member & Penyelarasan Desain Visual POS Kasir",
-        "category": "feature",
-        "badge": "Clean POS Member Tier Badge & Anti-HTML Leak v1.10.99",
-        "items": [
-            "Eliminasi Total Kebocoran Tag HTML Mentah (pos.js): Memperbaiki bug tampilan data member pada modal pembayaran POS Kasir di mana badge tingkatan loyalitas memunculkan teks mentah '<I CLASS=\"FA-SOLID FA-AWARD MR-1\"></I> BRONZE MEMBER' akibat pemanggilan fungsi escape pada string badge HTML.",
-            "Desain Visual Badge Tier Multilevel Harmonis: Mengekstrak tierName dan tierIcon secara terpisah dan deterministik, merender ikon vektor FontAwesome asli (<i class=\"fa-solid ...\"></i>) berpadu teks nama tier yang terproteksi escape XSS. Dilengkapi palet warna bertingkat resmi (Bronze = Amber/Orange hangat, Silver = Slate perak elegan, Gold = Yellow/Amber berkilau, Platinum = Purple royal eksklusif) di light & dark mode.",
-            "Integrasi Impor Langsung getMemberTier (reward.js & pos.js): Mengimpor helper tingkatan loyalitas getMemberTier secara terstruktur pada modul POS dengan fallback berlapis (getMemberTier -> window.getMemberTier -> fallback default) sehingga kalkulasi tier selalu presisi dan kebal gangguan siklus hidup pemuatan skrip.",
-            "Penyelarasan Tata Letak & Keamanan Bar Info Member: Memastikan badge tingkatan member, saldo poin loyalitas (Star), dan plafon Putri PayLater tersusun sejajar rapi (inline-flex, gap-1.5, shadow-2xs) tanpa distorsi teks kapital.",
-            "Multi-Channel Distribution v1.10.99 (Android versionCode 11099)."
         ]
     }
 ];
