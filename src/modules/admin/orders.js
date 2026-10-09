@@ -452,12 +452,12 @@ export const openOrderDetail = (i) => {
 
             <!-- CARD LOGISTIK & PENGIRIMAN SURAT JALAN -->
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm space-y-3.5">
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
-                    <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center border border-amber-200 dark:border-amber-800">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 gap-2">
+                    <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center border border-amber-200 dark:border-amber-800 shrink-0">
                             <i class="fa-solid fa-truck-ramp-box"></i>
                         </div>
-                        Surat Jalan &amp; Pengiriman Proyek
+                        <span class="truncate">Surat Jalan &amp; Pengiriman Proyek</span>
                     </h4>
                     ${(() => {
                         const delStatus = o.delivery?.status || 'pending_dispatch';
@@ -465,7 +465,7 @@ export const openOrderDetail = (i) => {
                         const isOut = delStatus === 'out_for_delivery';
                         const badgeColor = isDelivered ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800' : isOut ? 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800' : 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800';
                         const label = isDelivered ? 'Terkirim & TTD' : isOut ? 'Dalam Perjalanan' : 'Menunggu Muat';
-                        return `<span class="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${badgeColor}">${label}</span>`;
+                        return `<span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border shrink-0 whitespace-nowrap ${badgeColor}">${label}</span>`;
                     })()}
                 </div>
 
@@ -489,12 +489,14 @@ export const openOrderDetail = (i) => {
                     </div>
                 </div>` : ''}
 
-                <div class="pt-1 flex flex-col sm:flex-row gap-2">
-                    <button type="button" onclick="openDeliveryModal('${esc(o.orderId)}')" class="btn-native-action flex-1 h-9 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95" style="background: var(--color-primary);">
-                        <i class="fa-solid fa-truck-gear"></i> Kelola Pengiriman &amp; DO
+                <div class="pt-1 flex flex-col sm:flex-row gap-2.5">
+                    <button type="button" onclick="openDeliveryModal('${esc(o.orderId)}')" class="btn-native-action w-full sm:flex-1 h-11 py-2.5 px-4 rounded-xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95 shrink-0 transition-transform" style="background: var(--color-primary);">
+                        <i class="fa-solid fa-truck-fast text-sm"></i>
+                        <span>Kelola Pengiriman &amp; DO</span>
                     </button>
-                    <button type="button" onclick="printOfficialDeliveryOrderA4('${esc(o.orderId)}')" class="btn-native-action px-3 h-9 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
-                        <i class="fa-solid fa-print text-amber-500"></i> Cetak DO A4
+                    <button type="button" onclick="printOfficialDeliveryOrderA4('${esc(o.orderId)}')" class="btn-native-action w-full sm:w-auto px-4 h-11 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer active:scale-95 shrink-0 transition-transform">
+                        <i class="fa-solid fa-print text-amber-500 text-sm"></i>
+                        <span>Cetak DO A4</span>
                     </button>
                 </div>
             </div>

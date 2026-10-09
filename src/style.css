@@ -3810,7 +3810,9 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
 }
 
 .btn-native-action {
-    height: 2.5rem; /* 40px touch standard */
+    min-height: 2.5rem; /* 40px touch standard (anti-gepeng) */
+    height: 2.5rem;
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -3829,8 +3831,10 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
 }
 
 .btn-native-icon {
-    height: 2.5rem; /* 40px touch standard */
+    min-height: 2.5rem; /* 40px touch standard (anti-gepeng) */
+    height: 2.5rem;
     width: 2.5rem;
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;

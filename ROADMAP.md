@@ -1,12 +1,12 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.13.1` | **Target Jangka Panjang:** `v2.0.0`
+> **Target Baseline Saat Ini:** `v1.13.2` | **Target Jangka Panjang:** `v2.0.0`
  
 ---
  
 ## 📌 Visi & Orientasi Pengembangan
-Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.13.1` dengan integrasi hulu-ke-hilir:
+Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.13.2` dengan integrasi hulu-ke-hilir:
 - Kasir POS responsif berkecepatan tinggi dengan Dual-Engine Scanner Kamera, Barcode Vektor Code 128, dan Presisi Kuantitas Desimal untuk barang curah/kiloan.
 - Alat Kalkulator Estimator Material Bangunan interaktif (Cat & Plafon, Keramik & Granit, Pasangan Dinding Hebel/Bata).
 - Manajemen Retur Barang & RMA Terpadu (Customer Sales Return & Vendor Purchase Return) dengan dukungan produk multi-varian, pemilih varian dinamis, HPP spesifik varian, alokasi karantina rusak, rekonsiliasi kas laci, serta Universal Native Card View & Dual-View responsif.
@@ -99,6 +99,13 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
   - [x] **Checklist Muatan Tile Interaktif (*Zero HTML Table*)**: Mengeliminasi tabel kaku di smartphone, diganti dengan kartu item touch-friendly 1-ketukan, squircle checkbox tema toko, kuantitas kapsul, chip varian, counter real-time, dan tombol Pilih Semua.
   - [x] **Fixed Pinned Bottom Action Bar**: Tombol aksi utama (Tutup, Cetak A4, WA Mandor, Simpan) dipin melayang di bawah layar sentuh (thumb-friendly).
   - [x] **Segmented Status Stepper**: Stepper 3 tahap bertema toko (`var(--color-primary)`) berpadu kanvas tanda tangan sentuh yang lapang dan collapsible barcode drawer.
+
+### 3.4 Resolusi Tombol Anti-Gepeng & Ergonomi Detail Pengiriman (v1.13.2)
+* **Fitur & Spesifikasi:**
+  - [x] **Eliminasi Tombol Gepeng (*Anti-Squash Buttons*)**: Menghapus `flex-1` dalam layout vertikal (`flex-col`) pada tombol *Kelola Pengiriman & DO* dan *Cetak DO A4*, menggantikannya dengan `w-full sm:flex-1`, `h-11` (44px standar Apple/Google), `py-2.5 px-4`, serta `shrink-0`.
+  - [x] **Proteksi Global `.btn-native-action`**: Menambahkan `min-height: 2.5rem;` dan `flex-shrink: 0;` di `src/style.css` agar tombol sentuh tidak pernah mengecil di bawah 40px dalam layout flexbox apa pun.
+  - [x] **Perapian Badge Status Pengiriman**: Menambahkan `shrink-0 whitespace-nowrap` sehingga badge status *MENUNGGU MUAT* tidak terlipat menjadi 2 baris sempit di layar ponsel.
+  - [x] **Ikon Vektor Valid**: Memperbarui ikon dari `fa-truck-gear` ke `fa-truck-fast text-sm` resmi FontAwesome.
 
 ---
 
