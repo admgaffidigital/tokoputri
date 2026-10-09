@@ -9,6 +9,7 @@
 import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad, openModalAnim, closeModalAnim, extractOrderTaxInfo } from '../../core/utils.js';
 import { appData } from '../../core/state.js';
 import { canViewHpp } from '../../core/auth-roles.js';
+import { generateCode128Svg } from '../../core/barcode-code128.js';
 
 export let currentDocType = 'invoice';
 let isSaving = false;
@@ -2040,14 +2041,95 @@ export const openDocPreview = (type, targetId = null) => {
         return;
     }
 
-    // SURAT JALAN
+    // ────────────────────────────────────────────────────────────
+    // SURAT JALAN RESMI PROYEK (DELIVERY ORDER / DO) DENGAN BARCODE CODE 128
+    // ────────────────────────────────────────────────────────────
+    const del = o.delivery || {};
+    const doNumber = del.doNumber || ('DO-' + String(new Date().getFullYear()).slice(-2) + String(new Date().getMonth() + 1).padStart(2, '0') + '-' + String(o.orderId).replace(/[^a-zA-Z0-9]/g, '').slice(-5).toUpperCase());
+    
+    const doBarcodeSvg = typeof generateCode128Svg === 'function' ? generateCode128Svg(doNumber, {
+        height: 34,
+        showText: true,
+        fontSize: 9,
+        className: 'w-44 h-auto'
+    }) : '';
+
+    const doKopHtml = `
+    <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-4 mb-4">
+        <div class="flex items-center gap-4">
+            ${logoHTML}
+            <div>
+                <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'TOKO PUTRI')}</h1>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">${esc(appData.store?.slogan || 'Bahan Bangunan & Alat Teknik')}</p>
+                <p class="text-[11px] font-medium text-slate-500 mt-0.5 leading-snug">${esc(appData.store?.address || 'Alamat fisik toko')}</p>
+                <p class="text-[11px] font-medium text-slate-500"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || '-')}</p>
+                ${(o.payment?.taxNpwp || appData.store?.taxNpwp) ? `<p class="text-[10px] font-semibold text-slate-600 mt-0.5"><i class="fa-solid fa-id-card text-blue-500"></i> NPWP: <span class="font-mono">${esc(o.payment?.taxNpwp || appData.store.taxNpwp)}</span></p>` : ''}
+            </div>
+        </div>
+        <div class="text-right flex flex-col items-end">
+            <h2 class="font-black text-2xl tracking-widest text-amber-600 uppercase">SURAT JALAN</h2>
+            <p class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mt-0.5">Delivery Order (DO)</p>
+            <div class="mt-1.5 p-1 rounded-lg border border-slate-200/90 bg-white">
+                ${doBarcodeSvg}
+            </div>
+            <p class="text-[10.5px] font-semibold text-slate-500 mt-1">Tanggal: ${d}</p>
+        </div>
+    </div>
+    `;
+
+    const recipientName = del.recipientName || (o.isDropPoint && o.dropPoint?.name) || o.customer?.name || '-';
+    const recipientPhone = del.recipientPhone || (o.isDropPoint && o.dropPoint?.wa) || o.customer?.wa || '-';
+    const destAddress = del.destinationAddress || (o.isDropPoint && o.dropPoint?.address) || o.customer?.address || '-';
+    const unloadNotes = del.unloadNotes || o.customer?.note || '';
+
+    const doMetaHtml = `
+    <div class="grid grid-cols-2 gap-4 mb-4 text-xs">
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-col justify-between">
+            <div>
+                <h3 class="text-[9.5px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-map-location-dot text-rose-500"></i> Tujuan Pengiriman Proyek / Drop Point
+                </h3>
+                <p class="font-bold text-sm text-slate-900 uppercase">${esc(recipientName)} ${recipientPhone !== '-' ? `<span class="text-xs font-mono font-medium text-slate-500">(+${esc(recipientPhone)})</span>` : ''}</p>
+                <p class="text-xs text-slate-700 leading-relaxed mt-1">${esc(destAddress)}</p>
+            </div>
+            ${unloadNotes ? `
+            <div class="mt-2 pt-1.5 border-t border-dashed border-amber-300 text-[10.5px] text-amber-800 font-semibold bg-amber-50/80 p-2 rounded-lg">
+                <i class="fa-solid fa-note-sticky text-amber-600 mr-1"></i> Catatan Bongkar: ${esc(unloadNotes)}
+            </div>` : ''}
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1.5">
+            <h3 class="text-[9.5px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-truck text-[var(--color-primary)]"></i> Armada &amp; Pengemudi Toko
+            </h3>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-500 font-medium">No. Ref Pesanan:</span>
+                <span class="font-bold font-mono text-slate-800">#${esc(o.orderId)}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-500 font-medium">Armada Angkut:</span>
+                <span class="font-bold text-slate-800">${esc(del.fleetName || 'Mobil Pick-up L300')}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-500 font-medium">Plat Nomor:</span>
+                <span class="font-mono font-bold text-slate-800 uppercase">${esc(del.plateNumber || '-')}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-500 font-medium">Sopir / Helper:</span>
+                <span class="font-bold text-slate-800">${esc(del.driverName || 'Petugas Toko')}${del.helperName ? ` / ${esc(del.helperName)}` : ''}</span>
+            </div>
+        </div>
+    </div>
+    `;
+
     const tableHeaderHtml = `
-    <tr class="bg-slate-800 text-white font-bold uppercase tracking-wider text-[10.5px]">
+    <tr class="bg-slate-800 text-white font-bold uppercase tracking-wider text-[10px]">
         <th class="py-2.5 px-3 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
         <th class="py-2.5 px-3 border-r border-slate-700">Nama &amp; Spesifikasi Barang</th>
         <th class="py-2.5 px-3 text-center w-24 border-r border-slate-700">Kuantitas</th>
         <th class="py-2.5 px-3 text-center w-20 border-r border-slate-700">Satuan</th>
-        <th class="py-2.5 px-3 rounded-tr-xl text-center w-24">Ceklis Gudang</th>
+        <th class="py-2.5 px-2.5 text-center w-20 border-r border-slate-700">Cek Gudang</th>
+        <th class="py-2.5 px-2.5 rounded-tr-xl text-center w-20">Cek Proyek</th>
     </tr>
     `;
 
@@ -2062,25 +2144,46 @@ export const openDocPreview = (type, targetId = null) => {
         </td>
         <td class="py-2.5 px-3 text-center font-bold text-base text-slate-800">${parseFloat(item.qty)}</td>
         <td class="py-2.5 px-3 text-center text-slate-500 font-bold uppercase text-[11px]">${esc(item.unit || 'pcs')}</td>
-        <td class="py-2.5 px-3 text-center"><div class="w-4 h-4 border-2 border-slate-400 mx-auto rounded-sm shadow-inner"></div></td>
+        <td class="py-2.5 px-2 text-center"><div class="w-4 h-4 border-2 border-slate-400 mx-auto rounded-sm shadow-inner"></div></td>
+        <td class="py-2.5 px-2 text-center"><div class="w-4 h-4 border-2 border-slate-400 mx-auto rounded-sm shadow-inner"></div></td>
     </tr>
     `);
 
-    const signaturesHtml = `
-    <div class="grid grid-cols-3 gap-6 text-center text-xs mt-auto pt-5 border-t border-slate-200">
+    const hasSig = del.signature && del.signature.signatureDataUrl;
+    const recipientSigBox = hasSig ? `
         <div class="flex flex-col items-center">
-            <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Penerima / Klien:</span>
-            <div class="w-36 border-b-2 border-slate-800 mb-1.5"></div>
-            <span class="font-bold text-slate-900">${esc(o.customer?.name || 'Nama Terang & TTD')}</span>
+            <span class="font-bold text-slate-500 mb-1 uppercase tracking-widest text-[9px]">Penerima / Mandor:</span>
+            <div class="h-14 flex items-center justify-center">
+                <img src="${del.signature.signatureDataUrl}" alt="TTD Mandor" class="h-12 w-auto object-contain">
+            </div>
+            <div class="w-32 border-b-2 border-slate-800 mb-1"></div>
+            <span class="font-bold text-slate-900">${esc(del.signature.signerName || recipientName)}</span>
+            <span class="text-[8px] font-mono text-emerald-600 uppercase font-bold">Terverifikasi Digital</span>
+        </div>
+    ` : `
+        <div class="flex flex-col items-center">
+            <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Penerima / Mandor:</span>
+            <div class="w-32 border-b-2 border-slate-800 mb-1.5"></div>
+            <span class="font-bold text-slate-900">${esc(recipientName)}</span>
+        </div>
+    `;
+
+    const signaturesHtml = `
+    <div class="grid grid-cols-4 gap-4 text-center text-xs mt-auto pt-4 border-t border-slate-200">
+        <div class="flex flex-col items-center">
+            <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Petugas Gudang:</span>
+            <div class="w-32 border-b-2 border-slate-800 mb-1.5"></div>
+            <span class="font-bold text-slate-900">Nama &amp; TTD</span>
         </div>
         <div class="flex flex-col items-center">
             <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Sopir / Pengantar:</span>
-            <div class="w-36 border-b-2 border-slate-800 mb-1.5"></div>
-            <span class="font-bold text-slate-900">Nama Terang &amp; TTD</span>
+            <div class="w-32 border-b-2 border-slate-800 mb-1.5"></div>
+            <span class="font-bold text-slate-900">${esc(del.driverName || 'Nama & TTD')}</span>
         </div>
+        ${recipientSigBox}
         <div class="flex flex-col items-center">
             <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Hormat Kami:</span>
-            <div class="w-36 border-b-2 border-slate-800 mb-1.5"></div>
+            <div class="w-32 border-b-2 border-slate-800 mb-1.5"></div>
             <span class="font-bold text-slate-900 uppercase">${esc(appData.store?.name || 'Toko Putri')}</span>
         </div>
     </div>
@@ -2088,21 +2191,23 @@ export const openDocPreview = (type, targetId = null) => {
 
     const pages = paginateTableDocument({
         docTitle: 'Surat Jalan Pengiriman',
-        docNumber: `#${o.orderId}`,
+        docNumber: `#${doNumber}`,
         docDate: d,
-        kopHtml,
-        metaHtml,
+        kopHtml: doKopHtml,
+        metaHtml: doMetaHtml,
         tableHeaderHtml,
         rows,
         signaturesHtml,
-        singlePageMax: 8,
-        itemsFirstPage: 8,
-        itemsMiddlePage: 16,
-        itemsLastPage: 9
+        singlePageMax: 7,
+        itemsFirstPage: 7,
+        itemsMiddlePage: 14,
+        itemsLastPage: 6
     });
 
     renderPagesToContainer(pages);
+    return;
 };
+
 
 /**
  * ============================================================

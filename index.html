@@ -1202,6 +1202,64 @@
       </div>
     </div>
 
+    <!-- Delivery Order (Surat Jalan & Manajemen Logistik) Modal -->
+    <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-delivery-order" onclick="if (event.target === this) closeDeliveryModal();">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-delivery-order-box">
+        <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
+        <!-- Header -->
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+              <i class="fa-solid fa-truck-ramp-box"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
+                Surat Jalan &amp; Logistik Pengiriman
+                <span class="text-[9px] font-black px-2.5 py-0.5 rounded-full text-white shadow-2xs uppercase tracking-wider" style="background: var(--color-primary);">DO PROYEK</span>
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Penerbitan Surat Jalan, penugasan armada toko, supir &amp; serah terima proyek
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95 cursor-pointer" onclick="closeDeliveryModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="custom-scrollbar flex-1 overflow-y-auto bg-slate-50/60 p-4 sm:p-6 dark:bg-[#0b1121]" id="modal-delivery-order-content">
+        </div>
+      </div>
+    </div>
+
+    <!-- Digital Signature Pad Modal (Tanda Tangan Serah Terima Mandor) -->
+    <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-950/85 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-4" id="modal-delivery-signature" onclick="if (event.target === this) closeDeliverySignatureModal();">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-lg md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-delivery-signature-box">
+        <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
+        <!-- Header -->
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base shadow-2xs shrink-0 bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800">
+              <i class="fa-solid fa-signature"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
+                Verifikasi Serah Terima
+                <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white uppercase tracking-wider">MANDOR TTD</span>
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Goreskan tanda tangan mandor di layar sentuh perangkat
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95 cursor-pointer" onclick="closeDeliverySignatureModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="custom-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-5 dark:bg-[#0b1121]" id="modal-delivery-signature-content">
+        </div>
+      </div>
+    </div>
+
     <!-- Terms & Conditions Modal -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="terms-modal" onclick="if (event.target === this) closeTermsModal();">
       <div class="relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="terms-modal-content">

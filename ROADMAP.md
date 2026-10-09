@@ -1,7 +1,7 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.12.2` | **Target Jangka Panjang:** `v2.0.0`
+> **Target Baseline Saat Ini:** `v1.13.0` | **Target Jangka Panjang:** `v2.0.0`
 
 ---
 
@@ -76,20 +76,21 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
 
 ---
 
-## 🚚 FASE 3: Logistik, Pengiriman Proyek & Surat Jalan (Delivery Management)
+## 🚚 FASE 3: Logistik, Pengiriman Proyek & Surat Jalan (Delivery Management) (SELESAI - v1.13.0)
 > **Fokus Utama:** Penataan alur distribusi barang berat/bervolume ke lokasi proyek.  
-> **Target Rilis:** `v1.13.0` - `v1.13.5`
+> **Status:** Selesai & Terverifikasi di `v1.13.0`
 
 ### 3.1 Dokumen Surat Jalan Resmi (*Delivery Order / DO*)
 * **Fitur & Spesifikasi:**
-  - [ ] Penerbitan Surat Jalan ber-barcode terpisah dari Struk Kasir.
-  - [ ] Format cetak standar logistik proyek (Kertas A4 / rangkap) memuat: Alamat Proyek/Drop Point, Kontak Mandor, Catatan Bongkar, dan Tabel Checklist Muatan.
-  - [ ] Manajemen Armada: Penugasan jenis armada (Mobil Pick-up L300, Truk Engkel, Motor Roda Tiga Toko) dan nama supir/helper.
+  - [x] Penerbitan Surat Jalan ber-barcode Code 128 terpisah dari Struk Kasir (`DO-YYMM-XXXXX`).
+  - [x] Format cetak standar logistik proyek (Kertas A4 / rangkap) memuat: Alamat Proyek/Drop Point, Kontak Mandor, Catatan Bongkar, Tabel Checklist Muatan, dan 4 kolom tanda tangan.
+  - [x] Manajemen Armada: Penugasan jenis armada (Mobil Pick-up L300, Truk Engkel, Motor Roda Tiga Toko, dsb) dan nama supir/helper beserta kontak WhatsApp.
 
-### 3.2 Pelacakan Status Pengiriman Real-Time
+### 3.2 Pelacakan Status Pengiriman Real-Time & Tanda Tangan Mandor
 * **Fitur & Spesifikasi:**
-  - [ ] Siklus status pengiriman: `Menunggu Muat (Pending Dispatch)` $\rightarrow$ `Dalam Perjalanan (Out for Delivery)` $\rightarrow$ `Terkirim (Delivered)`.
-  - [ ] Konfirmasi serah terima di aplikasi: Input nama penerima di proyek, catatan kondisi serah terima, dan upload foto bukti kirim / tanda tangan digital di layar sentuh.
+  - [x] Siklus status pengiriman: `Menunggu Muat (Pending Dispatch)` $\rightarrow$ `Dalam Perjalanan (Out for Delivery)` $\rightarrow$ `Terkirim (Delivered)`.
+  - [x] Konfirmasi serah terima di aplikasi: Input nama penerima di proyek, catatan kondisi muatan, dan kanvas tanda tangan digital di layar sentuh (*Interactive Touch Signature Pad*).
+  - [x] Otomasi pesan WhatsApp pengiriman rute armada ke supir dan notifikasi keberangkatan ke mandor/pemesan proyek.
 
 ---
 
@@ -148,8 +149,8 @@ RENDAH ────────────────────────�
 | :---: | :--- | :--- | :---: | :---: |
 | **Fase 1** | **Qty Desimal & Estimator Bahan** | Transaksi eceran leluasa, fitur pikat konsumen unik | `v1.11.x` | ✅ **SELESAI** |
 | **Fase 2** | **Retur Penjualan & Pembelian (RMA)** | Tertib tukar barang, akurasi mutasi kasir & stok | `v1.12.x` | ✅ **SELESAI** |
-| **Fase 3** | **Surat Jalan & Pengiriman Proyek** | Logistik armada & material volume besar rapi | `v1.13.x` | ⏳ *Agenda Berikutnya* |
-| **Fase 4** | **Multi-Satuan UOM & Harga Grosir** | Eceran vs grosir otomatis tanpa duplikasi produk | `v1.14.x` | 📋 *Menunggu Fase 3* |
+| **Fase 3** | **Surat Jalan & Pengiriman Proyek** | Logistik armada & material volume besar rapi | `v1.13.x` | ✅ **SELESAI** |
+| **Fase 4** | **Multi-Satuan UOM & Harga Grosir** | Eceran vs grosir otomatis tanpa duplikasi produk | `v1.14.x` | ⏳ *Agenda Berikutnya* |
 | **Fase 5** | **Smart Safety Stock & Otomasi WA** | Pengadaan barang akurat, penagihan tempo cepat | `v2.0.0` | 📋 *Menunggu Fase 4* |
 
 ---

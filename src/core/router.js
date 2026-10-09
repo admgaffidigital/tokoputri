@@ -378,7 +378,9 @@ export const MODAL_ELEMENT_MAP = {
     productBarcodeLabel: ['modal-product-barcode-label', 'product-barcode-label-modal'],
     materialEstimator: ['modal-material-estimator', 'material-estimator-modal'],
     salesReturn: ['modal-sales-return', 'sales-return-modal'],
-    vendorReturn: ['modal-vendor-return', 'vendor-return-modal']
+    vendorReturn: ['modal-vendor-return', 'vendor-return-modal'],
+    deliveryOrder: ['modal-delivery-order', 'delivery-order-modal'],
+    deliverySignature: ['modal-delivery-signature', 'delivery-signature-modal']
 };
 
 /**
@@ -648,6 +650,12 @@ export const closeModalByName = (m) => {
         case 'vendorReturn':
             if (typeof window.closeVendorReturnModal === 'function') { window.closeVendorReturnModal(true); return true; }
             break;
+        case 'deliveryOrder':
+            if (typeof window.closeDeliveryModal === 'function') { window.closeDeliveryModal(true); return true; }
+            break;
+        case 'deliverySignature':
+            if (typeof window.closeDeliverySignatureModal === 'function') { window.closeDeliverySignatureModal(true); return true; }
+            break;
         default:
             break;
     }
@@ -808,6 +816,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
+        'deliveryOrder', 'deliverySignature',
         'salesReturn', 'vendorReturn',
         'materialEstimator', 'productBarcodeLabel', 'productFifo', 'sessionKicked', 'exitConfirm',
         'colorFloat', 'posLogoutShift',

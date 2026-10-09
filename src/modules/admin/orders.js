@@ -256,6 +256,7 @@ export const renderOrdersList = () => {
                         <span class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
                         <span class="text-[9px] font-bold ${o.customerType === 'Member' ? 'text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] border border-[rgba(var(--color-primary-rgb),0.25)]' : 'text-slate-500 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700'} px-2 py-0.5 rounded-lg uppercase tracking-widest shrink-0">${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-[var(--color-primary)] mr-1"></i>Member' : 'Umum'}</span>
                         ${o.customer?.lat ? `<span class="text-[9px] font-bold text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-lg border border-[rgba(var(--color-primary-rgb),0.2)] uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
+                        ${o.delivery?.doNumber ? `<span class="text-[9px] font-bold ${o.delivery.status === 'delivered' ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' : o.delivery.status === 'out_for_delivery' ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800' : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800'} px-2 py-0.5 rounded-lg border uppercase tracking-widest shrink-0 flex items-center gap-1"><i class="fa-solid fa-truck-fast text-[8px]"></i> DO #${esc(o.delivery.doNumber.split('-').pop())}</span>` : ''}
                         ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-lg border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
                     </div>
                 </div>
@@ -446,6 +447,55 @@ export const openOrderDetail = (i) => {
                     </div>` : ''}
                     ${o.customer?.note ? `<div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2"><p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-note-sticky"></i> Catatan Pembeli</p><p class="text-sm text-amber-900 dark:text-amber-100 font-bold">${esc(o.customer.note)}</p></div>` : ''}
                     ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
+                </div>
+            </div>
+
+            <!-- CARD LOGISTIK & PENGIRIMAN SURAT JALAN -->
+            <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm space-y-3.5">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center border border-amber-200 dark:border-amber-800">
+                            <i class="fa-solid fa-truck-ramp-box"></i>
+                        </div>
+                        Surat Jalan &amp; Pengiriman Proyek
+                    </h4>
+                    ${(() => {
+                        const delStatus = o.delivery?.status || 'pending_dispatch';
+                        const isDelivered = delStatus === 'delivered';
+                        const isOut = delStatus === 'out_for_delivery';
+                        const badgeColor = isDelivered ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800' : isOut ? 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800' : 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800';
+                        const label = isDelivered ? 'Terkirim & TTD' : isOut ? 'Dalam Perjalanan' : 'Menunggu Muat';
+                        return `<span class="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${badgeColor}">${label}</span>`;
+                    })()}
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <span class="text-slate-400 font-medium block text-[10px]">No. Surat Jalan (DO):</span>
+                        <span class="font-bold font-mono text-slate-800 dark:text-slate-100">${esc(o.delivery?.doNumber || 'Belum Diterbitkan')}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium block text-[10px]">Armada &amp; Supir:</span>
+                        <span class="font-bold text-slate-800 dark:text-slate-100 truncate block">${esc(o.delivery?.fleetName || 'Pick-up L300')} ${o.delivery?.driverName ? `(${esc(o.delivery.driverName)})` : ''}</span>
+                    </div>
+                </div>
+
+                ${o.delivery?.signature?.signerName ? `
+                <div class="bg-emerald-50 dark:bg-emerald-950/30 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800 flex items-center gap-3">
+                    <img src="${o.delivery.signature.signatureDataUrl}" alt="TTD" class="h-10 w-auto bg-white rounded p-1 border border-emerald-300">
+                    <div class="text-[11px] text-emerald-800 dark:text-emerald-300">
+                        <p class="font-bold">Serah Terima Ditandatangani</p>
+                        <p class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">Oleh: ${esc(o.delivery.signature.signerName)}</p>
+                    </div>
+                </div>` : ''}
+
+                <div class="pt-1 flex flex-col sm:flex-row gap-2">
+                    <button type="button" onclick="openDeliveryModal('${esc(o.orderId)}')" class="btn-native-action flex-1 h-9 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95" style="background: var(--color-primary);">
+                        <i class="fa-solid fa-truck-gear"></i> Kelola Pengiriman &amp; DO
+                    </button>
+                    <button type="button" onclick="printOfficialDeliveryOrderA4('${esc(o.orderId)}')" class="btn-native-action px-3 h-9 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                        <i class="fa-solid fa-print text-amber-500"></i> Cetak DO A4
+                    </button>
                 </div>
             </div>
 

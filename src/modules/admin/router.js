@@ -57,6 +57,19 @@ if (typeof window.openExpenseModal !== 'function') {
     };
 }
 
+if (typeof window.openDeliveryModal !== 'function') {
+    window.openDeliveryModal = (orderId) => {
+        import('./delivery.js').then(m => {
+            if (m && typeof m.openDeliveryModal === 'function') {
+                m.openDeliveryModal(orderId);
+            }
+        }).catch(err => {
+            console.error('[Delivery] Gagal memuat modul pengiriman via proxy:', err);
+            showToast('Gagal memuat form pengiriman.');
+        });
+    };
+}
+
 export const openAdminTab = (t, fH = false) => {
     // Verifikasi hak akses pengguna untuk modul ini
     const permKey = t === 'staff' ? 'cashiers' : t;
