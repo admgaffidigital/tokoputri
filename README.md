@@ -147,6 +147,44 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 * **Algoritma Kunci Kriptografis**: Verifikasi kunci lisensi format `PUTRI-[DAYS]D-[STORE]-[CHECKSUM]`.
 * **Proteksi 3-Tahap**: Peringatan ramah H-7 pra-jatuh tempo, toleransi **Masa Tenggang 7 Hari (*Grace Period*)** di mana toko tetap bebas berjualan normal, dan **Graceful Lockout** (penguncian halus tanpa pernah menghapus data toko di cloud).
 
+### 11. Multi-Satuan Bertingkat (UOM Hierarchy) & Harga Grosir Fleksibel (v1.14.0)
+* **Konversi Satuan Terpadu**: Satu master barang dapat dijual dalam satuan dasar terkecil (cth: `Meter`, `Pcs`, `Kg`, `Keping`) maupun kemasan bertingkat (cth: `Roll` = 100m, `Dus` = 6 keping, `Sak` = 50kg, `Kotak` = 100pcs).
+* **Integrasi Kasir POS & Barcode Scanner**: Scan barcode kardus/dus secara otomatis menambahkan produk dalam satuan kemasan utuh, dengan pemotongan stok otomatis ke satuan dasar persediaan.
+* **Tier Harga Grosir & Proteksi Margin HPP**: Aturan harga bertingkat kuantitas dengan indikator peringatan visual jika harga jual mendekati HPP modal kulakan.
+
+### 12. Logistik Pengiriman Proyek, Surat Jalan (DO) & Tanda Tangan Mandor (v1.13.x)
+* **Penerbitan Surat Jalan Barcode Code 128**: Penomoran resmi `DO-YYMM-XXXXX` terpisah dari invoice, lengkap dengan penugasan armada toko (Pick-up, Truk Engkel, Dobel, Roda Tiga), supir, dan helper.
+* **Checklist Muatan & Bukti Serah Terima**: Pengecekan barang saat muat (*Cek Gudang*) dan bongkar (*Cek Proyek*), kanvas tanda tangan digital mandor di HP supir, serta otomasi WhatsApp rute ke mandor.
+
+### 13. Engine Retur & Rekonsiliasi Inventori (RMA Customer & Supplier) (v1.12.x)
+* **Retur Konsumen (Customer RMA)**: Verifikasi nomor nota asal, validasi batas kuota beli, 3 metode penyelesaian (Cash Refund memotong laci, Saldo Kredit Toko, atau Tukar Barang), dan restorasi stok adaptif (Kondisi Baik kembali ke Rak + batch baru vs Kondisi Rusak ke Karantina Cacat).
+* **Retur Supplier (Vendor RMA)**: Klaim barang cacat pabrik dari karantina atau rak langsung ke supplier asal dengan pemotongan hutang dagang (*AP Deduction*).
+
+### 14. Kalkulator Estimator Bahan Bangunan & Presisi Desimal POS (v1.11.x)
+* **Estimator Interaktif 3 Formula**: Cat Tembok & Plafon, Keramik & Granit, serta Pasangan Dinding Hebel/Bata dengan tombol 1-klik tambah paket material ke keranjang kasir POS/Web atau konsultasi WhatsApp.
+* **Presisi Desimal & Curah Kiloan**: Penjualan barang timbangan (paku 0.5 kg, kabel 2.5 meter) dengan stepper adaptif dan tombol cepat pecahan (¼, ½, ¾, 1).
+
+### 15. Sistem Cetak Label Barcode SKU & Harga Universal
+* **Multi-Printer Universal**: Kompatibel dengan printer Thermal Stiker Roll (`40x30 mm`, `50x30 mm`, continuous roll) dan Kertas Lembaran A4 biasa (`Grid 3x10` 30 label & `Grid 2x7` 14 label) menggunakan barcode vektor Code 128 murni.
+
+### 16. Proteksi UI/UX Native App & Ergonomi Anti-Gepeng Seluruh Sistem
+* **Standar Sentuh Ergonomis**: Seluruh tombol aksi dilindungi `min-height: 2.5rem !important` (40px-44px), `flex-shrink: 0 !important`, rasio 1:1 kaku pada tombol ikon, serta `white-space: nowrap` pada seluruh badge status agar tidak gepeng atau terlipat di smartphone.
+
+---
+
+## 📚 Paket Panduan Operasional & Dokumentasi Bisnis SaaS
+
+Seluruh panduan operasional sistem dan berkas komersial telah disusun rapi pada direktori `DOCS_SAAS_BISNIS/`:
+
+1. **[Panduan Lengkap Penggunaan Aplikasi Toko & Kasir (21 Bab Non-Teknis)](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md)**:
+   * Panduan operasional komprehensif untuk pemilik toko, manajer, dan kasir (login, profil/QRIS, master produk, kasir POS, shift kasir & laci kas, RBAC & HPP lockdown, stock opname, cetak Bluetooth & A4, piutang tempo, buku kas, laporan laba rugi, aktivasi lisensi, UOM multi-satuan, logistik DO, retur RMA, estimator bahan, label barcode, stok dua lokasi FIFO, serta **Panduan Cara Menjelaskan Sistem** ke konsumen, staf, dan investor).
+2. **[Proposal Penawaran Managed SaaS (HTML Interaktif)](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/1_PROPOSAL_PENAWARAN_MANAGED_SAAS.html)**:
+   * Lembar proposal eksekutif A4/PDF interaktif dengan penyesuaian nama klien, hitung biaya sewa, dan tombol salin WhatsApp penawaran 1-klik.
+3. **[Surat Perjanjian Sewa Software & SLA Legalitas](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.html)**:
+   * Draf kontrak hukum Indonesia resmi untuk penyewaan sistem POS/e-commerce dengan klausul perlindungan hak cipta dan jaminan kepemilikan data klien.
+4. **[SOP Developer Onboarding & Kloning Toko Klien Baru](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/4_SOP_DEVELOPER_ONBOARDING_KLONING_TOKO.md)**:
+   * Prosedur teknis pendirian toko klien baru (< 5 menit), penerbitan lisensi, kompilasi binary Android APK/AAB, dan audit diagnostik.
+
 ---
 
 ## 🚀 Perintah CLI Pengembangan, Pemeliharaan & Ekosistem SaaS
@@ -221,6 +259,59 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.14.0 — Multi-Satuan Bertingkat (UOM Hierarchy), Harga Grosir Fleksibel & Proteksi UI/UX Anti-Gepeng (09 Okt 2026)
+- **Master Multi-Satuan Kemasan (`src/core/uom.js`)**: Mendukung satuan dasar terkecil (Meter, Pcs, Kg, Keping) dan kemasan bertingkat (Roll, Dus, Sak, Kotak) dengan rasio konversi akurat dan harga khusus per kemasan.
+- **Selector Satuan Kasir POS & Scan Barcode Kemasan**: Kasir dapat beralih satuan 1-klik di keranjang belanja, serta scan barcode dus/roll langsung memasukkan produk dalam satuan kemasan utuh.
+- **Tier Harga Grosir & Proteksi Margin HPP**: Aturan harga kuantitas bertingkat dengan indikator peringatan jika harga mendekati modal kulakan (HPP).
+- **Proteksi UI/UX Anti-Gepeng Global (`src/style.css`)**: Penguncian `min-height: 2.5rem !important` (40px-44px), `flex-shrink: 0 !important`, rasio 1:1 tombol ikon, serta `white-space: nowrap` pada seluruh badge status agar tidak gepeng atau terlipat di smartphone.
+- **Sinkronisasi Multi-Channel v1.14.0**: Android VersionCode `11400`, bundler Vite, PWA, dan Capacitor.
+
+---
+
+### v1.13.2 — Resolusi Tombol Anti-Gepeng & Ergonomi Detail Pengiriman Proyek (09 Okt 2026)
+- **Eliminasi Tombol Gepeng (`src/modules/admin/orders.js`)**: Menghapus `flex-1` dalam layout vertikal pada tombol Kelola Pengiriman & DO, digantikan `w-full sm:flex-1` dengan tinggi ergonomis `h-11` (44px) dan `shrink-0`.
+- **Proteksi Global `.btn-native-action`**: Menambahkan batas lantai 40px di `style.css` agar tombol sentuh tidak terkompresi di smartphone.
+- **Perapian Badge Status Pengiriman**: Penambahan `shrink-0 whitespace-nowrap` sehingga badge status *MENUNGGU MUAT* tidak terlipat menjadi 2 baris.
+- **Sinkronisasi Multi-Channel v1.13.2**: Android VersionCode `11302`.
+
+---
+
+### v1.13.1 — Harmonisasi Desain Native App Surat Jalan (DO), Touch Fleet Grid & Checklist Muatan Proyek (09 Okt 2026)
+- **Grid Kartu Armada Sentuh**: Menggantikan dropdown kaku dengan 6 kartu armada interaktif ber-border tema toko.
+- **Checklist Muatan Tile Interaktif**: Mengeliminasi tabel kaku di HP, digantikan tile sentuh 1-ketukan, squircle checkbox, kapsul kuantitas, chip varian, dan tombol Pilih Semua.
+- **Fixed Pinned Bottom Action Bar**: Tombol aksi utama dipin melayang di bawah layar sentuh (thumb-friendly) dengan safe area inset.
+- **Sinkronisasi Multi-Channel v1.13.1**: Android VersionCode `11301`.
+
+---
+
+### v1.13.0 — Logistik, Pengiriman Proyek & Surat Jalan Resmi Barcode Code 128 (09 Okt 2026)
+- **Dokumen Surat Jalan Resmi A4 (`DO-YYMM-XXXXX`)**: Ber-barcode Code 128 unik, rujukan Drop-Point mandor, armada & supir, serta 4 kolom tanda tangan serah terima.
+- **Pelacakan Status Pengiriman Real-Time & Tanda Tangan Mandor**: Siklus status Menunggu Muat -> Dalam Perjalanan -> Terkirim dengan kanvas tanda tangan digital layar sentuh.
+- **Sinkronisasi Multi-Channel v1.13.0**: Android VersionCode `11300`.
+
+---
+
+### v1.12.2 — Harmonisasi Desain Native App, Dual-View Riwayat Retur & Konfirmasi Cetak Pintar (08 Okt 2026)
+- **Dual-View Riwayat Retur Responsif**: Tampilan kartu mobile (`.card-native`) di HP bebas geser horizontal kaku dan tabel analitis di desktop.
+- **Dialog Konfirmasi Cerdas**: Menghilangkan tombol merah keliru 'Ya, Hapus' pada aksi cetak nota dokumen.
+- **Sinkronisasi Multi-Channel v1.12.2**: Android VersionCode `11202`.
+
+---
+
+### v1.12.0 — Manajemen Retur & Rekonsiliasi Inventori (RMA Engine Customer & Supplier) (08 Okt 2026)
+- **Modul Retur Penjualan Konsumen**: Validasi batas kuota nota beli asli, 3 metode refund (Cash laci, Saldo kredit, Tukar barang), dan restorasi stok adaptif (Baik ke Rak Toko vs Rusak ke Karantina).
+- **Modul Retur Pembelian Supplier**: Klaim cacat pabrik dari karantina/rak langsung ke supplier dengan pemotongan hutang PO (*AP Deduction*).
+- **Sinkronisasi Multi-Channel v1.12.0**: Android VersionCode `11200`.
+
+---
+
+### v1.11.0 — Kalkulator Estimator Material Bangunan & Presisi Kuantitas Desimal POS (08 Okt 2026)
+- **Kalkulator Estimator 3 Formula**: Cat & Plafon, Keramik & Granit, serta Pasangan Dinding Hebel/Bata dengan aksi 1-klik tambah ke keranjang belanja POS/Web.
+- **Presisi Desimal POS**: Mendukung barang curah/kiloan (0.25 kg paku, 2.5 m kabel) dengan stepper pecahan cepat (¼, ½, ¾, 1).
+- **Sinkronisasi Multi-Channel v1.11.0**: Android VersionCode `11100`.
+
+---
 
 ### v1.10.60 — Preservasi Gambar Kemasan Kardus Produk Sesuai Preferensi Pengguna & Pemantapan UX POS Kasir (06 Okt 2026)
 - **Preservasi Gambar Kemasan Kardus Produk (`src/core/utils.js`)**: Mengizinkan kembali gambar kemasan kardus produk untuk tampil normal di seluruh katalog etalase dan POS kasir sesuai preferensi pemilik toko ("biarkan gambarnya pakai kardus gambar"), tanpa menghilangkan perbaikan harga varian, tombol layer-group, dan pembersihan keranjang kosong.

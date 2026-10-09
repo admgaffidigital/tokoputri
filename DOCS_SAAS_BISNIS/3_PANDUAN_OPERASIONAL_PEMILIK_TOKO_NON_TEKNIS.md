@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.10.60**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.14.0**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -21,6 +21,13 @@ Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), mana
 12. [Pusat Laporan Eksekutif, Laba Bersih & Ekspor Data ke Excel](#bab-12--pusat-laporan-eksekutif-laba-bersih--ekspor-data-ke-excel)
 13. [Ergonomi Mobile Native & Barcode Scanner Kamera di HP](#bab-13--ergonomi-mobile-native--barcode-scanner-kamera-di-hp)
 14. [Perpanjangan Masa Aktif Layanan Toko, Masa Tenggang & Keamanan Data](#bab-14--perpanjangan-masa-aktif-layanan-toko-masa-tenggang--keamanan-data)
+15. [Multi-Satuan Bertingkat (UOM) & Harga Grosir Fleksibel (Dus/Roll vs Eceran)](#bab-15--multi-satuan-bertingkat-uom--harga-grosir-fleksibel-dusroll-vs-eceran)
+16. [Logistik Pengiriman Proyek, Surat Jalan (DO) & Tanda Tangan Digital Mandor](#bab-16--logistik-pengiriman-proyek-surat-jalan-do--tanda-tangan-digital-mandor)
+17. [Manajemen Retur Barang Konsumen & Klaim Cacat Supplier (RMA Engine)](#bab-17--manajemen-retur-barang-konsumen--klaim-cacat-supplier-rma-engine)
+18. [Kalkulator Estimator Material Bangunan & Penjualan Curah Kiloan Desimal](#bab-18--kalkulator-estimator-material-bangunan--penjualan-curah-kiloan-desimal)
+19. [Sistem Cetak Label Barcode SKU & Harga Universal (Thermal Roll & Kertas A4)](#bab-19--sistem-cetak-label-barcode-sku--harga-universal-thermal-roll--kertas-a4)
+20. [Manajemen Dua Lokasi Stok (Rak Toko vs Gudang Cadangan) & Metode FIFO](#bab-20--manajemen-dua-lokasi-stok-rak-toko-vs-gudang-cadangan--metode-fifo)
+21. [Panduan Lengkap Cara Menjelaskan Sistem (Untuk Konsumen, Staf & Mitra Bisnis)](#bab-21--panduan-lengkap-cara-menjelaskan-sistem-untuk-konsumen-staf--mitra-bisnis)
 
 ---
 
@@ -303,6 +310,246 @@ Sistem toko Anda beroperasi dengan model langganan terkelola (*Managed SaaS Engi
 
 ---
 
+## BAB 15 — MULTI-SATUAN BERTINGKAT (UOM) & HARGA GROSIR FLEKSIBEL (DUS/ROLL VS ECERAN)
+
+Sistem Toko Putri mendukung penjualan barang dalam satuan kemasan besar (Dus, Roll, Sak, Kotak) maupun satuan eceran (Meter, Pcs, Kg) dari **Satu Master Produk**, tanpa perlu membuat produk ganda yang membingungkan.
+
+### A. Mengatur Satuan Kemasan di Panel Produk Admin
+1. Buka menu **"Produk"** -> edit produk atau klik **"+ Tambah Produk Baru"**.
+2. Pada bagian satuan, tentukan **Satuan Dasar** (satuan terkecil, contoh: `Meter` untuk kabel atau `Keping` untuk keramik).
+3. Aktifkan sakelar **"Multi-Satuan Kemasan (UOM Hierarchy)"**.
+4. Masukkan rincian satuan kemasan:
+   - **Nama Satuan Kemasan :** Contoh `Roll` atau `Dus`.
+   - **Rasio Konversi :** Jumlah satuan dasar dalam 1 kemasan (contoh: 1 Roll kabel = `100` Meter, 1 Dus keramik = `6` Keping, 1 Sak semen = `50` Kg).
+   - **Harga Jual Kemasan :** Harga khusus jika pembeli membeli 1 kemasan utuh (biasanya lebih hemat dibanding eceran).
+   - **Barcode Kemasan :** Tembakkan barcode scanner ke dus/kardus produk. Barcode ini berbeda dengan barcode eceran.
+5. Klik **"Simpan Produk"**.
+
+### B. Transaksi Satuan Kemasan di Kasir POS
+1. Saat kasir memilih produk di kasir POS, kasir dapat memilih satuan secara instan melalui tombol kapsul satuan (`Meter` atau `Roll`).
+2. Jika kasir memindai barcode kardus/dus menggunakan scanner laser atau kamera smartphone, sistem **langsung otomatis menambahkan produk dalam hitungan 1 Roll/Dus** ke keranjang kasir.
+3. **Pemotongan Stok Selalu Akurat :** Jika kasir menjual 1 Roll kabel (isi 100m), sistem secara otomatis memotong stok gudang sebanyak 100 Meter.
+
+### C. Harga Grosir Bertingkat & Peringatan Margin Modal HPP
+1. Anda dapat mengatur harga bertingkat kuantitas (contoh: Beli 1-9 meter Rp 8.000/m; Beli $\ge$ 10 meter otomatis Rp 7.200/m).
+2. **Proteksi Margin HPP Pintar :** Jika harga grosir atau diskon yang dimasukkan mendekati atau di bawah harga modal kulakan (HPP), sistem akan menampilkan indikator peringatan berwarna merah agar toko tidak merugi.
+
+---
+
+## BAB 16 — LOGISTIK PENGIRIMAN PROYEK, SURAT JALAN (DO) & TANDA TANGAN DIGITAL MANDOR
+
+Modul logistik dirancang khusus untuk toko bahan bangunan dan alat teknik yang sering mengirim barang muatan berat/bervolume ke proyek kontraktor.
+
+### A. Membuka Pengelolaan Pengiriman & Surat Jalan
+1. Buka menu **"Pesanan" (Live Orders)**.
+2. Klik pesanan yang ingin dikirimkan -> ketuk tombol **"Kelola Pengiriman & DO"**.
+3. Sistem membuka lembar Surat Jalan resmi dengan nomor unik otomatis (contoh: `DO-2610-00123`).
+
+### B. Menugaskan Armada Toko & Supir
+1. Pada bagian armada, pilih kendaraan toko Anda:
+   - 🚚 *Mobil Pick-up L300 (Kapasitas 1.5 Ton)*
+   - 🚛 *Truk Engkel 4 Roda (Kapasitas 3.5 Ton)*
+   - 🚚 *Truk Dobel 6 Roda (Kapasitas 7 Ton)*
+   - 🛵 *Motor Roda Tiga Viar (Kapasitas 500 Kg)*
+   - 📦 *Ekspedisi Luar / Ambil Mandor Sendiri*
+2. Masukkan nomor plat kendaraan, nama supir toko, dan nomor WhatsApp supir.
+
+### C. Checklist Muatan Barang (Anti-Barang Tertinggal)
+1. Di bawah informasi armada, terdapat daftar seluruh barang muatan dengan kotak centang sentuh (*touch checkbox*).
+2. Petugas gudang mencentang barang saat dimuat ke bak mobil (*Cek Gudang*).
+3. Status barang otomatis berubah menjadi hijau *"Siap Muat di Armada"*.
+
+### D. Tanda Tangan Digital Mandor di Lokasi Proyek
+1. Saat supir tiba di proyek, buka pesanan di HP supir lalu ketuk tombol **"3. TTD Mandor"**.
+2. Mandor atau penerima proyek dapat langsung menandatangani serah terima di layar sentuh HP (*Touch Signature Pad*).
+3. Masukkan nama mandor penerima dan catatan kondisi muatan (contoh: *"Bongkar di samping gudang proyek, semen 50 sak utuh"*).
+4. Klik **"Simpan Tanda Tangan"**. Bukti tanda terima tersimpan permanen dan terverifikasi di server toko.
+
+### E. Cetak Surat Jalan Resmi (DO A4) & Kirim WA Mandor
+1. Klik tombol **"Cetak DO A4"** untuk mencetak Surat Jalan resmi dengan Barcode Code 128, rujukan nomor order, checklist muatan, dan 4 kolom tanda tangan (Pengirim, Supir, Gudang, Penerima Proyek).
+2. Klik tombol hijau **"WA Mandor"** untuk mengirim rincian muatan dan rute alamat via WhatsApp langsung ke nomor mandor.
+
+---
+
+## BAB 17 — MANAJEMEN RETUR BARANG KONSUMEN & KLAIM CACAT SUPPLIER (RMA ENGINE)
+
+Toko ritel teknik dan bangunan sering menghadapi kasus penukaran barang sisa proyek atau barang cacat dari pabrik. Modul RMA Toko Putri menangani seluruh pencatatan fisik dan finansialnya secara tertib.
+
+### A. Melayani Retur Penjualan Konsumen (Customer Sales Return)
+1. Buka menu **"Retur Barang"** (atau klik tombol **"Retur (RMA)"** langsung dari kartu pesanan).
+2. Masukkan **Nomor Struk Kasir / Order ID** belanja asli pelanggan.
+3. Sistem secara cerdas menampilkan daftar barang yang pernah dibeli beserta sisa kuota retur yang diizinkan (mencegah konsumen meretur lebih banyak dari yang pernah dibeli).
+4. Masukkan jumlah barang yang dikembalikan dan pilih alasan (Kelebihan Proyek, Salah Ukuran, Cacat Fisik).
+5. **Tentukan Kondisi Barang Fisik:**
+   - **Kondisi Baik :** Barang otomatis dikembalikan ke Rak Toko dan dibuatkan tiket batch stok baru.
+   - **Kondisi Rusak / Cacat :** Barang otomatis dialokasikan ke **Karantina Rusak** agar kasir tidak menjualnya lagi ke pembeli lain.
+6. **Pilih Metode Kompensasi:**
+   - **Uang Kembali Tunai (Cash Refund) :** Mengurangi uang kas laci kasir secara otomatis dan tercatat di buku kas pengeluaran toko.
+   - **Saldo Kredit Toko (Store Credit) :** Masuk sebagai saldo deposit member untuk belanja berikutnya.
+   - **Tukar Barang :** Pelanggan memilih barang pengganti di kasir.
+7. Klik **"Proses Retur"** -> Anda dapat langsung mencetak Struk Kasir Retur Thermal atau Nota Retur A4 resmi.
+
+### B. Klaim Barang Cacat ke Supplier (Vendor Purchase Return)
+1. Di menu **"Retur Barang"**, pilih tab **"Retur Supplier (Pemasok)"**.
+2. Klik **"+ Buat Retur ke Supplier"**.
+3. Pilih nama Supplier dan nomor Surat Pesanan (PO) kulakan asal.
+4. Pilih lokasi asal barang diambil (Karantina Rusak, Rak Toko, atau Gudang Cadangan).
+5. **Penyelesaian Finansial Supplier:**
+   - **Potong Hutang PO (AP Deduction) :** Mengurangi sisa hutang dagang toko Anda ke supplier terkait.
+   - **Terima Dana Pengganti :** Supplier mentransfer uang ganti rugi ke kas toko.
+6. Cetak **Surat Pengembalian Barang Resmi A4** lengkap dengan tanda tangan serah terima ekspedisi supplier.
+
+---
+
+## BAB 18 — KALKULATOR ESTIMATOR MATERIAL BANGUNAN & PENJUALAN CURAH KILOAN DESIMAL
+
+### A. Menggunakan Kalkulator Estimator Material Bangunan
+Fitur unggulan untuk memikat kontraktor, tukang, dan pemilik rumah yang ingin menghitung estimasi kebutuhan renovasi:
+1. **Cara Membuka :** Tekan tombol pintas **[F3]** di keyboard kasir POS, atau ketuk tombol **"Estimator"** di header atas toko.
+2. **Tiga Formula Kalkulasi Tersedia:**
+   - **Kalkulator Cat Tembok & Plafon :** Masukkan panjang $\times$ tinggi ruangan dan jumlah lapisan cat. Sistem menghitung kebutuhan kaleng kecil (2.5 kg), pail besar (20 kg), dan cat dasar alkali sealer.
+   - **Kalkulator Keramik & Granit Lantai :** Masukkan luas lantai m² dan ukuran ubin (40x40, 50x50, 60x60). Sistem menghitung jumlah dus keramik (termasuk cadangan potongan sudut 10%), semen perekat instan, dan semen pengisi nat.
+   - **Kalkulator Pasangan Dinding Bata/Hebel :** Masukkan luas dinding m² dikurangi luas pintu/jendela. Sistem menghitung kebutuhan pcs bata merah atau hebel ringan, volume m³, dan sak semen mortar perekat.
+3. **Aksi Cerdas 1-Klik :**
+   - Klik **"Tambahkan Semua Bahan ke Keranjang"** untuk langsung memasukkan seluruh paket barang ke kasir POS atau keranjang belanja online.
+   - Klik **"Konsultasi WhatsApp"** untuk mengirim rincian kalkulasi rapi ke WhatsApp mandor/pelanggan.
+
+### B. Penjualan Barang Curah / Kiloan Desimal di Kasir POS
+1. Untuk barang kiloan, meteran, atau literan (contoh: paku, kawat bendrat, kabel listrik, selang air, thinner):
+2. Di keranjang kasir POS, kasir dapat mengetik langsung angka desimal (contoh: `0.5`, `1.25`, `2.75`).
+3. Tersedia tombol cepat pecahan praktis: **[¼]**, **[½]**, **[¾]**, dan **[1]**.
+4. Perhitungan subtotal dan struk belanja thermal menampilkan kuantitas desimal secara presisi (contoh: `0.5 kg @ Rp 24.000 = Rp 12.000`) tanpa kesalahan pecahan angka.
+
+---
+
+## BAB 19 — SISTEM CETAK LABEL BARCODE SKU & HARGA UNIVERSAL (THERMAL ROLL & KERTAS A4)
+
+Toko Putri dilengkapi mesin cetak label mandiri untuk ditempelkan pada rak etalase toko maupun fisik barang.
+
+1. Buka menu **"Produk"** di panel admin, lalu klik ikon barcode pada baris produk yang ingin dicetak labelnya (atau klik tombol **"Cetak Label Barcode"**).
+2. **Pilih Jenis Kertas & Ukuran Printer:**
+   - **Printer Thermal Stiker Roll :** Ukuran standar ritel `40x30 mm`, `50x30 mm`, serta roll continuous `58mm` dan `80mm`.
+   - **Printer Biasa / Kertas A4 :** Lembaran kertas stiker atau HVS format `Grid 3x10 (30 Label)` atau `Grid 2x7 (14 Label)`.
+3. **Atur Kuantitas Cetak :**
+   - Gunakan tombol cepat kuantitas (+1, +5, +10) atau klik **"Set Sesuai Stok"** agar jumlah stiker yang dicetak persis sama dengan jumlah stok barang di rak.
+4. **Pratinjau Live 1:1 :** Tampilan stiker langsung terlihat di layar. Anda dapat mengaktifkan/menonaktifkan nama toko, harga jual, satuan, maupun teks SKU.
+5. Klik **"Cetak Label"** -> Label siap ditempel di rak pajangan toko. Barcode Code 128 dijamin tajam dan terbaca scanner 100%.
+
+---
+
+## BAB 20 — MANAJEMEN DUA LOKASI STOK (RAK TOKO VS GUDANG CADANGAN) & METODE FIFO
+
+Toko material modern memerlukan pemisahan fisik antara barang yang dipajang di area etalase dengan stok karung/dus besar di gudang penyimpanan belakang.
+
+### A. Logika Pengurangan Stok Etalase Terlebih Dahulu (Floor-First Deduction)
+1. Setiap produk memiliki dua kantong stok: **Stok Rak Toko** (`storeStock`) dan **Stok Gudang Cadangan** (`warehouseStock`).
+2. Setiap transaksi penjualan di kasir POS secara otomatis memotong stok **Rak Toko** terlebih dahulu agar stok pajangan mencerminkan kondisi riil di depan pembeli.
+3. Jika stok rak toko menipis, sistem memberikan indikator bagi staf untuk mengambil barang dari gudang cadangan.
+
+### B. Transfer Stok Internal (Gudang -> Rak Toko)
+1. Buka kartu produk di panel admin atau pelacak stok.
+2. Klik tombol **"Transfer Stok"**.
+3. Masukkan jumlah unit yang dipindahkan dari Gudang Cadangan ke Rak Toko.
+4. Klik **"Konfirmasi Transfer"**. Mutasi stok langsung tercatat rapi di buku kartu stok (*Stock Card Ledger*).
+
+### C. Pelacakan Antrean Masuk Barang (FIFO — First-In, First-Out)
+1. Setiap kali Anda menerima barang kulakan dari supplier melalui Surat Pesanan (PO), sistem membentuk **Tiket Batch FIFO** otomatis.
+2. Tiket ini mencatat tanggal masuk, supplier pengirim, dan harga modal beli saat itu.
+3. Saat barang terjual, sistem otomatis menghitung HPP berdasarkan barang yang masuk lebih dahulu (FIFO berstandar PSAK akuntansi), sehingga perhitungan laba bersih toko selalu objektif dan presisi meskipun harga kulakan supplier naik-turun.
+
+---
+
+## BAB 21 — PANDUAN LENGKAP CARA MENJELASKAN SISTEM (UNTUK KONSUMEN, STAF & MITRA BISNIS)
+
+Bab ini memandu Anda kata demi kata (*script* komunikasi praktis) bagaimana cara menjelaskan seluruh sistem website dan aplikasi Toko Putri kepada tiga kelompok pihak berkepentingan: Konsumen/Kontraktor, Staf/Kasir Baru, dan Mitra Bisnis/Calon Investor.
+
+---
+
+### A. Cara Menjelaskan ke Pelanggan Ritel & Kontraktor Proyek
+
+Gunakan narasi ini saat mengenalkan website kepada pelanggan toko, mandor bangunan, atau kontraktor:
+
+> *"Bapak/Ibu, sekarang belanja kebutuhan bangunan dan teknik di toko kami jauh lebih praktis dan transparan lewat sistem website resmi kami:*
+>
+> 1. **Hitung Kebutuhan Bahan Instan (Kalkulator Estimator):**
+>    *Bapak/Ibu tidak perlu bingung mengira-ngira berapa banyak semen, keramik, hebel, atau cat yang dibutuhkan. Cukup buka menu Estimator di website, masukkan ukuran ruangan/dinding, sistem kami otomatis menghitung kebutuhan bahan sampai dus/sak/kiloan terkecil, dan bisa langsung dimasukkan ke keranjang belanja atau dikonsultasikan via WhatsApp.*
+>
+> 2. **Pilihan Satuan Eceran vs Grosir (UOM Fleksibel):**
+>    *Beli kabel per meter bisa, beli utuh 1 roll dus pun lebih hemat. Sistem otomatis memberikan potongan harga grosir untuk pembelian volume besar tanpa repot tawar-menawar manual.*
+>
+> 3. **Kepastian Pengiriman & Surat Jalan (DO) Resmi:**
+>    *Setiap pengiriman material ke lokasi proyek dilengkapi Surat Jalan (DO) ber-barcode resmi. Saat armada kami tiba, Mandor/Penerima cukup tanda tangan langsung di layar HP supir kami sebagai bukti serah terima sah yang tidak bisa hilang atau basah terkena hujan.*
+>
+> 4. **Fasilitas Tempo Pembayaran (Putri PayLater):**
+>    *Bagi mitra kontraktor terdaftar, kami menyediakan fasilitas tempo belanja dengan invoice resmi A4, rekap piutang transparan, dan pengingat jatuh tempo ramah.*
+>
+> 5. **Jaminan Retur Barang Rapi (RMA):**
+>    *Sisa semen atau material proyek yang masih utuh bisa dikembalikan dengan menunjukkan struk belanja/nomor nota. Sistem kami menjamin pengembalian dana, tukar barang, atau saldo deposit belanja berikutnya secara adil dan cepat."*
+
+---
+
+### B. Cara Menjelaskan & Melatih Karyawan Kasir Baru (< 15 Menit)
+
+Gunakan kurikulum 4 langkah ini saat melatih staf kasir atau penjaga toko baru:
+
+> 1. **Langkah 1 — Buka Shift Kasir (Wajib di Awal Kerja):**
+>    *"Setiap pagi sebelum melayani pembeli, klik tombol Shift -> Buka Shift. Hitung uang modal kembalian di laci kasir (misal Rp 200.000) lalu masukkan nominalnya. Ini memastikan uang modal awal tercatat resmi dan kasir tidak disalahkan jika ada selisih."*
+>
+> 2. **Langkah 2 — Layani Transaksi Cepat di Layar POS:**
+>    *"Untuk memasukkan barang:*
+>    - *Scan barcode barang dengan alat scanner laser, atau gunakan tombol F9 untuk scan kamera HP.*
+>    - *Bisa juga ketik 2 huruf nama barang di kolom pencarian.*
+>    - *Jika pembeli beli 1/2 kg paku atau 1.5 meter kabel, cukup ketik angka desimal atau tekan tombol pecahan [½].*
+>    - *Jika beli per dus/roll, pilih kapsul satuan [Dus] atau scan barcode kardusnya.*
+>    - *Tekan tombol [F4] di keyboard untuk proses bayar: pilih Tunai (masukkan uang diterima), QRIS (tunjukkan barcode QRIS di layar), atau Transfer Bank."*
+>
+> 3. **Langkah 3 — Catat Kas Keluar Laci (Jika Beli Bensin/Galon Air):**
+>    *"Jika ada pengeluaran toko dari uang laci (misal beli galon air minum atau bensin armada pick-up), tekan tombol [F11] Kas Laci -> pilih Kas Keluar -> tulis nominal dan keterangannya. Jangan pernah mengambil uang laci tanpa mencatat di tombol ini agar laci seimbang saat tutup shift."*
+>
+> 4. **Langkah 4 — Tutup Shift Kasir (Saat Pergantian Shift / Toko Tutup):**
+>    *"Di akhir jam kerja, tekan tombol Shift -> Tutup Shift. Hitung fisik uang di laci kasir lalu ketik jumlahnya. Sistem otomatis mencocokkan dengan penjualan kasir hari itu dan mencetak struk Rekap Shift (Z-Report). Kasir selesai dan aman dari tuduhan selisih."*
+
+---
+
+### C. Cara Menjelaskan ke Rekan Bisnis / Calon Investor / Pembeli Sistem (Whitelabel/SaaS)
+
+Gunakan kerangka nilai bisnis ini untuk mendemonstrasikan keunggulan sistem:
+
+> *"Sistem Toko Putri bukan sekadar software kasir (POS) biasa, melainkan **Ekosistem Bisnis Ritel Terpadu (Unified Commerce Engine)** yang menggabungkan 6 pilar vital usaha dalam satu pintu:*
+>
+> 1. **Omnichannel Tanpa Putus (Storefront + POS Fisik):**
+>    *Katalog etalase web untuk konsumen dan antarmuka kasir fisik terhubung ke satu database stok yang sama. Terjual di kasir, stok di web detik itu juga berkurang secara real-time.*
+>
+> 2. **Manajemen Pengadaan & Akuntansi FIFO Berstandar PSAK:**
+>    *Bukan sekadar mencatat stok, sistem membentuk tiket batch penerimaan barang kulakan (PO) berurutan FIFO (First In, First Out). Saat terjadi penjualan, sistem menghitung HPP riil sesuai batch modal barang masuk sehingga laporan laba kotor dan laba bersih dijamin presisi 100% tanpa distorsi kenaikan harga supplier.*
+>
+> 3. **Logistik Proyek & Surat Jalan Digital:**
+>    *Menghilangkan kebocoran pengiriman dan sengketa barang hilang berkat checklist muatan armada dan tanda tangan digital mandor langsung di HP supir.*
+>
+> 4. **Keamanan Finansial & RBAC (HPP Lockdown):**
+>    *Karyawan kasir bebas mengoperasikan penjualan secepat kilat tanpa pernah bisa melihat harga modal kulakan, keuntungan laba toko, atau buku kas pemilik. Semua data rahasia dilindungi PIN Owner & enkripsi cloud.*
+>
+> 5. **Multi-Platform (Web, Mobile PWA & Native Android APK):**
+>    *Dapat diakses dari laptop kasir, tablet Android toko, hingga HP pribadi pemilik toko dari mana saja di seluruh dunia."*
+
+---
+
+### D. Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)
+
+| Fitur Utama | Masalah Tradisional yang Diselesaikan | Nilai Nyata Bagi Usaha |
+| :--- | :--- | :--- |
+| **Kasir POS Multi-Mode & Hotkey** | Antrean kasir panjang, kasir lambat mengetik, kasir kebingungan mencari barang | Transaksi selesai dalam < 10 detik per pelanggan; mendukung scanner laser USB & kamera HP. |
+| **Buku Kas Laci & Rekap Shift (X/Z Report)** | Uang fisik laci kasir sering tekor atau tidak cocok dengan total penjualan di sistem | Selisih kas terdeteksi seketika saat pergantian shift; pengeluaran operasional mini tercatat rapi. |
+| **Surat Jalan (DO) & TTD Mandor** | Sengketa barang proyek *"belum sampai"* atau *"kurang kirim"* dari mandor nakal | Bukti tanda tangan digital mandor tersimpan di cloud & Surat Jalan A4 resmi ber-barcode. |
+| **Manajemen Retur (RMA Engine)** | Stok berantakan dan rugi uang saat pembeli mengembalikan barang sisa proyek | Validasi kuota struk beli asli; barang rusak masuk karantina; pemotongan kas refund tercatat akurat. |
+| **Kalkulator Estimator Material** | Pelanggan ragu membeli karena tidak tahu berapa banyak sak semen/cat yang harus dibeli | Meningkatkan nilai transaksi (*basket size*) dengan tombol 1-klik masukkan seluruh paket bahan ke keranjang. |
+| **Multi-Satuan Kemasan (UOM)** | Harus membuat master produk ganda (Kabel Eceran vs Kabel Roll) yang membingungkan | 1 Master produk untuk semua satuan; barcode kardus otomatis memotong kuantitas eceran yang tepat. |
+| **Dua Lokasi Stok (Rak vs Gudang)** | Barang di rak habis padahal di gudang masih menumpuk; kasir menolak pembeli | Prioritas pengurangan stok rak etalase (*floor-first*); notifikasi transfer stok internal gudang. |
+| **Cetak Barcode Label Sendiri** | Biaya cetak stiker mahal atau toko tidak memiliki barcode untuk produk lokal | Cetak stiker label thermal atau kertas A4 mandiri dengan barcode Code 128 tajam terbaca scanner. |
+
+---
+
 💡 *Jika Anda membutuhkan bantuan teknis atau ingin berkonsultasi mengenai fitur tambahan, hubungi tim pengembang Anda melalui kontak WhatsApp resmi yang tersedia di panel kontrol toko.*
 
 **Selamat Berjualan & Sukses Selalu untuk Usaha Anda! 🚀**
+
