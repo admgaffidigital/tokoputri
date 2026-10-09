@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ============================================================
  * MIGRASI DATA SENSITIF: cms_data → cms_private
  * ============================================================
@@ -22,7 +22,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const PRIVATE_KEYS = ['suppliers', 'purchases', 'expenses', 'taxSettings', 'stockOpnameHistory'];
+const PRIVATE_KEYS = ['suppliers', 'purchases', 'expenses', 'taxSettings', 'stockOpnameHistory', 'salesReturns', 'vendorReturns'];
 const saPath = resolve(__dirname, '..', 'serviceAccountKey.json');
 
 if (!getApps().length) {

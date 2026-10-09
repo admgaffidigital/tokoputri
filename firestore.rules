@@ -184,7 +184,8 @@ service cloud.firestore {
     }
 
     // ─── Data Bisnis Sensitif (cms_private: HANYA staf admin/owner) ──────────
-    // Menyimpan: suppliers, purchases, expenses, taxSettings, stockOpnameHistory.
+    // Menyimpan: suppliers, purchases, expenses, taxSettings, stockOpnameHistory,
+    // salesReturns, vendorReturns.
     // Dokumen ini TIDAK PERNAH boleh dibaca publik atau kasir biasa.
     match /freshmart/cms_private {
       allow read, write: if isAdmin();
