@@ -176,8 +176,8 @@ RENDAH ────────────────────────�
 | **Fase 1** | **Qty Desimal & Estimator Bahan** | Transaksi eceran leluasa, fitur pikat konsumen unik | `v1.11.x` | ✅ **SELESAI** |
 | **Fase 2** | **Retur Penjualan & Pembelian (RMA)** | Tertib tukar barang, akurasi mutasi kasir & stok | `v1.12.x` | ✅ **SELESAI** |
 | **Fase 3** | **Surat Jalan & Pengiriman Proyek** | Logistik armada & material volume besar rapi | `v1.13.x` | ✅ **SELESAI** |
-| **Fase 4** | **Multi-Satuan UOM & Harga Grosir** | Eceran vs grosir otomatis tanpa duplikasi produk | `v1.14.x` | ⏳ *Agenda Berikutnya* |
-| **Fase 5** | **Smart Safety Stock & Otomasi WA** | Pengadaan barang akurat, penagihan tempo cepat | `v2.0.0` | 📋 *Menunggu Fase 4* |
+| **Fase 4** | **Multi-Satuan UOM & Harga Grosir** | Eceran vs grosir otomatis tanpa duplikasi produk | `v1.14.x` | ✅ **SELESAI** |
+| **Fase 5** | **Smart Safety Stock & Otomasi WA** | Pengadaan barang akurat, penagihan tempo cepat | `v2.0.0` | ⏳ *Agenda Berikutnya* |
 
 ---
 
