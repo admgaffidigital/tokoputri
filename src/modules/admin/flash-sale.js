@@ -72,14 +72,14 @@ export const renderFlashSaleAdminView = () => {
     const sessionsHtml = list.length === 0
         ? `
         <div class="col-span-full py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl p-8 bg-slate-50/50 dark:bg-slate-900/30">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-3xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center text-3xl shadow-sm">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-3xl flex items-center justify-center text-3xl shadow-sm" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary);">
                 <i class="fa-solid fa-bolt"></i>
             </div>
             <h4 class="font-extrabold text-base text-slate-800 dark:text-white mb-1">Belum Ada Sesi Flash Sale</h4>
             <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-5 leading-relaxed">
                 Buat sesi promo kilat untuk meningkatkan penjualan, cuci gudang barang lambat, atau memberikan diskon berbatas waktu dengan batas kuota khusus.
             </p>
-            <button onclick="window.openFlashSaleModal()" class="px-5 py-2.5 rounded-xl text-white text-xs font-bold shadow-md shadow-rose-600/30 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2 bg-gradient-to-r from-rose-600 to-red-600">
+            <button onclick="window.openFlashSaleModal()" class="btn-native-action px-5 py-2.5 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                 <i class="fa-solid fa-plus"></i>
                 <span>Buat Sesi Flash Sale Pertama</span>
             </button>
@@ -87,7 +87,7 @@ export const renderFlashSaleAdminView = () => {
         : list.map(sess => {
             const status = checkFlashSaleStatus(sess);
             const statusBadge = status === 'active'
-                ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-300 dark:border-rose-800 animate-pulse"><i class="fa-solid fa-bolt text-rose-500"></i> SEDANG BERLANGSUNG</span>`
+                ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider animate-pulse" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-bolt" style="color: var(--color-primary);"></i> SEDANG BERLANGSUNG</span>`
                 : status === 'upcoming'
                     ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300 dark:border-amber-800"><i class="fa-solid fa-clock"></i> SEGERA HADIR</span>`
                     : `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-check"></i> SELESAI</span>`;
@@ -111,7 +111,7 @@ export const renderFlashSaleAdminView = () => {
                             <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium flex-wrap">
                                 <span><i class="fa-regular fa-calendar-check text-[var(--color-primary)] mr-1"></i>${formatDisplayDate(sess.startTime)}</span>
                                 <span class="text-slate-300 dark:text-slate-700">•</span>
-                                <span><i class="fa-regular fa-clock text-rose-500 mr-1"></i>${formatDisplayDate(sess.endTime)}</span>
+                                <span><i class="fa-regular fa-clock text-amber-500 mr-1"></i>${formatDisplayDate(sess.endTime)}</span>
                             </div>
                         </div>
 
@@ -150,16 +150,16 @@ export const renderFlashSaleAdminView = () => {
                                         <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${esc(pName + vName)}</p>
                                         <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                                             <span class="text-[11px] text-slate-400 line-through">${fCur(normP)}</span>
-                                            <span class="font-black text-rose-600 dark:text-rose-400">${fCur(fsP)} (-${discountPct}%)</span>
+                                            <span class="font-black" style="color: var(--color-primary);">${fCur(fsP)} (-${discountPct}%)</span>
                                             ${isMarginLoss ? `<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-300">⚠️ DI BAWAH HPP (${fCur(hpp)})</span>` : ''}
                                         </div>
                                     </div>
 
-                                    <!-- Indikator Kuota Terjual -->
+                                    <!-- Indikator Kuota Terjual Harmonis -->
                                     <div class="text-right shrink-0">
                                         <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Terjual ${sold} / ${quota || '∞'}</span>
                                         <div class="w-20 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-200/50 dark:border-slate-700/50">
-                                            <div class="h-full bg-gradient-to-r from-amber-500 to-rose-600 rounded-full" style="width: ${quota > 0 ? Math.min(100, Math.round((sold / quota) * 100)) : 100}%;"></div>
+                                            <div class="h-full rounded-full" style="background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%); width: ${quota > 0 ? Math.min(100, Math.round((sold / quota) * 100)) : 100}%;"></div>
                                         </div>
                                     </div>
                                 </div>`;
@@ -180,12 +180,12 @@ export const renderFlashSaleAdminView = () => {
 
     content.innerHTML = `
     <div class="space-y-6 max-w-6xl mx-auto">
-        <!-- Top Bar Header -->
+        <!-- Top Bar Header Harmonis Tema -->
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center text-lg shadow-sm shadow-rose-600/30">
-                        <i class="fa-solid fa-bolt"></i>
+                    <div class="w-9 h-9 rounded-2xl text-white flex items-center justify-center text-lg shadow-sm" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                        <i class="fa-solid fa-bolt text-amber-300"></i>
                     </div>
                     <span>Flash Sale &amp; Promo Kilat</span>
                 </h2>
@@ -195,17 +195,17 @@ export const renderFlashSaleAdminView = () => {
             </div>
 
             <div class="flex items-center gap-2">
-                <button onclick="window.openFlashSaleModal()" class="px-4 py-2.5 rounded-2xl text-white text-xs font-bold shadow-md shadow-rose-600/30 active:scale-95 transition-all cursor-pointer flex items-center gap-2 bg-gradient-to-r from-rose-600 via-red-600 to-amber-500">
+                <button onclick="window.openFlashSaleModal()" class="btn-native-action px-4 py-2.5 rounded-2xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-plus text-sm"></i>
                     <span>Buat Sesi Flash Sale</span>
                 </button>
             </div>
         </div>
 
-        <!-- 3 Bento Metrik Ringkasan -->
+        <!-- 3 Bento Metrik Ringkasan Harmonis Tema -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div class="bento-island-card p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-3.5 shadow-2xs">
-                <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center text-xl shrink-0">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.2);">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div>
@@ -268,8 +268,8 @@ export const openFlashSaleModal = (sessionId = null) => {
             <!-- Modal Header -->
             <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center text-lg shadow-sm">
-                        <i class="fa-solid fa-bolt"></i>
+                    <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-lg shadow-sm" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
+                        <i class="fa-solid fa-bolt text-amber-300"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-base text-slate-900 dark:text-white leading-snug">
@@ -290,7 +290,7 @@ export const openFlashSaleModal = (sessionId = null) => {
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                         Judul Sesi Promo <span class="text-rose-500">*</span>
                     </label>
-                    <input type="text" id="fs-input-title" value="${esc(existing?.title || 'Flash Sale Spesial Hari Ini')}" placeholder="Contoh: Flash Sale Akhir Pekan Alat Teknik" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                    <input type="text" id="fs-input-title" value="${esc(existing?.title || 'Flash Sale Spesial Hari Ini')}" placeholder="Contoh: Flash Sale Akhir Pekan Alat Teknik" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
 
                 <!-- Rentang Waktu (Mulai & Selesai) -->
@@ -299,29 +299,29 @@ export const openFlashSaleModal = (sessionId = null) => {
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                             Waktu Mulai <span class="text-rose-500">*</span>
                         </label>
-                        <input type="datetime-local" id="fs-input-start" value="${toDatetimeLocal(defaultStart)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                        <input type="datetime-local" id="fs-input-start" value="${toDatetimeLocal(defaultStart)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                             Waktu Berakhir <span class="text-rose-500">*</span>
                         </label>
-                        <input type="datetime-local" id="fs-input-end" value="${toDatetimeLocal(defaultEnd)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                        <input type="datetime-local" id="fs-input-end" value="${toDatetimeLocal(defaultEnd)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                 </div>
 
                 <!-- Preset Cepat Durasi -->
                 <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-1">Preset Jam:</span>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(3)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(3)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                         +3 Jam
                     </button>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(6)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(6)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                         +6 Jam
                     </button>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(24)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(24)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                         1 Hari (24 Jam)
                     </button>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(48)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(48)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                         Akhir Pekan (2 Hari)
                     </button>
                 </div>
@@ -332,7 +332,7 @@ export const openFlashSaleModal = (sessionId = null) => {
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                             Saluran Penjualan
                         </label>
-                        <select id="fs-input-channel" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                        <select id="fs-input-channel" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                             <option value="both" ${existing?.channel === 'both' || !existing ? 'selected' : ''}>Etalase Web &amp; Kasir POS (Semua)</option>
                             <option value="web" ${existing?.channel === 'web' ? 'selected' : ''}>Hanya Etalase Web / Online</option>
                             <option value="pos" ${existing?.channel === 'pos' ? 'selected' : ''}>Hanya Kasir POS Offline</option>
@@ -342,7 +342,7 @@ export const openFlashSaleModal = (sessionId = null) => {
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                             Status Sesi
                         </label>
-                        <select id="fs-input-active" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                        <select id="fs-input-active" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                             <option value="true" ${existing?.isActive !== false ? 'selected' : ''}>Aktif (Berjalan Sesuai Jam)</option>
                             <option value="false" ${existing?.isActive === false ? 'selected' : ''}>Nonaktifkan Sementara</option>
                         </select>
@@ -354,12 +354,12 @@ export const openFlashSaleModal = (sessionId = null) => {
                     <div class="flex items-center justify-between mb-3">
                         <div>
                             <h4 class="font-extrabold text-xs text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fa-solid fa-box text-rose-500"></i>
+                                <i class="fa-solid fa-box" style="color: var(--color-primary);"></i>
                                 <span>Daftar Barang Flash Sale</span>
                             </h4>
                             <p class="text-[10px] text-slate-400">Tentukan harga diskon, kuota unit, dan proteksi margin modal.</p>
                         </div>
-                        <button type="button" onclick="window.addFlashSaleItemRow()" class="px-3 py-1.5 rounded-xl text-white text-[11px] font-bold bg-rose-600 hover:bg-rose-700 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
+                        <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action px-3 py-1.5 rounded-xl text-white text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
                             <i class="fa-solid fa-plus"></i>
                             <span>Tambah Produk</span>
                         </button>
@@ -377,7 +377,7 @@ export const openFlashSaleModal = (sessionId = null) => {
                 <button type="button" onclick="window.closeFlashSaleModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="button" onclick="window.saveFlashSaleSession()" class="px-5 py-2.5 rounded-xl text-white font-black text-xs shadow-md shadow-rose-600/30 active:scale-95 transition-all cursor-pointer flex items-center gap-2 bg-gradient-to-r from-rose-600 to-red-600">
+                <button type="button" onclick="window.saveFlashSaleSession()" class="btn-native-action px-5 py-2.5 rounded-xl text-white font-black text-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Simpan Sesi Flash Sale</span>
                 </button>
@@ -450,7 +450,7 @@ export const renderFlashSaleDraftItems = () => {
         return `
         <div class="p-3.5 rounded-2xl border ${isLoss ? 'border-rose-300 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40'} space-y-2.5">
             <div class="flex items-center justify-between gap-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary);">
                     Item #${idx + 1}
                 </span>
                 <button type="button" onclick="window.removeFlashSaleItemRow(${idx})" class="text-rose-500 hover:text-rose-700 text-xs font-bold cursor-pointer">
@@ -462,7 +462,7 @@ export const renderFlashSaleDraftItems = () => {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Produk</label>
-                    <select onchange="window.updateFlashSaleItemProduct(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                    <select onchange="window.updateFlashSaleItemProduct(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                         <option value="">-- Pilih Produk Katalog --</option>
                         ${products.map(p => `
                             <option value="${esc(p.id)}" ${String(p.id) === String(item.productId) ? 'selected' : ''}>
@@ -475,7 +475,7 @@ export const renderFlashSaleDraftItems = () => {
                 ${variants.length > 0 ? `
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Varian (Opsional)</label>
-                    <select onchange="window.updateFlashSaleItemVariant(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-rose-500">
+                    <select onchange="window.updateFlashSaleItemVariant(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                         <option value="">Semua Varian</option>
                         ${variants.map(v => `
                             <option value="${esc(v.name)}" ${v.name === item.variantName ? 'selected' : ''}>
@@ -490,26 +490,26 @@ export const renderFlashSaleDraftItems = () => {
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Normal (Rp)</label>
-                    <input type="number" min="0" value="${normalPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'normalPrice', this.value)" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white">
+                    <input type="number" min="0" value="${normalPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'normalPrice', this.value)" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-rose-600 dark:text-rose-400 mb-1">
+                    <label class="block text-[10px] font-bold mb-1" style="color: var(--color-primary);">
                         Harga Flash Sale (Rp) <span class="text-rose-500">*</span>
                     </label>
-                    <input type="number" min="0" value="${flashPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'flashSalePrice', this.value)" placeholder="Harga Promo" class="w-full px-3 py-1.5 rounded-xl border border-rose-300 dark:border-rose-800 bg-white dark:bg-slate-900 text-xs font-black text-rose-600 dark:text-rose-400 focus:outline-none focus:border-rose-500">
+                    <input type="number" min="0" value="${flashPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'flashSalePrice', this.value)" placeholder="Harga Promo" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-black focus:outline-none focus:border-[var(--color-primary)]" style="color: var(--color-primary);">
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Kuota Promo (Qty Unit)</label>
-                    <input type="number" min="1" value="${item.quota || 10}" onchange="window.updateFlashSaleItemDraft(${idx}, 'quota', this.value)" placeholder="Batas kuota" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white">
+                    <input type="number" min="1" value="${item.quota || 10}" onchange="window.updateFlashSaleItemDraft(${idx}, 'quota', this.value)" placeholder="Batas kuota" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
 
             <!-- Margin Guard Alert -->
             <div class="flex items-center justify-between text-[10px] flex-wrap gap-2 pt-1">
                 <div class="flex items-center gap-2">
-                    ${discountPct > 0 ? `<span class="font-black text-rose-600">Diskon: -${discountPct}%</span>` : ''}
+                    ${discountPct > 0 ? `<span class="font-black" style="color: var(--color-primary);">Diskon: -${discountPct}%</span>` : ''}
                     ${hpp > 0 ? `<span class="text-slate-400">Modal HPP: ${fCur(hpp)}</span>` : ''}
                 </div>
                 ${isLoss ? `

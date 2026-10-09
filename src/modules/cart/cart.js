@@ -151,6 +151,8 @@ export const renderCart = () => {
     setH('cart-items-container', cart.map((i, x) => {
         let q = parseFloat(i.qty) || 0;
         let e = getEffP(i), w = e < i.price;
+        const fsItem = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(i.id, i.variantName, 'web') : null;
+        const isFs = Boolean(fsItem && !fsItem.isSoldOut && fsItem.flashSalePrice > 0);
         s += e * q;
         
         let colorIndicator = i.colorCode 
@@ -175,7 +177,7 @@ export const renderCart = () => {
                 <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
                 <div class="flex flex-wrap items-center gap-1.5 mb-2.5">
-                    ${w ? `<span class="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
+                    ${isFs ? `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-2xs flex items-center gap-1 uppercase tracking-wide text-white" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i> Flash Sale</span>` : (w ? `<span class="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : '')}
                     ${colorIndicator}
                     ${i.variantName ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide">${esc(i.variantName)}</span>` : ''}
                     ${i.poTime ? `<span class="amber-badge px-2 py-0.5 rounded-full text-[9px] font-bold flex items-center uppercase tracking-wide"><i class="fa-solid fa-clock mr-1"></i> PO ${esc(i.poTime)}</span>` : ''}
@@ -183,7 +185,7 @@ export const renderCart = () => {
                 
                 <div class="flex justify-between items-end mt-auto pt-1">
                     <div>
-                        ${w ? `<p class="text-[10px] line-through text-slate-400 font-bold mb-0.5">${fCur(i.price)}</p>` : ''}
+                        ${(w || isFs) ? `<p class="text-[10px] line-through text-slate-400 font-bold mb-0.5">${fCur(i.price)}</p>` : ''}
                         <div class="flex items-baseline gap-1">
                             <p class="text-[var(--color-primary)] font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(e)}</p>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">/${esc(i.unit || 'pcs')}</p>

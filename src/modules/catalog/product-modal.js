@@ -674,10 +674,10 @@ export const rProdMod = () => {
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            const fsTag = (fsItem && !fsItem.isSoldOut) ? `<span class="bg-gradient-to-r from-rose-600 to-red-600 text-white px-2 py-0.5 rounded-full ml-1.5 text-[9px] font-black no-underline tracking-widest shadow-2xs inline-flex items-center gap-1"><i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i> FLASH SALE</span>` : '';
-            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 px-1.5 py-0.5 rounded-full ml-1 text-[9px] no-underline tracking-widest border border-rose-200 dark:border-rose-800">-${pct}%</span>${fsTag}</span><span class="text-rose-600 dark:text-rose-400 font-black">${fCur(actPrice)}</span></div>`;
+            const fsTag = (fsItem && !fsItem.isSoldOut) ? `<span class="text-white px-2 py-0.5 rounded-full ml-1.5 text-[9px] font-black no-underline tracking-widest shadow-2xs inline-flex items-center gap-1" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i> FLASH SALE</span>` : '';
+            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-slate-400 dark:text-slate-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="px-1.5 py-0.5 rounded-full ml-1 text-[9px] font-bold no-underline tracking-widest" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">-${pct}%</span>${fsTag}</span><span class="font-black text-xl" style="color: var(--color-primary);">${fCur(actPrice)}</span></div>`;
         } else {
-            pHtml = `<span>${fCur(actPrice)}</span>`;
+            pHtml = `<span class="font-black text-xl" style="color: var(--color-primary);">${fCur(actPrice)}</span>`;
         }
         setH('product-modal-price', pHtml);
 
@@ -1039,6 +1039,14 @@ export const uMPP = () => {
     let p = v?.price ?? cProd.price;
     let e = p;
     const vN = v?.name || null;
+
+    // Prioritaskan harga promo Flash Sale aktif jika ada
+    if (typeof window.getEffP === 'function') {
+        const eff = window.getEffP({ id: cProd.id, variantName: vN, price: p }, 'web');
+        if (eff < e) {
+            e = eff;
+        }
+    }
     let eQ = 0;
     if (vN) {
         eQ = parseFloat(cart.find(c => c.id === cProd.id && c.variantName === vN)?.qty || 0);
