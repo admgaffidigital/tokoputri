@@ -387,9 +387,18 @@ export const transferStockBetweenLocations = (product, fromLocation = 'warehouse
     normalizeProductInventory(product);
 
     let targetObj = product;
-    if (variantName && Array.isArray(product.variants)) {
-        const v = product.variants.find(x => x.name === variantName);
-        if (v) targetObj = v;
+    const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+    let actualVariantName = variantName;
+
+    if (hasVariants) {
+        if (actualVariantName) {
+            const v = product.variants.find(x => x.name === actualVariantName);
+            if (v) targetObj = v;
+        } else if (product.variants.length === 1) {
+            // Jika produk hanya memiliki 1 varian, otomatis alokasikan ke varian tersebut
+            targetObj = product.variants[0];
+            actualVariantName = product.variants[0].name;
+        }
     }
 
     const fromKey = fromLocation === 'warehouse' ? 'warehouseStock' : 'storeStock';
@@ -408,32 +417,84 @@ export const transferStockBetweenLocations = (product, fromLocation = 'warehouse
 
     targetObj[fromKey] = parseFloat((available - numQty).toFixed(3));
     targetObj[toKey] = parseFloat(((parseFloat(targetObj[toKey]) || 0) + numQty).toFixed(3));
-    targetObj.stock = parseFloat((targetObj.storeStock + targetObj.warehouseStock).toFixed(3));
+    targetObj.stock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + (parseFloat(targetObj.warehouseStock) || 0)).toFixed(3));
 
-    if (variantName && Array.isArray(product.variants)) {
+    if (hasVariants) {
         product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
         product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
         product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
     }
 
-    // Perbarui lokasi batch jika batch tersimpan dengan tag lokasi
+    // Perbarui lokasi batch secara presisi (termasuk batch splitting bila kuantitas parsial)
     let remTransfer = numQty;
+    const updatedBatches = [];
     for (const b of (product.stockBatches || [])) {
-        if (remTransfer <= 0) break;
-        if (variantName && b.variantName !== variantName) continue;
-        if (!variantName && b.variantName) continue;
+        if (remTransfer <= 0) {
+            updatedBatches.push(b);
+            continue;
+        }
+        if (actualVariantName && b.variantName !== actualVariantName) {
+            updatedBatches.push(b);
+            continue;
+        }
+        if (!actualVariantName && b.variantName) {
+            updatedBatches.push(b);
+            continue;
+        }
+
         const bLoc = b.location || 'store';
-        if (bLoc === fromLocation && (parseFloat(b.remainingQty) || 0) > 0) {
-            b.location = toLocation;
-            remTransfer -= parseFloat(b.remainingQty);
+        const bRem = parseFloat(b.remainingQty) || 0;
+
+        if (bLoc === fromLocation && bRem > 0) {
+            if (bRem <= remTransfer) {
+                // Seluruh batch berpindah lokasi
+                b.location = toLocation;
+                remTransfer = parseFloat((remTransfer - bRem).toFixed(3));
+                updatedBatches.push(b);
+            } else {
+                // Batch dipisah (split): sebagian pindah lokasi, sisanya tetap di tempat asal
+                const splitMoved = remTransfer;
+                const splitRemain = parseFloat((bRem - remTransfer).toFixed(3));
+
+                b.remainingQty = splitRemain;
+                updatedBatches.push(b);
+
+                const movedBatch = {
+                    ...b,
+                    batchId: `${b.batchId || 'LOT'}-TRF-${Date.now().toString(36)}`,
+                    initialQty: splitMoved,
+                    remainingQty: splitMoved,
+                    location: toLocation
+                };
+                updatedBatches.push(movedBatch);
+                remTransfer = 0;
+            }
+        } else {
+            updatedBatches.push(b);
         }
     }
+    product.stockBatches = updatedBatches;
+
+    // Catat log histori pemindahan internal ke produk
+    if (!Array.isArray(product.internalTransfers)) {
+        product.internalTransfers = [];
+    }
+    product.internalTransfers.push({
+        id: `TRF-${Date.now()}`,
+        date: Date.now(),
+        fromLocation,
+        toLocation,
+        qty: numQty,
+        variantName: actualVariantName || '',
+        unit: product.unit || 'pcs'
+    });
 
     return {
         success: true,
         transferredQty: numQty,
         fromLocation,
         toLocation,
+        variantName: actualVariantName,
         newStoreStock: targetObj.storeStock,
         newWarehouseStock: targetObj.warehouseStock,
         totalStock: targetObj.stock

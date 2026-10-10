@@ -14,6 +14,7 @@
 
 import { db } from '../../../config/firebase.js';
 import { appData } from '../../../core/state.js';
+import { saveApp } from '../../../services/storage.js';
 import { 
     el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, 
     openModalAnim, closeModalAnim 
@@ -130,6 +131,28 @@ export const getProductMutationLedger = (prod) => {
                 notes: `Sisa batch saat ini: ${b.remainingQty || 0} unit`
             });
         }
+    });
+
+    // 4. Mutasi Pemindahan Stok Internal (Gudang <-> Rak Toko)
+    const transfers = Array.isArray(prod.internalTransfers) ? prod.internalTransfers : [];
+    transfers.forEach((trf, idx) => {
+        const fromLabel = trf.fromLocation === 'warehouse' ? 'Gudang' : 'Rak Toko';
+        const toLabel = trf.toLocation === 'warehouse' ? 'Gudang' : 'Rak Toko';
+        const isToStore = trf.toLocation === 'store';
+
+        mutations.push({
+            type: isToStore ? 'in' : 'out',
+            source: 'transfer',
+            date: trf.date || Date.now(),
+            refNo: trf.id || `TRF-${idx + 1}`,
+            title: `Mutasi Internal (${fromLabel} → ${toLabel})`,
+            qty: parseFloat(trf.qty) || 0,
+            unit: trf.unit || prod.unit || 'pcs',
+            price: 0,
+            party: trf.userName || 'Staf Toko',
+            location: `${fromLabel} → ${toLabel}`,
+            notes: trf.variantName ? `Varian: ${trf.variantName}` : 'Pemindahan internal rak & gudang'
+        });
     });
 
     mutations.sort((a, b) => {
@@ -352,22 +375,91 @@ export const renderProductFifoContent = () => {
             </div>
 
             <!-- BANNER MUTASI INTERNAL TOKO & GUDANG -->
-            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center text-lg shrink-0">
-                        <i class="fa-solid fa-dolly"></i>
-                    </div>
-                    <div>
-                        <h5 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white">Manajemen Pemindahan Stok Internal</h5>
-                        <p class="text-[11px] text-slate-400 font-medium">Pindahkan stok dari gudang cadangan ke rak toko agar kasir selalu siap melayani pelanggan.</p>
+            <div class="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/50 flex flex-col gap-3.5 shadow-2xs">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="flex items-start sm:items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center text-lg shrink-0 mt-0.5 sm:mt-0">
+                            <i class="fa-solid fa-dolly"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h5 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white">Manajemen Pemindahan Stok Internal</h5>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">Dual-Location</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Pindahkan stok antara gudang cadangan &amp; rak toko agar kasir selalu siap melayani pelanggan.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <button type="button" onclick="window.quickTransferWarehouseToStore('${prod.id}')" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl primary-bg text-white font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm cursor-pointer" ${Number(prod.warehouseStock || 0) <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
-                        <i class="fa-solid fa-arrow-right-arrow-left text-[11px]"></i>
-                        <span>Pindahkan ke Rak Toko</span>
+
+                <!-- LIVE BREAKDOWN PILLS: STATUS REALTIME DI DALAM KARTU PEMINDAHAN -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
+                    <div class="p-2 rounded-lg bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/70 dark:border-teal-800/60 flex flex-col">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                            <i class="fa-solid fa-store text-[8px]"></i> Rak Toko (Depan)
+                        </span>
+                        <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-0.5 font-mono">
+                            ${prod.storeStock || 0} <span class="text-[10px] font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-teal-600 dark:text-teal-400">Siap Kasir</span>
+                    </div>
+
+                    <div class="p-2 rounded-lg bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/60 flex flex-col">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                            <i class="fa-solid fa-warehouse text-[8px]"></i> Gudang Cadangan
+                        </span>
+                        <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-0.5 font-mono">
+                            ${prod.warehouseStock || 0} <span class="text-[10px] font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-amber-600 dark:text-amber-400">Cadangan Belakang</span>
+                    </div>
+
+                    <div class="col-span-2 sm:col-span-1 p-2 rounded-lg bg-slate-100/70 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 flex flex-col justify-center">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Total Stok Fisik</span>
+                        <span class="text-sm sm:text-base font-black text-slate-800 dark:text-white mt-0.5 font-mono">
+                            ${(prod.storeStock || 0) + (prod.warehouseStock || 0)} <span class="text-[10px] font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-slate-400">Rak + Gudang</span>
+                    </div>
+                </div>
+
+                <!-- AKSI TRANSFER CEPAT DUA ARAH -->
+                <div class="flex items-center gap-2 flex-wrap pt-1">
+                    <button type="button" onclick="window.quickTransferWarehouseToStore('${prod.id}')" class="flex-1 min-w-[140px] px-3.5 py-2.5 rounded-xl primary-bg text-white font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all shadow-xs cursor-pointer ${Number(prod.warehouseStock || 0) <= 0 ? 'opacity-50 cursor-not-allowed' : ''}">
+                        <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                        <span>Pindahkan ke Rak (${prod.warehouseStock || 0} Tersedia)</span>
+                    </button>
+                    <button type="button" onclick="window.quickTransferStoreToWarehouse('${prod.id}')" class="flex-1 min-w-[140px] px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all shadow-2xs cursor-pointer ${Number(prod.storeStock || 0) <= 0 ? 'opacity-50 cursor-not-allowed' : ''}">
+                        <i class="fa-solid fa-arrow-left text-[11px] text-amber-500"></i>
+                        <span>Kembalikan ke Gudang</span>
                     </button>
                 </div>
+
+                <!-- JIKA PRODUK BERVARIAN: TAMPILKAN DAFTAR VARIAN & TOMBOL PINDAH PER-VARIAN -->
+                ${Array.isArray(prod.variants) && prod.variants.length > 0 ? `
+                <div class="mt-2 pt-3 border-t border-slate-200/80 dark:border-slate-700/80 space-y-2">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Rincian Per Varian Produk:</span>
+                    <div class="space-y-1.5">
+                        ${prod.variants.map((v) => `
+                            <div class="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-700/70 flex items-center justify-between gap-2 flex-wrap">
+                                <div class="min-w-0">
+                                    <span class="font-black text-xs text-slate-800 dark:text-white block truncate">${esc(v.name)}</span>
+                                    <span class="text-[10px] text-slate-400 font-medium">
+                                        Rak: <b class="text-teal-600 dark:text-teal-400 font-mono">${v.storeStock || 0}</b> • Gudang: <b class="text-amber-600 dark:text-amber-400 font-mono">${v.warehouseStock || 0}</b> (Tot: ${(v.storeStock || 0) + (v.warehouseStock || 0)})
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <button type="button" onclick="window.quickTransferStock('${prod.id}', 'to_store', '${esc(v.name)}')" class="px-2.5 py-1.5 rounded-lg primary-bg text-white font-bold text-[10px] flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs" ${Number(v.warehouseStock || 0) <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} title="Pindahkan varian ini ke rak">
+                                        <i class="fa-solid fa-arrow-right text-[9px]"></i> Ke Rak
+                                    </button>
+                                    <button type="button" onclick="window.quickTransferStock('${prod.id}', 'to_warehouse', '${esc(v.name)}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-[10px] flex items-center gap-1 active:scale-95 cursor-pointer border border-slate-200 dark:border-slate-700" ${Number(v.storeStock || 0) <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} title="Kembalikan varian ini ke gudang">
+                                        <i class="fa-solid fa-arrow-left text-[9px]"></i> Ke Gudang
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
             </div>
 
             <!-- 2. SECTION: REKANAN MULTI-SUPPLIER PRODUK -->
@@ -663,14 +755,22 @@ export const renderProductFifoContent = () => {
         </div>
 
         <!-- 4. FOOTER MODAL (SOLID PINNED / NON-SCROLLING) -->
-        <div class="shrink-0 px-5 sm:px-6 py-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+        <div class="shrink-0 px-4 sm:px-6 py-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10 flex-wrap gap-2">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 flex-wrap">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    <i class="fa-solid fa-box text-[10px] text-slate-400"></i>
-                    <span>Sisa Stok Fisik: <b class="text-slate-900 dark:text-white font-mono">${netStock}</b> ${esc(prod.unit || 'pcs')}</span>
+                    <i class="fa-solid fa-boxes-stacked text-[10px] text-slate-400"></i>
+                    <span>Total Fisik: <b class="text-slate-900 dark:text-white font-mono">${netStock}</b> ${esc(prod.unit || 'pcs')}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 border border-teal-200/80 dark:border-teal-800/80 text-[11px]">
+                    <i class="fa-solid fa-store text-[10px] text-teal-600 dark:text-teal-400"></i>
+                    <span>Rak: <b class="font-mono font-black">${prod.storeStock || 0}</b></span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 text-[11px]">
+                    <i class="fa-solid fa-warehouse text-[10px] text-amber-600 dark:text-amber-400"></i>
+                    <span>Gudang: <b class="font-mono font-black">${prod.warehouseStock || 0}</b></span>
                 </span>
             </div>
-            <button onclick="window.closeProductFifoModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-black text-xs transition-all cursor-pointer active:scale-95">
+            <button onclick="window.closeProductFifoModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-black text-xs transition-all cursor-pointer active:scale-95 shrink-0 ml-auto">
                 Tutup
             </button>
         </div>
@@ -746,39 +846,118 @@ export const handleFifoSimulateChange = (val) => {
 };
 
 /**
- * Pindahkan stok dari gudang cadangan ke rak toko (Internal Transfer)
+ * Pindahkan stok internal antara gudang cadangan & rak toko (Dual-Location)
+ * 
+ * @param {string|number} productId ID Produk
+ * @param {'to_store'|'to_warehouse'} direction Arah pemindahan ('to_store': Gudang -> Rak, 'to_warehouse': Rak -> Gudang)
+ * @param {string} variantName Nama varian jika berlaku
  */
-export const quickTransferWarehouseToStore = async (productId) => {
+export const quickTransferStock = async (productId, direction = 'to_store', variantName = '') => {
     const prod = (appData.products || []).find(p => String(p.id) === String(productId));
     if (!prod) return showToast('Produk tidak ditemukan!');
     normalizeProductInventory(prod, appData.suppliers || []);
 
-    const wStock = Number(prod.warehouseStock) || 0;
-    if (wStock <= 0) return showToast('Stok gudang cadangan kosong (0)!');
+    const hasVariants = Array.isArray(prod.variants) && prod.variants.length > 0;
+    let selectedVariant = variantName;
+
+    // Jika produk memiliki varian dan varian belum dipilih spesifik:
+    if (hasVariants && !selectedVariant) {
+        if (prod.variants.length === 1) {
+            selectedVariant = prod.variants[0].name;
+        } else {
+            // Tampilkan daftar pilihan varian
+            const varListStr = prod.variants
+                .map((v, i) => `${i + 1}. ${v.name} (Rak: ${v.storeStock || 0}, Gudang: ${v.warehouseStock || 0})`)
+                .join('\n');
+            const chosen = await (typeof window.customPrompt === 'function'
+                ? window.customPrompt(`Pilih Nomor Varian yang akan dipindahkan:\n${varListStr}`, '1')
+                : Promise.resolve(null));
+            if (!chosen) return;
+            const chosenIdx = parseInt(chosen, 10) - 1;
+            if (chosenIdx >= 0 && chosenIdx < prod.variants.length) {
+                selectedVariant = prod.variants[chosenIdx].name;
+            } else {
+                const foundByName = prod.variants.find(v => v.name.toLowerCase() === chosen.trim().toLowerCase());
+                if (foundByName) {
+                    selectedVariant = foundByName.name;
+                } else {
+                    return showToast('Pilihan varian tidak valid!');
+                }
+            }
+        }
+    }
+
+    let targetObj = prod;
+    if (selectedVariant && hasVariants) {
+        const v = prod.variants.find(x => x.name === selectedVariant);
+        if (v) targetObj = v;
+    }
+
+    const fromLocation = direction === 'to_store' ? 'warehouse' : 'store';
+    const toLocation = direction === 'to_store' ? 'store' : 'warehouse';
+    const fromLabel = fromLocation === 'warehouse' ? 'Gudang Cadangan' : 'Rak Toko';
+    const toLabel = toLocation === 'warehouse' ? 'Gudang Cadangan' : 'Rak Toko';
+
+    const fromKey = fromLocation === 'warehouse' ? 'warehouseStock' : 'storeStock';
+    const available = Number(targetObj[fromKey]) || 0;
+
+    if (available <= 0) {
+        return showToast(`Stok di ${fromLabel} saat ini kosong (0)!`);
+    }
+
+    const varTag = selectedVariant ? ` [${selectedVariant}]` : '';
+    const defaultQtyVal = String(Math.min(available, 10));
+    const promptMsg = direction === 'to_store'
+        ? `Pindahkan ke Rak Toko${varTag}\n(Tersedia di ${fromLabel}: ${available} ${prod.unit || 'pcs'}):`
+        : `Kembalikan ke Gudang Cadangan${varTag}\n(Tersedia di ${fromLabel}: ${available} ${prod.unit || 'pcs'}):`;
 
     const promptQty = await (typeof window.customPrompt === 'function' 
-        ? window.customPrompt(`Pindahkan Stok ke Rak Toko (Tersedia di Gudang: ${wStock} ${prod.unit||'pcs'}):`, String(Math.min(wStock, 10)))
+        ? window.customPrompt(promptMsg, defaultQtyVal)
         : Promise.resolve(null));
 
     if (!promptQty) return;
     const qty = parseFloat(promptQty) || 0;
     if (qty <= 0) return showToast('Jumlah yang dimasukkan tidak valid!');
-    if (qty > wStock) return showToast(`Jumlah melebihi stok gudang (maksimal ${wStock})!`);
+    if (qty > available) return showToast(`Jumlah melebihi stok ${fromLabel} (maksimal ${available})!`);
 
-    sLoad('Memindahkan stok ke rak toko...');
+    sLoad(`Memindahkan stok ke ${toLabel}...`);
     try {
-        const res = transferStockBetweenLocations(prod, 'warehouse', 'store', qty);
-        if (!res.success) throw new Error(res.error || 'Gagal memindahkan stok');
+        const res = transferStockBetweenLocations(prod, fromLocation, toLocation, qty, selectedVariant);
+        if (!res.success) throw new Error(res.error || res.message || 'Gagal memindahkan stok');
 
-        await db.collection("freshmart").doc("cms_data").collection("products").doc(prod.id.toString()).update({
+        // Pastikan nama user staff/owner dicatat pada histori transfer
+        if (Array.isArray(prod.internalTransfers) && prod.internalTransfers.length > 0) {
+            prod.internalTransfers[prod.internalTransfers.length - 1].userName = window.currentUser?.name || 'Staf Toko';
+        }
+
+        const updateData = {
             storeStock: prod.storeStock,
             warehouseStock: prod.warehouseStock,
             stock: prod.stock,
-            stockBatches: prod.stockBatches || []
+            stockBatches: prod.stockBatches || [],
+            internalTransfers: (prod.internalTransfers || []).slice(-50)
+        };
+        if (hasVariants) {
+            updateData.variants = prod.variants;
+        }
+
+        // 1. Simpan perubahan ke Firestore subkoleksi produk
+        await db.collection("freshmart").doc("cms_data").collection("products").doc(prod.id.toString()).update(updateData);
+
+        // 2. Simpan seketika ke cache lokal untuk respon instan
+        try {
+            localStorage.setItem('freshmart_products', JSON.stringify(appData.products));
+        } catch (_) {}
+
+        // 3. Siarkan sinyal omnichannel via saveApp agar POS dan perangkat lain tersinkronisasi
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+        await _save([], {
+            updateType: 'stock_change',
+            updatedProductIds: [prod.id.toString()]
         });
 
         hLoad();
-        showToast(`Sukses memindahkan ${qty} ${prod.unit||'pcs'} ke rak toko!`);
+        showToast(`Sukses memindahkan ${qty} ${prod.unit || 'pcs'} ke ${toLabel}!`);
         renderProductFifoContent();
         window.rAdmItms?.('products');
     } catch (err) {
@@ -786,6 +965,9 @@ export const quickTransferWarehouseToStore = async (productId) => {
         showToast('Gagal memindahkan stok: ' + err.message);
     }
 };
+
+export const quickTransferWarehouseToStore = (productId) => quickTransferStock(productId, 'to_store');
+export const quickTransferStoreToWarehouse = (productId) => quickTransferStock(productId, 'to_warehouse');
 
 // Bind ke window object
 window.openProductFifoModal = openProductFifoModal;
@@ -796,4 +978,6 @@ window.getProductMutationLedger = getProductMutationLedger;
 window.handleLinkFifoSupplier = handleLinkFifoSupplier;
 window.handleSetFifoPrimarySupplier = handleSetFifoPrimarySupplier;
 window.handleFifoSimulateChange = handleFifoSimulateChange;
+window.quickTransferStock = quickTransferStock;
 window.quickTransferWarehouseToStore = quickTransferWarehouseToStore;
+window.quickTransferStoreToWarehouse = quickTransferStoreToWarehouse;

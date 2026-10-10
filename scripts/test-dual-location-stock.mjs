@@ -237,4 +237,96 @@ test('Pemotongan stok pada varian menerapkan aturan Floor-First dan memperbarui 
     assert.equal(prod.stock, 35);
 });
 
+// 10. Batch Splitting Presisi saat Pemindahan Parsial
+test('Transfer internal dengan kuantitas parsial memecah (split) batch dengan benar tanpa menduplikasi stok', () => {
+    const prod = {
+        id: 'P10',
+        name: 'Gembok Crome Pendek',
+        storeStock: 0,
+        warehouseStock: 21,
+        stock: 21,
+        unit: 'pcs',
+        stockBatches: [
+            { batchId: 'BATCH-001', location: 'warehouse', remainingQty: 21, initialQty: 21, buyPrice: 17000 }
+        ]
+    };
+
+    const res = transferStockBetweenLocations(prod, 'warehouse', 'store', 5);
+
+    assert.equal(res.success, true);
+    assert.equal(res.transferredQty, 5);
+    assert.equal(prod.storeStock, 5, 'stok rak toko menjadi 5');
+    assert.equal(prod.warehouseStock, 16, 'stok gudang berkurang menjadi 16');
+    assert.equal(prod.stock, 21, 'total stok tetap utuh 21');
+
+    assert.equal(prod.stockBatches.length, 2, 'batch harus terpecah menjadi 2 lot');
+    const warehouseBatch = prod.stockBatches.find(b => b.location === 'warehouse');
+    const storeBatch = prod.stockBatches.find(b => b.location === 'store');
+
+    assert.ok(warehouseBatch, 'harus ada batch di warehouse');
+    assert.ok(storeBatch, 'harus ada batch di store');
+    assert.equal(warehouseBatch.remainingQty, 16, 'sisa batch warehouse harus 16');
+    assert.equal(storeBatch.remainingQty, 5, 'sisa batch store harus 5');
+    assert.equal(warehouseBatch.remainingQty + storeBatch.remainingQty, 21, 'total remaining batch harus persis 21');
+
+    // Catatan histori transfer internal tercatat
+    assert.equal(Array.isArray(prod.internalTransfers), true);
+    assert.equal(prod.internalTransfers.length, 1);
+    assert.equal(prod.internalTransfers[0].qty, 5);
+    assert.equal(prod.internalTransfers[0].fromLocation, 'warehouse');
+    assert.equal(prod.internalTransfers[0].toLocation, 'store');
+});
+
+// 11. Transfer Dua Arah (Rak Toko -> Gudang Cadangan)
+test('Transfer dua arah dari rak toko kembali ke gudang cadangan berjalan akurat', () => {
+    const prod = {
+        id: 'P11',
+        name: 'Cat Genteng',
+        storeStock: 10,
+        warehouseStock: 5,
+        stock: 15,
+        unit: 'kaleng'
+    };
+
+    const res = transferStockBetweenLocations(prod, 'store', 'warehouse', 4);
+
+    assert.equal(res.success, true);
+    assert.equal(res.transferredQty, 4);
+    assert.equal(prod.storeStock, 6, 'stok toko berkurang 4 (10 - 4)');
+    assert.equal(prod.warehouseStock, 9, 'stok gudang bertambah 4 (5 + 4)');
+    assert.equal(prod.stock, 15, 'total stok tetap 15');
+});
+
+// 12. Transfer Internal pada Produk Bervarian
+test('Transfer internal varian memperbarui varian target dan merekonsiliasi total induk', () => {
+    const prod = {
+        id: 'P12',
+        name: 'Siku Besi',
+        storeStock: 10,
+        warehouseStock: 20,
+        stock: 30,
+        variants: [
+            { name: 'Kecil', storeStock: 4, warehouseStock: 6, stock: 10 },
+            { name: 'Besar', storeStock: 6, warehouseStock: 14, stock: 20 }
+        ]
+    };
+
+    const res = transferStockBetweenLocations(prod, 'warehouse', 'store', 5, 'Besar');
+
+    assert.equal(res.success, true);
+    assert.equal(res.variantName, 'Besar');
+    assert.equal(prod.variants[1].storeStock, 11, 'rak varian besar menjadi 11 (6 + 5)');
+    assert.equal(prod.variants[1].warehouseStock, 9, 'gudang varian besar menjadi 9 (14 - 5)');
+    assert.equal(prod.variants[1].stock, 20);
+
+    // Varian lain tidak terpengaruh
+    assert.equal(prod.variants[0].storeStock, 4);
+    assert.equal(prod.variants[0].warehouseStock, 6);
+
+    // Induk tersinkronisasi presisi
+    assert.equal(prod.storeStock, 15, 'rak induk menjadi 15 (4 + 11)');
+    assert.equal(prod.warehouseStock, 15, 'gudang induk menjadi 15 (6 + 9)');
+    assert.equal(prod.stock, 30);
+});
+
 console.log(`\n🎉 Seluruh ${passedTests} pengujian Dual-Location Inventory BERHASIL (100% PASS)!`);
