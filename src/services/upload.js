@@ -356,10 +356,12 @@ export const uploadImageFileToDrive = async (fileOrDataUrl, prefix = 'BUKTI') =>
 };
 
 // ─── Expose ke window untuk atribut inline HTML ──────
-window.GAS_SECRET_TOKEN = GAS_SECRET_TOKEN;
-window.handleImageUpload = handleImageUpload;
-window.handleVideoUpload = handleVideoUpload;
-window.handleRTEditorImage = handleRTEditorImage;
-window.uploadImageFileToDrive = uploadImageFileToDrive;
-window.uploadBuktiToGDrive = uploadImageFileToDrive;
+if (typeof window !== 'undefined') {
+    window.GAS_SECRET_TOKEN = GAS_SECRET_TOKEN;
+    window.handleImageUpload = handleImageUpload;
+    window.handleVideoUpload = handleVideoUpload;
+    window.handleRTEditorImage = handleRTEditorImage;
+    window.uploadImageFileToDrive = uploadImageFileToDrive;
+    window.uploadBuktiToGDrive = uploadImageFileToDrive;
+}
 

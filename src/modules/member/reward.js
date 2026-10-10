@@ -15,6 +15,7 @@ import {
     getMemberActiveTempoOrders, 
     loadPendingConfirmations 
 } from './client-pay.js';
+import { generateCode128Svg } from '../../core/barcode-code128.js';
 
 const memberCache = new Map();
 const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
@@ -236,6 +237,18 @@ export const formatMemberCardNumber = (phone) => {
  */
 export const generateBarcodeSVG = (code) => {
     const clean = String(code || '812345678901').replace(/\D/g, '');
+    try {
+        if (typeof generateCode128Svg === 'function') {
+            return generateCode128Svg(clean, {
+                height: 34,
+                showText: false,
+                moduleWidth: 1.25,
+                quietZone: 12,
+                className: 'w-full h-11 bg-white rounded-lg px-2 py-1 shadow-inner border border-slate-200'
+            });
+        }
+    } catch (e) {}
+
     let bars = '';
     let x = 8;
     
@@ -1564,22 +1577,24 @@ export const logoutMember = () => {
 };
 
 // ─── Expose ke window untuk interaksi inline onclick di HTML ──────────
-window.renderRewardCatalog = renderRewardCatalog;
-window.checkMemberStatus = checkMemberStatus;
-window.openMemberModal = openMemberModal;
-window.rMemberModalBody = rMemberModalBody;
-window.lookupMemberPoints = lookupMemberPoints;
-window.selectReward = selectReward;
-window.deselectReward = deselectReward;
-window.closeMemberModal = closeMemberModal;
-window.flipMemberCard = flipMemberCard;
-window.downloadMemberCard = downloadMemberCard;
-window.getMemberTier = getMemberTier;
-window.formatMemberCardNumber = formatMemberCardNumber;
-window.generateBarcodeSVG = generateBarcodeSVG;
-window.setCurrentMember = setCurrentMember;
-window.logoutMember = logoutMember;
-window.invalidateMemberCache = invalidateMemberCache;
-window.reconcilePointsFromOrders = reconcilePointsFromOrders;
-window.getMemberPointsHistory = getMemberPointsHistory;
-window.loadMemberPointsHistory = loadMemberPointsHistory;
+if (typeof window !== 'undefined') {
+    window.renderRewardCatalog = renderRewardCatalog;
+    window.checkMemberStatus = checkMemberStatus;
+    window.openMemberModal = openMemberModal;
+    window.rMemberModalBody = rMemberModalBody;
+    window.lookupMemberPoints = lookupMemberPoints;
+    window.selectReward = selectReward;
+    window.deselectReward = deselectReward;
+    window.closeMemberModal = closeMemberModal;
+    window.flipMemberCard = flipMemberCard;
+    window.downloadMemberCard = downloadMemberCard;
+    window.getMemberTier = getMemberTier;
+    window.formatMemberCardNumber = formatMemberCardNumber;
+    window.generateBarcodeSVG = generateBarcodeSVG;
+    window.setCurrentMember = setCurrentMember;
+    window.logoutMember = logoutMember;
+    window.invalidateMemberCache = invalidateMemberCache;
+    window.reconcilePointsFromOrders = reconcilePointsFromOrders;
+    window.getMemberPointsHistory = getMemberPointsHistory;
+    window.loadMemberPointsHistory = loadMemberPointsHistory;
+}
