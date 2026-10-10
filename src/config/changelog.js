@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-03",
+        "version": "v1.15.3",
+        "date": "2026-10-10",
+        "title": "Kalkulator Estimator Atap & Seng Interaktif (Spandek Galvalum, Seng Gelombang, Asbes Gelombang & Nok Bubungan)",
+        "category": "feature",
+        "badge": "Roof & Corrugated Sheet Material Estimator v1.15.3",
+        "items": [
+            "Penambahan Tab Estimator Atap & Seng: Menghadirkan kalkulator matematis presisi untuk menghitung kebutuhan Atap Spandek Galvalum (Zincalume), Seng Gelombang (BJLS), dan Asbes Gelombang (Fiber Semen).",
+            "3 Mode Geometri Bidang Konstruksi: Mendukung perhitungan Model Pelana 2 Sisi Miring (Gable Roof), Model Kanopi 1 Sisi Miring (Monopitch / Carport), dan Mode Luas Bersih Langsung (m²).",
+            "Presisi Sambungan & Overlap Lapangan: Memperhitungkan lebar efektif overlap samping (75 cm untuk Spandek & Seng, 95 cm untuk Asbes) serta end-lap sambungan ujung 20 cm sesuai pilihan panjang lembar (3m, 4m, 5m, 6m untuk Spandek; 1.5m s.d. 3.0m untuk Seng & Asbes).",
+            "Perhitungan Otomatis Aksesoris & Pengencang: Menghitung kebutuhan Baut Roofing SDS 12-14x50mm (box isi 100), Paku Payung Seng Galvanis (kg isi ~70 pcs), Paku Asbes Berkaret (pack isi 50), serta Batang Nok Bubungan Puncak.",
+            "Integrasi Omnichannel Lengkap: Salin rincian format WhatsApp, konsultasi langsung ke WA Toko Putri, integrasi tombol cepat kasir POS [F3], dan rekomendasi produk etalase toko.",
+            "Rangkaian Pengujian Otomatis: 36 unit test estimator lolos 100% dan seluruh 78 modal sistem sinkron.",
+            "Multi-Channel Distribution v1.15.3 (Android versionCode 11503)."
+        ]
+    },
+    {
         "id": "log-1-15-02",
         "version": "v1.15.2",
         "date": "2026-10-10",
@@ -82,21 +99,6 @@ export const DEFAULT_CHANGELOG = [
             "Proteksi Global Anti-Gepeng (.btn-native-action & .btn-native-icon): Penguncian tinggi minimal 40px-44px (touch standard) dan rasio 1:1 kaku pada tombol close modal dan tombol ikon agar tidak pernah gepeng di layar ponsel berukuran apapun.",
             "Anti-Wrap Badge Status: Menjamin seluruh badge status pesanan, pengiriman DO, dan retur RMA tidak terlipat canggung menjadi 2 baris.",
             "Multi-Channel Distribution v1.14.0 (Android versionCode 11400)."
-        ]
-    },
-    {
-        "id": "log-1-13-02",
-        "version": "v1.13.2",
-        "date": "2026-10-09",
-        "title": "Resolusi Tombol Anti-Gepeng & Ergonomi Detail Pengiriman Proyek",
-        "category": "feature",
-        "badge": "Anti-Squash Buttons & Delivery Card Ergonomics v1.13.2",
-        "items": [
-            "Eliminasi Tombol Gepeng (orders.js): Menghapus flex-1 dalam layout vertikal pada tombol Kelola Pengiriman & DO, digantikan w-full sm:flex-1 dengan tinggi sentuh ergonomis h-11 (44px) dan shrink-0.",
-            "Proteksi Global .btn-native-action (style.css): Penegasan min-height 2.5rem (40px) dan flex-shrink: 0 agar tombol tidak terkompresi di smartphone.",
-            "Perapian Badge Status Pengiriman: Penambahan shrink-0 whitespace-nowrap agar badge status MENUNGGU MUAT tidak terlipat.",
-            "Ikon Vektor Valid: Memperbarui ikon dari fa-truck-gear ke fa-truck-fast text-sm resmi FontAwesome.",
-            "Multi-Channel Distribution v1.13.2 (Android versionCode 11302)."
         ]
     }
 ];

@@ -156,12 +156,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-B6EkwJmj.js"></script>
+    <script type="module" crossorigin src="/assets/index-BUTElWQa.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-DX-kT3eU.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-DO2TY8-6.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1053,7 +1053,7 @@
       </div>
     </div>
 
-    <!-- Interactive Material Estimator Modal (Kalkulator Kebutuhan Cat, Keramik, Semen & Bata) -->
+    <!-- Interactive Material Estimator Modal (Kalkulator Kebutuhan Cat, Keramik, Semen, Dinding, Atap & Seng) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-material-estimator" onclick="if (event.target === this) closeMaterialEstimatorModal();">
       <div class="relative flex max-h-[92dvh] w-full max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-material-estimator-content">
         <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
@@ -1069,7 +1069,7 @@
                 <span class="text-[9px] font-black px-2 py-0.5 rounded-full primary-bg text-white shadow-2xs uppercase">PRO TOOLS</span>
               </h3>
               <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
-                Hitung kebutuhan cat, keramik lantai, dan semen dinding proyek secara instan
+                Hitung kebutuhan cat, keramik, dinding bata, serta atap &amp; seng proyek secara instan
               </p>
             </div>
           </div>
@@ -1079,14 +1079,17 @@
         <!-- Material Category Tabs -->
         <div class="px-3 sm:px-5 pt-3 pb-2.5 shrink-0 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-100 dark:border-slate-800/80">
           <div class="flex items-center gap-1 sm:gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-800/90 rounded-2xl overflow-x-auto custom-scrollbar" style="scrollbar-width: none; -ms-overflow-style: none;">
-            <button id="estimator-tab-btn-paint" onclick="switchEstimatorTab('paint')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-black text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white">
+            <button id="estimator-tab-btn-paint" onclick="switchEstimatorTab('paint')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-xl font-black text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white">
               <i class="fa-solid fa-paintbrush text-xs"></i> <span>Cat &amp; Plafon</span>
             </button>
-            <button id="estimator-tab-btn-tile" onclick="switchEstimatorTab('tile')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <button id="estimator-tab-btn-tile" onclick="switchEstimatorTab('tile')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               <i class="fa-solid fa-table-cells text-xs"></i> <span>Keramik &amp; Granit</span>
             </button>
-            <button id="estimator-tab-btn-brick" onclick="switchEstimatorTab('brick')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <button id="estimator-tab-btn-brick" onclick="switchEstimatorTab('brick')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               <i class="fa-solid fa-cubes-stacked text-xs"></i> <span>Dinding &amp; Semen</span>
+            </button>
+            <button id="estimator-tab-btn-roof" onclick="switchEstimatorTab('roof')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-3.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <i class="fa-solid fa-house-chimney text-xs"></i> <span>Atap &amp; Seng</span>
             </button>
           </div>
         </div>
@@ -2016,7 +2019,7 @@
               <!-- MATERIAL ESTIMATOR QUICK ACCESS -->
               <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('storefront')"
                 class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95 cursor-pointer shadow-xs"
-                title="Kalkulator Estimasi Bahan Bangunan (Cat, Keramik, Semen, Bata)">
+                title="Kalkulator Estimasi Bahan Bangunan (Cat, Keramik, Semen, Dinding, Atap & Seng)">
                 <i class="fa-solid fa-calculator text-xs sm:text-sm"></i>
               </button>
               <!-- POS KASIR TOGGLE -->

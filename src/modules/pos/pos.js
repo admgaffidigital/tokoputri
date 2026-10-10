@@ -4294,7 +4294,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-storefront" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-storefront" class="flex items-center shrink-0"></div>
-                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen) [F3]">
+                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
                     <i class="fa-solid fa-calculator"></i>
                 </button>
                 <button onclick="window.openShoppingGuideModal && window.openShoppingGuideModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Buku Panduan Kasir POS">
@@ -4331,7 +4331,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
-                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen) [F3]">
+                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
                     <i class="fa-solid fa-calculator text-xs text-amber-500"></i>
                     <span class="hidden sm:inline">Estimator</span>
                 </button>

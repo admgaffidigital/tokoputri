@@ -3,7 +3,15 @@
  * Validasi keakuratan matematis estimator bahan bangunan dan presisi desimal kasir
  */
 
-import { calculatePaintNeeds, calculateTileNeeds, calculateBrickNeeds } from '../src/modules/catalog/material-estimator.js';
+import { 
+    calculatePaintNeeds, 
+    calculateTileNeeds, 
+    calculateBrickNeeds,
+    calculateRoofNeeds,
+    setEstimatorRoofMode,
+    setEstimatorRoofType,
+    updateEstimatorRoofField
+} from '../src/modules/catalog/material-estimator.js';
 
 console.log('\n============================================================');
 console.log('🧪 MENJALANKAN TEST SUITE ESTIMATOR MATERIAL & POS DESIMAL');
@@ -49,8 +57,63 @@ assert(brickRes.brickPcs === 134, `Kebutuhan hebel 10cm adalah 134 pcs (didapat:
 assert(brickRes.brickCubic === 1.6, `Volume hebel adalah 1.6 m³ (didapat: ${brickRes.brickCubic})`);
 assert(brickRes.mortarBags === 2, `Kebutuhan semen mortar thinbed adalah 2 sak (didapat: ${brickRes.mortarBags})`);
 
-// ─── 4. UJI PRESISI DESIMAL DAN STEPPER KASIR POS ───────────
-console.log('\n⚖️ 4. Uji Presisi Desimal Kasir POS (Paku/Kabel Curah):');
+// ─── 4. UJI ESTIMATOR ATAP & SENG GELOMBANG ─────────────────
+console.log('\n🏠 4. Uji Kalkulator Atap (Spandek, Seng, Asbes):');
+
+// 4a. Uji Spandek Galvalum (Model Pelana 2 Sisi 8x6m)
+setEstimatorRoofMode('gable');
+setEstimatorRoofType('spandek');
+updateEstimatorRoofField('length', 8);
+updateEstimatorRoofField('width', 6);
+updateEstimatorRoofField('slopeAngle', 20);
+updateEstimatorRoofField('overhang', 0.6);
+updateEstimatorRoofField('sheetLength', 4);
+updateEstimatorRoofField('includeRidge', true);
+updateEstimatorRoofField('includeFasteners', true);
+
+const roofSpandek = calculateRoofNeeds();
+assert(roofSpandek.totalRoofArea > 0, `Luas total atap spandek terhitung (${roofSpandek.totalRoofArea} m²)`);
+assert(roofSpandek.slopeLength > 3.5 && roofSpandek.slopeLength < 4.5, `Panjang lereng miring terhitung realistis (${roofSpandek.slopeLength} m)`);
+assert(roofSpandek.totalSheets > 0, `Total lembar spandek terhitung (${roofSpandek.totalSheets} Lembar)`);
+assert(roofSpandek.ridgePieces === 11, `Nok bubungan spandek terhitung 11 batang untuk bentang 9.2m (didapat: ${roofSpandek.ridgePieces})`);
+assert(roofSpandek.fastenerPcs > 0 && roofSpandek.fastenerPacks > 0, `Baut roofing SDS terhitung (${roofSpandek.fastenerPcs} Pcs / ${roofSpandek.fastenerPacks} Box)`);
+
+// 4b. Uji Seng Gelombang BJLS
+setEstimatorRoofType('seng');
+updateEstimatorRoofField('sheetLength', 2.1);
+const roofSeng = calculateRoofNeeds();
+assert(roofSeng.spec.id === 'seng', `Tipe seng aktif terverifikasi (${roofSeng.spec.name})`);
+assert(roofSeng.sheetsPerSlope === 2, `Lereng ~3.83m butuh 2 susun sambungan untuk seng 2.1m (didapat: ${roofSeng.sheetsPerSlope})`);
+assert(roofSeng.fastenerPcs === roofSeng.totalSheets * 8, `Paku payung seng = 8 pcs/lembar (${roofSeng.fastenerPcs} pcs)`);
+
+// 4c. Uji Asbes Gelombang (Lebar Efektif 0.95m)
+setEstimatorRoofType('asbes');
+updateEstimatorRoofField('sheetLength', 2.4);
+const roofAsbes = calculateRoofNeeds();
+assert(roofAsbes.spec.id === 'asbes', `Tipe asbes aktif terverifikasi (${roofAsbes.spec.name})`);
+assert(roofAsbes.spec.effectiveWidth === 0.95, `Lebar efektif asbes adalah 0.95m (didapat: ${roofAsbes.spec.effectiveWidth})`);
+assert(roofAsbes.fastenerPcs === roofAsbes.totalSheets * 6, `Paku asbes berkaret = 6 pcs/lembar (${roofAsbes.fastenerPcs} pcs)`);
+
+// 4d. Uji Mode Kanopi (Monopitch 1 Sisi)
+setEstimatorRoofMode('monopitch');
+updateEstimatorRoofField('length', 5);
+updateEstimatorRoofField('width', 3);
+updateEstimatorRoofField('sheetLength', 4);
+const roofKanopi = calculateRoofNeeds();
+assert(roofKanopi.mode === 'monopitch', `Mode kanopi 1 sisi aktif`);
+assert(roofKanopi.ridgePieces === 0, `Kanopi 1 sisi tidak membutuhkan nok bubungan puncak (didapat: ${roofKanopi.ridgePieces})`);
+assert(roofKanopi.totalSheets > 0, `Total lembar kanopi terhitung (${roofKanopi.totalSheets} Lembar)`);
+
+// 4e. Uji Mode Luas Langsung M²
+setEstimatorRoofMode('area');
+updateEstimatorRoofField('directArea', 50);
+const roofArea = calculateRoofNeeds();
+assert(roofArea.mode === 'area', `Mode luas langsung aktif`);
+assert(roofArea.totalRoofArea === 50, `Luas langsung 50 m² terhitung (didapat: ${roofArea.totalRoofArea})`);
+assert(roofArea.totalSheets > 0, `Total lembar terhitung dari luas langsung (${roofArea.totalSheets} Lembar)`);
+
+// ─── 5. UJI PRESISI DESIMAL DAN STEPPER KASIR POS ───────────
+console.log('\n⚖️ 5. Uji Presisi Desimal Kasir POS (Paku/Kabel Curah):');
 const calcSubtotal = (price, qty, disc = 0) => Math.max(0, Math.round(price * qty - disc));
 
 const sub1 = calcSubtotal(24000, 0.5);
