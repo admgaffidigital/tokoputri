@@ -1117,6 +1117,25 @@ window.submitTempoPayment = async (e, orderId) => {
 
         // Segarkan data piutang
         if (window.rAdmPiutang) window.rAdmPiutang();
+
+        // Tawarkan langsung cetak struk bukti pembayaran cicilan thermal
+        setTimeout(() => {
+            if (typeof window.showConfirm === 'function') {
+                window.showConfirm(
+                    `Pembayaran cicilan Rp ${Math.round(amount).toLocaleString('id-ID')} berhasil dicatat!<br><span class="text-xs text-slate-500">Cetak struk bukti pembayaran sekarang?</span>`,
+                    () => {
+                        if (typeof window.printTempoReceiptDirect === 'function') {
+                            window.printTempoReceiptDirect(orderId);
+                        } else if (typeof window.previewTempoReceipt === 'function') {
+                            window.previewTempoReceipt(orderId);
+                        }
+                    },
+                    null,
+                    'Cetak Struk',
+                    'Selesai'
+                );
+            }
+        }, 350);
     } catch (err) {
         hLoad();
         console.error('Gagal mencatat cicilan:', err);
