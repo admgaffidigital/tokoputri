@@ -16,6 +16,24 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-01",
+        "version": "v1.15.1",
+        "date": "2026-10-10",
+        "title": "Transparansi Status Stok Dual-Location (Rak Toko vs Gudang Cadangan), Transfer Dua Arah & Pemecahan Batch FIFO Presisi",
+        "category": "feature",
+        "badge": "Dual-Location Transparency & Precision FIFO Transfer v1.15.1",
+        "items": [
+            "Live Status Badge Kartu Pemindahan Internal: Menampilkan indikator real-time stok Rak Toko (Siap Kasir), Gudang Cadangan (Belakang), dan Total Stok Fisik secara presisi di dalam modal tanpa perlu scroll.",
+            "Footer Pinned Modal Transparan: Menampilkan rincian status Total Fisik, Stok Rak, dan Stok Gudang secara terpisah dan jelas di bagian bawah layar ponsel.",
+            "Aksi Pemindahan Dua Arah: Mendukung pemindahan stok dari Gudang ke Rak Toko maupun pengembalian dari Rak Toko kembali ke Gudang.",
+            "Dukungan Multi-Varian Mandiri: Setiap varian produk kini memiliki baris pemindahan independen dengan tombol transfer per-varian.",
+            "Batch Splitting FIFO Presisi: Pemindahan kuantitas parsial otomatis memecah (split) lot batch FIFO tanpa menggandakan atau menghilangkan data persediaan.",
+            "Pencatatan Otomatis Kartu Mutasi Stok: Setiap mutasi internal tercatat resmi di tab Kartu Mutasi Stok dengan stempel waktu, kuantitas, dan lokasi asal/tujuan.",
+            "Sinkronisasi Omnichannel Instan: Penyimpanan langsung ke subkoleksi produk Firestore, penyiaran saveApp(), dan pembaruan localStorage anti-delay.",
+            "Multi-Channel Distribution v1.15.1 (Android versionCode 11501)."
+        ]
+    },
+    {
         "id": "log-1-15-00",
         "version": "v1.15.0",
         "date": "2026-10-10",
@@ -77,20 +95,6 @@ export const DEFAULT_CHANGELOG = [
             "Fixed Pinned Bottom Action Bar: Tombol aksi utama dipin melayang di bawah layar sentuh (thumb-friendly) dengan safe area inset.",
             "Stepper Status Pengiriman Segmented: Stepper 3 tahap bertema toko berpadu kanvas tanda tangan sentuh lapang.",
             "Multi-Channel Distribution v1.13.1 (Android versionCode 11301)."
-        ]
-    },
-    {
-        "id": "log-1-13-00",
-        "version": "v1.13.0",
-        "date": "2026-10-09",
-        "title": "Logistik, Pengiriman Proyek & Surat Jalan Resmi (DO Barcode Code 128)",
-        "category": "feature",
-        "badge": "Delivery Order Logistics & Project Signatures v1.13.0",
-        "items": [
-            "Dokumen Surat Jalan Resmi A4 (DO-YYMM-XXXXX): Ber-barcode Code 128 unik, rujukan Drop-Point mandor, armada & supir, dan 4 kolom tanda tangan.",
-            "Pelacakan Status Pengiriman Real-Time: Transisi Menunggu Muat -> Dalam Perjalanan -> Terkirim.",
-            "Verifikasi Tanda Tangan Mandor: Kanvas tanda tangan digital di layar sentuh untuk bukti serah terima proyek.",
-            "Multi-Channel Distribution v1.13.0 (Android versionCode 11300)."
         ]
     }
 ];
