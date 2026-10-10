@@ -2254,12 +2254,42 @@ html.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
 .rounded-xl { border-radius: 6px !important; }
 .rounded-lg { border-radius: 4px !important; }
 
-/* === FONT WEIGHT OVERRIDES (PENCEGAHAN TEKS TERLALU TEBAL) === */
+/* === TIPOGRAFI INDUSTRIAL HARDWARE DEPOT (PAKET 3: ARCHIVO + BARLOW) === */
 body {
-    font-family: 'Barlow', sans-serif !important;
+    font-family: 'Barlow', system-ui, -apple-system, sans-serif !important;
 }
-.font-black, .font-extrabold, .font-bold {
-    font-weight: 600 !important; /* Cegah teks terlalu tebal — semibold adalah maksimum */
+
+h1, h2, h3, h4, h5, h6,
+.font-heading,
+.font-industrial,
+.brand-title,
+.section-title,
+.product-title,
+.category-title,
+.btn-native-action,
+.font-black,
+.font-extrabold {
+    font-family: 'Archivo', 'Barlow', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: -0.015em;
+}
+
+.font-black {
+    font-weight: 800 !important;
+}
+.font-extrabold {
+    font-weight: 700 !important;
+}
+.font-bold {
+    font-weight: 600 !important;
+}
+
+/* Proteksi font monospace murni untuk struk thermal printer, barcode, kode SKU, dan serial */
+code, kbd, samp, pre,
+.font-mono,
+.receipt-paper-content,
+.utp-thermal-wrap,
+.barcode-text {
+    font-family: 'Courier New', Courier, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 /* === NONAKTIFKAN TOTAL SEMUA EFEK BLUR & KACA / GLASSMORPHISM (100% SOLID & TAJAM) === */

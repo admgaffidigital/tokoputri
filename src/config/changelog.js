@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-02",
+        "version": "v1.15.2",
+        "date": "2026-10-10",
+        "title": "Tipografi Industrial Hardware Depot (Archivo + Barlow) & Elevasi Visual Toko Bahan Bangunan & Alat Teknik",
+        "category": "feature",
+        "badge": "Industrial Hardware Depot Typography v1.15.2",
+        "items": [
+            "Duet Tipografi Industrial (Paket 3): Integrasi font 'Archivo' (Weight 600-900) untuk seluruh judul, nama barang, kategori, angka harga, dan tombol aksi berpadu 'Barlow' (Weight 400-600) untuk teks deskripsi & spesifikasi teknis.",
+            "Karakter Visual Heavy-Duty & Berwibawa: Menghadirkan kesan kokoh, formal, dan meyakinkan bagi kontraktor proyek serta tetap bersih & modern bagi pembeli ritel rumah tangga.",
+            "Proteksi Monospace Struk & Barcode: Menjaga format font 'Courier New' / monospace tetap murni pada struk thermal printer 58mm/80mm, kode barcode Code 128, dan nomor seri SKU.",
+            "Integrasi Google Fonts & Tailwind Config: Penambahan font-family 'heading' dan 'industrial' pada tailwind.config.js dan prefetch Google Fonts non-blocking di index.html.",
+            "Multi-Channel Distribution v1.15.2 (Android versionCode 11502)."
+        ]
+    },
+    {
         "id": "log-1-15-01",
         "version": "v1.15.1",
         "date": "2026-10-10",
@@ -80,21 +95,6 @@ export const DEFAULT_CHANGELOG = [
             "Perapian Badge Status Pengiriman: Penambahan shrink-0 whitespace-nowrap agar badge status MENUNGGU MUAT tidak terlipat.",
             "Ikon Vektor Valid: Memperbarui ikon dari fa-truck-gear ke fa-truck-fast text-sm resmi FontAwesome.",
             "Multi-Channel Distribution v1.13.2 (Android versionCode 11302)."
-        ]
-    },
-    {
-        "id": "log-1-13-01",
-        "version": "v1.13.1",
-        "date": "2026-10-09",
-        "title": "Harmonisasi Desain Native App Surat Jalan (DO), Touch Fleet Grid & Checklist Muatan Proyek",
-        "category": "feature",
-        "badge": "Native Fleet Grid & Interactive DO Checklist v1.13.1",
-        "items": [
-            "Grid Kartu Armada Sentuh: Menggantikan dropdown kaku dengan 6 kartu armada interaktif (Pick-up, Truk Engkel, Dobel, Roda Tiga, dll) ber-border tema toko.",
-            "Checklist Muatan Tile Interaktif: Menghilangkan tabel kaku di HP, digantikan tile sentuh 1-ketukan, squircle checkbox, kapsul kuantitas, chip varian, dan tombol Pilih Semua.",
-            "Fixed Pinned Bottom Action Bar: Tombol aksi utama dipin melayang di bawah layar sentuh (thumb-friendly) dengan safe area inset.",
-            "Stepper Status Pengiriman Segmented: Stepper 3 tahap bertema toko berpadu kanvas tanda tangan sentuh lapang.",
-            "Multi-Channel Distribution v1.13.1 (Android versionCode 11301)."
         ]
     }
 ];

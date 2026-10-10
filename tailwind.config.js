@@ -31,6 +31,8 @@ export default {
       },
       fontFamily: {
         sans: ['"Barlow"', 'system-ui', '-apple-system', 'sans-serif'],
+        heading: ['"Archivo"', '"Barlow"', 'system-ui', '-apple-system', 'sans-serif'],
+        industrial: ['"Archivo"', '"Barlow"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
         'none': 'none',
