@@ -456,11 +456,53 @@ const renderSupplierCardHtml = (s) => {
 };
 
 /**
+ * Render Parsial Kartu Supplier (Zero-Flicker)
+ * Hanya memperbarui kontainer daftar tanpa menghancurkan kolom pencarian
+ */
+export const renderSupplierCardsOnly = () => {
+    const listEl = el('supplier-cards-list');
+    if (!listEl) {
+        renderSuppliersView();
+        return;
+    }
+
+    const suppliers = appData.suppliers || [];
+    let filtered = suppliers;
+
+    if (activeSupplierTab === 'has_debt') {
+        filtered = filtered.filter(s => getSupplierOutstandingDebt(s) > 0);
+    }
+
+    const q = (supplierSearchQuery || '').toLowerCase().trim();
+    if (q) {
+        filtered = filtered.filter(s => {
+            const nameMatch = (s.name || '').toLowerCase().includes(q);
+            const codeMatch = (s.code || '').toLowerCase().includes(q);
+            const phoneMatch = (s.phone || '').toLowerCase().includes(q);
+            const contactMatch = (s.contactPerson || '').toLowerCase().includes(q);
+            const addressMatch = (s.address || '').toLowerCase().includes(q);
+            const productsMatch = (s.productsSupplied || '').toLowerCase().includes(q);
+            return nameMatch || codeMatch || phoneMatch || contactMatch || addressMatch || productsMatch;
+        });
+    }
+
+    listEl.innerHTML = filtered.length === 0 ? `
+        <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                <i class="fa-solid fa-truck-field"></i>
+            </div>
+            <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Tidak ada supplier yang cocok</p>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm">Coba kata kunci pencarian lain atau kosongkan filter pencarian.</p>
+        </div>
+    ` : filtered.map(s => renderSupplierCardHtml(s)).join('');
+};
+
+/**
  * Filter pencarian supplier
  */
 window.handleSupplierSearch = (val) => {
     supplierSearchQuery = val || '';
-    renderSuppliersView();
+    renderSupplierCardsOnly();
 };
 
 /**

@@ -316,7 +316,8 @@ window.rAdmL = t => {
             <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center mb-4">
                 <div class="relative flex-1">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input autocomplete='off' id="admin-search-input" name='cari_admin_q' placeholder="Cari produk, SKU, varian, barcode..." oninput="(window.setASq ? window.setASq(this.value.toLowerCase()) : (window.aSq=this.value.toLowerCase()));rAdmItms('${t}')" class="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl pl-11 pr-12 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all" >
+                    <input autocomplete='off' id="admin-search-input" name='cari_admin_q' value="${esc(aSq || window.aSq || '')}" placeholder="Cari produk, SKU, varian, barcode..." oninput="window.handleAdminSearch(this.value, '${t}')" class="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl pl-11 pr-20 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all" >
+                    <button type="button" id="admin-search-clear-btn" onclick="window.clearAdminSearch('${t}')" class="${(aSq || window.aSq) ? '' : 'hidden'} absolute right-11 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-xl transition-all cursor-pointer" title="Hapus Pencarian"><i class="fa-solid fa-circle-xmark text-sm"></i></button>
                     <button onclick="openCameraScanner('admin-search-input')" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl transition-all" title="Scan Barcode"><i class="fa-solid fa-qrcode text-sm"></i></button>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
@@ -339,9 +340,27 @@ window.rAdmL = t => {
     rAdmItms(t);
 };
 
+// ─── Search Handlers & Zero-Flicker Partial Updater ─────────────────────────
+
+window.handleAdminSearch = (val, t) => {
+    const q = (val || '').toLowerCase();
+    if (typeof window.setASq === 'function') window.setASq(q);
+    else window.aSq = q;
+    const clearBtn = el('admin-search-clear-btn');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !q);
+    window.rAdmItms?.(t || 'products', true);
+};
+
+window.clearAdminSearch = (t) => {
+    const inp = el('admin-search-input');
+    if (inp) inp.value = '';
+    window.handleAdminSearch('', t || 'products');
+    if (inp) inp.focus();
+};
+
 // ─── Render Daftar Item Tabel ─────────────────────────────────────────────────
 
-window.rAdmItms = t => {
+window.rAdmItms = (t, skipStats = false) => {
     if (t) {
         setCTab(t);
         if (typeof window.setCTab === 'function') window.setCTab(t);
@@ -351,7 +370,8 @@ window.rAdmItms = t => {
     const scrollParent = listContainerForScroll ? listContainerForScroll.closest('.scroll-content') : null;
     const savedScrollTop = scrollParent ? scrollParent.scrollTop : 0;
 
-    if (t === 'products' && el('admin-product-stats')) {
+    const statsEl = el('admin-product-stats');
+    if (t === 'products' && statsEl && (!skipStats || !statsEl.children.length)) {
         const st = computeInventoryStats();
         setH('admin-product-stats', `
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

@@ -424,633 +424,663 @@ const findRelatedStoreProducts = (type) => {
     return [];
 };
 
-// ─── RENDER MODAL MATERIAL ESTIMATOR ─────────────────────────
+// ─── RENDER SUB-KOMPONEN FORM & HASIL ESTIMATOR (ZERO-FLICKER ARCHITECTURE) ───
+
+/**
+ * Render Formulir Input Kolom Kiri
+ * Hanya di-render ulang saat perpindahan tab atau switch mode (room vs area, tipe atap dsb)
+ */
+export const renderEstimatorFormHtml = (tab) => {
+    if (tab === 'paint') {
+        return `
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-paintbrush text-[var(--color-primary)]"></i> Parameter Dinding
+                </span>
+                <div class="inline-flex p-0.5 rounded-lg bg-slate-200/70 dark:bg-slate-700 text-[10px] font-bold">
+                    <button type="button" onclick="window.setEstimatorPaintMode('room')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${paintState.mode === 'room' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-extrabold' : 'text-slate-500'}">Ruangan</button>
+                    <button type="button" onclick="window.setEstimatorPaintMode('area')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${paintState.mode === 'area' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-extrabold' : 'text-slate-500'}">Luas M²</button>
+                </div>
+            </div>
+
+            ${paintState.mode === 'room' ? `
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Ruang (m)</label>
+                    <input type="number" id="paint-input-length" step="0.5" min="1" max="100" value="${paintState.length}" oninput="window.updateEstimatorPaintField('length', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Lebar Ruang (m)</label>
+                    <input type="number" id="paint-input-width" step="0.5" min="1" max="100" value="${paintState.width}" oninput="window.updateEstimatorPaintField('width', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Tinggi Dinding (m)</label>
+                    <input type="number" id="paint-input-height" step="0.25" min="1" max="20" value="${paintState.height}" oninput="window.updateEstimatorPaintField('height', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase" title="Area pintu dan jendela yang tidak dicat">Pintu/Jendela (m²)</label>
+                    <input type="number" id="paint-input-openings" step="0.5" min="0" max="50" value="${paintState.openings}" oninput="window.updateEstimatorPaintField('openings', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Cat Plafon Sekalian?</span>
+                <input type="checkbox" id="paint-input-ceiling" ${paintState.ceiling ? 'checked' : ''} onchange="window.updateEstimatorPaintField('ceiling', this.checked)"
+                    class="w-4 h-4 rounded text-[var(--color-primary)] accent-[var(--color-primary)] cursor-pointer">
+            </div>
+            ` : `
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase">Total Luas Bidang Cat (m²)</label>
+                <input type="number" id="paint-input-directArea" step="1" min="1" max="10000" value="${paintState.directArea}" oninput="window.updateEstimatorPaintField('directArea', this.value)"
+                    class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+            </div>
+            `}
+
+            <!-- Layer Pengecatan (Preset Buttons Cerdas Tanpa Rebuild Input) -->
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Jumlah Lapisan Pengecatan</label>
+                <div class="grid grid-cols-3 gap-2" id="paint-coats-button-group">
+                    <button type="button" onclick="window.setEstimatorPaintCoats(1)" class="paint-coat-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${paintState.coats === 1 ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" data-coats="1">1x Lapis</button>
+                    <button type="button" onclick="window.setEstimatorPaintCoats(2)" class="paint-coat-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${paintState.coats === 2 ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" data-coats="2">2x Rekomendasi</button>
+                    <button type="button" onclick="window.setEstimatorPaintCoats(3)" class="paint-coat-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${paintState.coats === 3 ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" data-coats="3">3x Warna Gelap</button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Termasuk Cat Dasar (Alkali)?</span>
+                <input type="checkbox" id="paint-input-sealer" ${paintState.includeSealer ? 'checked' : ''} onchange="window.updateEstimatorPaintField('includeSealer', this.checked)"
+                    class="w-4 h-4 rounded text-[var(--color-primary)] accent-[var(--color-primary)] cursor-pointer">
+            </div>
+        </div>`;
+    }
+
+    if (tab === 'tile') {
+        return `
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                <i class="fa-solid fa-table-cells text-indigo-500"></i> Parameter Keramik / Granit
+            </span>
+
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Lantai (m)</label>
+                    <input type="number" id="tile-input-length" step="0.5" min="1" max="100" value="${tileState.length}" oninput="window.updateEstimatorTileField('length', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Lebar Lantai (m)</label>
+                    <input type="number" id="tile-input-width" step="0.5" min="1" max="100" value="${tileState.width}" oninput="window.updateEstimatorTileField('width', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Ukuran Keramik / Granit</label>
+                <select id="tile-input-size" onchange="window.updateEstimatorTileField('tileSize', this.value)"
+                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <option value="30x30" ${tileState.tileSize === '30x30' ? 'selected' : ''}>30 x 30 cm (1 Dus = 1.00 m² / 11 keping)</option>
+                    <option value="40x40" ${tileState.tileSize === '40x40' ? 'selected' : ''}>40 x 40 cm (1 Dus = 0.96 m² / 6 keping)</option>
+                    <option value="50x50" ${tileState.tileSize === '50x50' ? 'selected' : ''}>50 x 50 cm (1 Dus = 1.00 m² / 4 keping)</option>
+                    <option value="60x60" ${tileState.tileSize === '60x60' ? 'selected' : ''}>60 x 60 cm (1 Dus = 1.44 m² / 4 keping)</option>
+                    <option value="80x80" ${tileState.tileSize === '80x80' ? 'selected' : ''}>80 x 80 cm (1 Dus = 1.92 m² / 3 keping)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Cadangan Potongan / Waste Factor</label>
+                <div class="grid grid-cols-3 gap-2" id="tile-waste-button-group">
+                    <button type="button" onclick="window.setEstimatorTileWaste(5)" class="tile-waste-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 5 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 5 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}" data-waste="5">5% Minimal</button>
+                    <button type="button" onclick="window.setEstimatorTileWaste(10)" class="tile-waste-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 10 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 10 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}" data-waste="10">10% Standar</button>
+                    <button type="button" onclick="window.setEstimatorTileWaste(15)" class="tile-waste-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 15 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 15 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}" data-waste="15">15% Diagonal</button>
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Semen Perekat Keramik (Adhesive)?</span>
+                    <input type="checkbox" id="tile-input-adhesive" ${tileState.includeAdhesive ? 'checked' : ''} onchange="window.updateEstimatorTileField('includeAdhesive', this.checked)"
+                        class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Semen Pengisi Nat (Tile Grout)?</span>
+                    <input type="checkbox" id="tile-input-grout" ${tileState.includeGrout ? 'checked' : ''} onchange="window.updateEstimatorTileField('includeGrout', this.checked)"
+                        class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
+                </div>
+            </div>
+        </div>`;
+    }
+
+    if (tab === 'brick') {
+        return `
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                <i class="fa-solid fa-cubes-stacked text-amber-600"></i> Parameter Pasangan Dinding
+            </span>
+
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Dinding (m)</label>
+                    <input type="number" id="brick-input-length" step="0.5" min="1" max="200" value="${brickState.length}" oninput="window.updateEstimatorBrickField('length', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Tinggi Dinding (m)</label>
+                    <input type="number" id="brick-input-height" step="0.25" min="1" max="20" value="${brickState.height}" oninput="window.updateEstimatorBrickField('height', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Jumlah Sisi Tembok</label>
+                    <input type="number" id="brick-input-sides" min="1" max="20" value="${brickState.sides}" oninput="window.updateEstimatorBrickField('sides', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Bukaan Pintu/Jendela (m²)</label>
+                    <input type="number" id="brick-input-openings" step="0.5" min="0" max="50" value="${brickState.openings}" oninput="window.updateEstimatorBrickField('openings', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Pilihan Material Dinding</label>
+                <select id="brick-input-type" onchange="window.updateEstimatorBrickField('brickType', this.value)"
+                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <option value="hebel10" ${brickState.brickType === 'hebel10' ? 'selected' : ''}>Bata Ringan / Hebel Tebal 10 cm (60x20x10)</option>
+                    <option value="hebel75" ${brickState.brickType === 'hebel75' ? 'selected' : ''}>Bata Ringan / Hebel Tebal 7.5 cm (60x20x7.5)</option>
+                    <option value="redbrick" ${brickState.brickType === 'redbrick' ? 'selected' : ''}>Bata Merah Bakar Standar</option>
+                </select>
+            </div>
+        </div>`;
+    }
+
+    if (tab === 'roof') {
+        const spec = ROOF_SPECS[roofState.roofType] || ROOF_SPECS.spandek;
+        return `
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
+            <!-- Header Parameter & Mode Atap -->
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-house-chimney text-sky-500"></i> Parameter Bidang Atap
+                </span>
+                <div class="inline-flex p-0.5 rounded-lg bg-slate-200/70 dark:bg-slate-700 text-[10px] font-bold">
+                    <button type="button" onclick="window.setEstimatorRoofMode('gable')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${roofState.mode === 'gable' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-extrabold' : 'text-slate-500'}">Pelana</button>
+                    <button type="button" onclick="window.setEstimatorRoofMode('monopitch')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${roofState.mode === 'monopitch' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-extrabold' : 'text-slate-500'}">Kanopi</button>
+                    <button type="button" onclick="window.setEstimatorRoofMode('area')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${roofState.mode === 'area' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-extrabold' : 'text-slate-500'}">Luas M²</button>
+                </div>
+            </div>
+
+            <!-- Pilihan Jenis Material Atap (Spandek, Seng, Asbes) -->
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Jenis Material Atap / Penutup</label>
+                <div class="grid grid-cols-3 gap-1.5" id="roof-type-button-group">
+                    <button type="button" onclick="window.setEstimatorRoofType('spandek')" class="roof-type-btn py-2 px-1.5 rounded-xl text-[11px] font-extrabold transition-all border cursor-pointer text-center ${roofState.roofType === 'spandek' ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" data-rooftype="spandek">
+                        <i class="fa-solid fa-layer-group block text-xs mb-1 ${roofState.roofType === 'spandek' ? 'text-sky-500' : 'text-slate-400'}"></i>
+                        Spandek
+                    </button>
+                    <button type="button" onclick="window.setEstimatorRoofType('seng')" class="roof-type-btn py-2 px-1.5 rounded-xl text-[11px] font-extrabold transition-all border cursor-pointer text-center ${roofState.roofType === 'seng' ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" data-rooftype="seng">
+                        <i class="fa-solid fa-water block text-xs mb-1 ${roofState.roofType === 'seng' ? 'text-amber-500' : 'text-slate-400'}"></i>
+                        Seng
+                    </button>
+                    <button type="button" onclick="window.setEstimatorRoofType('asbes')" class="roof-type-btn py-2 px-1.5 rounded-xl text-[11px] font-extrabold transition-all border cursor-pointer text-center ${roofState.roofType === 'asbes' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" data-rooftype="asbes">
+                        <i class="fa-solid fa-bars-staggered block text-xs mb-1 ${roofState.roofType === 'asbes' ? 'text-emerald-500' : 'text-slate-400'}"></i>
+                        Asbes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pilihan Panjang Lembar -->
+            <div>
+                <div class="flex items-center justify-between mb-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Lembar Pilihan</label>
+                    <span class="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400" id="roof-effective-width-badge">Lebar Efektif: ${spec.effectiveWidth * 100} cm</span>
+                </div>
+                <select id="roof-input-sheetLength" onchange="window.updateEstimatorRoofField('sheetLength', this.value)"
+                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    ${spec.standardLengths.map(l => `
+                        <option value="${l.val}" ${parseFloat(roofState.sheetLength) === l.val ? 'selected' : ''}>${l.label}</option>
+                    `).join('')}
+                </select>
+            </div>
+
+            ${roofState.mode !== 'area' ? `
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">${roofState.mode === 'gable' ? 'P. Bangunan (m)' : 'Lebar Kanopi (m)'}</label>
+                    <input type="number" id="roof-input-length" step="0.5" min="1" max="100" value="${roofState.length}" oninput="window.updateEstimatorRoofField('length', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">${roofState.mode === 'gable' ? 'Bentang Lebar (m)' : 'P. Jatuh Air (m)'}</label>
+                    <input type="number" id="roof-input-width" step="0.5" min="1" max="100" value="${roofState.width}" oninput="window.updateEstimatorRoofField('width', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Sudut Miring (°)</label>
+                    <input type="number" id="roof-input-slopeAngle" step="1" min="5" max="60" value="${roofState.slopeAngle}" oninput="window.updateEstimatorRoofField('slopeAngle', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase" title="Lebar cucuran atap keluar dinding">Overstek (m)</label>
+                    <input type="number" id="roof-input-overhang" step="0.1" min="0" max="3" value="${roofState.overhang}" oninput="window.updateEstimatorRoofField('overhang', this.value)"
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+            </div>
+
+            <!-- Preset Sudut Cepat (Tanpa Rebuild Input) -->
+            <div class="pt-0.5">
+                <label class="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Preset Sudut Kemiringan</label>
+                <div class="grid grid-cols-4 gap-1.5" id="roof-angle-button-group">
+                    ${[15, 20, 25, 30].map(ang => `
+                        <button type="button" onclick="window.setEstimatorRoofAngle(${ang})" class="roof-angle-btn py-1 rounded-lg text-[10px] font-black border transition-all cursor-pointer ${parseFloat(roofState.slopeAngle) === ang ? 'bg-sky-50 dark:bg-sky-950/60 border-sky-400 text-sky-700 dark:text-sky-300 shadow-2xs' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'}" data-angle="${ang}">${ang}°</button>
+                    `).join('')}
+                </div>
+            </div>
+            ` : `
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase">Total Luas Bidang Atap (m²)</label>
+                <input type="number" id="roof-input-directArea" step="1" min="1" max="10000" value="${roofState.directArea}" oninput="window.updateEstimatorRoofField('directArea', this.value)"
+                    class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+            </div>
+            `}
+
+            <!-- Checkboxes Nok & Pengencang -->
+            <div class="space-y-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                ${roofState.mode === 'gable' ? `
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Sertakan Nok Bubungan Puncak?</span>
+                    <input type="checkbox" id="roof-input-ridge" ${roofState.includeRidge ? 'checked' : ''} onchange="window.updateEstimatorRoofField('includeRidge', this.checked)"
+                        class="w-4 h-4 rounded text-sky-600 accent-sky-600 cursor-pointer">
+                </div>
+                ` : ''}
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Sertakan Baut / Paku?</span>
+                    <input type="checkbox" id="roof-input-fasteners" ${roofState.includeFasteners ? 'checked' : ''} onchange="window.updateEstimatorRoofField('includeFasteners', this.checked)"
+                        class="w-4 h-4 rounded text-sky-600 accent-sky-600 cursor-pointer">
+                </div>
+            </div>
+        </div>`;
+    }
+
+    return '';
+};
+
+/**
+ * Render Hasil Kalkulasi & Rekomendasi Kolom Kanan
+ * Di-update secara instan (Zero Flicker) setiap keystroke input
+ */
+export const renderEstimatorResultHtml = (tab) => {
+    if (tab === 'paint') {
+        const res = calculatePaintNeeds();
+        const related = findRelatedStoreProducts('paint');
+
+        return `
+        <!-- Bento Result Card -->
+        <div class="p-5 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-xl border border-slate-700/80 relative overflow-hidden">
+            <div class="flex items-start justify-between gap-3 relative z-10">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-amber-400">Hasil Estimasi Cat Resmi</span>
+                    <h4 class="text-2xl sm:text-3xl font-black mt-1 tracking-tight text-white">
+                        ${res.pails > 0 ? `${res.pails} Pail (20L) ` : ''}${res.gallons > 0 ? `+ ${res.gallons} Galon (2.5L)` : (res.pails === 0 ? '1 Galon' : '')}
+                    </h4>
+                    <p class="text-xs text-slate-300 mt-1">Total kebutuhan volume: <b class="text-white">${res.totalVolumeLiters} Liter / Kg</b> (${res.coats}x lapis)</p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-amber-400 border border-slate-700 shrink-0">
+                    <i class="fa-solid fa-bucket"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Luas Dinding</p>
+                    <p class="text-sm font-black text-white mt-0.5">${res.totalWallArea} m²</p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Luas Plafon</p>
+                    <p class="text-sm font-black text-white mt-0.5">${res.ceilingArea} m²</p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 col-span-2 sm:col-span-1">
+                    <p class="text-[10px] text-amber-300 font-bold uppercase">Alkali Sealer</p>
+                    <p class="text-sm font-black text-amber-300 mt-0.5">${res.sealerGallons > 0 ? `${res.sealerGallons} Galon (${res.sealerVolume}L)` : 'Tidak dipilih'}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat -->
+        <div class="flex flex-wrap gap-2.5">
+            <button type="button" onclick="window.copyEstimatorSummary('paint')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-copy"></i> Salin Rincian
+            </button>
+            <button type="button" onclick="window.shareEstimatorToWA('paint')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
+            </button>
+            ${estimatorSource === 'pos' ? `
+            <button type="button" onclick="window.addEstimatorToPOSCart('Cat Dinding (Estimasi)', ${res.totalVolumeLiters}, 'liter')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                <i class="fa-solid fa-cart-plus"></i> Masukkan Estimasi Cat ke Transaksi Kasir
+            </button>
+            ` : ''}
+        </div>
+
+        <!-- Katalog Produk Terkait di Toko -->
+        ${related.length > 0 ? `
+        <div class="pt-2">
+            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-tags text-[var(--color-primary)]"></i> Rekomendasi Produk Cat di Toko Kami:
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+                ${related.map(p => `
+                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
+                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
+                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-paint-roller text-slate-400"></i>`}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
+                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
+                    </div>
+                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}`;
+    }
+
+    if (tab === 'tile') {
+        const res = calculateTileNeeds();
+        const related = findRelatedStoreProducts('tile');
+
+        return `
+        <!-- Bento Result Card -->
+        <div class="p-5 rounded-3xl bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-900/60 relative overflow-hidden">
+            <div class="flex items-start justify-between gap-3 relative z-10">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-indigo-300">Hasil Estimasi Keramik Lantai</span>
+                    <h4 class="text-3xl font-black mt-1 tracking-tight text-white">${res.totalBoxes} Dus Keramik</h4>
+                    <p class="text-xs text-indigo-200 mt-1">Ukuran: <b>${res.spec.name}</b> (Coverage: ${res.spec.coveragePerBox} m²/dus)</p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-indigo-300 border border-slate-700 shrink-0">
+                    <i class="fa-solid fa-border-all"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Luas Bersih</p>
+                    <p class="text-sm font-black text-white mt-0.5">${res.rawArea} m²</p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-indigo-300 font-bold uppercase">+ Cadangan (${res.wastePercent}%)</p>
+                    <p class="text-sm font-black text-white mt-0.5">${res.totalAreaWithWaste} m²</p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 col-span-2 sm:col-span-1">
+                    <p class="text-[10px] text-emerald-300 font-bold uppercase">Perekat &amp; Nat</p>
+                    <p class="text-sm font-black text-emerald-300 mt-0.5">${res.adhesiveBags} Sak / ${res.groutBags} Bks</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat -->
+        <div class="flex flex-wrap gap-2.5">
+            <button type="button" onclick="window.copyEstimatorSummary('tile')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-copy"></i> Salin Rincian
+            </button>
+            <button type="button" onclick="window.shareEstimatorToWA('tile')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
+            </button>
+            ${estimatorSource === 'pos' ? `
+            <button type="button" onclick="window.addEstimatorToPOSCart('Keramik ${res.spec.name} (Estimasi)', ${res.totalBoxes}, 'dus')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                <i class="fa-solid fa-cart-plus"></i> Masukkan ${res.totalBoxes} Dus Keramik ke Transaksi Kasir
+            </button>
+            ` : ''}
+        </div>
+
+        <!-- Produk Terkait -->
+        ${related.length > 0 ? `
+        <div class="pt-2">
+            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-tags text-indigo-500"></i> Rekomendasi Keramik &amp; Semen di Toko:
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+                ${related.map(p => `
+                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
+                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
+                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-border-all text-slate-400"></i>`}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
+                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
+                    </div>
+                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}`;
+    }
+
+    if (tab === 'brick') {
+        const res = calculateBrickNeeds();
+        const related = findRelatedStoreProducts('brick');
+
+        return `
+        <!-- Bento Result Card -->
+        <div class="p-5 rounded-3xl bg-gradient-to-br from-amber-950 to-slate-900 text-white shadow-xl border border-amber-900/60 relative overflow-hidden">
+            <div class="flex items-start justify-between gap-3 relative z-10">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-amber-300">Hasil Estimasi Pasangan Dinding</span>
+                    <h4 class="text-2xl sm:text-3xl font-black mt-1 tracking-tight text-white">
+                        ${brickState.brickType.startsWith('hebel') ? `${res.brickPcs} Pcs (${res.brickCubic} m³)` : `${res.brickPcs} Buah Bata Merah`}
+                    </h4>
+                    <p class="text-xs text-amber-200 mt-1">Luas Dinding Bersih: <b>${res.netArea} m²</b></p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-amber-300 border border-slate-700 shrink-0">
+                    <i class="fa-solid fa-trowel-bricks"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Semen Perekat / Mortar</p>
+                    <p class="text-sm font-black text-white mt-0.5">
+                        ${brickState.brickType.startsWith('hebel') ? `${res.mortarBags} Sak Mortar (40kg)` : `${res.cementBags} Sak Semen (50kg)`}
+                    </p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-amber-300 font-bold uppercase">Pasir Pasang</p>
+                    <p class="text-sm font-black text-amber-300 mt-0.5">
+                        ${brickState.brickType.startsWith('hebel') ? 'Cukup Lem Mortar' : `${res.sandCubic} m³ Pasir`}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat -->
+        <div class="flex flex-wrap gap-2.5">
+            <button type="button" onclick="window.copyEstimatorSummary('brick')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-copy"></i> Salin Rincian
+            </button>
+            <button type="button" onclick="window.shareEstimatorToWA('brick')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
+            </button>
+            ${estimatorSource === 'pos' ? `
+            <button type="button" onclick="window.addEstimatorToPOSCart('${brickState.brickType.startsWith('hebel') ? 'Bata Ringan Hebel (Estimasi)' : 'Bata Merah (Estimasi)'}', ${res.brickPcs}, 'pcs')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                <i class="fa-solid fa-cart-plus"></i> Masukkan ${res.brickPcs} Pcs ke Transaksi Kasir
+            </button>
+            ` : ''}
+        </div>
+
+        <!-- Produk Terkait -->
+        ${related.length > 0 ? `
+        <div class="pt-2">
+            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-tags text-amber-500"></i> Rekomendasi Bata &amp; Semen Mortar di Toko:
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+                ${related.map(p => `
+                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
+                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
+                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-cubes text-slate-400"></i>`}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
+                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
+                    </div>
+                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}`;
+    }
+
+    if (tab === 'roof') {
+        const res = calculateRoofNeeds();
+        const related = findRelatedStoreProducts('roof');
+
+        return `
+        <!-- Bento Result Card -->
+        <div class="p-5 rounded-3xl bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white shadow-xl border border-sky-900/60 relative overflow-hidden">
+            <div class="flex items-start justify-between gap-3 relative z-10">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-sky-400">Hasil Estimasi ${esc(res.spec.shortName)}</span>
+                    <h4 class="text-2xl sm:text-3xl font-black mt-1 tracking-tight text-white flex items-baseline gap-2">
+                        <span>${res.totalSheets} Lembar</span>
+                        <span class="text-sm font-bold text-sky-300">(${res.sheetLength} Meter)</span>
+                    </h4>
+                    <p class="text-xs text-sky-200/90 mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <span>Total Luas Atap: <b>${res.totalRoofArea} m²</b></span>
+                        ${res.slopeLength > 0 ? `<span>• Panjang Lereng: <b>${res.slopeLength} m</b></span>` : ''}
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-slate-800/90 flex items-center justify-center text-xl text-sky-400 border border-sky-800/80 shrink-0">
+                    <i class="fa-solid fa-roof-chimney"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase truncate" title="${esc(res.spec.fastenerName)}">${esc(res.spec.fastenerName.split(' ')[0])} / Pengencang</p>
+                    <p class="text-sm font-black text-white mt-0.5">
+                        ${res.fastenerPacks > 0 ? `${res.fastenerPacks} ${res.spec.fastenerPackaging}` : '-' }
+                    </p>
+                    <p class="text-[10px] text-sky-300 font-semibold mt-0.5">${res.fastenerPcs} Pcs</p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Nok Bubungan</p>
+                    <p class="text-sm font-black text-white mt-0.5">
+                        ${res.ridgePieces > 0 ? `${res.ridgePieces} Batang` : (res.mode === 'monopitch' ? 'Tidak Perlu' : '-')}
+                    </p>
+                    <p class="text-[10px] text-sky-300 font-semibold mt-0.5">${res.mode === 'gable' ? `Bentang ${res.ridgeLength}m` : 'Kanopi 1 Sisi'}</p>
+                </div>
+                <div class="col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Susunan Lembar</p>
+                    <p class="text-sm font-black text-sky-300 mt-0.5">
+                        ${res.sheetsAcross > 0 ? `${res.sheetsAcross} Kolom × ${res.sheetsPerSlope} Susun` : `${res.totalSheets} Lbr`}
+                    </p>
+                    <p class="text-[10px] text-slate-300 font-semibold mt-0.5">${res.mode === 'gable' ? '2 Sisi Miring' : res.mode === 'monopitch' ? '1 Sisi Miring' : 'Hitungan Luas'}</p>
+                </div>
+            </div>
+
+            <!-- Panduan Teknis Lapangan -->
+            <div class="mt-3 p-2.5 rounded-xl bg-sky-950/70 border border-sky-800/60 text-[10px] text-sky-200 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-sky-400 shrink-0"></i>
+                <span>Lebar efektif <b>${res.spec.effectiveWidth * 100} cm</b> (overlap samping 1 gelombang). Overlap sambungan ujung: 20 cm.</span>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat -->
+        <div class="flex flex-wrap gap-2.5">
+            <button type="button" onclick="window.copyEstimatorSummary('roof')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-copy"></i> Salin Rincian
+            </button>
+            <button type="button" onclick="window.shareEstimatorToWA('roof')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
+            </button>
+            ${estimatorSource === 'pos' ? `
+            <button type="button" onclick="window.addEstimatorToPOSCart('${esc(res.spec.shortName)} (Estimasi)', ${res.totalSheets}, 'lembar')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                <i class="fa-solid fa-cart-plus"></i> Masukkan ${res.totalSheets} Lembar ke Transaksi Kasir
+            </button>
+            ` : ''}
+        </div>
+
+        <!-- Rekomendasi Produk Terkait Toko -->
+        ${related.length > 0 ? `
+        <div class="pt-2">
+            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-tags text-sky-500"></i> Rekomendasi Atap, Seng &amp; Nok di Toko:
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+                ${related.map(p => `
+                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
+                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
+                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-house-chimney text-slate-400"></i>`}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
+                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
+                    </div>
+                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}`;
+    }
+
+    return '';
+};
+
+// ─── RENDER MODAL MATERIAL ESTIMATOR (CONTAINER UTAMA) ─────────
 export const renderMaterialEstimatorModalContent = () => {
     if (typeof document === 'undefined') return;
     const modalBody = el('modal-material-estimator-body');
     if (!modalBody) return;
 
-    let contentHtml = '';
+    modalBody.innerHTML = `
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Kolom Kiri: Formulir Input Dimensi (5 Kolom Desktop) -->
+        <div class="lg:col-span-5 space-y-4" id="estimator-form-container">
+            ${renderEstimatorFormHtml(estimatorActiveTab)}
+        </div>
+        <!-- Kolom Kanan: Hasil Kalkulasi & Rekomendasi (7 Kolom Desktop) -->
+        <div class="lg:col-span-7 space-y-4" id="estimator-results-container">
+            ${renderEstimatorResultHtml(estimatorActiveTab)}
+        </div>
+    </div>`;
 
-    if (estimatorActiveTab === 'paint') {
-        const res = calculatePaintNeeds();
-        const related = findRelatedStoreProducts('paint');
-
-        contentHtml = `
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Kolom Kiri: Formulir Input Dimensi (5 Kolom Desktop) -->
-            <div class="lg:col-span-5 space-y-4">
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
-                        <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                            <i class="fa-solid fa-paintbrush text-[var(--color-primary)]"></i> Parameter Dinding
-                        </span>
-                        <div class="inline-flex p-0.5 rounded-lg bg-slate-200/70 dark:bg-slate-700 text-[10px] font-bold">
-                            <button type="button" onclick="window.setEstimatorPaintMode('room')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${paintState.mode === 'room' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500'}">Ruangan</button>
-                            <button type="button" onclick="window.setEstimatorPaintMode('area')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${paintState.mode === 'area' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500'}">Luas M²</button>
-                        </div>
-                    </div>
-
-                    ${paintState.mode === 'room' ? `
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Ruang (m)</label>
-                            <input type="number" step="0.5" min="1" max="100" value="${paintState.length}" oninput="window.updateEstimatorPaintField('length', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Lebar Ruang (m)</label>
-                            <input type="number" step="0.5" min="1" max="100" value="${paintState.width}" oninput="window.updateEstimatorPaintField('width', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Tinggi Dinding (m)</label>
-                            <input type="number" step="0.25" min="1" max="20" value="${paintState.height}" oninput="window.updateEstimatorPaintField('height', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase" title="Area pintu dan jendela yang tidak dicat">Pintu/Jendela (m²)</label>
-                            <input type="number" step="0.5" min="0" max="50" value="${paintState.openings}" oninput="window.updateEstimatorPaintField('openings', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between pt-1">
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Cat Plafon Sekalian?</span>
-                        <input type="checkbox" ${paintState.ceiling ? 'checked' : ''} onchange="window.updateEstimatorPaintField('ceiling', this.checked)"
-                            class="w-4 h-4 rounded text-[var(--color-primary)] accent-[var(--color-primary)] cursor-pointer">
-                    </div>
-                    ` : `
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase">Total Luas Bidang Cat (m²)</label>
-                        <input type="number" step="1" min="1" max="10000" value="${paintState.directArea}" oninput="window.updateEstimatorPaintField('directArea', this.value)"
-                            class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                    </div>
-                    `}
-
-                    <!-- Layer Pengecatan -->
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Jumlah Lapisan Pengecatan</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" onclick="window.updateEstimatorPaintField('coats', 1)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${paintState.coats === 1 ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">1x Lapis</button>
-                            <button type="button" onclick="window.updateEstimatorPaintField('coats', 2)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${paintState.coats === 2 ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">2x Rekomendasi</button>
-                            <button type="button" onclick="window.updateEstimatorPaintField('coats', 3)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${paintState.coats === 3 ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">3x Warna Gelap</button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-1">
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Termasuk Cat Dasar (Alkali)?</span>
-                        <input type="checkbox" ${paintState.includeSealer ? 'checked' : ''} onchange="window.updateEstimatorPaintField('includeSealer', this.checked)"
-                            class="w-4 h-4 rounded text-[var(--color-primary)] accent-[var(--color-primary)] cursor-pointer">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kolom Kanan: Hasil Kalkulasi & Rekomendasi (7 Kolom Desktop) -->
-            <div class="lg:col-span-7 space-y-4">
-                <!-- Bento Result Card -->
-                <div class="p-5 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-xl border border-slate-700/80 relative overflow-hidden">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-amber-400">Hasil Estimasi Cat Resmi</span>
-                            <h4 class="text-2xl sm:text-3xl font-black mt-1 tracking-tight text-white">
-                                ${res.pails > 0 ? `${res.pails} Pail (20L) ` : ''}${res.gallons > 0 ? `+ ${res.gallons} Galon (2.5L)` : (res.pails === 0 ? '1 Galon' : '')}
-                            </h4>
-                            <p class="text-xs text-slate-300 mt-1">Total kebutuhan volume: <b class="text-white">${res.totalVolumeLiters} Liter / Kg</b> (${res.coats}x lapis)</p>
-                        </div>
-                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-amber-400 border border-slate-700 shrink-0">
-                            <i class="fa-solid fa-bucket"></i>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">Luas Dinding</p>
-                            <p class="text-sm font-black text-white mt-0.5">${res.totalWallArea} m²</p>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">Luas Plafon</p>
-                            <p class="text-sm font-black text-white mt-0.5">${res.ceilingArea} m²</p>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 col-span-2 sm:col-span-1">
-                            <p class="text-[10px] text-amber-300 font-bold uppercase">Alkali Sealer</p>
-                            <p class="text-sm font-black text-amber-300 mt-0.5">${res.sealerGallons > 0 ? `${res.sealerGallons} Galon (${res.sealerVolume}L)` : 'Tidak dipilih'}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tombol Aksi Cepat -->
-                <div class="flex flex-wrap gap-2.5">
-                    <button type="button" onclick="window.copyEstimatorSummary('paint')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-copy"></i> Salin Rincian
-                    </button>
-                    <button type="button" onclick="window.shareEstimatorToWA('paint')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
-                    </button>
-                    ${estimatorSource === 'pos' ? `
-                    <button type="button" onclick="window.addEstimatorToPOSCart('Cat Dinding (Estimasi)', ${res.totalVolumeLiters}, 'liter')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-cart-plus"></i> Masukkan Estimasi Cat ke Transaksi Kasir
-                    </button>
-                    ` : ''}
-                </div>
-
-                <!-- Katalog Produk Terkait di Toko -->
-                ${related.length > 0 ? `
-                <div class="pt-2">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-tags text-[var(--color-primary)]"></i> Rekomendasi Produk Cat di Toko Kami:
-                    </p>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${related.map(p => `
-                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                                ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-paint-roller text-slate-400"></i>`}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                                <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                            </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        `).join('')}
-                    </div>
-                </div>
-                ` : ''}
-            </div>
-        </div>`;
-    } else if (estimatorActiveTab === 'tile') {
-        const res = calculateTileNeeds();
-        const related = findRelatedStoreProducts('tile');
-
-        contentHtml = `
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Kolom Kiri: Input Dimensi Lantai -->
-            <div class="lg:col-span-5 space-y-4">
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
-                    <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
-                        <i class="fa-solid fa-table-cells text-indigo-500"></i> Parameter Keramik / Granit
-                    </span>
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Lantai (m)</label>
-                            <input type="number" step="0.5" min="1" max="100" value="${tileState.length}" oninput="window.updateEstimatorTileField('length', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Lebar Lantai (m)</label>
-                            <input type="number" step="0.5" min="1" max="100" value="${tileState.width}" oninput="window.updateEstimatorTileField('width', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Ukuran Keramik / Granit</label>
-                        <select onchange="window.updateEstimatorTileField('tileSize', this.value)"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                            <option value="30x30" ${tileState.tileSize === '30x30' ? 'selected' : ''}>30 x 30 cm (1 Dus = 1.00 m² / 11 keping)</option>
-                            <option value="40x40" ${tileState.tileSize === '40x40' ? 'selected' : ''}>40 x 40 cm (1 Dus = 0.96 m² / 6 keping)</option>
-                            <option value="50x50" ${tileState.tileSize === '50x50' ? 'selected' : ''}>50 x 50 cm (1 Dus = 1.00 m² / 4 keping)</option>
-                            <option value="60x60" ${tileState.tileSize === '60x60' ? 'selected' : ''}>60 x 60 cm (1 Dus = 1.44 m² / 4 keping)</option>
-                            <option value="80x80" ${tileState.tileSize === '80x80' ? 'selected' : ''}>80 x 80 cm (1 Dus = 1.92 m² / 3 keping)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Cadangan Potongan / Waste Factor</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 5)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 5 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 5 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}">5% Minimal</button>
-                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 10)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 10 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 10 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}">10% Standar</button>
-                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 15)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 15 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 15 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}">15% Diagonal</button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Semen Perekat Keramik (Adhesive)?</span>
-                            <input type="checkbox" ${tileState.includeAdhesive ? 'checked' : ''} onchange="window.updateEstimatorTileField('includeAdhesive', this.checked)"
-                                class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Semen Pengisi Nat (Tile Grout)?</span>
-                            <input type="checkbox" ${tileState.includeGrout ? 'checked' : ''} onchange="window.updateEstimatorTileField('includeGrout', this.checked)"
-                                class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kolom Kanan: Hasil Kalkulasi Keramik -->
-            <div class="lg:col-span-7 space-y-4">
-                <div class="p-5 rounded-3xl bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-900/60 relative overflow-hidden">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-indigo-300">Hasil Estimasi Keramik Lantai</span>
-                            <h4 class="text-3xl font-black mt-1 tracking-tight text-white">${res.totalBoxes} Dus Keramik</h4>
-                            <p class="text-xs text-indigo-200 mt-1">Ukuran: <b>${res.spec.name}</b> (Coverage: ${res.spec.coveragePerBox} m²/dus)</p>
-                        </div>
-                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-indigo-300 border border-slate-700 shrink-0">
-                            <i class="fa-solid fa-border-all"></i>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">Luas Bersih</p>
-                            <p class="text-sm font-black text-white mt-0.5">${res.rawArea} m²</p>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-indigo-300 font-bold uppercase">+ Cadangan (${res.wastePercent}%)</p>
-                            <p class="text-sm font-black text-white mt-0.5">${res.totalAreaWithWaste} m²</p>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 col-span-2 sm:col-span-1">
-                            <p class="text-[10px] text-emerald-300 font-bold uppercase">Perekat &amp; Nat</p>
-                            <p class="text-sm font-black text-emerald-300 mt-0.5">${res.adhesiveBags} Sak / ${res.groutBags} Bks</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tombol Aksi Cepat -->
-                <div class="flex flex-wrap gap-2.5">
-                    <button type="button" onclick="window.copyEstimatorSummary('tile')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-copy"></i> Salin Rincian
-                    </button>
-                    <button type="button" onclick="window.shareEstimatorToWA('tile')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
-                    </button>
-                    ${estimatorSource === 'pos' ? `
-                    <button type="button" onclick="window.addEstimatorToPOSCart('Keramik ${res.spec.name} (Estimasi)', ${res.totalBoxes}, 'dus')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-cart-plus"></i> Masukkan ${res.totalBoxes} Dus Keramik ke Transaksi Kasir
-                    </button>
-                    ` : ''}
-                </div>
-
-                <!-- Produk Terkait -->
-                ${related.length > 0 ? `
-                <div class="pt-2">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-tags text-indigo-500"></i> Rekomendasi Keramik &amp; Semen di Toko:
-                    </p>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${related.map(p => `
-                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                                ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-border-all text-slate-400"></i>`}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                                <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                            </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        `).join('')}
-                    </div>
-                </div>
-                ` : ''}
-            </div>
-        </div>`;
-    } else if (estimatorActiveTab === 'brick') {
-        const res = calculateBrickNeeds();
-        const related = findRelatedStoreProducts('brick');
-
-        contentHtml = `
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Kolom Kiri: Input Dimensi Tembok -->
-            <div class="lg:col-span-5 space-y-4">
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
-                    <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
-                        <i class="fa-solid fa-cubes-stacked text-amber-600"></i> Parameter Pasangan Dinding
-                    </span>
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Dinding (m)</label>
-                            <input type="number" step="0.5" min="1" max="200" value="${brickState.length}" oninput="window.updateEstimatorBrickField('length', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Tinggi Dinding (m)</label>
-                            <input type="number" step="0.25" min="1" max="20" value="${brickState.height}" oninput="window.updateEstimatorBrickField('height', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Jumlah Sisi Tembok</label>
-                            <input type="number" min="1" max="20" value="${brickState.sides}" oninput="window.updateEstimatorBrickField('sides', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Bukaan Pintu/Jendela (m²)</label>
-                            <input type="number" step="0.5" min="0" max="50" value="${brickState.openings}" oninput="window.updateEstimatorBrickField('openings', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Pilihan Material Dinding</label>
-                        <select onchange="window.updateEstimatorBrickField('brickType', this.value)"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                            <option value="hebel10" ${brickState.brickType === 'hebel10' ? 'selected' : ''}>Bata Ringan / Hebel Tebal 10 cm (60x20x10)</option>
-                            <option value="hebel75" ${brickState.brickType === 'hebel75' ? 'selected' : ''}>Bata Ringan / Hebel Tebal 7.5 cm (60x20x7.5)</option>
-                            <option value="redbrick" ${brickState.brickType === 'redbrick' ? 'selected' : ''}>Bata Merah Bakar Standar</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kolom Kanan: Hasil Kalkulasi Bata -->
-            <div class="lg:col-span-7 space-y-4">
-                <div class="p-5 rounded-3xl bg-gradient-to-br from-amber-950 to-slate-900 text-white shadow-xl border border-amber-900/60 relative overflow-hidden">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-amber-300">Hasil Estimasi Pasangan Dinding</span>
-                            <h4 class="text-2xl sm:text-3xl font-black mt-1 tracking-tight text-white">
-                                ${brickState.brickType.startsWith('hebel') ? `${res.brickPcs} Pcs (${res.brickCubic} m³)` : `${res.brickPcs} Buah Bata Merah`}
-                            </h4>
-                            <p class="text-xs text-amber-200 mt-1">Luas Dinding Bersih: <b>${res.netArea} m²</b></p>
-                        </div>
-                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-amber-300 border border-slate-700 shrink-0">
-                            <i class="fa-solid fa-trowel-bricks"></i>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">Semen Perekat / Mortar</p>
-                            <p class="text-sm font-black text-white mt-0.5">
-                                ${brickState.brickType.startsWith('hebel') ? `${res.mortarBags} Sak Mortar (40kg)` : `${res.cementBags} Sak Semen (50kg)`}
-                            </p>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-amber-300 font-bold uppercase">Pasir Pasang</p>
-                            <p class="text-sm font-black text-amber-300 mt-0.5">
-                                ${brickState.brickType.startsWith('hebel') ? 'Cukup Lem Mortar' : `${res.sandCubic} m³ Pasir`}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tombol Aksi Cepat -->
-                <div class="flex flex-wrap gap-2.5">
-                    <button type="button" onclick="window.copyEstimatorSummary('brick')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-copy"></i> Salin Rincian
-                    </button>
-                    <button type="button" onclick="window.shareEstimatorToWA('brick')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
-                    </button>
-                    ${estimatorSource === 'pos' ? `
-                    <button type="button" onclick="window.addEstimatorToPOSCart('${brickState.brickType.startsWith('hebel') ? 'Bata Ringan Hebel (Estimasi)' : 'Bata Merah (Estimasi)'}', ${res.brickPcs}, 'pcs')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-cart-plus"></i> Masukkan ${res.brickPcs} Pcs ke Transaksi Kasir
-                    </button>
-                    ` : ''}
-                </div>
-
-                <!-- Produk Terkait -->
-                ${related.length > 0 ? `
-                <div class="pt-2">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-tags text-amber-500"></i> Rekomendasi Bata &amp; Semen Mortar di Toko:
-                    </p>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${related.map(p => `
-                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                                ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-cubes text-slate-400"></i>`}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                                <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                            </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        `).join('')}
-                    </div>
-                </div>
-                ` : ''}
-            </div>
-        </div>`;
-    } else if (estimatorActiveTab === 'roof') {
-        const res = calculateRoofNeeds();
-        const related = findRelatedStoreProducts('roof');
-
-        contentHtml = `
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Kolom Kiri: Input Dimensi & Spesifikasi Atap (5 Kolom Desktop) -->
-            <div class="lg:col-span-5 space-y-4">
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
-                    <!-- Header Parameter & Mode Atap -->
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
-                        <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                            <i class="fa-solid fa-house-chimney text-sky-500"></i> Parameter Bidang Atap
-                        </span>
-                        <div class="inline-flex p-0.5 rounded-lg bg-slate-200/70 dark:bg-slate-700 text-[10px] font-bold">
-                            <button type="button" onclick="window.setEstimatorRoofMode('gable')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${roofState.mode === 'gable' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500'}">Pelana</button>
-                            <button type="button" onclick="window.setEstimatorRoofMode('monopitch')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${roofState.mode === 'monopitch' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500'}">Kanopi</button>
-                            <button type="button" onclick="window.setEstimatorRoofMode('area')" class="px-2 py-1 rounded-md transition-all cursor-pointer ${roofState.mode === 'area' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500'}">Luas M²</button>
-                        </div>
-                    </div>
-
-                    <!-- Pilihan Jenis Material Atap (Spandek, Seng, Asbes) -->
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Jenis Material Atap / Penutup</label>
-                        <div class="grid grid-cols-3 gap-1.5">
-                            <button type="button" onclick="window.setEstimatorRoofType('spandek')" class="py-2 px-1.5 rounded-xl text-[11px] font-extrabold transition-all border cursor-pointer text-center ${roofState.roofType === 'spandek' ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">
-                                <i class="fa-solid fa-layer-group block text-xs mb-1 ${roofState.roofType === 'spandek' ? 'text-sky-500' : 'text-slate-400'}"></i>
-                                Spandek
-                            </button>
-                            <button type="button" onclick="window.setEstimatorRoofType('seng')" class="py-2 px-1.5 rounded-xl text-[11px] font-extrabold transition-all border cursor-pointer text-center ${roofState.roofType === 'seng' ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">
-                                <i class="fa-solid fa-water block text-xs mb-1 ${roofState.roofType === 'seng' ? 'text-amber-500' : 'text-slate-400'}"></i>
-                                Seng
-                            </button>
-                            <button type="button" onclick="window.setEstimatorRoofType('asbes')" class="py-2 px-1.5 rounded-xl text-[11px] font-extrabold transition-all border cursor-pointer text-center ${roofState.roofType === 'asbes' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">
-                                <i class="fa-solid fa-bars-staggered block text-xs mb-1 ${roofState.roofType === 'asbes' ? 'text-emerald-500' : 'text-slate-400'}"></i>
-                                Asbes
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Pilihan Panjang Lembar -->
-                    <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Lembar Pilihan</label>
-                            <span class="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400">Lebar Efektif: ${res.spec.effectiveWidth * 100} cm</span>
-                        </div>
-                        <select onchange="window.updateEstimatorRoofField('sheetLength', this.value)"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                            ${res.spec.standardLengths.map(l => `
-                                <option value="${l.val}" ${parseFloat(roofState.sheetLength) === l.val ? 'selected' : ''}>${l.label}</option>
-                            `).join('')}
-                        </select>
-                    </div>
-
-                    ${roofState.mode !== 'area' ? `
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">${roofState.mode === 'gable' ? 'P. Bangunan (m)' : 'Lebar Kanopi (m)'}</label>
-                            <input type="number" step="0.5" min="1" max="100" value="${roofState.length}" oninput="window.updateEstimatorRoofField('length', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">${roofState.mode === 'gable' ? 'Bentang Lebar (m)' : 'P. Jatuh Air (m)'}</label>
-                            <input type="number" step="0.5" min="1" max="100" value="${roofState.width}" oninput="window.updateEstimatorRoofField('width', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Sudut Miring (°)</label>
-                            <input type="number" step="1" min="5" max="60" value="${roofState.slopeAngle}" oninput="window.updateEstimatorRoofField('slopeAngle', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase" title="Lebar cucuran atap keluar dinding">Overstek (m)</label>
-                            <input type="number" step="0.1" min="0" max="3" value="${roofState.overhang}" oninput="window.updateEstimatorRoofField('overhang', this.value)"
-                                class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        </div>
-                    </div>
-
-                    <!-- Preset Sudut Cepat -->
-                    <div class="pt-0.5">
-                        <label class="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Preset Sudut Kemiringan</label>
-                        <div class="grid grid-cols-4 gap-1.5">
-                            ${[15, 20, 25, 30].map(ang => `
-                                <button type="button" onclick="window.updateEstimatorRoofField('slopeAngle', ${ang})" class="py-1 rounded-lg text-[10px] font-black border transition-all cursor-pointer ${parseFloat(roofState.slopeAngle) === ang ? 'bg-sky-50 dark:bg-sky-950/60 border-sky-400 text-sky-700 dark:text-sky-300' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'}">${ang}°</button>
-                            `).join('')}
-                        </div>
-                    </div>
-                    ` : `
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase">Total Luas Bidang Atap (m²)</label>
-                        <input type="number" step="1" min="1" max="10000" value="${roofState.directArea}" oninput="window.updateEstimatorRoofField('directArea', this.value)"
-                            class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                    </div>
-                    `}
-
-                    <!-- Checkboxes Nok & Pengencang -->
-                    <div class="space-y-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                        ${roofState.mode === 'gable' ? `
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Sertakan Nok Bubungan Puncak?</span>
-                            <input type="checkbox" ${roofState.includeRidge ? 'checked' : ''} onchange="window.updateEstimatorRoofField('includeRidge', this.checked)"
-                                class="w-4 h-4 rounded text-sky-600 accent-sky-600 cursor-pointer">
-                        </div>
-                        ` : ''}
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Sertakan Baut / Paku?</span>
-                            <input type="checkbox" ${roofState.includeFasteners ? 'checked' : ''} onchange="window.updateEstimatorRoofField('includeFasteners', this.checked)"
-                                class="w-4 h-4 rounded text-sky-600 accent-sky-600 cursor-pointer">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kolom Kanan: Hasil Kalkulasi Atap (7 Kolom Desktop) -->
-            <div class="lg:col-span-7 space-y-4">
-                <!-- Bento Result Card -->
-                <div class="p-5 rounded-3xl bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white shadow-xl border border-sky-900/60 relative overflow-hidden">
-                    <div class="flex items-start justify-between gap-3 relative z-10">
-                        <div>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-sky-400">Hasil Estimasi ${esc(res.spec.shortName)}</span>
-                            <h4 class="text-2xl sm:text-3xl font-black mt-1 tracking-tight text-white flex items-baseline gap-2">
-                                <span>${res.totalSheets} Lembar</span>
-                                <span class="text-sm font-bold text-sky-300">(${res.sheetLength} Meter)</span>
-                            </h4>
-                            <p class="text-xs text-sky-200/90 mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                <span>Total Luas Atap: <b>${res.totalRoofArea} m²</b></span>
-                                ${res.slopeLength > 0 ? `<span>• Panjang Lereng: <b>${res.slopeLength} m</b></span>` : ''}
-                            </p>
-                        </div>
-                        <div class="w-12 h-12 rounded-2xl bg-slate-800/90 flex items-center justify-center text-xl text-sky-400 border border-sky-800/80 shrink-0">
-                            <i class="fa-solid fa-roof-chimney"></i>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-white/15 relative z-10 text-xs">
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase truncate" title="${esc(res.spec.fastenerName)}">${esc(res.spec.fastenerName.split(' ')[0])} / Pengencang</p>
-                            <p class="text-sm font-black text-white mt-0.5">
-                                ${res.fastenerPacks > 0 ? `${res.fastenerPacks} ${res.spec.fastenerPackaging}` : '-' }
-                            </p>
-                            <p class="text-[10px] text-sky-300 font-semibold mt-0.5">${res.fastenerPcs} Pcs</p>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">Nok Bubungan</p>
-                            <p class="text-sm font-black text-white mt-0.5">
-                                ${res.ridgePieces > 0 ? `${res.ridgePieces} Batang` : (res.mode === 'monopitch' ? 'Tidak Perlu' : '-')}
-                            </p>
-                            <p class="text-[10px] text-sky-300 font-semibold mt-0.5">${res.mode === 'gable' ? `Bentang ${res.ridgeLength}m` : 'Kanopi 1 Sisi'}</p>
-                        </div>
-                        <div class="col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-white/5 border border-white/10">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">Susunan Lembar</p>
-                            <p class="text-sm font-black text-sky-300 mt-0.5">
-                                ${res.sheetsAcross > 0 ? `${res.sheetsAcross} Kolom × ${res.sheetsPerSlope} Susun` : `${res.totalSheets} Lbr`}
-                            </p>
-                            <p class="text-[10px] text-slate-300 font-semibold mt-0.5">${res.mode === 'gable' ? '2 Sisi Miring' : res.mode === 'monopitch' ? '1 Sisi Miring' : 'Hitungan Luas'}</p>
-                        </div>
-                    </div>
-
-                    <!-- Panduan Teknis Lapangan -->
-                    <div class="mt-3 p-2.5 rounded-xl bg-sky-950/70 border border-sky-800/60 text-[10px] text-sky-200 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-info text-sky-400 shrink-0"></i>
-                        <span>Lebar efektif <b>${res.spec.effectiveWidth * 100} cm</b> (overlap samping 1 gelombang). Overlap sambungan ujung: 20 cm.</span>
-                    </div>
-                </div>
-
-                <!-- Tombol Aksi Cepat -->
-                <div class="flex flex-wrap gap-2.5">
-                    <button type="button" onclick="window.copyEstimatorSummary('roof')" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-copy"></i> Salin Rincian
-                    </button>
-                    <button type="button" onclick="window.shareEstimatorToWA('roof')" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> Konsultasi WA
-                    </button>
-                    ${estimatorSource === 'pos' ? `
-                    <button type="button" onclick="window.addEstimatorToPOSCart('${esc(res.spec.shortName)} (Estimasi)', ${res.totalSheets}, 'lembar')" class="w-full py-3 px-4 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-cart-plus"></i> Masukkan ${res.totalSheets} Lembar ke Transaksi Kasir
-                    </button>
-                    ` : ''}
-                </div>
-
-                <!-- Rekomendasi Produk Terkait Toko -->
-                ${related.length > 0 ? `
-                <div class="pt-2">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-tags text-sky-500"></i> Rekomendasi Atap, Seng &amp; Nok di Toko:
-                    </p>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${related.map(p => `
-                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                                ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-house-chimney text-slate-400"></i>`}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                                <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                            </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        `).join('')}
-                    </div>
-                </div>
-                ` : ''}
-            </div>
-        </div>`;
-    }
-
-    modalBody.innerHTML = contentHtml;
     updateEstimatorTabHeaderStyles();
+};
+
+/**
+ * Update DOM Parsial untuk Hasil Estimasi (Zero-Flicker)
+ * Memperbarui hasil hitungan seketika tanpa menghancurkan fokus kolom input yang sedang diketik
+ */
+export const updateEstimatorResultOnly = (tab = estimatorActiveTab) => {
+    if (typeof document === 'undefined') return;
+    const resContainer = el('estimator-results-container');
+    if (!resContainer) {
+        renderMaterialEstimatorModalContent();
+        return;
+    }
+    resContainer.innerHTML = renderEstimatorResultHtml(tab);
 };
 
 const updateEstimatorTabHeaderStyles = () => {
@@ -1072,25 +1102,83 @@ export const switchEstimatorTab = (tab) => {
     renderMaterialEstimatorModalContent();
 };
 
-// ─── FIELD UPDATERS ─────────────────────────────────────────
+// ─── PRESET SELECTORS (ZERO-FLICKER INTERACTION) ─────────────
+export const setEstimatorPaintCoats = (coats) => {
+    paintState.coats = coats;
+    if (typeof document !== 'undefined') {
+        document.querySelectorAll('.paint-coat-btn').forEach(btn => {
+        const c = parseInt(btn.getAttribute('data-coats'), 10);
+        if (c === coats) {
+            btn.className = 'paint-coat-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] shadow-2xs';
+        } else {
+            btn.className = 'paint-coat-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+        }
+        });
+    }
+    updateEstimatorResultOnly('paint');
+};
+
+export const setEstimatorTileWaste = (waste) => {
+    tileState.wastePercent = waste;
+    if (typeof document !== 'undefined') {
+        document.querySelectorAll('.tile-waste-btn').forEach(btn => {
+        const w = parseInt(btn.getAttribute('data-waste'), 10);
+        if (w === waste) {
+            btn.className = 'tile-waste-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs';
+            btn.style.cssText = 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);';
+        } else {
+            btn.className = 'tile-waste-btn py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+            btn.style.cssText = '';
+        }
+        });
+    }
+    updateEstimatorResultOnly('tile');
+};
+
+export const setEstimatorRoofAngle = (angle) => {
+    roofState.slopeAngle = angle;
+    if (typeof document !== 'undefined') {
+        const inp = el('roof-input-slopeAngle');
+        if (inp) inp.value = angle;
+        document.querySelectorAll('.roof-angle-btn').forEach(btn => {
+        const a = parseFloat(btn.getAttribute('data-angle'));
+        if (a === angle) {
+            btn.className = 'roof-angle-btn py-1 rounded-lg text-[10px] font-black border transition-all cursor-pointer bg-sky-50 dark:bg-sky-950/60 border-sky-400 text-sky-700 dark:text-sky-300 shadow-2xs';
+        } else {
+            btn.className = 'roof-angle-btn py-1 rounded-lg text-[10px] font-black border transition-all cursor-pointer bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500';
+        }
+        });
+    }
+    updateEstimatorResultOnly('roof');
+};
+
+// ─── FIELD UPDATERS (ZERO-FLICKER PARTIAL UPDATES) ───────────
 export const setEstimatorPaintMode = (mode) => {
     paintState.mode = mode;
     renderMaterialEstimatorModalContent();
 };
 
 export const updateEstimatorPaintField = (field, val) => {
+    if (field === 'coats') {
+        setEstimatorPaintCoats(parseInt(val, 10) || 2);
+        return;
+    }
     paintState[field] = val;
-    renderMaterialEstimatorModalContent();
+    updateEstimatorResultOnly('paint');
 };
 
 export const updateEstimatorTileField = (field, val) => {
+    if (field === 'wastePercent') {
+        setEstimatorTileWaste(parseInt(val, 10) || 10);
+        return;
+    }
     tileState[field] = val;
-    renderMaterialEstimatorModalContent();
+    updateEstimatorResultOnly('tile');
 };
 
 export const updateEstimatorBrickField = (field, val) => {
     brickState[field] = val;
-    renderMaterialEstimatorModalContent();
+    updateEstimatorResultOnly('brick');
 };
 
 export const setEstimatorRoofMode = (mode) => {
@@ -1110,8 +1198,25 @@ export const setEstimatorRoofType = (type) => {
 };
 
 export const updateEstimatorRoofField = (field, val) => {
+    if (field === 'slopeAngle') {
+        roofState.slopeAngle = val;
+        // Sinkronkan styling preset button jika nilai cocok
+        const parsedAngle = parseFloat(val);
+        if (typeof document !== 'undefined') {
+            document.querySelectorAll('.roof-angle-btn').forEach(btn => {
+            const a = parseFloat(btn.getAttribute('data-angle'));
+            if (a === parsedAngle) {
+                btn.className = 'roof-angle-btn py-1 rounded-lg text-[10px] font-black border transition-all cursor-pointer bg-sky-50 dark:bg-sky-950/60 border-sky-400 text-sky-700 dark:text-sky-300 shadow-2xs';
+            } else {
+                btn.className = 'roof-angle-btn py-1 rounded-lg text-[10px] font-black border transition-all cursor-pointer bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500';
+            }
+            });
+        }
+        updateEstimatorResultOnly('roof');
+        return;
+    }
     roofState[field] = val;
-    renderMaterialEstimatorModalContent();
+    updateEstimatorResultOnly('roof');
 };
 
 // ─── COPY & WHATSAPP ACTION HANDLERS ─────────────────────────
@@ -1321,5 +1426,9 @@ if (typeof window !== 'undefined') {
     window.shareEstimatorToWA             = shareEstimatorToWA;
     window.addEstimatorToPOSCart          = addEstimatorToPOSCart;
     window.addStoreProductFromEstimator   = addStoreProductFromEstimator;
+    window.updateEstimatorResultOnly      = updateEstimatorResultOnly;
+    window.setEstimatorPaintCoats         = setEstimatorPaintCoats;
+    window.setEstimatorTileWaste          = setEstimatorTileWaste;
+    window.setEstimatorRoofAngle          = setEstimatorRoofAngle;
 }
 

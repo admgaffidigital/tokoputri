@@ -1,5 +1,5 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/expenses-Dw-TujGT.js","assets/module-print-ZZAQkdEQ.js","assets/vendor-firebase-core-D2OF5R23.js","assets/vendor-firebase-db-BIUZcnOd.js","assets/module-pos-Dn18FYRz.js","assets/module-member-RI4QgE6w.js","assets/module-faq-CpiysInO.js","assets/module-admin-X4BdD0OJ.js","assets/vendor-sortable-DzmX_rHT.js"])))=>i.map(i=>d[i]);
-import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,i as $,g as q}from"./module-print-ZZAQkdEQ.js";import{E as M,f as J,o as F,g as W,c as Q,M as E,s as it}from"./module-admin-X4BdD0OJ.js";import{computePurchaseMetrics as z}from"./purchases-CzzP0Myl.js";import{i as ct}from"./module-pos-Dn18FYRz.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./vendor-sortable-DzmX_rHT.js";import"./module-faq-CpiysInO.js";import"./module-member-RI4QgE6w.js";let A="executive",y=new Date().getFullYear(),h=0,Ot="month",U="all",K="all",Kt="all",D="",S=[],O=[],Y="";const X=e=>{if(!e)return null;let s=null;if(e.timestamp?.toDate)s=e.timestamp.toDate();else if(e.createdAt?.toDate)s=e.createdAt.toDate();else if(e.timestamp&&typeof e.timestamp=="object"){const r=e.timestamp.seconds??e.timestamp._seconds;typeof r=="number"&&!isNaN(r)&&r>0&&(s=new Date(r*1e3))}else if(e.createdAt&&typeof e.createdAt=="object"){const r=e.createdAt.seconds??e.createdAt._seconds;typeof r=="number"&&!isNaN(r)&&r>0&&(s=new Date(r*1e3))}else e.dateMs?s=new Date(e.dateMs):e.dateString?s=new Date(e.dateString):typeof e.timestamp=="number"?s=new Date(e.timestamp>1e11?e.timestamp:e.timestamp*1e3):typeof e.timestamp=="string"?s=new Date(e.timestamp):typeof e.createdAt=="string"&&(s=new Date(e.createdAt));if(s&&!isNaN(s.getTime()))return s;const d=e.orderId||e.id||"";if(typeof d=="string"&&d.startsWith("ORD-")){const r=d.split("-");if(r.length>=2&&r[1].length>=6){const o=parseInt(r[1],36);if(!isNaN(o)&&o>15e11&&o<25e11)return new Date(o)}}return null},V=async(e=!1)=>{const s=`${y}-${h}`;if(!e&&Y===s&&S.length>0)return{orders:S,piutang:O};S=[],O=[];try{(await _.collection("freshmart_orders").orderBy("timestamp","desc").limit(2e3).get().catch(async()=>await _.collection("freshmart_orders").limit(2e3).get())).forEach(c=>{const x=c.data();if(x.status==="Dibatalkan"||x.status==="Test")return;const l=X(x);if(!l)return;const i=l.getFullYear(),n=l.getMonth()+1;i===y&&(h!==0&&n!==h||S.push(x))}),(await _.collection("freshmart_orders").where("payment.method","==","tempo").where("payment.paymentStatus","==","hutang").get()).forEach(c=>{O.push(c.data())}),Y=s}catch(d){console.error("[ReportsHub] Gagal memuat data transaksi:",d),L("Gagal memuat data transaksi laporan: "+d.message)}return{orders:S,piutang:O}},Z=()=>{let e=0,s=0,d=0,r=0,o=S.length;return S.forEach(c=>{const x=c.payment?.dppAmount!==void 0&&c.payment?.dppAmount!==null?parseFloat(c.payment.dppAmount):parseFloat(c.payment?.subtotal)||0;e+=x,s+=parseFloat(c.payment?.ppnAmount)||0,r+=parseFloat(c.payment?.productDiscount)||0,(c.items||[]).forEach(l=>{const i=l.hpp!==void 0&&l.hpp!==null?parseFloat(l.hpp):W(l)||0;d+=(parseFloat(i)||0)*(parseFloat(l.qty)||1)})}),{omset:e,ppn:s,hpp:d,disc:r,orderCount:o}},tt=()=>{const e=k.taxSettings?.expenseBreakdown||{},s=k.taxSettings?.monthlyExpenses||{},d=Array.isArray(k.expenses)?k.expenses:[],r=h===0?Array.from({length:12},(c,x)=>x+1):[h],o={total:0,transactionCount:0,categories:{},periodExpenses:[]};return M.forEach(c=>{o.categories[c.key]=0}),d.forEach(c=>{if(!c||!c.date)return;const[x,l]=c.date.split("-"),i=parseInt(x,10),n=parseInt(l,10);if(i===y&&(h===0||n===h)){const b=parseFloat(c.amount)||0,m=c.category||"lainnya";o.categories[m]!==void 0?o.categories[m]+=b:o.categories.lainnya+=b,o.total+=b,o.transactionCount++,o.periodExpenses.push(c)}}),o.periodExpenses.sort((c,x)=>new Date(x.date).getTime()-new Date(c.date).getTime()),r.forEach(c=>{const x=`${y}-${c}`;if(!d.some(i=>{if(!i||!i.date)return!1;const[n,b]=i.date.split("-");return parseInt(n,10)===y&&parseInt(b,10)===c})){const i=e[x];if(i)M.forEach(n=>{o.categories[n.key]+=parseFloat(i[n.key])||0}),o.total+=parseFloat(s[x])||0;else{const n=parseFloat(s[x])||0;o.total+=n,o.categories.lainnya+=n}}}),o},et=async(e=null)=>{e&&(A=e),H("admin-content")&&(R("admin-content",`
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/expenses-C4hjzaSY.js","assets/module-print-D7ZGPnsx.js","assets/vendor-firebase-core-D2OF5R23.js","assets/vendor-firebase-db-BIUZcnOd.js","assets/module-pos-YAlbR-NC.js","assets/module-member-CsDpojBF.js","assets/module-faq-DvQovEFv.js","assets/module-admin-CfNt7FYa.js","assets/vendor-sortable-DzmX_rHT.js"])))=>i.map(i=>d[i]);
+import{e as F,a1 as pt,f as l,l as I,n as L,k as D,b as j,q as V,a as g,_ as xt,i as P,g as G}from"./module-print-D7ZGPnsx.js";import{E as R,f as _,o as K,g as J,c as Y,M as E,s as bt}from"./module-admin-CfNt7FYa.js";import{computePurchaseMetrics as W}from"./purchases-DC9YHaGX.js";import{i as ut}from"./module-pos-YAlbR-NC.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./vendor-sortable-DzmX_rHT.js";import"./module-faq-DvQovEFv.js";import"./module-member-CsDpojBF.js";let T="executive",k=new Date().getFullYear(),v=0,Ct="month",C="all",O="all",Ft="all",M="",S=[],N=[],q="";const Q=t=>{if(!t)return null;let a=null;if(t.timestamp?.toDate)a=t.timestamp.toDate();else if(t.createdAt?.toDate)a=t.createdAt.toDate();else if(t.timestamp&&typeof t.timestamp=="object"){const e=t.timestamp.seconds??t.timestamp._seconds;typeof e=="number"&&!isNaN(e)&&e>0&&(a=new Date(e*1e3))}else if(t.createdAt&&typeof t.createdAt=="object"){const e=t.createdAt.seconds??t.createdAt._seconds;typeof e=="number"&&!isNaN(e)&&e>0&&(a=new Date(e*1e3))}else t.dateMs?a=new Date(t.dateMs):t.dateString?a=new Date(t.dateString):typeof t.timestamp=="number"?a=new Date(t.timestamp>1e11?t.timestamp:t.timestamp*1e3):typeof t.timestamp=="string"?a=new Date(t.timestamp):typeof t.createdAt=="string"&&(a=new Date(t.createdAt));if(a&&!isNaN(a.getTime()))return a;const s=t.orderId||t.id||"";if(typeof s=="string"&&s.startsWith("ORD-")){const e=s.split("-");if(e.length>=2&&e[1].length>=6){const o=parseInt(e[1],36);if(!isNaN(o)&&o>15e11&&o<25e11)return new Date(o)}}return null},U=async(t=!1)=>{const a=`${k}-${v}`;if(!t&&q===a&&S.length>0)return{orders:S,piutang:N};S=[],N=[];try{(await V.collection("freshmart_orders").orderBy("timestamp","desc").limit(2e3).get().catch(async()=>await V.collection("freshmart_orders").limit(2e3).get())).forEach(d=>{const b=d.data();if(b.status==="Dibatalkan"||b.status==="Test")return;const r=Q(b);if(!r)return;const x=r.getFullYear(),c=r.getMonth()+1;x===k&&(v!==0&&c!==v||S.push(b))}),(await V.collection("freshmart_orders").where("payment.method","==","tempo").where("payment.paymentStatus","==","hutang").get()).forEach(d=>{N.push(d.data())}),q=a}catch(s){console.error("[ReportsHub] Gagal memuat data transaksi:",s),D("Gagal memuat data transaksi laporan: "+s.message)}return{orders:S,piutang:N}},Z=()=>{let t=0,a=0,s=0,e=0,o=S.length;return S.forEach(d=>{const b=d.payment?.dppAmount!==void 0&&d.payment?.dppAmount!==null?parseFloat(d.payment.dppAmount):parseFloat(d.payment?.subtotal)||0;t+=b,a+=parseFloat(d.payment?.ppnAmount)||0,e+=parseFloat(d.payment?.productDiscount)||0,(d.items||[]).forEach(r=>{const x=r.hpp!==void 0&&r.hpp!==null?parseFloat(r.hpp):J(r)||0;s+=(parseFloat(x)||0)*(parseFloat(r.qty)||1)})}),{omset:t,ppn:a,hpp:s,disc:e,orderCount:o}},z=()=>{const t=g.taxSettings?.expenseBreakdown||{},a=g.taxSettings?.monthlyExpenses||{},s=Array.isArray(g.expenses)?g.expenses:[],e=v===0?Array.from({length:12},(d,b)=>b+1):[v],o={total:0,transactionCount:0,categories:{},periodExpenses:[]};return R.forEach(d=>{o.categories[d.key]=0}),s.forEach(d=>{if(!d||!d.date)return;const[b,r]=d.date.split("-"),x=parseInt(b,10),c=parseInt(r,10);if(x===k&&(v===0||c===v)){const i=parseFloat(d.amount)||0,u=d.category||"lainnya";o.categories[u]!==void 0?o.categories[u]+=i:o.categories.lainnya+=i,o.total+=i,o.transactionCount++,o.periodExpenses.push(d)}}),o.periodExpenses.sort((d,b)=>new Date(b.date).getTime()-new Date(d.date).getTime()),e.forEach(d=>{const b=`${k}-${d}`;if(!s.some(x=>{if(!x||!x.date)return!1;const[c,i]=x.date.split("-");return parseInt(c,10)===k&&parseInt(i,10)===d})){const x=t[b];if(x)R.forEach(c=>{o.categories[c.key]+=parseFloat(x[c.key])||0}),o.total+=parseFloat(a[b])||0;else{const c=parseFloat(a[b])||0;o.total+=c,o.categories.lainnya+=c}}}),o},X=async(t=null)=>{t&&(T=t),F("admin-content")&&(j("admin-content",`
         <div class="py-20 text-center flex flex-col items-center justify-center">
             <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-3 border border-slate-200 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
                 <i class="fa-solid fa-spinner fa-spin"></i>
@@ -7,14 +7,14 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Menyinkronkan Pusat Laporan Terpadu...</p>
             <p class="text-[10px] text-slate-400 mt-1">Mengolah data penjualan, aset stok, utang piutang, dan perpajakan</p>
         </div>
-    `),await Promise.all([J(y),V()]),B())},B=()=>{const e=Array.from({length:6},(r,o)=>new Date().getFullYear()-4+o);h===0?`${y}`:`${E[h-1]}${y}`;const d=[{k:"executive",l:"Ringkasan & Laba Rugi",i:"fa-chart-pie",sub:"P&L Statement"},{k:"sales",l:"Penjualan & Kasir",i:"fa-chart-line",sub:"Omset & Kas"},{k:"stock",l:"Stok & Aset Gudang",i:"fa-boxes-stacked",sub:"Valuasi Inventori"},{k:"debts",l:"Utang & Piutang",i:"fa-scale-balanced",sub:"AP & AR Hub"},{k:"expenses",l:"Biaya Operasional",i:"fa-money-bill-transfer",sub:"Beban Toko"},{k:"tax",l:"Perpajakan RI 2026",i:"fa-file-invoice-dollar",sub:"PPN & PPh Final"},{k:"balance",l:"Neraca Keuangan",i:"fa-scale-unbalanced",sub:"Aset & Modal"}].map(r=>{const o=A===r.k;return`
-            <button type="button" onclick="switchReportTab('${r.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start ${o?"bg-[var(--color-primary)] text-white shadow-2xs font-black":"bg-slate-50 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700 hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.06)]"}">
+    `),await Promise.all([_(k),U()]),B())},B=()=>{const t=Array.from({length:6},(e,o)=>new Date().getFullYear()-4+o);v===0?`${k}`:`${E[v-1]}${k}`;const s=[{k:"executive",l:"Ringkasan & Laba Rugi",i:"fa-chart-pie",sub:"P&L Statement"},{k:"sales",l:"Penjualan & Kasir",i:"fa-chart-line",sub:"Omset & Kas"},{k:"stock",l:"Stok & Aset Gudang",i:"fa-boxes-stacked",sub:"Valuasi Inventori"},{k:"debts",l:"Utang & Piutang",i:"fa-scale-balanced",sub:"AP & AR Hub"},{k:"expenses",l:"Biaya Operasional",i:"fa-money-bill-transfer",sub:"Beban Toko"},{k:"tax",l:"Perpajakan RI 2026",i:"fa-file-invoice-dollar",sub:"PPN & PPh Final"},{k:"balance",l:"Neraca Keuangan",i:"fa-scale-unbalanced",sub:"Aset & Modal"}].map(e=>{const o=T===e.k;return`
+            <button type="button" onclick="switchReportTab('${e.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start ${o?"bg-[var(--color-primary)] text-white shadow-2xs font-black":"bg-slate-50 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700 hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.06)]"}">
                 <div class="w-5 h-5 rounded-lg flex items-center justify-center shrink-0 ${o?"bg-white/20 text-white":"bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]"} transition-colors">
-                    <i class="fa-solid ${r.i} text-[10px]"></i>
+                    <i class="fa-solid ${e.i} text-[10px]"></i>
                 </div>
-                <span>${r.l}</span>
+                <span>${e.l}</span>
             </button>
-        `}).join("");R("admin-content",`
+        `}).join("");j("admin-content",`
         <div class="space-y-4 sm:space-y-6">
             <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU (NATIVE APP BAR) -->
             <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-3.5 sm:p-5 shadow-2xs space-y-3.5">
@@ -40,8 +40,8 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 min-h-[36px]">
                             <i class="fa-solid fa-calendar-day text-[11px] text-slate-400"></i>
                             <select onchange="changeReportMonth(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-2 pl-0.5 focus:outline-hidden cursor-pointer">
-                                <option value="0" ${h===0?"selected":""}>Setahun Penuh</option>
-                                ${E.map((r,o)=>`<option value="${o+1}" ${h===o+1?"selected":""}>${r}</option>`).join("")}
+                                <option value="0" ${v===0?"selected":""}>Setahun Penuh</option>
+                                ${E.map((e,o)=>`<option value="${o+1}" ${v===o+1?"selected":""}>${e}</option>`).join("")}
                             </select>
                         </div>
 
@@ -49,7 +49,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 min-h-[36px]">
                             <i class="fa-solid fa-calendar text-[11px] text-slate-400"></i>
                             <select onchange="changeReportYear(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-2 pl-0.5 focus:outline-hidden cursor-pointer">
-                                ${e.map(r=>`<option value="${r}" ${r===y?"selected":""}>${r}</option>`).join("")}
+                                ${t.map(e=>`<option value="${e}" ${e===k?"selected":""}>${e}</option>`).join("")}
                             </select>
                         </div>
 
@@ -69,16 +69,16 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
 
                 <!-- Tab Segmented Pill Navigation -->
                 <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar pb-1 snap-x snap-mandatory">
-                    ${d}
+                    ${s}
                 </div>
             </div>
 
             <!-- 2. WADAH KONTEN TAB SPESIFIK -->
             <div id="report-hub-content" class="fade-in"></div>
         </div>
-    `),pt()},at=e=>{A=e,B()},st=async e=>{y=parseInt(e,10),I("Memuat data tahun "+y+"..."),await Promise.all([J(y),V(!0)]),N(),B()},rt=async e=>{h=parseInt(e,10),I("Memuat data bulan..."),await V(!0),N(),B()},lt=async()=>{I("Menyinkronkan data terbaru..."),await Promise.all([J(y),V(!0)]),N(),L("Data laporan berhasil disegarkan!"),B()},pt=()=>{H("report-hub-content")&&(A==="executive"?xt():A==="sales"?bt():A==="stock"?C():A==="debts"?kt():A==="expenses"?yt():A==="tax"?$t():A==="balance"&&Tt())},xt=()=>{const e=Z(),s=h===0?`Tahun ${y}`:`${E[h-1]} ${y}`,d=e.omset,r=e.disc,o=d-r,c=e.hpp,x=o-c,l=tt().total,i=x-l,n=k.taxSettings?.taxScheme||"umkm_final";let b=0,m="PPh Final UMKM 0,5% (PP 55/2022)";if(n==="umkm_final")b=Math.round(d*.005);else if(n==="badan_normal")b=i>0?Math.round(i*.22):0,m="PPh Badan Normal 22% (UU HPP)";else{const t=parseFloat(k.taxSettings?.customTaxRate)||.5;b=i>0?Math.round(i*(t/100)):0,m=`PPh Custom (${t}%)`}const P=i-b,T=d>0?(x/d*100).toFixed(1):"0.0",p=d>0?(P/d*100).toFixed(1):"0.0",w=d>0?(l/d*100).toFixed(1):"0.0";R("report-hub-content",`
+    `),mt()},tt=t=>{T=t,B()},et=async t=>{k=parseInt(t,10),I("Memuat data tahun "+k+"..."),await Promise.all([_(k),U(!0)]),L(),B()},at=async t=>{v=parseInt(t,10),I("Memuat data bulan..."),await U(!0),L(),B()},st=async()=>{I("Menyinkronkan data terbaru..."),await Promise.all([_(k),U(!0)]),L(),D("Data laporan berhasil disegarkan!"),B()},mt=()=>{F("report-hub-content")&&(T==="executive"?ft():T==="sales"?gt():T==="stock"?H():T==="debts"?ht():T==="expenses"?Pt():T==="tax"?St():T==="balance"&&Rt())},ft=()=>{const t=Z(),a=v===0?`Tahun ${k}`:`${E[v-1]} ${k}`,s=t.omset,e=t.disc,o=s-e,d=t.hpp,b=o-d,r=z().total,x=b-r,c=g.taxSettings?.taxScheme||"umkm_final";let i=0,u="PPh Final UMKM 0,5% (PP 55/2022)";if(c==="umkm_final")i=Math.round(s*.005);else if(c==="badan_normal")i=x>0?Math.round(x*.22):0,u="PPh Badan Normal 22% (UU HPP)";else{const p=parseFloat(g.taxSettings?.customTaxRate)||.5;i=x>0?Math.round(x*(p/100)):0,u=`PPh Custom (${p}%)`}const m=x-i,y=s>0?(b/s*100).toFixed(1):"0.0",n=s>0?(m/s*100).toFixed(1):"0.0",f=s>0?(r/s*100).toFixed(1):"0.0";j("report-hub-content",`
         <div class="space-y-4 sm:space-y-6">
-            ${e.orderCount===0?`
+            ${t.orderCount===0?`
             <!-- BANNER STATUS INFORMASI TRANSAKSI KOSONG (THEME HARMONY) -->
             <div class="p-3.5 sm:p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.25);">
                 <div class="flex items-center gap-3">
@@ -86,7 +86,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-bold text-slate-800 dark:text-white">Belum ada transaksi penjualan selesai pada ${s}</p>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white">Belum ada transaksi penjualan selesai pada ${a}</p>
                         <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Nilai Rp 0 adalah status riil database saat ini. Begitu transaksi kasir POS atau pesanan web tercatat, omzet dan laba akan terakumulasi otomatis.</p>
                     </div>
                 </div>
@@ -109,11 +109,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${a(d)}</p>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${l(s)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
-                        <span class="text-slate-500 font-medium">${e.orderCount} transaksi</span>
-                        <span class="text-rose-500 font-bold">Disc: ${a(r)}</span>
+                        <span class="text-slate-500 font-medium">${t.orderCount} transaksi</span>
+                        <span class="text-rose-500 font-bold">Disc: ${l(e)}</span>
                     </div>
                 </div>
 
@@ -124,11 +124,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Laba Kotor</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)"><i class="fa-solid fa-sack-dollar"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${a(x)}</p>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${l(b)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
-                        <span class="text-slate-500 font-medium">HPP: ${a(c)}</span>
-                        <span class="font-bold" style="color: var(--color-primary)">Margin ${T}%</span>
+                        <span class="text-slate-500 font-medium">HPP: ${l(d)}</span>
+                        <span class="font-bold" style="color: var(--color-primary)">Margin ${y}%</span>
                     </div>
                 </div>
 
@@ -139,11 +139,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Beban Usaha</span>
                             <span class="w-7 h-7 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 flex items-center justify-center text-[10px]"><i class="fa-solid fa-money-bill-transfer"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-amber-600 dark:text-amber-400 truncate">${a(l)}</p>
+                        <p class="text-base sm:text-xl font-black text-amber-600 dark:text-amber-400 truncate">${l(r)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 font-medium">Beban toko</span>
-                        <span class="text-slate-500 font-bold">${w}% omset</span>
+                        <span class="text-slate-500 font-bold">${f}% omset</span>
                     </div>
                 </div>
 
@@ -154,11 +154,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">Laba Bersih Riil</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.18); color: var(--color-primary)"><i class="fa-solid fa-crown"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${a(P)}</p>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${l(m)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 flex items-center justify-between text-[10px]" style="border-top: 1px solid rgba(var(--color-primary-rgb), 0.2);">
                         <span class="font-medium" style="color: var(--color-primary); opacity: 0.85;">Net Profit</span>
-                        <span class="font-black" style="color: var(--color-primary)">${p}%</span>
+                        <span class="font-black" style="color: var(--color-primary)">${n}%</span>
                     </div>
                 </div>
             </div>
@@ -171,7 +171,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <i class="fa-solid fa-file-invoice"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Laporan Laba Rugi Komprehensif — ${s}</h3>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Laporan Laba Rugi Komprehensif — ${a}</h3>
                             <p class="text-[10px] text-slate-400 mt-0.5">Penetapan pendapatan, beban pokok penjualan, beban operasional &amp; laba bersih</p>
                         </div>
                     </div>
@@ -185,16 +185,16 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     <div class="space-y-2">
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">1. Pendapatan Penjualan</p>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Penjualan Bruto (${e.orderCount} pesanan)</span>
-                            <span class="font-bold text-slate-800 dark:text-white">${a(d)}</span>
+                            <span class="text-slate-700 dark:text-slate-300 font-medium">Penjualan Bruto (${t.orderCount} pesanan)</span>
+                            <span class="font-bold text-slate-800 dark:text-white">${l(s)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Potongan Diskon Produk</span>
-                            <span class="font-bold text-rose-500">− ${a(r)}</span>
+                            <span class="font-bold text-rose-500">− ${l(e)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-xs border border-slate-200/80 dark:border-slate-700">
                             <span class="text-slate-800 dark:text-white">Penjualan Bersih (DPP)</span>
-                            <span class="text-slate-900 dark:text-white font-black">${a(o)}</span>
+                            <span class="text-slate-900 dark:text-white font-black">${l(o)}</span>
                         </div>
                     </div>
 
@@ -203,11 +203,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">2. Beban Pokok Penjualan (HPP)</p>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Total Modal Barang Terjual (HPP)</span>
-                            <span class="font-bold text-rose-500">− ${a(c)}</span>
+                            <span class="font-bold text-rose-500">− ${l(d)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl font-bold text-xs border" style="background: rgba(var(--color-primary-rgb), 0.06); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary)">
                             <span>LABA KOTOR (GROSS PROFIT)</span>
-                            <span class="text-sm font-black">${a(x)}</span>
+                            <span class="text-sm font-black">${l(b)}</span>
                         </div>
                     </div>
 
@@ -221,11 +221,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Beban Rutin Operasional Toko</span>
-                            <span class="font-bold text-amber-600 dark:text-amber-400">− ${a(l)}</span>
+                            <span class="font-bold text-amber-600 dark:text-amber-400">− ${l(r)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-xs border border-slate-200/80 dark:border-slate-700">
                             <span class="text-slate-800 dark:text-white">Laba Operasional Sebelum Pajak (EBIT)</span>
-                            <span class="text-slate-900 dark:text-white font-black">${a(i)}</span>
+                            <span class="text-slate-900 dark:text-white font-black">${l(x)}</span>
                         </div>
                     </div>
 
@@ -233,49 +233,49 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     <div class="space-y-2 pt-2">
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">4. Kepatuhan Pajak &amp; Laba Bersih Akhir</p>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">${m}</span>
-                            <span class="font-bold text-slate-700 dark:text-slate-300">− ${a(b)}</span>
+                            <span class="text-slate-700 dark:text-slate-300 font-medium">${u}</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300">− ${l(i)}</span>
                         </div>
                         <div class="flex items-center justify-between py-3 px-4 rounded-xl text-white font-bold text-sm sm:text-base shadow-2xs" style="background: var(--color-primary);">
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-crown text-base"></i>
                                 <span>LABA BERSIH TAHUN / BULAN BERJALAN</span>
                             </div>
-                            <span class="text-base sm:text-lg font-black">${a(P)}</span>
+                            <span class="text-base sm:text-lg font-black">${l(m)}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    `)},bt=()=>{const e=S||[],s=e.length;let d=0,r=0;const o={cash:{count:0,total:0,label:"Tunai Kasir",icon:"fa-money-bill-wave",color:"emerald"},qris:{count:0,total:0,label:"QRIS Dinamis / Statis",icon:"fa-qrcode",color:"blue"},transfer:{count:0,total:0,label:"Transfer Bank (BCA/Mandiri/BRI)",icon:"fa-building-columns",color:"purple"},tempo:{count:0,total:0,label:"Tempo / Putri PayLater",icon:"fa-clock-rotate-left",color:"amber"},other:{count:0,total:0,label:"Lainnya",icon:"fa-credit-card",color:"slate"}};let c=0,x=0;const l={};e.forEach(p=>{const w=parseFloat(p.payment?.subtotal)||0;parseFloat(p.payment?.productDiscount),d+=w;const t=(p.payment?.method||"").toLowerCase();let f="other";t.includes("cash")||t.includes("tunai")?f="cash":t.includes("qris")?f="qris":t.includes("transfer")||t.includes("bca")||t.includes("mandiri")||t.includes("bri")?f="transfer":(t.includes("tempo")||t.includes("paylater"))&&(f="tempo"),o[f].count++,o[f].total+=w,p.cashierShiftId||p.cashierId||p.notes&&p.notes.includes("POS")?c+=w:x+=w,(p.items||[]).forEach(u=>{const g=parseFloat(u.qty)||1;r+=g;const v=u.id||u.name;l[v]||(l[v]={id:v,name:u.name||"Produk",qty:0,omset:0,hpp:0,image:u.image||""});const j=u.hpp!==void 0&&u.hpp!==null?parseFloat(u.hpp):W(u);l[v].qty+=g,l[v].omset+=(parseFloat(u.price)||0)*g,l[v].hpp+=j*g})});const i=s>0?Math.round(d/s):0,n=s>0?(r/s).toFixed(1):"0",b=Object.values(l).sort((p,w)=>w.qty-p.qty).slice(0,10),m=b.length?Math.max(...b.map(p=>p.omset||1)):1,P=b.length?b.map((p,w)=>{const t=p.omset-p.hpp,f=p.omset>0?(t/p.omset*100).toFixed(0):"0",u=Math.min(100,Math.max(8,Math.round(p.omset/m*100)));let g="";return w===0?g='<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-950 shadow-2xs shrink-0"><i class="fa-solid fa-trophy text-[11px]"></i></span>':w===1?g='<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-2xs shrink-0">#2</span>':w===2?g='<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-amber-700/20 text-amber-800 dark:text-amber-300 border border-amber-600/30 shrink-0">#3</span>':g=`<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">#${w+1}</span>`,`
+    `)},gt=()=>{const t=S||[],a=t.length;let s=0,e=0;const o={cash:{count:0,total:0,label:"Tunai Kasir",icon:"fa-money-bill-wave",color:"emerald"},qris:{count:0,total:0,label:"QRIS Dinamis / Statis",icon:"fa-qrcode",color:"blue"},transfer:{count:0,total:0,label:"Transfer Bank (BCA/Mandiri/BRI)",icon:"fa-building-columns",color:"purple"},tempo:{count:0,total:0,label:"Tempo / Putri PayLater",icon:"fa-clock-rotate-left",color:"amber"},other:{count:0,total:0,label:"Lainnya",icon:"fa-credit-card",color:"slate"}};let d=0,b=0;const r={};t.forEach(n=>{const f=parseFloat(n.payment?.subtotal)||0;parseFloat(n.payment?.productDiscount),s+=f;const p=(n.payment?.method||"").toLowerCase();let h="other";p.includes("cash")||p.includes("tunai")?h="cash":p.includes("qris")?h="qris":p.includes("transfer")||p.includes("bca")||p.includes("mandiri")||p.includes("bri")?h="transfer":(p.includes("tempo")||p.includes("paylater"))&&(h="tempo"),o[h].count++,o[h].total+=f,n.cashierShiftId||n.cashierId||n.notes&&n.notes.includes("POS")?d+=f:b+=f,(n.items||[]).forEach($=>{const w=parseFloat($.qty)||1;e+=w;const A=$.id||$.name;r[A]||(r[A]={id:A,name:$.name||"Produk",qty:0,omset:0,hpp:0,image:$.image||""});const ct=$.hpp!==void 0&&$.hpp!==null?parseFloat($.hpp):J($);r[A].qty+=w,r[A].omset+=(parseFloat($.price)||0)*w,r[A].hpp+=ct*w})});const x=a>0?Math.round(s/a):0,c=a>0?(e/a).toFixed(1):"0",i=Object.values(r).sort((n,f)=>f.qty-n.qty).slice(0,10),u=i.length?Math.max(...i.map(n=>n.omset||1)):1,m=i.length?i.map((n,f)=>{const p=n.omset-n.hpp,h=n.omset>0?(p/n.omset*100).toFixed(0):"0",$=Math.min(100,Math.max(8,Math.round(n.omset/u*100)));let w="";return f===0?w='<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-950 shadow-2xs shrink-0"><i class="fa-solid fa-trophy text-[11px]"></i></span>':f===1?w='<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-2xs shrink-0">#2</span>':f===2?w='<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-amber-700/20 text-amber-800 dark:text-amber-300 border border-amber-600/30 shrink-0">#3</span>':w=`<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">#${f+1}</span>`,`
             <div class="p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-2.5">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5 min-w-0">
-                        ${g}
+                        ${w}
                         <div class="min-w-0">
-                            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${$(p.name)}</p>
-                            <p class="text-[10px] text-slate-400">Modal HPP: ${a(p.hpp)}</p>
+                            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${P(n.name)}</p>
+                            <p class="text-[10px] text-slate-400">Modal HPP: ${l(n.hpp)}</p>
                         </div>
                     </div>
                     <div class="text-right shrink-0">
                         <span class="px-2.5 py-1 rounded-lg text-xs font-black" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
-                            ${p.qty} Unit
+                            ${n.qty} Unit
                         </span>
                     </div>
                 </div>
                 <!-- Progress bar omset -->
                 <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                    <div class="h-full rounded-full transition-all duration-500" style="width: ${u}%; background: var(--color-primary);"></div>
+                    <div class="h-full rounded-full transition-all duration-500" style="width: ${$}%; background: var(--color-primary);"></div>
                 </div>
                 <!-- Stat 2 Kolom -->
                 <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-[11px]">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl">
                         <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Omset</span>
-                        <span class="font-black text-slate-800 dark:text-white">${a(p.omset)}</span>
+                        <span class="font-black text-slate-800 dark:text-white">${l(n.omset)}</span>
                     </div>
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl text-right">
                         <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Laba Kotor</span>
-                        <span class="font-black" style="color: var(--color-primary);">${a(t)} <span class="text-[9px] font-normal text-slate-400">(${f}%)</span></span>
+                        <span class="font-black" style="color: var(--color-primary);">${l(p)} <span class="text-[9px] font-normal text-slate-400">(${h}%)</span></span>
                     </div>
                 </div>
             </div>
@@ -287,20 +287,20 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum ada transaksi penjualan pada periode ini</p>
             <p class="text-[10px] text-slate-400 mt-0.5">Penjualan kasir POS &amp; pesanan web akan otomatis tampil di sini</p>
         </div>
-    `,T=b.length?b.map((p,w)=>{const t=p.omset-p.hpp,f=p.omset>0?(t/p.omset*100).toFixed(0):"0";return`
+    `,y=i.length?i.map((n,f)=>{const p=n.omset-n.hpp,h=n.omset>0?(p/n.omset*100).toFixed(0):"0";return`
             <tr class="border-b border-slate-100 dark:border-slate-800 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                <td class="py-3 px-3 text-center text-xs font-black text-slate-400">#${w+1}</td>
+                <td class="py-3 px-3 text-center text-xs font-black text-slate-400">#${f+1}</td>
                 <td class="py-3 px-3">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-xs">${$(p.name)}</p>
-                    <p class="text-[10px] text-slate-400">Modal: ${a(p.hpp)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-xs">${P(n.name)}</p>
+                    <p class="text-[10px] text-slate-400">Modal: ${l(n.hpp)}</p>
                 </td>
-                <td class="py-3 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${p.qty} unit</td>
-                <td class="py-3 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${a(p.omset)}</td>
-                <td class="py-3 px-3 text-right text-xs font-black" style="color: var(--color-primary);">${a(t)} <span class="text-[9px] font-normal text-slate-400">(${f}%)</span></td>
+                <td class="py-3 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${n.qty} unit</td>
+                <td class="py-3 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${l(n.omset)}</td>
+                <td class="py-3 px-3 text-right text-xs font-black" style="color: var(--color-primary);">${l(p)} <span class="text-[9px] font-normal text-slate-400">(${h}%)</span></td>
             </tr>
         `}).join(""):`
         <tr><td colspan="5" class="py-8 text-center text-xs text-slate-400">Belum ada transaksi penjualan pada periode ini</td></tr>
-    `;R("report-hub-content",`
+    `;j("report-hub-content",`
         <div class="space-y-4 sm:space-y-6">
             <!-- RINGKASAN METRIK PENJUALAN -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -310,9 +310,9 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${a(d)}</p>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${l(s)}</p>
                     </div>
-                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${s} transaksi berhasil</p>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${a} transaksi berhasil</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
@@ -320,7 +320,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Rata-Rata Keranjang (AOV)</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-basket-shopping"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${a(i)}</p>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${l(x)}</p>
                     </div>
                     <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Per transaksi pesanan</p>
                 </div>
@@ -330,9 +330,9 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Barang Terjual</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-boxes-packing"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${r} Unit</p>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${e} Unit</p>
                     </div>
-                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Rata-rata ${n} item / order</p>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Rata-rata ${c} item / order</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
@@ -341,11 +341,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="w-7 h-7 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-cash-register"></i></span>
                         </div>
                         <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center justify-between">
-                            <span>Kasir POS:</span> <b style="color: var(--color-primary)">${a(c)}</b>
+                            <span>Kasir POS:</span> <b style="color: var(--color-primary)">${l(d)}</b>
                         </p>
                     </div>
                     <p class="text-xs font-bold text-slate-800 dark:text-white mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                        <span>Storefront:</span> <b class="text-slate-600 dark:text-slate-300">${a(x)}</b>
+                        <span>Storefront:</span> <b class="text-slate-600 dark:text-slate-300">${l(b)}</b>
                     </p>
                 </div>
             </div>
@@ -361,21 +361,21 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     </h3>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    ${Object.values(o).filter(p=>p.count>0||p.label.includes("Tunai")||p.label.includes("QRIS")||p.label.includes("Transfer")||p.label.includes("Tempo")).map(p=>{const w=d>0?(p.total/d*100).toFixed(0):"0";return`
+                    ${Object.values(o).filter(n=>n.count>0||n.label.includes("Tunai")||n.label.includes("QRIS")||n.label.includes("Transfer")||n.label.includes("Tempo")).map(n=>{const f=s>0?(n.total/s*100).toFixed(0):"0";return`
                             <div class="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2">
                                 <div class="flex items-center gap-2">
                                     <div class="w-6 h-6 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center text-xs text-slate-500 shadow-2xs">
-                                        <i class="fa-solid ${p.icon}"></i>
+                                        <i class="fa-solid ${n.icon}"></i>
                                     </div>
-                                    <p class="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate">${p.label}</p>
+                                    <p class="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate">${n.label}</p>
                                 </div>
-                                <p class="text-sm font-black text-slate-900 dark:text-white truncate">${a(p.total)}</p>
+                                <p class="text-sm font-black text-slate-900 dark:text-white truncate">${l(n.total)}</p>
                                 <div class="w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full" style="width: ${w}%; background: var(--color-primary);"></div>
+                                    <div class="h-full rounded-full" style="width: ${f}%; background: var(--color-primary);"></div>
                                 </div>
                                 <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-                                    <span>${p.count} pesanan</span>
-                                    <span class="font-bold text-slate-700 dark:text-slate-300">${w}%</span>
+                                    <span>${n.count} pesanan</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-300">${f}%</span>
                                 </div>
                             </div>
                         `}).join("")}
@@ -398,7 +398,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
 
                 <!-- Tampilan Mobile (< 640px): Leaderboard Cards -->
                 <div class="block sm:hidden p-3.5 space-y-3">
-                    ${P}
+                    ${m}
                 </div>
 
                 <!-- Tampilan Desktop (>= 640px): Full Table -->
@@ -413,12 +413,12 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                                 <th class="py-2.5 px-3 text-right">Laba Kotor</th>
                             </tr>
                         </thead>
-                        <tbody>${T}</tbody>
+                        <tbody>${y}</tbody>
                     </table>
                 </div>
             </div>
         </div>
-    `)},C=()=>{const e=k.products||[],s=k.categories||[];k.brands;let d=0,r=0,o=0,c=0,x=0,l=0,i=0;const n=[];e.forEach(t=>{const f=parseFloat(t.minStock)||5;if(t.variants&&t.variants.length)t.variants.forEach(u=>{c++;const g=parseFloat(u.stock)||0,v=parseFloat(u.hpp)||0,j=parseFloat(u.price)||0;o+=g,d+=g*v,r+=g*j;let G="safe";g<=0?(x++,G="empty"):g<=f?(l++,G="low"):i++,n.push({id:t.id,variantId:u.id||u.name,name:`${t.name} (${u.name})`,category:t.category||"Umum",brand:t.brand||"-",stock:g,unit:t.unit||"pcs",hpp:v,price:j,totalHpp:g*v,totalRetail:g*j,status:G,minStock:f,image:t.image||""})});else{c++;const u=parseFloat(t.stock)||0,g=parseFloat(t.hpp)||0,v=parseFloat(t.price)||0;o+=u,d+=u*g,r+=u*v;let j="safe";u<=0?(x++,j="empty"):u<=f?(l++,j="low"):i++,n.push({id:t.id,variantId:null,name:t.name,category:t.category||"Umum",brand:t.brand||"-",stock:u,unit:t.unit||"pcs",hpp:g,price:v,totalHpp:u*g,totalRetail:u*v,status:j,minStock:f,image:t.image||""})}});const b=r-d;let m=n.filter(t=>{if(U!=="all"&&t.status!==U||K!=="all"&&t.category!==K)return!1;if(D){const f=D.toLowerCase();return t.name.toLowerCase().includes(f)||t.category.toLowerCase().includes(f)||t.brand.toLowerCase().includes(f)}return!0});m.sort((t,f)=>t.stock-f.stock);const P=m.length?m.map((t,f)=>{let u="";t.status==="empty"?u='<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">Habis</span>':t.status==="low"?u=`<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60">Sisa ${t.stock}</span>`:u=`<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Stok Aman (${t.stock})</span>`;const g=t.totalRetail-t.totalHpp,v=t.price-t.hpp;return`
+    `)},rt=t=>{const a=t.length?t.map((e,o)=>{let d="";e.status==="empty"?d='<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">Habis</span>':e.status==="low"?d=`<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60">Sisa ${e.stock}</span>`:d=`<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Stok Aman (${e.stock})</span>`;const b=e.totalRetail-e.totalHpp,r=e.price-e.hpp;return`
             <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-2.5">
                 <div class="flex items-start justify-between gap-2.5">
                     <div class="flex items-center gap-2.5 min-w-0">
@@ -426,15 +426,15 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <i class="fa-solid fa-boxes-stacked text-xs"></i>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${$(t.name)}</p>
+                            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${P(e.name)}</p>
                             <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold uppercase tracking-wider">${$(t.category)}</span>
-                                ${t.brand&&t.brand!=="-"?`<span class="text-[9px] text-slate-400">• ${$(t.brand)}</span>`:""}
+                                <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold uppercase tracking-wider">${P(e.category)}</span>
+                                ${e.brand&&e.brand!=="-"?`<span class="text-[9px] text-slate-400">• ${P(e.brand)}</span>`:""}
                             </div>
                         </div>
                     </div>
                     <div class="shrink-0">
-                        ${u}
+                        ${d}
                     </div>
                 </div>
 
@@ -442,22 +442,22 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                 <div class="grid grid-cols-2 gap-2 text-xs">
                     <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                         <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Stok Fisik</span>
-                        <span class="text-xs font-black text-slate-800 dark:text-white">${t.stock} ${t.unit}</span>
+                        <span class="text-xs font-black text-slate-800 dark:text-white">${e.stock} ${e.unit}</span>
                     </div>
                     <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                         <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Harga Jual Retail</span>
-                        <span class="text-xs font-black text-slate-800 dark:text-white">${a(t.price)}</span>
-                        <span class="text-[9px] text-slate-400 block truncate">Total: ${a(t.totalRetail)}</span>
+                        <span class="text-xs font-black text-slate-800 dark:text-white">${l(e.price)}</span>
+                        <span class="text-[9px] text-slate-400 block truncate">Total: ${l(e.totalRetail)}</span>
                     </div>
                     <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                         <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Modal Kulakan (HPP)</span>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${a(t.hpp)}</span>
-                        <span class="text-[9px] text-slate-400 block truncate">Total: ${a(t.totalHpp)}</span>
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${l(e.hpp)}</span>
+                        <span class="text-[9px] text-slate-400 block truncate">Total: ${l(e.totalHpp)}</span>
                     </div>
                     <div class="p-2.5 rounded-xl border" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.2);">
                         <span class="text-[9px] font-bold uppercase tracking-widest block" style="color: var(--color-primary);">Potensi Laba Kotor</span>
-                        <span class="text-xs font-black truncate" style="color: var(--color-primary);">+${a(g)}</span>
-                        <span class="text-[9px] text-slate-400 block truncate">Per unit: +${a(v)}</span>
+                        <span class="text-xs font-black truncate" style="color: var(--color-primary);">+${l(b)}</span>
+                        <span class="text-[9px] text-slate-400 block truncate">Per unit: +${l(r)}</span>
                     </div>
                 </div>
             </div>
@@ -469,36 +469,57 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Tidak ada produk yang cocok</p>
             <p class="text-[10px] text-slate-400 mt-0.5">Ubah pencarian atau reset filter untuk menampilkan barang</p>
         </div>
-    `,T=m.length?m.map((t,f)=>{let u="";return t.status==="empty"?u='<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400">Habis</span>':t.status==="low"?u=`<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400">Sisa ${t.stock}</span>`:u='<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Aman</span>',`
+    `,s=t.length?t.map((e,o)=>{let d="";return e.status==="empty"?d='<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400">Habis</span>':e.status==="low"?d=`<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400">Sisa ${e.stock}</span>`:d='<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Aman</span>',`
             <tr class="border-b border-slate-100 dark:border-slate-800 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                <td class="py-2.5 px-3 text-center text-xs font-bold text-slate-400">${f+1}</td>
+                <td class="py-2.5 px-3 text-center text-xs font-bold text-slate-400">${o+1}</td>
                 <td class="py-2.5 px-3">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-sm">${$(t.name)}</p>
-                    <p class="text-[10px] text-slate-400">${$(t.category)} • ${$(t.brand)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-sm">${P(e.name)}</p>
+                    <p class="text-[10px] text-slate-400">${P(e.category)} • ${P(e.brand)}</p>
                 </td>
                 <td class="py-2.5 px-3 text-center">
                     <div class="flex items-center justify-center gap-1.5">
-                        <span class="text-xs font-bold text-slate-800 dark:text-white">${t.stock} ${t.unit}</span>
-                        ${u}
+                        <span class="text-xs font-bold text-slate-800 dark:text-white">${e.stock} ${e.unit}</span>
+                        ${d}
                     </div>
                 </td>
                 <td class="py-2.5 px-3 text-right">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white">${a(t.hpp)}</p>
-                    <p class="text-[10px] text-slate-400">Total: ${a(t.totalHpp)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white">${l(e.hpp)}</p>
+                    <p class="text-[10px] text-slate-400">Total: ${l(e.totalHpp)}</p>
                 </td>
                 <td class="py-2.5 px-3 text-right">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white">${a(t.price)}</p>
-                    <p class="text-[10px] text-slate-400">Total: ${a(t.totalRetail)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white">${l(e.price)}</p>
+                    <p class="text-[10px] text-slate-400">Total: ${l(e.totalRetail)}</p>
                 </td>
             </tr>
         `}).join(""):`
         <tr><td colspan="5" class="py-10 text-center text-xs text-slate-400">Tidak ada produk yang sesuai dengan filter</td></tr>
-    `,w=[{key:"all",label:"Semua",count:n.length},{key:"empty",label:"Habis",count:x,colorClass:"text-rose-600 dark:text-rose-400"},{key:"low",label:"Menipis",count:l,colorClass:"text-amber-600 dark:text-amber-400"},{key:"safe",label:"Aman",count:i,colorClass:"text-emerald-600 dark:text-emerald-400"}].map(t=>{const f=U===t.key;return`
-            <button type="button" onclick="filterStockReportStatus('${t.key}')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 flex items-center gap-1.5 ${f?"bg-[var(--color-primary)] text-white shadow-2xs font-black":"bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 hover:border-[var(--color-primary)]"}">
-                <span>${t.label}</span>
-                <span class="px-1.5 py-0.2 rounded-md text-[10px] ${f?"bg-white/25 text-white":"bg-slate-200/80 dark:bg-slate-700 "+(t.colorClass||"text-slate-600 dark:text-slate-300")}">${t.count}</span>
+    `;return`
+        <!-- Tampilan Mobile (< 640px): Native Inventory Cards -->
+        <div class="block sm:hidden p-3.5 space-y-3">
+            ${a}
+        </div>
+
+        <!-- Tampilan Desktop (>= 640px): Full Table -->
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <th class="py-2.5 px-3 text-center w-12">No</th>
+                        <th class="py-2.5 px-3">Produk &amp; Kategori</th>
+                        <th class="py-2.5 px-3 text-center">Stok Fisik</th>
+                        <th class="py-2.5 px-3 text-right">Modal (HPP)</th>
+                        <th class="py-2.5 px-3 text-right">Harga Jual</th>
+                    </tr>
+                </thead>
+                <tbody>${s}</tbody>
+            </table>
+        </div>
+    `},lt=()=>{const t=g.products||[];let a=0,s=0,e=0,o=0,d=0,b=0,r=0;const x=[];t.forEach(i=>{const u=parseFloat(i.minStock)||5;if(i.variants&&i.variants.length)i.variants.forEach(m=>{o++;const y=parseFloat(m.stock)||0,n=parseFloat(m.hpp)||0,f=parseFloat(m.price)||0;e+=y,a+=y*n,s+=y*f;let p="safe";y<=0?(d++,p="empty"):y<=u?(b++,p="low"):r++,x.push({id:i.id,variantId:m.id||m.name,name:`${i.name} (${m.name})`,category:i.category||"Umum",brand:i.brand||"-",stock:y,unit:i.unit||"pcs",hpp:n,price:f,totalHpp:y*n,totalRetail:y*f,status:p,minStock:u,image:i.image||""})});else{o++;const m=parseFloat(i.stock)||0,y=parseFloat(i.hpp)||0,n=parseFloat(i.price)||0;e+=m,a+=m*y,s+=m*n;let f="safe";m<=0?(d++,f="empty"):m<=u?(b++,f="low"):r++,x.push({id:i.id,variantId:null,name:i.name,category:i.category||"Umum",brand:i.brand||"-",stock:m,unit:i.unit||"pcs",hpp:y,price:n,totalHpp:m*y,totalRetail:m*n,status:f,minStock:u,image:i.image||""})}});const c=s-a;return{stockItems:x,totalAssetHpp:a,totalAssetRetail:s,totalPhysicalUnits:e,totalSkuCount:o,outOfStockCount:d,lowStockCount:b,safeStockCount:r,potentialMargin:c}},ot=t=>{let a=t.filter(s=>{if(C!=="all"&&s.status!==C||O!=="all"&&s.category!==O)return!1;if(M){const e=M.toLowerCase();return s.name.toLowerCase().includes(e)||s.category.toLowerCase().includes(e)||s.brand.toLowerCase().includes(e)}return!0});return a.sort((s,e)=>s.stock-e.stock),a},nt=()=>{if(typeof document>"u")return;const t=document.getElementById("stock-report-list-container");if(!t){H();return}const{stockItems:a}=lt(),s=ot(a);t.innerHTML=rt(s)},H=()=>{const t=g.categories||[],a=lt(),{stockItems:s,totalAssetHpp:e,totalAssetRetail:o,totalPhysicalUnits:d,totalSkuCount:b,outOfStockCount:r,lowStockCount:x,safeStockCount:c,potentialMargin:i}=a,u=ot(s),y=[{key:"all",label:"Semua",count:s.length},{key:"empty",label:"Habis",count:r,colorClass:"text-rose-600 dark:text-rose-400"},{key:"low",label:"Menipis",count:x,colorClass:"text-amber-600 dark:text-amber-400"},{key:"safe",label:"Aman",count:c,colorClass:"text-emerald-600 dark:text-emerald-400"}].map(n=>{const f=C===n.key;return`
+            <button type="button" onclick="filterStockReportStatus('${n.key}')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 flex items-center gap-1.5 ${f?"bg-[var(--color-primary)] text-white shadow-2xs font-black":"bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 hover:border-[var(--color-primary)]"}">
+                <span>${n.label}</span>
+                <span class="px-1.5 py-0.2 rounded-md text-[10px] ${f?"bg-white/25 text-white":"bg-slate-200/80 dark:bg-slate-700 "+(n.colorClass||"text-slate-600 dark:text-slate-300")}">${n.count}</span>
             </button>
-        `}).join("");R("report-hub-content",`
+        `}).join("");j("report-hub-content",`
         <div class="space-y-4 sm:space-y-6">
             <!-- 4 KARTU VALUASI ASET GUDANG -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -508,7 +529,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Aset Modal (HPP)</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-coins"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${a(d)}</p>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${l(e)}</p>
                     </div>
                     <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate">Modal fisik tertanam</p>
                 </div>
@@ -518,9 +539,9 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nilai Jual Retail</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-tag"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${a(r)}</p>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${l(o)}</p>
                     </div>
-                    <p class="text-[10px] font-bold mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate" style="color: var(--color-primary)">Potensi margin: ${a(b)}</p>
+                    <p class="text-[10px] font-bold mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate" style="color: var(--color-primary)">Potensi margin: ${l(i)}</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
@@ -528,9 +549,9 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Fisik Barang</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"><i class="fa-solid fa-box-archive"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${o.toLocaleString("id-ID")} Unit</p>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${d.toLocaleString("id-ID")} Unit</p>
                     </div>
-                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate">${c} SKU / Varian aktif</p>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate">${b} SKU / Varian aktif</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
@@ -539,12 +560,12 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i></span>
                         </div>
                         <div class="flex items-center gap-1.5 mt-1">
-                            <button type="button" onclick="filterStockReportStatus('empty')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 active:scale-95 cursor-pointer" title="Klik filter habis">${x} Habis</button>
-                            <button type="button" onclick="filterStockReportStatus('low')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 active:scale-95 cursor-pointer" title="Klik filter menipis">${l} Menipis</button>
+                            <button type="button" onclick="filterStockReportStatus('empty')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 active:scale-95 cursor-pointer" title="Klik filter habis">${r} Habis</button>
+                            <button type="button" onclick="filterStockReportStatus('low')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 active:scale-95 cursor-pointer" title="Klik filter menipis">${x} Menipis</button>
                         </div>
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px]">
-                        <span class="text-slate-500 font-medium">Aman: <b>${i}</b></span>
+                        <span class="text-slate-500 font-medium">Aman: <b>${c}</b></span>
                         <button type="button" onclick="filterStockReportStatus('all')" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">Lihat Semua</button>
                     </div>
                 </div>
@@ -569,71 +590,53 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <button type="button" onclick="openAdminTab('stock_opname')" class="px-3 py-1.5 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Audit fisik stok rak & rekonsiliasi selisih">
                                 <i class="fa-solid fa-clipboard-check text-xs"></i> <span>Stock Opname</span>
                             </button>
-                            <!-- Input Pencarian dengan Clear Button -->
+                            <!-- Input Pencarian dengan Clear Button (Zero-Flicker) -->
                             <div class="relative flex-1 sm:w-56">
                                 <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-slate-400"></i>
-                                <input type="text" placeholder="Cari nama barang / SKU..." value="${$(D)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
-                                ${D?`
-                                    <button type="button" onclick="filterStockReportSearch('')" class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
-                                        <i class="fa-solid fa-circle-xmark"></i>
-                                    </button>
-                                `:""}
+                                <input type="text" id="stock-report-search-input" placeholder="Cari nama barang / SKU..." value="${P(M)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
+                                <button type="button" id="stock-report-search-clear-btn" onclick="filterStockReportSearch('')" style="display: ${M?"block":"none"};" class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                </button>
                             </div>
 
                             <!-- Filter Kategori -->
                             <select onchange="filterStockReportCategory(this.value)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden cursor-pointer max-w-[140px] sm:max-w-none truncate">
-                                <option value="all" ${K==="all"?"selected":""}>Semua Kategori</option>
-                                ${s.map(t=>`<option value="${t.name}" ${K===t.name?"selected":""}>${t.name}</option>`).join("")}
+                                <option value="all" ${O==="all"?"selected":""}>Semua Kategori</option>
+                                ${t.map(n=>`<option value="${n.name}" ${O===n.name?"selected":""}>${n.name}</option>`).join("")}
                             </select>
                         </div>
                     </div>
 
                     <!-- Filter Status Pills Carousel -->
                     <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pt-1">
-                        ${w}
+                        ${y}
                     </div>
                 </div>
 
-                <!-- Tampilan Mobile (< 640px): Native Inventory Cards -->
-                <div class="block sm:hidden p-3.5 space-y-3">
-                    ${P}
-                </div>
-
-                <!-- Tampilan Desktop (>= 640px): Full Table -->
-                <div class="hidden sm:block overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <th class="py-2.5 px-3 text-center w-12">No</th>
-                                <th class="py-2.5 px-3">Produk &amp; Kategori</th>
-                                <th class="py-2.5 px-3 text-center">Stok Fisik</th>
-                                <th class="py-2.5 px-3 text-right">Modal (HPP)</th>
-                                <th class="py-2.5 px-3 text-right">Harga Jual</th>
-                            </tr>
-                        </thead>
-                        <tbody>${T}</tbody>
-                    </table>
+                <!-- Container Daftar Stok (Zero-Flicker Partial DOM) -->
+                <div id="stock-report-list-container">
+                    ${rt(u)}
                 </div>
             </div>
         </div>
-    `)},ut=()=>{D="",C()},mt=e=>{U=e,C()},ft=e=>{K=e,C()},gt=e=>{D=e,C()},kt=()=>{const e=O||[];let s=0,d=0;const r={};e.forEach(t=>{const f=Q(t),u=f.totalAkhir;s+=u,f.isLate?d++:f.isDueSoon;const g=t.customer?.name||"Pelanggan Umum",v=t.customer?.phone||t.customer?.wa||"-";r[g]||(r[g]={name:g,phone:v,totalPiutang:0,orderCount:0,isLate:!1}),r[g].totalPiutang+=u,r[g].orderCount++,f.isLate&&(r[g].isLate=!0)});const o=Object.values(r).sort((t,f)=>f.totalPiutang-t.totalPiutang),c=z(),x=c.totalUnpaidDebt,l=k.purchases||[],i={};l.forEach(t=>{if(t.paymentType==="tempo"&&t.paymentStatus!=="lunas"&&t.status!=="cancelled"){const f=parseFloat(t.total)||0,u=parseFloat(t.amountPaid)||0,g=f-u;if(g>0){const v=t.supplierName||"Supplier";i[v]||(i[v]={name:v,totalDebt:0,poCount:0}),i[v].totalDebt+=g,i[v].poCount++}}});const n=Object.values(i).sort((t,f)=>f.totalDebt-t.totalDebt),b=s-x,m=b>=0,P=o.length?o.slice(0,8).map(t=>`
+    `)},kt=()=>{it("")},vt=t=>{C=t,H()},yt=t=>{O=t,H()},it=t=>{if(M=t||"",typeof document<"u"){const a=document.getElementById("stock-report-search-input");a&&a.value!==M&&document.activeElement!==a&&(a.value=M);const s=document.getElementById("stock-report-search-clear-btn");s&&(s.style.display=M?"block":"none")}nt()},ht=()=>{const t=N||[];let a=0,s=0;const e={};t.forEach(p=>{const h=Y(p),$=h.totalAkhir;a+=$,h.isLate?s++:h.isDueSoon;const w=p.customer?.name||"Pelanggan Umum",A=p.customer?.phone||p.customer?.wa||"-";e[w]||(e[w]={name:w,phone:A,totalPiutang:0,orderCount:0,isLate:!1}),e[w].totalPiutang+=$,e[w].orderCount++,h.isLate&&(e[w].isLate=!0)});const o=Object.values(e).sort((p,h)=>h.totalPiutang-p.totalPiutang),d=W(),b=d.totalUnpaidDebt,r=g.purchases||[],x={};r.forEach(p=>{if(p.paymentType==="tempo"&&p.paymentStatus!=="lunas"&&p.status!=="cancelled"){const h=parseFloat(p.total)||0,$=parseFloat(p.amountPaid)||0,w=h-$;if(w>0){const A=p.supplierName||"Supplier";x[A]||(x[A]={name:A,totalDebt:0,poCount:0}),x[A].totalDebt+=w,x[A].poCount++}}});const c=Object.values(x).sort((p,h)=>h.totalDebt-p.totalDebt),i=a-b,u=i>=0,m=o.length?o.slice(0,8).map(p=>`
         <div class="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2.5">
             <div class="flex items-start justify-between gap-2">
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 flex-wrap">
-                        <p class="font-bold text-xs text-slate-800 dark:text-white truncate">${$(t.name)}</p>
-                        ${t.isLate?'<span class="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">Jatuh Tempo</span>':""}
+                        <p class="font-bold text-xs text-slate-800 dark:text-white truncate">${P(p.name)}</p>
+                        ${p.isLate?'<span class="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">Jatuh Tempo</span>':""}
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-0.5">${t.orderCount} nota tempo aktif</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${p.orderCount} nota tempo aktif</p>
                 </div>
                 <div class="text-right shrink-0">
-                    <span class="text-xs font-black text-slate-900 dark:text-white">${a(t.totalPiutang)}</span>
+                    <span class="text-xs font-black text-slate-900 dark:text-white">${l(p.totalPiutang)}</span>
                     <span class="block text-[9px] text-slate-400">Sisa Tagihan</span>
                 </div>
             </div>
             <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    <i class="fa-solid fa-phone text-[9px]"></i> ${$(t.phone)}
+                    <i class="fa-solid fa-phone text-[9px]"></i> ${P(p.phone)}
                 </span>
                 <button type="button" onclick="openAdminTab('piutang')" class="px-2.5 py-1 rounded-lg bg-[var(--color-primary)] text-white text-[10px] font-bold shadow-2xs hover:opacity-90 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1">
                     Kelola Nota <i class="fa-solid fa-arrow-right text-[8px]"></i>
@@ -648,28 +651,28 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Tidak Ada Piutang Pelanggan</p>
             <p class="text-[10px] text-slate-400 max-w-xs mx-auto">Seluruh pelanggan telah melunasi tagihannya atau belum ada penjualan tempo aktif.</p>
         </div>
-    `,T=o.length?o.slice(0,5).map(t=>`
+    `,y=o.length?o.slice(0,5).map(p=>`
         <tr class="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors last:border-0">
             <td class="py-2.5 px-3">
-                 <p class="font-bold text-slate-800 dark:text-white truncate">${$(t.name)}</p>
-                 <p class="text-[10px] text-slate-400">${t.orderCount} nota ${t.isLate?'<span class="text-rose-500 font-bold">• Terlambat</span>':""}</p>
+                 <p class="font-bold text-slate-800 dark:text-white truncate">${P(p.name)}</p>
+                 <p class="text-[10px] text-slate-400">${p.orderCount} nota ${p.isLate?'<span class="text-rose-500 font-bold">• Terlambat</span>':""}</p>
             </td>
-            <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-white">${a(t.totalPiutang)}</td>
+            <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-white">${l(p.totalPiutang)}</td>
             <td class="py-2.5 px-3 text-right">
                 <button type="button" onclick="openAdminTab('piutang')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[10px] font-bold hover:text-[var(--color-primary)] transition-all cursor-pointer">Buka</button>
             </td>
         </tr>
     `).join(""):`
         <tr><td colspan="3" class="py-6 text-center text-slate-400 text-xs">Tidak ada piutang pelanggan aktif</td></tr>
-    `,p=n.length?n.slice(0,8).map(t=>`
+    `,n=c.length?c.slice(0,8).map(p=>`
         <div class="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2.5">
             <div class="flex items-start justify-between gap-2">
                 <div class="min-w-0 flex-1">
-                    <p class="font-bold text-xs text-slate-800 dark:text-white truncate">${$(t.name)}</p>
-                    <p class="text-[10px] text-slate-400 mt-0.5">${t.poCount} invoice PO tempo kulakan</p>
+                    <p class="font-bold text-xs text-slate-800 dark:text-white truncate">${P(p.name)}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${p.poCount} invoice PO tempo kulakan</p>
                 </div>
                 <div class="text-right shrink-0">
-                    <span class="text-xs font-black text-rose-600 dark:text-rose-400">${a(t.totalDebt)}</span>
+                    <span class="text-xs font-black text-rose-600 dark:text-rose-400">${l(p.totalDebt)}</span>
                     <span class="block text-[9px] text-slate-400">Sisa Hutang Toko</span>
                 </div>
             </div>
@@ -690,45 +693,45 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Seluruh Tagihan Lunas</p>
             <p class="text-[10px] text-slate-400 max-w-xs mx-auto">Seluruh tagihan pembelian & kulakan ke supplier telah lunas tepat waktu.</p>
         </div>
-    `,w=n.length?n.slice(0,5).map(t=>`
+    `,f=c.length?c.slice(0,5).map(p=>`
         <tr class="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors last:border-0">
             <td class="py-2.5 px-3">
-                <p class="font-bold text-slate-800 dark:text-white truncate">${$(t.name)}</p>
-                <p class="text-[10px] text-slate-400">${t.poCount} invoice PO tempo</p>
+                <p class="font-bold text-slate-800 dark:text-white truncate">${P(p.name)}</p>
+                <p class="text-[10px] text-slate-400">${p.poCount} invoice PO tempo</p>
             </td>
-            <td class="py-2.5 px-3 text-right font-black text-rose-500">${a(t.totalDebt)}</td>
+            <td class="py-2.5 px-3 text-right font-black text-rose-500">${l(p.totalDebt)}</td>
             <td class="py-2.5 px-3 text-right">
                 <button type="button" onclick="openAdminTab('purchases')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[10px] font-bold hover:text-[var(--color-primary)] transition-all cursor-pointer">Bayar</button>
             </td>
         </tr>
     `).join(""):`
         <tr><td colspan="3" class="py-6 text-center text-slate-400 text-xs">Seluruh tagihan kulakan supplier telah lunas</td></tr>
-    `;R("report-hub-content",`
+    `;j("report-hub-content",`
         <div class="space-y-4 sm:space-y-6">
             <!-- KARTU POSISI BERSIH LIKUIDITAS TOKO -->
-            <div class="rounded-2xl border p-4 sm:p-5 ${m?"":"border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20"}" style="${m?"border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.02));":""}">
+            <div class="rounded-2xl border p-4 sm:p-5 ${u?"":"border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20"}" style="${u?"border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.02));":""}">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <span class="text-[9px] font-black uppercase tracking-widest ${m?"":"text-rose-700 dark:text-rose-400"}" style="${m?"color: var(--color-primary);":""}">
+                        <span class="text-[9px] font-black uppercase tracking-widest ${u?"":"text-rose-700 dark:text-rose-400"}" style="${u?"color: var(--color-primary);":""}">
                             Posisi Bersih Likuiditas Toko (Net Working Capital Gap)
                         </span>
-                        <h2 class="text-xl sm:text-2xl font-black ${m?"":"text-rose-800 dark:text-rose-300"} mt-0.5" style="${m?"color: var(--color-primary);":""}">
-                            ${m?"+":""}${a(b)}
+                        <h2 class="text-xl sm:text-2xl font-black ${u?"":"text-rose-800 dark:text-rose-300"} mt-0.5" style="${u?"color: var(--color-primary);":""}">
+                            ${u?"+":""}${l(i)}
                         </h2>
-                        <p class="text-xs ${m?"":"text-rose-700 dark:text-rose-400"} mt-1 font-medium" style="${m?"color: var(--color-primary); opacity: 0.9;":""}">
-                            ${m?"Surplus Piutang: Hak tagihan toko di pelanggan lebih besar daripada kewajiban toko ke supplier.":"Defisit Utang: Kewajiban toko ke supplier lebih besar daripada tagihan piutang di pelanggan."}
+                        <p class="text-xs ${u?"":"text-rose-700 dark:text-rose-400"} mt-1 font-medium" style="${u?"color: var(--color-primary); opacity: 0.9;":""}">
+                            ${u?"Surplus Piutang: Hak tagihan toko di pelanggan lebih besar daripada kewajiban toko ke supplier.":"Defisit Utang: Kewajiban toko ke supplier lebih besar daripada tagihan piutang di pelanggan."}
                         </p>
                     </div>
 
                     <div class="flex items-center gap-2 sm:gap-3">
                         <div class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-center shadow-2xs">
                             <span class="block text-[9px] font-bold text-slate-400 uppercase">Piutang Pelanggan</span>
-                            <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">${a(s)}</span>
+                            <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">${l(a)}</span>
                         </div>
                         <span class="text-slate-400 font-black text-sm">−</span>
                         <div class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-center shadow-2xs">
                             <span class="block text-[9px] font-bold text-slate-400 uppercase">Utang Supplier</span>
-                            <span class="text-xs sm:text-sm font-bold text-rose-500">${a(x)}</span>
+                            <span class="text-xs sm:text-sm font-bold text-rose-500">${l(b)}</span>
                         </div>
                     </div>
                 </div>
@@ -745,7 +748,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             </div>
                             <div>
                                 <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Piutang Pelanggan</h3>
-                                <p class="text-[10px] text-slate-400">${e.length} nota tempo aktif</p>
+                                <p class="text-[10px] text-slate-400">${t.length} nota tempo aktif</p>
                             </div>
                         </div>
                         <button type="button" onclick="openAdminTab('piutang')" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline inline-flex items-center gap-1 cursor-pointer">
@@ -756,11 +759,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <span class="text-[9px] font-bold text-slate-400 uppercase">Total Piutang Toko</span>
-                            <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-0.5 truncate">${a(s)}</p>
+                            <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-0.5 truncate">${l(a)}</p>
                         </div>
                         <div class="p-3 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40">
                             <span class="text-[9px] font-bold text-rose-500 uppercase">Lewat Jatuh Tempo</span>
-                            <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 mt-0.5">${d} Nota</p>
+                            <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 mt-0.5">${s} Nota</p>
                         </div>
                     </div>
 
@@ -769,7 +772,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         
                         <!-- Mobile View (< 640px): Native Cards -->
                         <div class="block sm:hidden space-y-2">
-                            ${P}
+                            ${m}
                         </div>
 
                         <!-- Desktop View (>= 640px): Table -->
@@ -783,7 +786,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${T}
+                                    ${y}
                                 </tbody>
                             </table>
                         </div>
@@ -810,11 +813,11 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <span class="text-[9px] font-bold text-slate-400 uppercase">Total Hutang Supplier</span>
-                            <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 mt-0.5 truncate">${a(x)}</p>
+                            <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 mt-0.5 truncate">${l(b)}</p>
                         </div>
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <span class="text-[9px] font-bold uppercase" style="color: var(--color-primary)">Menunggu Kirim Barang</span>
-                            <p class="text-sm sm:text-base font-black mt-0.5 truncate" style="color: var(--color-primary)">${c.pendingArrivalCount} PO</p>
+                            <p class="text-sm sm:text-base font-black mt-0.5 truncate" style="color: var(--color-primary)">${d.pendingArrivalCount} PO</p>
                         </div>
                     </div>
 
@@ -823,7 +826,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         
                         <!-- Mobile View (< 640px): Native Cards -->
                         <div class="block sm:hidden space-y-2">
-                            ${p}
+                            ${n}
                         </div>
 
                         <!-- Desktop View (>= 640px): Table -->
@@ -837,7 +840,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${w}
+                                    ${f}
                                 </tbody>
                             </table>
                         </div>
@@ -845,66 +848,66 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                 </div>
             </div>
         </div>
-    `)},vt=async(e=null)=>{if(typeof window.openExpenseModal=="function"){window.openExpenseModal(e);return}try{const s=await dt(()=>import("./expenses-Dw-TujGT.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8]));s&&typeof s.openExpenseModal=="function"?s.openExpenseModal(e):typeof window.openExpenseModal=="function"&&window.openExpenseModal(e)}catch(s){console.error("[Reports] Gagal membuka form pengeluaran operasional:",s),L("Gagal memuat modul pengeluaran operasional.")}};window.openExpenseModalFromReports=vt;const yt=()=>{const e=h===0?`Tahun ${y}`:`${E[h-1]} ${y}`,s=tt(),d=h===0?null:`${y}-${h}`,r=k.taxSettings?.monthlyExpenses||{},o=k.taxSettings?.expenseBreakdown||{},c=M.map(n=>{const b=s.categories[n.key]||0,m=s.total>0?(b/s.total*100).toFixed(0):"0";return`
+    `)},wt=async(t=null)=>{if(typeof window.openExpenseModal=="function"){window.openExpenseModal(t);return}try{const a=await xt(()=>import("./expenses-C4hjzaSY.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8]));a&&typeof a.openExpenseModal=="function"?a.openExpenseModal(t):typeof window.openExpenseModal=="function"&&window.openExpenseModal(t)}catch(a){console.error("[Reports] Gagal membuka form pengeluaran operasional:",a),D("Gagal memuat modul pengeluaran operasional.")}};window.openExpenseModalFromReports=wt;const Pt=()=>{const t=v===0?`Tahun ${k}`:`${E[v-1]} ${k}`,a=z(),s=v===0?null:`${k}-${v}`,e=g.taxSettings?.monthlyExpenses||{},o=g.taxSettings?.expenseBreakdown||{},d=R.map(c=>{const i=a.categories[c.key]||0,u=a.total>0?(i/a.total*100).toFixed(0):"0";return`
             <div class="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">${n.label}</span>
-                        <i class="fa-solid ${n.icon} text-xs text-slate-400"></i>
+                        <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">${c.label}</span>
+                        <i class="fa-solid ${c.icon} text-xs text-slate-400"></i>
                     </div>
-                    <p class="text-base font-black text-slate-900 dark:text-white truncate">${a(b)}</p>
+                    <p class="text-base font-black text-slate-900 dark:text-white truncate">${l(i)}</p>
                 </div>
                 <div class="mt-3 pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between text-[10px] text-slate-400">
                     <span>Proporsi beban</span>
-                    <span class="font-bold text-slate-700 dark:text-slate-300">${m}%</span>
+                    <span class="font-bold text-slate-700 dark:text-slate-300">${u}%</span>
                 </div>
             </div>
-        `}).join("");let x="";if(h===0){const n=Array.from({length:12},(b,m)=>m+1).map(b=>{const m=`${y}-${b}`,P=r[m]||0;return`
+        `}).join("");let b="";if(v===0){const c=Array.from({length:12},(i,u)=>u+1).map(i=>{const u=`${k}-${i}`,m=e[u]||0;return`
                 <div class="flex items-center justify-between py-2.5 px-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">${E[b-1]} ${y}</span>
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">${E[i-1]} ${k}</span>
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] text-slate-400 font-bold">Rp</span>
-                        <input type="number" min="0" value="${P}" onchange="saveReportMonthlyExpense('${m}', this.value)" class="w-36 text-right font-bold text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-2.5 text-slate-800 dark:text-white focus:outline-hidden">
+                        <input type="number" min="0" value="${m}" onchange="saveReportMonthlyExpense('${u}', this.value)" class="w-36 text-right font-bold text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-2.5 text-slate-800 dark:text-white focus:outline-hidden">
                     </div>
                 </div>
-            `}).join("");x=`
+            `}).join("");b=`
             <div class="space-y-2">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Input Biaya Operasional Per Bulan — Tahun ${y}</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${n}</div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Input Biaya Operasional Per Bulan — Tahun ${k}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${c}</div>
             </div>
-        `}else{const n=o[d]||{},b=M.map(P=>{const T=n[P.key]||0;return`
+        `}else{const c=o[s]||{},i=R.map(m=>{const y=c[m.key]||0;return`
                 <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
                     <div class="flex items-center gap-2">
-                        <i class="fa-solid ${P.icon} text-xs text-slate-400 w-4"></i>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${P.label}</span>
+                        <i class="fa-solid ${m.icon} text-xs text-slate-400 w-4"></i>
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${m.label}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <span class="text-[10px] text-slate-400 font-bold">Rp</span>
-                        <input type="number" min="0" value="${T}" id="input-exp-${P.key}" oninput="calcReportMonthlyExpenseTotal()" class="w-36 text-right font-bold text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-2.5 text-slate-800 dark:text-white focus:outline-hidden">
+                        <input type="number" min="0" value="${y}" id="input-exp-${m.key}" oninput="calcReportMonthlyExpenseTotal()" class="w-36 text-right font-bold text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-2.5 text-slate-800 dark:text-white focus:outline-hidden">
                     </div>
                 </div>
-            `}).join(""),m=r[d]||0;x=`
+            `}).join(""),u=e[s]||0;b=`
             <div class="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 max-w-2xl mx-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                     <div>
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rincian Biaya Operasional — ${e}</h4>
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rincian Biaya Operasional — ${t}</h4>
                         <p class="text-[10px] text-slate-400 mt-0.5">Isi rincian pengeluaran per kategori, total akan terakumulasi otomatis</p>
                     </div>
-                    <span class="text-xs font-black text-amber-600 dark:text-amber-400" id="label-exp-total">${a(m)}</span>
+                    <span class="text-xs font-black text-amber-600 dark:text-amber-400" id="label-exp-total">${l(u)}</span>
                 </div>
 
-                <div class="space-y-1">${b}</div>
+                <div class="space-y-1">${i}</div>
 
-                <button type="button" onclick="saveReportExpenseBreakdown('${d}')" class="w-full py-3 rounded-xl bg-[var(--color-primary)] text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+                <button type="button" onclick="saveReportExpenseBreakdown('${s}')" class="w-full py-3 rounded-xl bg-[var(--color-primary)] text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Biaya Operasional Bulan Ini
                 </button>
             </div>
-        `}const l=s.periodExpenses&&s.periodExpenses.length>0,i=l?`
+        `}const r=a.periodExpenses&&a.periodExpenses.length>0,x=r?`
         <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-receipt" style="color: var(--color-primary)"></i> Riwayat Transaksi Beban Operasional — ${e}
+                        <i class="fa-solid fa-receipt" style="color: var(--color-primary)"></i> Riwayat Transaksi Beban Operasional — ${t}
                     </h3>
                     <p class="text-[10px] text-slate-400 mt-0.5">Daftar nota pengeluaran operasional yang dicatat di Buku Kas</p>
                 </div>
@@ -927,39 +930,39 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                        ${s.periodExpenses.slice(0,10).map(n=>{const b=M.find(P=>P.key===n.category)||M[6],m=n.source==="cash"?"Kas Toko":n.source==="bank"?"Transfer Bank":"Dana Owner";return`
+                        ${a.periodExpenses.slice(0,10).map(c=>{const i=R.find(m=>m.key===c.category)||R[6],u=c.source==="cash"?"Kas Toko":c.source==="bank"?"Transfer Bank":"Dana Owner";return`
                                 <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                                    <td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${n.date||"-"}</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${c.date||"-"}</td>
                                     <td class="py-2.5 px-3">
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                                            <i class="fa-solid ${b.icon} text-[9px]" style="color: var(--color-primary)"></i>
-                                            <span>${b.label}</span>
+                                            <i class="fa-solid ${i.icon} text-[9px]" style="color: var(--color-primary)"></i>
+                                            <span>${i.label}</span>
                                         </span>
                                     </td>
                                     <td class="py-2.5 px-3">
-                                        <p class="font-bold text-slate-800 dark:text-white">${$(n.desc)}</p>
-                                        ${n.recipient?`<span class="text-[10px] text-slate-400">Penerima: ${$(n.recipient)}</span>`:""}
+                                        <p class="font-bold text-slate-800 dark:text-white">${P(c.desc)}</p>
+                                        ${c.recipient?`<span class="text-[10px] text-slate-400">Penerima: ${P(c.recipient)}</span>`:""}
                                     </td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">
-                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">${m}</span>
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">${u}</span>
                                     </td>
                                     <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-100 text-sm whitespace-nowrap">
-                                        - ${a(n.amount)}
+                                        - ${l(c.amount)}
                                     </td>
                                 </tr>
                             `}).join("")}
                     </tbody>
                 </table>
             </div>
-            ${s.periodExpenses.length>10?`
+            ${a.periodExpenses.length>10?`
                 <div class="text-center pt-2">
                     <button type="button" onclick="openAdminTab('expenses')" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">
-                        + Lihat ${s.periodExpenses.length-10} transaksi lainnya di Buku Kas
+                        + Lihat ${a.periodExpenses.length-10} transaksi lainnya di Buku Kas
                     </button>
                 </div>
             `:""}
         </div>
-    `:"";R("report-hub-content",`
+    `:"";j("report-hub-content",`
         <div class="space-y-6">
             <!-- HEADER TOOLBAR BIAYA OPERASIONAL -->
             <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
@@ -983,12 +986,12 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             </div>
 
             <!-- STATUS KONEKSI BUKU KAS -->
-            <div class="p-3.5 rounded-xl border ${l?"border-emerald-200/80 bg-emerald-50/50 dark:border-emerald-900/40 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300":"border-amber-200/80 bg-amber-50/50 dark:border-amber-900/40 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300"} flex items-center justify-between text-xs">
+            <div class="p-3.5 rounded-xl border ${r?"border-emerald-200/80 bg-emerald-50/50 dark:border-emerald-900/40 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300":"border-amber-200/80 bg-amber-50/50 dark:border-amber-900/40 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300"} flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2.5">
-                    <i class="fa-solid ${l?"fa-circle-check text-emerald-600 text-sm":"fa-circle-info text-amber-600 text-sm"}"></i>
+                    <i class="fa-solid ${r?"fa-circle-check text-emerald-600 text-sm":"fa-circle-info text-amber-600 text-sm"}"></i>
                     <div>
-                        <span class="font-bold">${l?"Sinkronisasi Otomatis Aktif":"Pencatatan Transaksional"}</span>: 
-                        <span class="text-[11px] opacity-90">${l?`Terhubung dengan Buku Kas (${s.transactionCount} transaksi di ${e}).`:`Belum ada nota transaksi di ${e}. Anda dapat mencatat nota baru atau memasukkan estimasi nominal di bawah.`}</span>
+                        <span class="font-bold">${r?"Sinkronisasi Otomatis Aktif":"Pencatatan Transaksional"}</span>: 
+                        <span class="text-[11px] opacity-90">${r?`Terhubung dengan Buku Kas (${a.transactionCount} transaksi di ${t}).`:`Belum ada nota transaksi di ${t}. Anda dapat mencatat nota baru atau memasukkan estimasi nominal di bawah.`}</span>
                     </div>
                 </div>
                 <button type="button" onclick="openExpenseModalFromReports()" class="shrink-0 text-[11px] font-black underline cursor-pointer hover:opacity-80" style="color: var(--color-primary)">
@@ -1000,15 +1003,15 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Distribusi Biaya Operasional Toko — ${e}</h3>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Total biaya operasional yang mengurangi Laba Kotor di Laba Rugi: <b class="text-rose-600 dark:text-rose-400">${a(s.total)}</b></p>
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Distribusi Biaya Operasional Toko — ${t}</h3>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Total biaya operasional yang mengurangi Laba Kotor di Laba Rugi: <b class="text-rose-600 dark:text-rose-400">${l(a.total)}</b></p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">${c}</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">${d}</div>
             </div>
 
             <!-- DAFTAR TRANSAKSI ITEM BUKU KAS (JIKA ADA) -->
-            ${i}
+            ${x}
 
             <!-- FORM PENYESUAIAN BULANAN / MANUAL OVERRIDE -->
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
@@ -1016,45 +1019,45 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Penyesuaian Manual / Input Angka Cepat</h4>
                     <p class="text-[10px] text-slate-400 mt-0.5">Digunakan jika Anda ingin menyesuaikan total operasional secara langsung per bulan</p>
                 </div>
-                ${x}
+                ${b}
             </div>
         </div>
-    `)},ht=()=>{let e=0;M.forEach(s=>{const d=H(`input-exp-${s.key}`);d&&(e+=parseFloat(d.value)||0)}),nt("label-exp-total",a(e))},wt=async e=>{I("Menyimpan biaya operasional...");const s={};let d=0;M.forEach(r=>{const o=H(`input-exp-${r.key}`),c=o&&parseFloat(o.value)||0;s[r.key]=c,d+=c}),k.taxSettings||(k.taxSettings={}),k.taxSettings.monthlyExpenses||(k.taxSettings.monthlyExpenses={}),k.taxSettings.expenseBreakdown||(k.taxSettings.expenseBreakdown={}),k.taxSettings.monthlyExpenses[e]=d,k.taxSettings.expenseBreakdown[e]=s;try{typeof window.saveApp=="function"&&await window.saveApp(["taxSettings"]),N(),L("Biaya operasional berhasil disimpan!"),B()}catch(r){N(),L("Gagal menyimpan biaya operasional: "+r.message)}},Pt=async(e,s)=>{await it(e,s),B()},$t=()=>{const e=Z();h===0?`${y}`:`${E[h-1]}${y}`;const s=e.omset-e.disc,d=Math.round(e.omset*.005),r=k.taxSettings||{},o={};for(let l=1;l<=12;l++)o[l]={omset:0,ppn:0,orderCount:0};S.forEach(l=>{const i=X(l);if(!i)return;const n=i.getMonth()+1;if(o[n]){const b=l.payment?.dppAmount!==void 0&&l.payment?.dppAmount!==null?parseFloat(l.payment.dppAmount):parseFloat(l.payment?.subtotal)||0;o[n].omset+=b,o[n].ppn+=parseFloat(l.payment?.ppnAmount)||0,o[n].orderCount++}});const c=Array.from({length:12},(l,i)=>i+1).map(l=>{const i=window.gTaxMonthly&&window.gTaxMonthly[l]&&window.gTaxMonthly[l].omset>0?window.gTaxMonthly[l]:o[l],n=h===l,b=Math.round((i.omset||0)*.005);return`
-            <div class="p-3.5 rounded-xl border transition-all ${n?"border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] shadow-2xs":"border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40"} space-y-2">
+    `)},$t=()=>{let t=0;R.forEach(a=>{const s=F(`input-exp-${a.key}`);s&&(t+=parseFloat(s.value)||0)}),pt("label-exp-total",l(t))},At=async t=>{I("Menyimpan biaya operasional...");const a={};let s=0;R.forEach(e=>{const o=F(`input-exp-${e.key}`),d=o&&parseFloat(o.value)||0;a[e.key]=d,s+=d}),g.taxSettings||(g.taxSettings={}),g.taxSettings.monthlyExpenses||(g.taxSettings.monthlyExpenses={}),g.taxSettings.expenseBreakdown||(g.taxSettings.expenseBreakdown={}),g.taxSettings.monthlyExpenses[t]=s,g.taxSettings.expenseBreakdown[t]=a;try{typeof window.saveApp=="function"&&await window.saveApp(["taxSettings"]),L(),D("Biaya operasional berhasil disimpan!"),B()}catch(e){L(),D("Gagal menyimpan biaya operasional: "+e.message)}},Tt=async(t,a)=>{await bt(t,a),B()},St=()=>{const t=Z();v===0?`${k}`:`${E[v-1]}${k}`;const a=t.omset-t.disc,s=Math.round(t.omset*.005),e=g.taxSettings||{},o={};for(let r=1;r<=12;r++)o[r]={omset:0,ppn:0,orderCount:0};S.forEach(r=>{const x=Q(r);if(!x)return;const c=x.getMonth()+1;if(o[c]){const i=r.payment?.dppAmount!==void 0&&r.payment?.dppAmount!==null?parseFloat(r.payment.dppAmount):parseFloat(r.payment?.subtotal)||0;o[c].omset+=i,o[c].ppn+=parseFloat(r.payment?.ppnAmount)||0,o[c].orderCount++}});const d=Array.from({length:12},(r,x)=>x+1).map(r=>{const x=window.gTaxMonthly&&window.gTaxMonthly[r]&&window.gTaxMonthly[r].omset>0?window.gTaxMonthly[r]:o[r],c=v===r,i=Math.round((x.omset||0)*.005);return`
+            <div class="p-3.5 rounded-xl border transition-all ${c?"border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] shadow-2xs":"border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40"} space-y-2">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-lg text-[10px] font-black flex items-center justify-center ${n?"bg-[var(--color-primary)] text-white":"bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}">${l}</span>
-                        <span class="text-xs font-black ${n?"text-[var(--color-primary)]":"text-slate-800 dark:text-white"}">${E[l-1]}</span>
-                        ${n?'<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[var(--color-primary)] text-white">Bulan Aktif</span>':""}
+                        <span class="w-6 h-6 rounded-lg text-[10px] font-black flex items-center justify-center ${c?"bg-[var(--color-primary)] text-white":"bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}">${r}</span>
+                        <span class="text-xs font-black ${c?"text-[var(--color-primary)]":"text-slate-800 dark:text-white"}">${E[r-1]}</span>
+                        ${c?'<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[var(--color-primary)] text-white">Bulan Aktif</span>':""}
                     </div>
                     <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-300">
-                        ${i.orderCount} Pesanan
+                        ${x.orderCount} Pesanan
                     </span>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-center">
                     <div>
                         <span class="block text-[9px] font-bold text-slate-400 uppercase">Omset (DPP)</span>
-                        <span class="text-xs font-bold text-slate-800 dark:text-white">${a(i.omset)}</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-white">${l(x.omset)}</span>
                     </div>
                     <div>
                         <span class="block text-[9px] font-bold uppercase" style="color: var(--color-primary)">PPN</span>
-                        <span class="text-xs font-bold" style="color: var(--color-primary)">${a(i.ppn)}</span>
+                        <span class="text-xs font-bold" style="color: var(--color-primary)">${l(x.ppn)}</span>
                     </div>
                     <div>
                         <span class="block text-[9px] font-bold uppercase" style="color: var(--color-primary)">PPh 0,5%</span>
-                        <span class="text-xs font-bold" style="color: var(--color-primary)">${a(b)}</span>
+                        <span class="text-xs font-bold" style="color: var(--color-primary)">${l(i)}</span>
                     </div>
                 </div>
             </div>
-        `}).join(""),x=Array.from({length:12},(l,i)=>i+1).map(l=>{const i=window.gTaxMonthly&&window.gTaxMonthly[l]&&window.gTaxMonthly[l].omset>0?window.gTaxMonthly[l]:o[l],n=h===l,b=Math.round((i.omset||0)*.005);return`
-            <tr class="${n?"bg-[rgba(var(--color-primary-rgb),0.08)] font-bold":"hover:bg-slate-50 dark:hover:bg-slate-800/40"} border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
-                <td class="py-3 px-4 text-xs font-bold text-slate-700 dark:text-slate-200">${E[l-1]}</td>
-                <td class="py-3 px-4 text-xs font-bold text-slate-800 dark:text-white text-right">${a(i.omset)}</td>
-                <td class="py-3 px-4 text-xs font-bold text-right" style="color:var(--color-primary)">${a(i.ppn)}</td>
-                <td class="py-3 px-4 text-xs font-bold text-right" style="color: var(--color-primary)">${a(b)}</td>
-                <td class="py-3 px-4 text-xs font-bold text-slate-500 dark:text-slate-400 text-right">${i.orderCount}</td>
+        `}).join(""),b=Array.from({length:12},(r,x)=>x+1).map(r=>{const x=window.gTaxMonthly&&window.gTaxMonthly[r]&&window.gTaxMonthly[r].omset>0?window.gTaxMonthly[r]:o[r],c=v===r,i=Math.round((x.omset||0)*.005);return`
+            <tr class="${c?"bg-[rgba(var(--color-primary-rgb),0.08)] font-bold":"hover:bg-slate-50 dark:hover:bg-slate-800/40"} border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
+                <td class="py-3 px-4 text-xs font-bold text-slate-700 dark:text-slate-200">${E[r-1]}</td>
+                <td class="py-3 px-4 text-xs font-bold text-slate-800 dark:text-white text-right">${l(x.omset)}</td>
+                <td class="py-3 px-4 text-xs font-bold text-right" style="color:var(--color-primary)">${l(x.ppn)}</td>
+                <td class="py-3 px-4 text-xs font-bold text-right" style="color: var(--color-primary)">${l(i)}</td>
+                <td class="py-3 px-4 text-xs font-bold text-slate-500 dark:text-slate-400 text-right">${x.orderCount}</td>
             </tr>
-        `}).join("");R("report-hub-content",`
+        `}).join("");j("report-hub-content",`
         <div class="space-y-4 sm:space-y-6">
             <!-- 5 KARTU PAJAK REKAPITULASI -->
             <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
@@ -1064,9 +1067,9 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Omset Bruto</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-coins"></i></span>
                         </div>
-                        <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${a(e.omset)}</p>
+                        <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${l(t.omset)}</p>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${e.orderCount} pesanan</p>
+                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${t.orderCount} pesanan</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
@@ -1074,7 +1077,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Diskon Produk</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"><i class="fa-solid fa-tag"></i></span>
                         </div>
-                        <p class="text-sm sm:text-lg font-black text-rose-500 truncate">${a(e.disc)}</p>
+                        <p class="text-sm sm:text-lg font-black text-rose-500 truncate">${l(t.disc)}</p>
                     </div>
                     <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Potongan belanja</p>
                 </div>
@@ -1084,7 +1087,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">DPP Penjualan</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-calculator"></i></span>
                         </div>
-                        <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${a(s)}</p>
+                        <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${l(a)}</p>
                     </div>
                     <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Dasar Pengenaan Pajak</p>
                 </div>
@@ -1094,9 +1097,9 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold uppercase tracking-widest" style="color:var(--color-primary)">PPN Keluaran</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-receipt"></i></span>
                         </div>
-                        <p class="text-sm sm:text-lg font-black truncate" style="color:var(--color-primary)">${a(e.ppn)}</p>
+                        <p class="text-sm sm:text-lg font-black truncate" style="color:var(--color-primary)">${l(t.ppn)}</p>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${e.ppn>0?"Wajib setor kas negara":"Bebas PPN / Tarif 0%"}</p>
+                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${t.ppn>0?"Wajib setor kas negara":"Bebas PPN / Tarif 0%"}</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 col-span-2 lg:col-span-1 rounded-2xl flex flex-col justify-between" style="border: 1px solid rgba(var(--color-primary-rgb), 0.25); background: rgba(var(--color-primary-rgb), 0.05);">
                     <div>
@@ -1104,7 +1107,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">PPh Final 0,5%</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.2); color: var(--color-primary);"><i class="fa-solid fa-building-columns"></i></span>
                         </div>
-                        <p class="text-sm sm:text-lg font-black truncate" style="color: var(--color-primary)">${a(d)}</p>
+                        <p class="text-sm sm:text-lg font-black truncate" style="color: var(--color-primary)">${l(s)}</p>
                     </div>
                     <p class="text-[10px] font-medium mt-2 pt-2 border-t border-[rgba(var(--color-primary-rgb),0.15)]" style="color: var(--color-primary); opacity: 0.85;">PP 55/2022 UMKM</p>
                 </div>
@@ -1116,7 +1119,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                 <div class="lg:col-span-2 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
                     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                         <div>
-                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rekapitulasi SPT Per Bulan — ${y}</h3>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rekapitulasi SPT Per Bulan — ${k}</h3>
                             <p class="text-[10px] text-slate-400 mt-0.5">Dasar Pengenaan Pajak, PPN Keluaran, &amp; PPh Final 0,5%</p>
                         </div>
                         <button type="button" onclick="openTaxDocPreview('summary')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0">
@@ -1126,7 +1129,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     
                     <!-- Mobile View (< 640px): Native Cards -->
                     <div class="block sm:hidden p-3.5 space-y-2.5">
-                        ${c}
+                        ${d}
                     </div>
 
                     <!-- Desktop View (>= 640px): Full Table -->
@@ -1141,7 +1144,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                                     <th class="py-2.5 px-4 text-right">Pesanan</th>
                                 </tr>
                             </thead>
-                            <tbody>${x}</tbody>
+                            <tbody>${b}</tbody>
                         </table>
                     </div>
                 </div>
@@ -1161,17 +1164,17 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                     <div class="space-y-3">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Nama Badan Usaha</label>
-                            <input type="text" id="report-tax-company" value="${$(r.companyName||k.store?.name||"")}" class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-bold focus:outline-hidden">
+                            <input type="text" id="report-tax-company" value="${P(e.companyName||g.store?.name||"")}" class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-bold focus:outline-hidden">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">NPWP 16-Digit CTAS 2026</label>
-                            <input type="text" id="report-tax-npwp" value="${$(r.npwp||k.store?.taxNpwp||"")}" placeholder="16 digit NPWP..." class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-bold focus:outline-hidden">
+                            <input type="text" id="report-tax-npwp" value="${P(e.npwp||g.store?.taxNpwp||"")}" placeholder="16 digit NPWP..." class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-bold focus:outline-hidden">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Skema PPh Toko</label>
                             <select id="report-tax-scheme" class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-bold focus:outline-hidden cursor-pointer">
-                                <option value="umkm_final" ${r.taxScheme==="umkm_final"?"selected":""}>PPh Final UMKM 0,5% (PP 55/2022)</option>
-                                <option value="badan_normal" ${r.taxScheme==="badan_normal"?"selected":""}>PPh Badan Normal 22% (UU HPP)</option>
+                                <option value="umkm_final" ${e.taxScheme==="umkm_final"?"selected":""}>PPh Final UMKM 0,5% (PP 55/2022)</option>
+                                <option value="badan_normal" ${e.taxScheme==="badan_normal"?"selected":""}>PPh Badan Normal 22% (UU HPP)</option>
                             </select>
                         </div>
                         <button type="button" onclick="saveReportTaxSettings()" class="w-full py-2.5 rounded-xl bg-[var(--color-primary)] text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 mt-2 shadow-2xs">
@@ -1181,7 +1184,7 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                 </div>
             </div>
         </div>
-    `)},At=async()=>{I("Menyimpan pengaturan pajak..."),k.taxSettings||(k.taxSettings={});const e=q("report-tax-company"),s=q("report-tax-npwp"),d=q("report-tax-scheme");k.taxSettings.companyName=e,k.taxSettings.npwp=s,k.taxSettings.taxScheme=d,k.store||(k.store={}),k.store.taxNpwp=s;try{typeof window.saveApp=="function"&&await window.saveApp(["taxSettings","store"]),N(),L("Identitas pajak berhasil diperbarui!"),B()}catch(r){N(),L("Gagal menyimpan: "+r.message)}},Tt=()=>{const e=k.taxSettings?.balanceSheet||{kas:0},s=ct(),d=z(),r=parseFloat(e.kas)||0,o=O.reduce((b,m)=>b+(Q(m).totalAkhir||0),0),c=s.assetHpp||0,x=r+o+c,l=d.totalUnpaidDebt||0,i=Math.max(0,x-l),n=l+i;R("report-hub-content",`
+    `)},jt=async()=>{I("Menyimpan pengaturan pajak..."),g.taxSettings||(g.taxSettings={});const t=G("report-tax-company"),a=G("report-tax-npwp"),s=G("report-tax-scheme");g.taxSettings.companyName=t,g.taxSettings.npwp=a,g.taxSettings.taxScheme=s,g.store||(g.store={}),g.store.taxNpwp=a;try{typeof window.saveApp=="function"&&await window.saveApp(["taxSettings","store"]),L(),D("Identitas pajak berhasil diperbarui!"),B()}catch(e){L(),D("Gagal menyimpan: "+e.message)}},Rt=()=>{const t=g.taxSettings?.balanceSheet||{kas:0},a=ut(),s=W(),e=parseFloat(t.kas)||0,o=N.reduce((i,u)=>i+(Y(u).totalAkhir||0),0),d=a.assetHpp||0,b=e+o+d,r=s.totalUnpaidDebt||0,x=Math.max(0,b-r),c=r+x;j("report-hub-content",`
         <div class="space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- AKTIVA (ASET) -->
@@ -1191,25 +1194,25 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-vault"></i></span>
                             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">ASET &amp; AKTIVA</h3>
                         </div>
-                        <span class="text-xs font-black" style="color: var(--color-primary)">${a(x)}</span>
+                        <span class="text-xs font-black" style="color: var(--color-primary)">${l(b)}</span>
                     </div>
 
                     <div class="space-y-3">
                         <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Kas di Tangan / Bank (manual)</span>
-                            <input type="number" min="0" value="${r}" onchange="saveBalanceField('kas', this.value)" class="w-36 text-right font-bold text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-1 px-2.5 text-slate-800 dark:text-white focus:outline-hidden">
+                            <input type="number" min="0" value="${e}" onchange="saveBalanceField('kas', this.value)" class="w-36 text-right font-bold text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-1 px-2.5 text-slate-800 dark:text-white focus:outline-hidden">
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Piutang Pelanggan (otomatis)</span>
-                            <span class="font-bold text-slate-800 dark:text-white">${a(o)}</span>
+                            <span class="font-bold text-slate-800 dark:text-white">${l(o)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Persediaan Barang Dagang (HPP)</span>
-                            <span class="font-bold text-slate-800 dark:text-white">${a(c)}</span>
+                            <span class="font-bold text-slate-800 dark:text-white">${l(d)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-black text-xs border border-slate-200 dark:border-slate-700">
                             <span>TOTAL AKTIVA</span>
-                            <span style="color: var(--color-primary)">${a(x)}</span>
+                            <span style="color: var(--color-primary)">${l(b)}</span>
                         </div>
                     </div>
                 </div>
@@ -1221,21 +1224,21 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                             <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs"><i class="fa-solid fa-scale-balanced"></i></span>
                             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">KEWAJIBAN &amp; MODAL</h3>
                         </div>
-                        <span class="text-xs font-black text-slate-800 dark:text-white">${a(n)}</span>
+                        <span class="text-xs font-black text-slate-800 dark:text-white">${l(c)}</span>
                     </div>
 
                     <div class="space-y-3">
                         <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Utang Usaha ke Supplier (otomatis)</span>
-                            <span class="font-bold text-rose-500">${a(l)}</span>
+                            <span class="font-bold text-rose-500">${l(r)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Modal &amp; Laba Ditahan</span>
-                            <span class="font-bold" style="color: var(--color-primary)">${a(i)}</span>
+                            <span class="font-bold" style="color: var(--color-primary)">${l(x)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-black text-xs border border-slate-200 dark:border-slate-700">
                             <span>TOTAL PASIVA (KEWAJIBAN + MODAL)</span>
-                            <span class="text-slate-800 dark:text-white">${a(n)}</span>
+                            <span class="text-slate-800 dark:text-white">${l(c)}</span>
                         </div>
                     </div>
                 </div>
@@ -1247,4 +1250,4 @@ import{e as H,a1 as nt,f as a,l as I,n as N,k as L,b as R,q as _,a as k,_ as dt,
                 </button>
             </div>
         </div>
-    `)},ot=()=>{A==="executive"||A==="sales"?F("income"):A==="tax"?F("summary"):A==="balance"?F("balance"):F("income")};window.renderReportsHubView=et;window.switchReportTab=at;window.changeReportYear=st;window.changeReportMonth=rt;window.refreshReportData=lt;window.openReportCurrentDocPreview=ot;window.filterStockReportStatus=mt;window.filterStockReportCategory=ft;window.filterStockReportSearch=gt;window.clearStockReportSearch=ut;window.calcReportMonthlyExpenseTotal=ht;window.saveReportExpenseBreakdown=wt;window.saveReportMonthlyExpense=Pt;window.saveReportTaxSettings=At;const It={renderReportsHubView:et,switchReportTab:at,changeReportYear:st,changeReportMonth:rt,refreshReportData:lt,openReportCurrentDocPreview:ot};export{M as EXPENSE_CATEGORIES,ht as calcReportMonthlyExpenseTotal,rt as changeReportMonth,st as changeReportYear,ut as clearStockReportSearch,It as default,V as fetchReportOrdersData,ft as filterStockReportCategory,gt as filterStockReportSearch,mt as filterStockReportStatus,tt as getExpenseBreakdownForPeriod,Z as getReportFinancialTotals,vt as openExpenseModalFromReports,ot as openReportCurrentDocPreview,X as parseOrderDate,lt as refreshReportData,Tt as renderBalanceSheetTab,kt as renderDebtsReceivablesTab,xt as renderExecutiveSummaryTab,yt as renderExpensesTab,pt as renderReportTabContent,et as renderReportsHubView,B as renderReportsShell,bt as renderSalesAnalyticsTab,C as renderStockValuationTab,$t as renderTaxComplianceTab,A as reportActiveTab,Kt as reportDebtFilter,h as reportMonth,Ot as reportSalesPeriod,D as reportSearchQuery,K as reportStockCategory,U as reportStockFilter,y as reportYear,wt as saveReportExpenseBreakdown,Pt as saveReportMonthlyExpense,At as saveReportTaxSettings,at as switchReportTab};
+    `)},dt=()=>{T==="executive"||T==="sales"?K("income"):T==="tax"?K("summary"):T==="balance"?K("balance"):K("income")};window.renderReportsHubView=X;window.switchReportTab=tt;window.changeReportYear=et;window.changeReportMonth=at;window.refreshReportData=st;window.openReportCurrentDocPreview=dt;window.filterStockReportStatus=vt;window.filterStockReportCategory=yt;window.filterStockReportSearch=it;window.clearStockReportSearch=kt;window.renderStockReportListOnly=nt;window.calcReportMonthlyExpenseTotal=$t;window.saveReportExpenseBreakdown=At;window.saveReportMonthlyExpense=Tt;window.saveReportTaxSettings=jt;const Ut={renderReportsHubView:X,switchReportTab:tt,changeReportYear:et,changeReportMonth:at,refreshReportData:st,openReportCurrentDocPreview:dt};export{R as EXPENSE_CATEGORIES,$t as calcReportMonthlyExpenseTotal,at as changeReportMonth,et as changeReportYear,kt as clearStockReportSearch,Ut as default,U as fetchReportOrdersData,yt as filterStockReportCategory,it as filterStockReportSearch,vt as filterStockReportStatus,z as getExpenseBreakdownForPeriod,ot as getFilteredStockReportItems,Z as getReportFinancialTotals,lt as getStockValuationData,wt as openExpenseModalFromReports,dt as openReportCurrentDocPreview,Q as parseOrderDate,st as refreshReportData,Rt as renderBalanceSheetTab,ht as renderDebtsReceivablesTab,ft as renderExecutiveSummaryTab,Pt as renderExpensesTab,mt as renderReportTabContent,X as renderReportsHubView,B as renderReportsShell,gt as renderSalesAnalyticsTab,rt as renderStockReportListHtml,nt as renderStockReportListOnly,H as renderStockValuationTab,St as renderTaxComplianceTab,T as reportActiveTab,Ft as reportDebtFilter,v as reportMonth,Ct as reportSalesPeriod,M as reportSearchQuery,O as reportStockCategory,C as reportStockFilter,k as reportYear,At as saveReportExpenseBreakdown,Tt as saveReportMonthlyExpense,jt as saveReportTaxSettings,tt as switchReportTab};

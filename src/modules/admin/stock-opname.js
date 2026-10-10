@@ -487,23 +487,29 @@ const updateSoItemRowDom = (key) => {
     const item = soAuditSession[key];
     if (!item) return;
 
-    // Update SEMUA input fisik (baik desktop maupun mobile)
+    // Update SEMUA input fisik (baik desktop maupun mobile, proteksi activeElement agar tidak mental saat diketik)
     const physInputs = rowEl.querySelectorAll('.so-phys-input');
     physInputs.forEach(input => {
-        const newVal = item.physicalStock !== null ? String(item.physicalStock) : '';
-        if (input.value !== newVal) input.value = newVal;
+        if (document.activeElement !== input) {
+            const newVal = item.physicalStock !== null ? String(item.physicalStock) : '';
+            if (input.value !== newVal) input.value = newVal;
+        }
     });
 
     const storeInputs = rowEl.querySelectorAll('.so-phys-store');
     storeInputs.forEach(input => {
-        const newVal = item.physicalStoreStock !== null ? String(item.physicalStoreStock) : '';
-        if (input.value !== newVal) input.value = newVal;
+        if (document.activeElement !== input) {
+            const newVal = item.physicalStoreStock !== null ? String(item.physicalStoreStock) : '';
+            if (input.value !== newVal) input.value = newVal;
+        }
     });
 
     const whInputs = rowEl.querySelectorAll('.so-phys-warehouse');
     whInputs.forEach(input => {
-        const newVal = item.physicalWarehouseStock !== null ? String(item.physicalWarehouseStock) : '';
-        if (input.value !== newVal) input.value = newVal;
+        if (document.activeElement !== input) {
+            const newVal = item.physicalWarehouseStock !== null ? String(item.physicalWarehouseStock) : '';
+            if (input.value !== newVal) input.value = newVal;
+        }
     });
 
     const totalDisplays = rowEl.querySelectorAll('.so-phys-total-display');

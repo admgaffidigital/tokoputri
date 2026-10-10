@@ -373,6 +373,167 @@ export const getExpenseMetrics = () => {
 };
 
 /**
+ * Render Konten Tabel & Kartu Daftar Pengeluaran (Zero-Flicker Partial DOM)
+ */
+export const renderExpenseLedgerHtml = (filteredList, metrics) => {
+    return `
+        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white">Buku Kas Pengeluaran Operasional</h3>
+                <p class="text-[10px] text-slate-400 mt-0.5">Menampilkan ${filteredList.length} dari total ${(appData.expenses || []).length} catatan</p>
+            </div>
+            <span class="text-xs font-black" style="color: var(--color-primary);">${fCur(metrics.totalAmount)}</span>
+        </div>
+
+        ${filteredList.length === 0 ? `
+            <!-- Empty State -->
+            <div class="py-16 px-4 text-center flex flex-col items-center justify-center">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-3 shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200">Belum Ada Catatan Biaya Operasional</h4>
+                <p class="text-xs text-slate-400 max-w-sm mt-1">Belum ada transaksi pengeluaran operasional yang dicatat untuk filter periode ini.</p>
+                <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Catat Pengeluaran Pertama</span>
+                </button>
+            </div>
+        ` : `
+            <!-- Desktop Table (>= 768px) -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50/80 dark:bg-slate-800/60 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100 dark:border-slate-800">
+                        <tr>
+                            <th class="py-3 px-4">Tanggal</th>
+                            <th class="py-3 px-4">Kategori Beban</th>
+                            <th class="py-3 px-4">Keperluan &amp; Penerima</th>
+                            <th class="py-3 px-4">Sumber Pembayaran</th>
+                            <th class="py-3 px-4 text-center">Bukti Nota</th>
+                            <th class="py-3 px-4 text-right">Nominal Keluar</th>
+                            <th class="py-3 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                        ${filteredList.map(exp => {
+                            const catObj = EXPENSE_CATEGORIES.find(c => c.key === exp.category) || EXPENSE_CATEGORIES[6];
+                            const srcObj = EXPENSE_SOURCES.find(s => s.key === exp.source) || EXPENSE_SOURCES[0];
+                            const hasReceipt = Boolean(exp.receiptImg);
+
+                            return `
+                                <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                                    <td class="py-3.5 px-4 font-medium text-slate-500 whitespace-nowrap">${formatIndoDate(exp.date)}</td>
+                                    <td class="py-3.5 px-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
+                                            <i class="fa-solid ${catObj.icon} text-[10px]" style="color: var(--color-primary)"></i>
+                                            <span>${catObj.label}</span>
+                                        </span>
+                                    </td>
+                                    <td class="py-3.5 px-4 max-w-xs">
+                                        <p class="font-bold text-slate-800 dark:text-white leading-snug">${esc(exp.desc)}</p>
+                                        ${exp.recipient ? `<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: <span class="font-semibold text-slate-600 dark:text-slate-300">${esc(exp.recipient)}</span></p>` : ''}
+                                    </td>
+                                    <td class="py-3.5 px-4">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                            exp.source === 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200 dark:border-emerald-800/50' :
+                                            exp.source === 'bank' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200 dark:border-blue-800/50' :
+                                            'bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200 dark:border-purple-800/50'
+                                        }">
+                                            <i class="fa-solid ${srcObj.icon} text-[9px]"></i>
+                                            <span>${srcObj.shortLabel}</span>
+                                        </span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center">
+                                        ${hasReceipt ? `
+                                            <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" title="Lihat Foto Struk" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer">
+                                                <i class="fa-solid fa-image text-xs"></i>
+                                            </button>
+                                        ` : `<span class="text-[10px] text-slate-300 dark:text-slate-600">-</span>`}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                        <span class="font-black text-slate-800 dark:text-slate-100 text-sm">- ${fCur(exp.amount)}</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-1.5">
+                                            <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak Bukti Kas Keluar (BKK)" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
+                                                <i class="fa-solid fa-print text-xs"></i>
+                                            </button>
+                                            <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit Pengeluaran" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-blue-600 dark:text-blue-400 bg-blue-50/70 hover:bg-blue-100 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
+                                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                            </button>
+                                            <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus Pengeluaran" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-50/70 hover:bg-rose-100 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards (< 768px) -->
+            <div class="md:hidden p-3.5 space-y-3">
+                ${filteredList.map(exp => {
+                    const catObj = EXPENSE_CATEGORIES.find(c => c.key === exp.category) || EXPENSE_CATEGORIES[6];
+                    const srcObj = EXPENSE_SOURCES.find(s => s.key === exp.source) || EXPENSE_SOURCES[0];
+                    const hasReceipt = Boolean(exp.receiptImg);
+
+                    return `
+                        <div class="card-native p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
+                                        <i class="fa-solid ${catObj.icon} text-[9px]" style="color: var(--color-primary)"></i>
+                                        <span>${catObj.label}</span>
+                                    </span>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold ${
+                                        exp.source === 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200/60' :
+                                        exp.source === 'bank' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200/60' :
+                                        'bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200/60'
+                                    }">
+                                        <i class="fa-solid ${srcObj.icon} text-[8px]"></i>
+                                        <span>${srcObj.shortLabel}</span>
+                                    </span>
+                                </div>
+                                <span class="text-[10.5px] text-slate-400 font-bold shrink-0">${formatIndoDate(exp.date)}</span>
+                            </div>
+
+                            <div>
+                                <p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${esc(exp.desc)}</p>
+                                ${exp.recipient ? `<p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1"><i class="fa-solid fa-store text-slate-400 text-[9px]"></i> Penerima: <span class="font-bold text-slate-600 dark:text-slate-300">${esc(exp.recipient)}</span></p>` : ''}
+                            </div>
+
+                            <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80 gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-black text-slate-900 dark:text-white">- ${fCur(exp.amount)}</span>
+                                    ${hasReceipt ? `
+                                        <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" class="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer active:scale-95 border border-amber-300/60">
+                                            <i class="fa-solid fa-image text-[9px]"></i> Nota
+                                        </button>
+                                    ` : ''}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak BKK" class="btn-native-icon w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
+                                        <i class="fa-solid fa-print text-xs"></i>
+                                    </button>
+                                    <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit" class="btn-native-icon w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200/60 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </button>
+                                    <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus" class="btn-native-icon w-9 h-9 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `}
+    `;
+};
+
+/**
  * Render Halaman Utama Biaya Operasional di CMS Admin
  */
 export const renderExpensesAdminView = () => {
@@ -569,177 +730,35 @@ export const renderExpensesAdminView = () => {
                     </div>
                 </div>
 
-                <!-- Input Pencarian Bebas -->
+                <!-- Input Pencarian Bebas (Zero-Flicker) -->
                 <div class="relative">
                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                    <input type="text" value="${esc(expSearchQuery)}" placeholder="Cari keterangan, keperluan, atau nama toko/vendor..." oninput="window.setExpenseFilter('search', this.value)" class="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-hidden">
-                    ${expSearchQuery ? `<button type="button" onclick="window.setExpenseFilter('search', '')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xs"></i></button>` : ''}
+                    <input type="text" id="expense-search-input" value="${esc(expSearchQuery)}" placeholder="Cari keterangan, keperluan, atau nama toko/vendor..." oninput="window.setExpenseFilter('search', this.value)" class="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-hidden">
+                    <button type="button" id="expense-search-clear-btn" onclick="window.setExpenseFilter('search', '')" style="display: ${expSearchQuery ? 'block' : 'none'};" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
             </div>
 
-            <!-- 5. DAFTAR BUKU KAS PENGELUARAN (LEDGER TABLE & CARDS) -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
-                <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white">Buku Kas Pengeluaran Operasional</h3>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Menampilkan ${filteredList.length} dari total ${(appData.expenses || []).length} catatan</p>
-                    </div>
-                    <span class="text-xs font-black" style="color: var(--color-primary);">${fCur(metrics.totalAmount)}</span>
-                </div>
-
-                ${filteredList.length === 0 ? `
-                    <!-- Empty State -->
-                    <div class="py-16 px-4 text-center flex flex-col items-center justify-center">
-                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-3 shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
-                            <i class="fa-solid fa-receipt"></i>
-                        </div>
-                        <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200">Belum Ada Catatan Biaya Operasional</h4>
-                        <p class="text-xs text-slate-400 max-w-sm mt-1">Belum ada transaksi pengeluaran operasional yang dicatat untuk filter periode ini.</p>
-                        <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Catat Pengeluaran Pertama</span>
-                        </button>
-                    </div>
-                ` : `
-                    <!-- Desktop Table (>= 768px) -->
-                    <div class="hidden md:block overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50/80 dark:bg-slate-800/60 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100 dark:border-slate-800">
-                                <tr>
-                                    <th class="py-3 px-4">Tanggal</th>
-                                    <th class="py-3 px-4">Kategori Beban</th>
-                                    <th class="py-3 px-4">Keperluan &amp; Penerima</th>
-                                    <th class="py-3 px-4">Sumber Pembayaran</th>
-                                    <th class="py-3 px-4 text-center">Bukti Nota</th>
-                                    <th class="py-3 px-4 text-right">Nominal Keluar</th>
-                                    <th class="py-3 px-4 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                                ${filteredList.map(exp => {
-                                    const catObj = EXPENSE_CATEGORIES.find(c => c.key === exp.category) || EXPENSE_CATEGORIES[6];
-                                    const srcObj = EXPENSE_SOURCES.find(s => s.key === exp.source) || EXPENSE_SOURCES[0];
-                                    const hasReceipt = Boolean(exp.receiptImg);
-
-                                    return `
-                                        <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors">
-                                            <td class="py-3.5 px-4 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                                                <div class="flex items-center gap-2">
-                                                    <i class="fa-regular fa-calendar text-slate-400"></i>
-                                                    <span>${formatIndoDate(exp.date)}</span>
-                                                </div>
-                                            </td>
-                                            <td class="py-3.5 px-4">
-                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                                    <i class="fa-solid ${catObj.icon}" style="color: var(--color-primary)"></i>
-                                                    <span>${catObj.label}</span>
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-4">
-                                                <p class="font-bold text-slate-800 dark:text-white">${esc(exp.desc)}</p>
-                                                ${exp.recipient ? `<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: <span class="font-semibold text-slate-600 dark:text-slate-300">${esc(exp.recipient)}</span></p>` : ''}
-                                            </td>
-                                            <td class="py-3.5 px-4">
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                                                    exp.source === 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200 dark:border-emerald-800/50' :
-                                                    exp.source === 'bank' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200 dark:border-blue-800/50' :
-                                                    'bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200 dark:border-purple-800/50'
-                                                }">
-                                                    <i class="fa-solid ${srcObj.icon} text-[9px]"></i>
-                                                    <span>${srcObj.shortLabel}</span>
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center">
-                                                ${hasReceipt ? `
-                                                    <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" title="Lihat Foto Struk" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer">
-                                                        <i class="fa-solid fa-image text-xs"></i>
-                                                    </button>
-                                                ` : `<span class="text-[10px] text-slate-300 dark:text-slate-600">-</span>`}
-                                            </td>
-                                            <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                                <span class="font-black text-slate-800 dark:text-slate-100 text-sm">- ${fCur(exp.amount)}</span>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                                <div class="inline-flex items-center gap-1.5">
-                                                    <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak Bukti Kas Keluar (BKK)" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
-                                                        <i class="fa-solid fa-print text-xs"></i>
-                                                    </button>
-                                                    <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit Pengeluaran" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-blue-600 dark:text-blue-400 bg-blue-50/70 hover:bg-blue-100 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
-                                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                                    </button>
-                                                    <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus Pengeluaran" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-50/70 hover:bg-rose-100 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
-                                                        <i class="fa-solid fa-trash-can text-xs"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Mobile Cards (< 768px) -->
-                    <div class="md:hidden p-3.5 space-y-3">
-                        ${filteredList.map(exp => {
-                            const catObj = EXPENSE_CATEGORIES.find(c => c.key === exp.category) || EXPENSE_CATEGORIES[6];
-                            const srcObj = EXPENSE_SOURCES.find(s => s.key === exp.source) || EXPENSE_SOURCES[0];
-                            const hasReceipt = Boolean(exp.receiptImg);
-
-                            return `
-                                <div class="card-native p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <div class="flex items-center gap-1.5 flex-wrap">
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
-                                                <i class="fa-solid ${catObj.icon} text-[9px]" style="color: var(--color-primary)"></i>
-                                                <span>${catObj.label}</span>
-                                            </span>
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold ${
-                                                exp.source === 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200/60' :
-                                                exp.source === 'bank' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200/60' :
-                                                'bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200/60'
-                                            }">
-                                                <i class="fa-solid ${srcObj.icon} text-[8px]"></i>
-                                                <span>${srcObj.shortLabel}</span>
-                                            </span>
-                                        </div>
-                                        <span class="text-[10.5px] text-slate-400 font-bold shrink-0">${formatIndoDate(exp.date)}</span>
-                                    </div>
-
-                                    <div>
-                                        <p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${esc(exp.desc)}</p>
-                                        ${exp.recipient ? `<p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1"><i class="fa-solid fa-store text-slate-400 text-[9px]"></i> Penerima: <span class="font-bold text-slate-600 dark:text-slate-300">${esc(exp.recipient)}</span></p>` : ''}
-                                    </div>
-
-                                    <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80 gap-2">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-black text-slate-900 dark:text-white">- ${fCur(exp.amount)}</span>
-                                            ${hasReceipt ? `
-                                                <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" class="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer active:scale-95 border border-amber-300/60">
-                                                    <i class="fa-solid fa-image text-[9px]"></i> Nota
-                                                </button>
-                                            ` : ''}
-                                        </div>
-                                        <div class="flex items-center gap-1.5 shrink-0">
-                                            <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak BKK" class="btn-native-icon w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
-                                                <i class="fa-solid fa-print text-xs"></i>
-                                            </button>
-                                            <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit" class="btn-native-icon w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200/60 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
-                                                <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                            </button>
-                                            <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus" class="btn-native-icon w-9 h-9 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
-                                                <i class="fa-solid fa-trash-can text-xs"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `}
+            <!-- 5. DAFTAR BUKU KAS PENGELUARAN (LEDGER TABLE & CARDS - Zero-Flicker Partial DOM) -->
+            <div id="expense-ledger-container" class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+                ${renderExpenseLedgerHtml(filteredList, metrics)}
             </div>
         </div>
     `);
+};
+
+/**
+ * Perbarui hanya container daftar buku kas pengeluaran (Zero-Flicker Partial DOM)
+ */
+export const renderExpenseLedgerOnly = () => {
+    if (typeof document === 'undefined') return;
+    const container = document.getElementById('expense-ledger-container');
+    if (!container) {
+        renderExpensesAdminView();
+        return;
+    }
+    const filteredList = getFilteredExpenses();
+    const metrics = getExpenseMetrics();
+    container.innerHTML = renderExpenseLedgerHtml(filteredList, metrics);
 };
 
 // ─── Selector Sumber Dana Helper ─────────────────────────────
@@ -1170,7 +1189,21 @@ export const setExpenseFilter = (type, val) => {
     else if (type === 'category') expSelectedCategory = val;
     else if (type === 'source') expSelectedSource = val;
     else if (type === 'sort') expSortBy = val;
-    else if (type === 'search') expSearchQuery = val;
+    else if (type === 'search') {
+        expSearchQuery = val || '';
+        if (typeof document !== 'undefined') {
+            const inp = document.getElementById('expense-search-input');
+            if (inp && inp.value !== expSearchQuery && document.activeElement !== inp) {
+                inp.value = expSearchQuery;
+            }
+            const clearBtn = document.getElementById('expense-search-clear-btn');
+            if (clearBtn) {
+                clearBtn.style.display = expSearchQuery ? 'block' : 'none';
+            }
+        }
+        renderExpenseLedgerOnly();
+        return;
+    }
 
     renderExpensesAdminView();
 };
@@ -1319,3 +1352,4 @@ window.closeExpenseReceiptPreview = closeExpenseReceiptPreview;
 window.exportExpensesToCsv = exportExpensesToCsv;
 window.printExpenseSlip = printExpenseSlip;
 window.selectExpenseSource = selectExpenseSource;
+window.renderExpenseLedgerOnly = renderExpenseLedgerOnly;

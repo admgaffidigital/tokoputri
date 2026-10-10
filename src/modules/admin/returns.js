@@ -193,8 +193,11 @@ export const renderReturnsView = () => {
                             value="${esc(activeSearchQuery)}" 
                             oninput="window.handleReturnsSearch(this.value)" 
                             placeholder="${currentReturnTab === 'sales' ? 'Cari no retur, no nota, nama pelanggan...' : 'Cari no retur, supplier, rujukan PO...'}" 
-                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-2.5 pl-10 pr-4 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
+                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-2.5 pl-10 pr-9 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
                         >
+                        <button type="button" id="returns-search-clear-btn" onclick="window.handleReturnsSearch(''); const ri=el('returns-search-input'); if(ri){ri.value='';ri.focus();}" class="${activeSearchQuery ? '' : 'hidden'} absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian">
+                            <i class="fa-solid fa-circle-xmark text-sm"></i>
+                        </button>
                     </div>
 
                     <!-- View Mode Toggle Switcher (Card vs Table) -->
@@ -276,6 +279,8 @@ export const switchReturnsViewMode = (mode) => {
  */
 export const handleReturnsSearch = (query) => {
     activeSearchQuery = (query || '').trim().toLowerCase();
+    const clearBtn = el('returns-search-clear-btn');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !activeSearchQuery);
     const wrapper = el('returns-table-wrapper');
     if (wrapper) {
         wrapper.innerHTML = currentReturnTab === 'sales' ? renderSalesReturnsTableHtml() : renderVendorReturnsTableHtml();

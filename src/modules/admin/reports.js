@@ -939,106 +939,10 @@ export const renderSalesAnalyticsTab = () => {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// 3. TAB 3: LAPORAN STOK & VALUASI ASET GUDANG
-// ═══════════════════════════════════════════════════════════════
-export const renderStockValuationTab = () => {
-    const products = appData.products || [];
-    const categories = appData.categories || [];
-    const brands = appData.brands || [];
-
-    let totalAssetHpp = 0;
-    let totalAssetRetail = 0;
-    let totalPhysicalUnits = 0;
-    let totalSkuCount = 0;
-    let outOfStockCount = 0;
-    let lowStockCount = 0;
-    let safeStockCount = 0;
-
-    const stockItems = [];
-
-    products.forEach(p => {
-        const minStk = parseFloat(p.minStock) || 5;
-        if (p.variants && p.variants.length) {
-            p.variants.forEach(v => {
-                totalSkuCount++;
-                const stk = parseFloat(v.stock) || 0;
-                const hpp = parseFloat(v.hpp) || 0;
-                const price = parseFloat(v.price) || 0;
-                totalPhysicalUnits += stk;
-                totalAssetHpp += stk * hpp;
-                totalAssetRetail += stk * price;
-
-                let status = 'safe';
-                if (stk <= 0) { outOfStockCount++; status = 'empty'; }
-                else if (stk <= minStk) { lowStockCount++; status = 'low'; }
-                else { safeStockCount++; }
-
-                stockItems.push({
-                    id: p.id,
-                    variantId: v.id || v.name,
-                    name: `${p.name} (${v.name})`,
-                    category: p.category || 'Umum',
-                    brand: p.brand || '-',
-                    stock: stk,
-                    unit: p.unit || 'pcs',
-                    hpp: hpp,
-                    price: price,
-                    totalHpp: stk * hpp,
-                    totalRetail: stk * price,
-                    status: status,
-                    minStock: minStk,
-                    image: p.image || ''
-                });
-            });
-        } else {
-            totalSkuCount++;
-            const stk = parseFloat(p.stock) || 0;
-            const hpp = parseFloat(p.hpp) || 0;
-            const price = parseFloat(p.price) || 0;
-            totalPhysicalUnits += stk;
-            totalAssetHpp += stk * hpp;
-            totalAssetRetail += stk * price;
-
-            let status = 'safe';
-            if (stk <= 0) { outOfStockCount++; status = 'empty'; }
-            else if (stk <= minStk) { lowStockCount++; status = 'low'; }
-            else { safeStockCount++; }
-
-            stockItems.push({
-                id: p.id,
-                variantId: null,
-                name: p.name,
-                category: p.category || 'Umum',
-                brand: p.brand || '-',
-                stock: stk,
-                unit: p.unit || 'pcs',
-                hpp: hpp,
-                price: price,
-                totalHpp: stk * hpp,
-                totalRetail: stk * price,
-                status: status,
-                minStock: minStk,
-                image: p.image || ''
-            });
-        }
-    });
-
-    const potentialMargin = totalAssetRetail - totalAssetHpp;
-
-    // Filter daftar item stok
-    let filteredItems = stockItems.filter(item => {
-        if (reportStockFilter !== 'all' && item.status !== reportStockFilter) return false;
-        if (reportStockCategory !== 'all' && item.category !== reportStockCategory) return false;
-        if (reportSearchQuery) {
-            const q = reportSearchQuery.toLowerCase();
-            return item.name.toLowerCase().includes(q) || item.category.toLowerCase().includes(q) || item.brand.toLowerCase().includes(q);
-        }
-        return true;
-    });
-
-    // Urutkan default: stok habis & menipis di paling atas
-    filteredItems.sort((a, b) => a.stock - b.stock);
-
+/**
+ * Render HTML baris dan kartu daftar inventori gudang (Zero-Flicker Partial DOM)
+ */
+export const renderStockReportListHtml = (filteredItems) => {
     // 1. Mobile Native Inventory Cards (< 640px)
     const stockCardsHTML = filteredItems.length ? filteredItems.map((item, idx) => {
         let badgeHTML = '';
@@ -1145,6 +1049,180 @@ export const renderStockValuationTab = () => {
         <tr><td colspan="5" class="py-10 text-center text-xs text-slate-400">Tidak ada produk yang sesuai dengan filter</td></tr>
     `;
 
+    return `
+        <!-- Tampilan Mobile (< 640px): Native Inventory Cards -->
+        <div class="block sm:hidden p-3.5 space-y-3">
+            ${stockCardsHTML}
+        </div>
+
+        <!-- Tampilan Desktop (>= 640px): Full Table -->
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <th class="py-2.5 px-3 text-center w-12">No</th>
+                        <th class="py-2.5 px-3">Produk &amp; Kategori</th>
+                        <th class="py-2.5 px-3 text-center">Stok Fisik</th>
+                        <th class="py-2.5 px-3 text-right">Modal (HPP)</th>
+                        <th class="py-2.5 px-3 text-right">Harga Jual</th>
+                    </tr>
+                </thead>
+                <tbody>${stockRowsHTML}</tbody>
+            </table>
+        </div>
+    `;
+};
+
+/**
+ * Ekstraksi data valuasi stok inventori toko
+ */
+export const getStockValuationData = () => {
+    const products = appData.products || [];
+    let totalAssetHpp = 0;
+    let totalAssetRetail = 0;
+    let totalPhysicalUnits = 0;
+    let totalSkuCount = 0;
+    let outOfStockCount = 0;
+    let lowStockCount = 0;
+    let safeStockCount = 0;
+
+    const stockItems = [];
+
+    products.forEach(p => {
+        const minStk = parseFloat(p.minStock) || 5;
+        if (p.variants && p.variants.length) {
+            p.variants.forEach(v => {
+                totalSkuCount++;
+                const stk = parseFloat(v.stock) || 0;
+                const hpp = parseFloat(v.hpp) || 0;
+                const price = parseFloat(v.price) || 0;
+                totalPhysicalUnits += stk;
+                totalAssetHpp += stk * hpp;
+                totalAssetRetail += stk * price;
+
+                let status = 'safe';
+                if (stk <= 0) { outOfStockCount++; status = 'empty'; }
+                else if (stk <= minStk) { lowStockCount++; status = 'low'; }
+                else { safeStockCount++; }
+
+                stockItems.push({
+                    id: p.id,
+                    variantId: v.id || v.name,
+                    name: `${p.name} (${v.name})`,
+                    category: p.category || 'Umum',
+                    brand: p.brand || '-',
+                    stock: stk,
+                    unit: p.unit || 'pcs',
+                    hpp: hpp,
+                    price: price,
+                    totalHpp: stk * hpp,
+                    totalRetail: stk * price,
+                    status: status,
+                    minStock: minStk,
+                    image: p.image || ''
+                });
+            });
+        } else {
+            totalSkuCount++;
+            const stk = parseFloat(p.stock) || 0;
+            const hpp = parseFloat(p.hpp) || 0;
+            const price = parseFloat(p.price) || 0;
+            totalPhysicalUnits += stk;
+            totalAssetHpp += stk * hpp;
+            totalAssetRetail += stk * price;
+
+            let status = 'safe';
+            if (stk <= 0) { outOfStockCount++; status = 'empty'; }
+            else if (stk <= minStk) { lowStockCount++; status = 'low'; }
+            else { safeStockCount++; }
+
+            stockItems.push({
+                id: p.id,
+                variantId: null,
+                name: p.name,
+                category: p.category || 'Umum',
+                brand: p.brand || '-',
+                stock: stk,
+                unit: p.unit || 'pcs',
+                hpp: hpp,
+                price: price,
+                totalHpp: stk * hpp,
+                totalRetail: stk * price,
+                status: status,
+                minStock: minStk,
+                image: p.image || ''
+            });
+        }
+    });
+
+    const potentialMargin = totalAssetRetail - totalAssetHpp;
+
+    return {
+        stockItems,
+        totalAssetHpp,
+        totalAssetRetail,
+        totalPhysicalUnits,
+        totalSkuCount,
+        outOfStockCount,
+        lowStockCount,
+        safeStockCount,
+        potentialMargin
+    };
+};
+
+/**
+ * Filter item stok sesuai filter status, kategori, dan query pencarian
+ */
+export const getFilteredStockReportItems = (stockItems) => {
+    let filteredItems = stockItems.filter(item => {
+        if (reportStockFilter !== 'all' && item.status !== reportStockFilter) return false;
+        if (reportStockCategory !== 'all' && item.category !== reportStockCategory) return false;
+        if (reportSearchQuery) {
+            const q = reportSearchQuery.toLowerCase();
+            return item.name.toLowerCase().includes(q) || item.category.toLowerCase().includes(q) || item.brand.toLowerCase().includes(q);
+        }
+        return true;
+    });
+
+    filteredItems.sort((a, b) => a.stock - b.stock);
+    return filteredItems;
+};
+
+/**
+ * Perbarui hanya container daftar inventori (Zero-Flicker Partial DOM)
+ */
+export const renderStockReportListOnly = () => {
+    if (typeof document === 'undefined') return;
+    const container = document.getElementById('stock-report-list-container');
+    if (!container) {
+        renderStockValuationTab();
+        return;
+    }
+    const { stockItems } = getStockValuationData();
+    const filteredItems = getFilteredStockReportItems(stockItems);
+    container.innerHTML = renderStockReportListHtml(filteredItems);
+};
+
+// ═══════════════════════════════════════════════════════════════
+// 3. TAB 3: LAPORAN STOK & VALUASI ASET GUDANG
+// ═══════════════════════════════════════════════════════════════
+export const renderStockValuationTab = () => {
+    const categories = appData.categories || [];
+    const valuation = getStockValuationData();
+    const {
+        stockItems,
+        totalAssetHpp,
+        totalAssetRetail,
+        totalPhysicalUnits,
+        totalSkuCount,
+        outOfStockCount,
+        lowStockCount,
+        safeStockCount,
+        potentialMargin
+    } = valuation;
+
+    const filteredItems = getFilteredStockReportItems(stockItems);
+
     // Filter status pills list
     const statusPills = [
         { key: 'all', label: 'Semua', count: stockItems.length },
@@ -1238,15 +1316,13 @@ export const renderStockValuationTab = () => {
                             <button type="button" onclick="openAdminTab('stock_opname')" class="px-3 py-1.5 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Audit fisik stok rak & rekonsiliasi selisih">
                                 <i class="fa-solid fa-clipboard-check text-xs"></i> <span>Stock Opname</span>
                             </button>
-                            <!-- Input Pencarian dengan Clear Button -->
+                            <!-- Input Pencarian dengan Clear Button (Zero-Flicker) -->
                             <div class="relative flex-1 sm:w-56">
                                 <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-slate-400"></i>
-                                <input type="text" placeholder="Cari nama barang / SKU..." value="${esc(reportSearchQuery)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
-                                ${reportSearchQuery ? `
-                                    <button type="button" onclick="filterStockReportSearch('')" class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
-                                        <i class="fa-solid fa-circle-xmark"></i>
-                                    </button>
-                                ` : ''}
+                                <input type="text" id="stock-report-search-input" placeholder="Cari nama barang / SKU..." value="${esc(reportSearchQuery)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
+                                <button type="button" id="stock-report-search-clear-btn" onclick="filterStockReportSearch('')" style="display: ${reportSearchQuery ? 'block' : 'none'};" class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                </button>
                             </div>
 
                             <!-- Filter Kategori -->
@@ -1263,25 +1339,9 @@ export const renderStockValuationTab = () => {
                     </div>
                 </div>
 
-                <!-- Tampilan Mobile (< 640px): Native Inventory Cards -->
-                <div class="block sm:hidden p-3.5 space-y-3">
-                    ${stockCardsHTML}
-                </div>
-
-                <!-- Tampilan Desktop (>= 640px): Full Table -->
-                <div class="hidden sm:block overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <th class="py-2.5 px-3 text-center w-12">No</th>
-                                <th class="py-2.5 px-3">Produk &amp; Kategori</th>
-                                <th class="py-2.5 px-3 text-center">Stok Fisik</th>
-                                <th class="py-2.5 px-3 text-right">Modal (HPP)</th>
-                                <th class="py-2.5 px-3 text-right">Harga Jual</th>
-                            </tr>
-                        </thead>
-                        <tbody>${stockRowsHTML}</tbody>
-                    </table>
+                <!-- Container Daftar Stok (Zero-Flicker Partial DOM) -->
+                <div id="stock-report-list-container">
+                    ${renderStockReportListHtml(filteredItems)}
                 </div>
             </div>
         </div>
@@ -1289,8 +1349,7 @@ export const renderStockValuationTab = () => {
 };
 
 export const clearStockReportSearch = () => {
-    reportSearchQuery = '';
-    renderStockValuationTab();
+    filterStockReportSearch('');
 };
 
 export const filterStockReportStatus = (val) => {
@@ -1304,8 +1363,18 @@ export const filterStockReportCategory = (val) => {
 };
 
 export const filterStockReportSearch = (val) => {
-    reportSearchQuery = val;
-    renderStockValuationTab();
+    reportSearchQuery = val || '';
+    if (typeof document !== 'undefined') {
+        const inp = document.getElementById('stock-report-search-input');
+        if (inp && inp.value !== reportSearchQuery && document.activeElement !== inp) {
+            inp.value = reportSearchQuery;
+        }
+        const clearBtn = document.getElementById('stock-report-search-clear-btn');
+        if (clearBtn) {
+            clearBtn.style.display = reportSearchQuery ? 'block' : 'none';
+        }
+    }
+    renderStockReportListOnly();
 };
 // 4. TAB 4: LAPORAN UTANG & PIUTANG TERPADU (DEBTS & RECEIVABLES)
 // ═══════════════════════════════════════════════════════════════
@@ -2265,6 +2334,7 @@ window.filterStockReportStatus = filterStockReportStatus;
 window.filterStockReportCategory = filterStockReportCategory;
 window.filterStockReportSearch = filterStockReportSearch;
 window.clearStockReportSearch = clearStockReportSearch;
+window.renderStockReportListOnly = renderStockReportListOnly;
 window.calcReportMonthlyExpenseTotal = calcReportMonthlyExpenseTotal;
 window.saveReportExpenseBreakdown = saveReportExpenseBreakdown;
 window.saveReportMonthlyExpense = saveReportMonthlyExpense;

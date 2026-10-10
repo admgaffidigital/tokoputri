@@ -565,7 +565,7 @@ export const resetSemuaFilter = () => {
 export const handleSearch = v => { 
     clearTimeout(searchTmr); 
     const mobInput = el('mobile-header-search');
-    if (mobInput && mobInput.value !== v) mobInput.value = v;
+    if (mobInput && mobInput.value !== v && document.activeElement !== mobInput) mobInput.value = v;
     const clearBtn = el('mobile-header-search-clear');
     if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
     searchTmr = setTimeout(() => { 
@@ -577,7 +577,7 @@ export const handleSearch = v => {
 
 export const handleMobileHeaderSearch = v => {
     const mainInput = el('search-input');
-    if (mainInput && mainInput.value !== v) mainInput.value = v;
+    if (mainInput && mainInput.value !== v && document.activeElement !== mainInput) mainInput.value = v;
     const clearBtn = el('mobile-header-search-clear');
     if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
     handleSearch(v);

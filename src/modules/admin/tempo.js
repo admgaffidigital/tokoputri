@@ -2006,6 +2006,8 @@ window.setInstallmentMethod = (methodKey) => {
 
 window.onTempoSearch = (val) => {
     tempoSearchQuery = val || '';
+    const clearBtn = el('tempo-search-clear-btn');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !tempoSearchQuery.trim());
     if (activeTempoMainTab === 'orders') {
         renderTempoCardsOnly();
     } else {
@@ -2744,10 +2746,9 @@ const renderTempoContent = () => {
                     placeholder="${activeTempoMainTab === 'orders' ? 'Cari nama pelanggan, nomor WhatsApp, atau ID nota tempo...' : (activeTempoMainTab === 'customers' ? 'Cari nama pelanggan atau nomor WhatsApp...' : 'Cari transaksi cicilan, nama, nomor nota, atau catatan...')}" 
                     oninput="window.onTempoSearch(this.value)"
                     class="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
-                ${tempoSearchQuery ? `
-                <button onclick="window.onTempoSearch(''); el('tempo-search-input').value='';" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
+                <button type="button" id="tempo-search-clear-btn" onclick="window.onTempoSearch(''); const ti=el('tempo-search-input'); if(ti){ti.value='';ti.focus();}" class="${tempoSearchQuery ? '' : 'hidden'} absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian">
                     <i class="fa-solid fa-circle-xmark text-sm"></i>
-                </button>` : ''}
+                </button>
             </div>
 
             ${activeTempoMainTab === 'orders' ? `

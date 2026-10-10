@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-04",
+        "version": "v1.15.4",
+        "date": "2026-10-10",
+        "title": "Arsitektur Zero-Flicker Partial DOM, Proteksi Fokus Input & Pengetikan Lancar Bebas Mental di Seluruh Modul",
+        "category": "feature",
+        "badge": "Zero-Flicker Partial DOM & Continuous Focus v1.15.4",
+        "items": [
+            "Resolusi Tuntas Input Mental-Mental & Hilang Fokus: Mengeliminasi masalah kolom input yang kehilangan fokus, berkedip, melompatkan kursor (caret), atau menutup keyboard virtual ponsel saat pengguna mengetik di seluruh aplikasi.",
+            "Arsitektur Pembaruan Parsial DOM (Zero-Flicker Partial DOM): Memisahkan kontainer input filter/pencarian dari kontainer hasil data dinamis pada Estimator Material (Paint, Tile, Brick, Roof), Stock Opname Dua Lokasi, Beban Pengeluaran Toko, Laporan Valuasi Stok, Kulakan Pembelian (PO), Master Supplier, Retur RMA, Kartu Piutang Tempo, dan Katalog Master Produk.",
+            "Proteksi Caret & Active Element Guard: Menerapkan pengecekan document.activeElement !== input pada sinkronisasi pencarian silang etalase & kasir POS, mencegah reset posisi caret IME saat pengetikan cepat atau penggunaan virtual keyboard Android/iOS.",
+            "Tombol Bersihkan Instan Dinamis (Reactive Clear Buttons): Integrasi tombol hapus pencarian 1-klik yang responsif dan reaktif tanpa memicu render ulang template kontainer luar.",
+            "Pencegahan Reflow Kartu Ringkasan: Mengoptimalkan pembaruan tabel katalog produk admin agar tidak merekonstruksi ulang 4 kartu ringkasan inventori di setiap ketukan tombol pencarian.",
+            "Seluruh 78 Modal Sistem & Rangkaian Test Suite Lolos 100%: 36 pengujian estimator & desimal, 28 flash sale, 24 multi-satuan UOM, 52 member loyalitas, serta verifikasi modal sinkron 100%.",
+            "Multi-Channel Distribution v1.15.4 (Android versionCode 11504)."
+        ]
+    },
+    {
         "id": "log-1-15-03",
         "version": "v1.15.3",
         "date": "2026-10-10",
@@ -83,22 +100,6 @@ export const DEFAULT_CHANGELOG = [
             "Restorasi Penuh 5 Model Gaya Visual Background Toko (100% Solid & Crisp): Minimalis (studio clean flat header), Hero Arch (super-app dome canopy lengkung), Aurora Glow (modern iOS rounded dual-tone), Tech Grid (arsitektur pro teknik 1px blueprint grid), dan Industrial (heavy-duty concrete slate) berfungsi aktif secara instan dan reaktif di etalase toko tanpa efek blur atau kaca buram.",
             "Test Suite Otomatis: 28 test cases mencakup status sesi, filter kanal, evaluasi harga efektif, pembatasan kuota, dan validasi HPP lolos 100%.",
             "Multi-Channel Distribution v1.15.0 (Android versionCode 11500)."
-        ]
-    },
-    {
-        "id": "log-1-14-00",
-        "version": "v1.14.0",
-        "date": "2026-10-09",
-        "title": "Multi-Satuan Bertingkat (UOM Hierarchy), Harga Grosir Fleksibel & Proteksi UI/UX Anti-Gepeng",
-        "category": "feature",
-        "badge": "Multi-Unit Packaging & Wholesale Pricing v1.14.0",
-        "items": [
-            "Master Satuan Bertingkat & Konversi Kemasan (uom.js): Mendukung penjualan eceran maupun kemasan besar (Dus, Roll, Sak, Kotak) dari satu master barang dengan rasio konversi akurat dan pemotongan stok otomatis ke satuan dasar.",
-            "Tier Harga Grosir Bertingkat & Proteksi Margin HPP: Aturan harga bertingkat kuantitas dengan indikator peringatan margin negatif jika harga jual mendekati HPP barang.",
-            "Barcode Kemasan Dus/Roll & Scan Otomatis POS: Pemindaian barcode kemasan via scanner laser maupun kamera smartphone langsung menambahkan barang dalam satuan kemasan terkait.",
-            "Proteksi Global Anti-Gepeng (.btn-native-action & .btn-native-icon): Penguncian tinggi minimal 40px-44px (touch standard) dan rasio 1:1 kaku pada tombol close modal dan tombol ikon agar tidak pernah gepeng di layar ponsel berukuran apapun.",
-            "Anti-Wrap Badge Status: Menjamin seluruh badge status pesanan, pengiriman DO, dan retur RMA tidak terlipat canggung menjadi 2 baris.",
-            "Multi-Channel Distribution v1.14.0 (Android versionCode 11400)."
         ]
     }
 ];

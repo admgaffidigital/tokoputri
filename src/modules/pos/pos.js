@@ -4001,7 +4001,7 @@ export const posSearchFn = (v, immediate = false) => {
         posSearch = query;
         posCatalogPage = 1; // Reset pagination
         document.querySelectorAll('#pos-search-input').forEach(inp => {
-            if (inp.value !== posSearch) inp.value = posSearch;
+            if (inp.value !== posSearch && (typeof document === 'undefined' || document.activeElement !== inp)) inp.value = posSearch;
         });
         document.querySelectorAll('.pos-search-clear-btn').forEach(btn => {
             if (posSearch && posSearch.trim().length > 0) {

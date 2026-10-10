@@ -1846,28 +1846,48 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                 if (availableFamilies.length > 2 || p.variants.length >= 6) {
                     filterWrap.className = 'mb-2.5 space-y-2 block';
 
-                    const searchHtml = p.variants.length >= 6 ? `
-                        <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i>
-                            <input id="quick-variant-search-input" type="text" placeholder="Cari warna atau kode hex..." value="${esc(qvSearch)}" oninput="window.searchQuickPaintColor(this.value)" class="w-full h-8 pl-8 pr-7 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] transition-all">
-                            ${qvSearch ? `<button type="button" onclick="window.clearQuickPaintSearch()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-xs"></i></button>` : ''}
-                        </div>
-                    ` : '';
+                    const existingSearchInput = el('quick-variant-search-input');
+                    const existingNav = filterWrap.querySelector('.paint-family-nav');
 
-                    const tabsHtml = `
-                        <div class="paint-family-nav hide-scrollbar">
-                            ${availableFamilies.map(f => {
-                                const isActive = qvFamily === f.id;
-                                const cnt = familyCounts[f.id] || 0;
-                                const iconHtml = f.icon 
-                                    ? `<i class="fa-solid ${f.icon} text-[9px]"></i>` 
-                                    : `<span class="w-2.5 h-2.5 rounded-full inline-block shrink-0 border border-black/10" style="background:${f.dot}"></span>`;
-                                return `<button type="button" onclick="window.filterQuickPaintFamily('${f.id}')" class="paint-family-tab ${isActive ? 'is-active' : ''}">${iconHtml}<span>${f.label} (${cnt})</span></button>`;
-                            }).join('')}
-                        </div>
-                    `;
+                    if (existingSearchInput && existingNav) {
+                        // Jangan rebuild input agar kursor tidak mental saat mengetik
+                        if (document.activeElement !== existingSearchInput && existingSearchInput.value !== qvSearch) {
+                            existingSearchInput.value = qvSearch;
+                        }
+                        const clearBtn = filterWrap.querySelector('.quick-variant-clear-btn');
+                        if (clearBtn) {
+                            clearBtn.style.display = qvSearch ? 'block' : 'none';
+                        }
+                        filterWrap.querySelectorAll('.paint-family-tab').forEach(tabBtn => {
+                            const famId = tabBtn.getAttribute('data-family');
+                            if (famId) {
+                                tabBtn.classList.toggle('is-active', qvFamily === famId);
+                            }
+                        });
+                    } else {
+                        const searchHtml = p.variants.length >= 6 ? `
+                            <div class="relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i>
+                                <input id="quick-variant-search-input" type="text" placeholder="Cari warna atau kode hex..." value="${esc(qvSearch)}" oninput="window.searchQuickPaintColor(this.value)" class="w-full h-8 pl-8 pr-7 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                                <button type="button" onclick="window.clearQuickPaintSearch()" class="quick-variant-clear-btn absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" style="${qvSearch ? 'display:block' : 'display:none'}"><i class="fa-solid fa-xmark text-xs"></i></button>
+                            </div>
+                        ` : '';
 
-                    filterWrap.innerHTML = searchHtml + tabsHtml;
+                        const tabsHtml = `
+                            <div class="paint-family-nav hide-scrollbar">
+                                ${availableFamilies.map(f => {
+                                    const isActive = qvFamily === f.id;
+                                    const cnt = familyCounts[f.id] || 0;
+                                    const iconHtml = f.icon 
+                                        ? `<i class="fa-solid ${f.icon} text-[9px]"></i>` 
+                                        : `<span class="w-2.5 h-2.5 rounded-full inline-block shrink-0 border border-black/10" style="background:${f.dot}"></span>`;
+                                    return `<button type="button" onclick="window.filterQuickPaintFamily('${f.id}')" data-family="${f.id}" class="paint-family-tab ${isActive ? 'is-active' : ''}">${iconHtml}<span>${f.label} (${cnt})</span></button>`;
+                                }).join('')}
+                            </div>
+                        `;
+
+                        filterWrap.innerHTML = searchHtml + tabsHtml;
+                    }
                 } else {
                     filterWrap.className = 'hidden';
                     filterWrap.innerHTML = '';
