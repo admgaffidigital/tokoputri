@@ -61,13 +61,13 @@ input, textarea, [contenteditable="true"] {
 
 /* Clean Enterprise Solid Canvas (Zero Blur, Zero Radial Glow, Zero Glassmorphism) */
 body, #app-container {
-  background-color: #f8fafc !important; /* Clean Solid Light Canvas (Slate-50) */
-  background-image: none !important;
+  background-color: #f8fafc; /* Clean Solid Light Canvas Default (Slate-50) */
+  background-image: none;
 }
 .dark body, .dark #app-container,
 html.dark body, html.dark #app-container {
-  background-color: #0f172a !important; /* Clean Solid Dark Canvas (Slate-900) */
-  background-image: none !important;
+  background-color: #0f172a; /* Clean Solid Dark Canvas Default (Slate-900) */
+  background-image: none;
 }
 
 /* Biarkan background canvas bersih bersinar ke seluruh etalase pelanggan,
@@ -2811,37 +2811,187 @@ html.dark #app-container[data-has-custom-bg="true"] {
    bersih murni, tajam, solid tanpa efek blur kabur atau kaca buram.
    ══════════════════════════════════════════════════════════ */
 
-[data-bg-style],
-[data-bg-style] #app-container {
-    background-color: #f8fafc !important;
-    background-image: none !important;
-}
-
-.dark[data-bg-style],
-.dark[data-bg-style] #app-container,
-html.dark[data-bg-style],
-html.dark[data-bg-style] #app-container {
-    background-color: #0f172a !important;
-    background-image: none !important;
-}
-
-/* Header Solid Bersih Tanpa Lengkung Berlebih & Tanpa Efek Kaca */
-.glass-header,
-[data-bg-style] .glass-header,
-[data-bg-style] #view-catalog .glass-header,
-[data-bg-style] .view-section .glass-header {
-    background: var(--color-primary) !important;
-    border-radius: 0 !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+/* ─── BASE HEADER FALLBACK (Solid & Bebas Kaca) ─── */
+.glass-header {
+    background: var(--color-primary);
+    border-radius: 0;
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
 
-html.dark .glass-header,
-html.dark [data-bg-style] .glass-header {
+/* ─── 1. MINIMALIS (Studio Clean / Polos Bersih Elegan) ─── */
+[data-bg-style="minimalist"],
+[data-bg-style="minimalist"] #app-container {
+    background-color: #f8fafc !important;
+    background-image: none !important;
+}
+html.dark[data-bg-style="minimalist"],
+html.dark[data-bg-style="minimalist"] #app-container,
+.dark[data-bg-style="minimalist"],
+.dark[data-bg-style="minimalist"] #app-container {
+    background-color: #0f172a !important;
+    background-image: none !important;
+}
+[data-bg-style="minimalist"] #view-catalog .glass-header {
     background: var(--color-primary) !important;
+    border-radius: 0 !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: none !important;
+}
+html.dark[data-bg-style="minimalist"] #view-catalog .glass-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+[data-bg-style="minimalist"] .view-section:not(#view-catalog) .glass-header {
+    background: var(--color-primary) !important;
+    border-radius: 0 !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+[data-bg-style="minimalist"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.16) !important;
+}
+
+/* ─── 2. HERO ARCH (Super-App / Kanopi Dome Lengkung Khas) ─── */
+[data-bg-style="hero_arch"],
+[data-bg-style="hero_arch"] #app-container {
+    background-color: #f5f2ec !important;
+    background-image: none !important;
+}
+html.dark[data-bg-style="hero_arch"],
+html.dark[data-bg-style="hero_arch"] #app-container,
+.dark[data-bg-style="hero_arch"],
+.dark[data-bg-style="hero_arch"] #app-container {
+    background-color: #0a0f1d !important;
+    background-image: none !important;
+}
+[data-bg-style="hero_arch"] #view-catalog .glass-header {
+    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    border-radius: 0 0 2.25rem 2.25rem !important;
+    padding-bottom: 1.45rem !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: none !important;
+}
+[data-bg-style="hero_arch"] .view-section:not(#view-catalog) .glass-header {
+    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    border-radius: 0 !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+[data-bg-style="hero_arch"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.22) !important;
+}
+
+/* ─── 3. AURORA GLOW (Modern iOS / Rounded Sudut Halus & Dual-Tone) ─── */
+[data-bg-style="aurora_glow"],
+[data-bg-style="aurora_glow"] #app-container,
+[data-bg-style="dual_tone"],
+[data-bg-style="dual_tone"] #app-container {
+    background-color: #f4eff6 !important;
+    background-image: none !important;
+}
+html.dark[data-bg-style="aurora_glow"],
+html.dark[data-bg-style="aurora_glow"] #app-container,
+.dark[data-bg-style="aurora_glow"],
+.dark[data-bg-style="aurora_glow"] #app-container {
+    background-color: #080c16 !important;
+    background-image: none !important;
+}
+[data-bg-style="aurora_glow"] #view-catalog .glass-header,
+[data-bg-style="dual_tone"] #view-catalog .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    border-radius: 0 0 1.5rem 1.5rem !important;
+    padding-bottom: 1.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: none !important;
+}
+[data-bg-style="aurora_glow"] .view-section:not(#view-catalog) .glass-header,
+[data-bg-style="dual_tone"] .view-section:not(#view-catalog) .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    border-radius: 0 !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+[data-bg-style="aurora_glow"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
+}
+
+/* ─── 4. TECH GRID (Pro Teknik / Arsitektur Presisi & Micro Blueprint Grid) ─── */
+[data-bg-style="tech_grid"],
+[data-bg-style="tech_grid"] #app-container,
+[data-bg-style="geometric_3d"],
+[data-bg-style="geometric_3d"] #app-container {
+    background-color: #ebf0f5 !important;
+    background-image: 
+        linear-gradient(to right, rgba(100, 116, 139, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(100, 116, 139, 0.08) 1px, transparent 1px) !important;
+    background-size: 24px 24px !important;
+    background-repeat: repeat !important;
+    background-attachment: fixed !important;
+}
+html.dark[data-bg-style="tech_grid"],
+html.dark[data-bg-style="tech_grid"] #app-container,
+.dark[data-bg-style="tech_grid"],
+.dark[data-bg-style="tech_grid"] #app-container {
+    background-color: #0a0e17 !important;
+    background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px) !important;
+    background-size: 24px 24px !important;
+    background-repeat: repeat !important;
+    background-attachment: fixed !important;
+}
+[data-bg-style="tech_grid"] #view-catalog .glass-header,
+[data-bg-style="geometric_3d"] #view-catalog .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%) !important;
+    border-radius: 0 0 1rem 1rem !important;
+    padding-bottom: 1.15rem !important;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: none !important;
+}
+[data-bg-style="tech_grid"] .view-section:not(#view-catalog) .glass-header,
+[data-bg-style="geometric_3d"] .view-section:not(#view-catalog) .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%) !important;
+    border-radius: 0 !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+[data-bg-style="tech_grid"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.22) !important;
+}
+
+/* ─── 5. INDUSTRIAL (Heavy-Duty Toko Bangunan & Teknik / Concrete Slate) ─── */
+[data-bg-style="industrial"],
+[data-bg-style="industrial"] #app-container {
+    background-color: #dfe5ec !important;
+    background-image: none !important;
+}
+html.dark[data-bg-style="industrial"],
+html.dark[data-bg-style="industrial"] #app-container,
+.dark[data-bg-style="industrial"],
+.dark[data-bg-style="industrial"] #app-container {
+    background-color: #101622 !important;
+    background-image: none !important;
+}
+[data-bg-style="industrial"] #view-catalog .glass-header {
+    background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%) !important;
+    border-radius: 0 0 1.25rem 1.25rem !important;
+    padding-bottom: 1.2rem !important;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: none !important;
+}
+[data-bg-style="industrial"] .view-section:not(#view-catalog) .glass-header {
+    background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%) !important;
+    border-radius: 0 !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+[data-bg-style="industrial"] .bento-island-card {
+    border-color: #94a3b8 !important;
+}
+html.dark[data-bg-style="industrial"] .bento-island-card {
+    border-color: #334155 !important;
 }
 
 /* Bottom Navigation Bar Solid & Bebas Kaca */

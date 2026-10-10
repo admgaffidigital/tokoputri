@@ -28,6 +28,7 @@ export const DEFAULT_CHANGELOG = [
             "CMS Manajemen Admin & Margin Guard (flash-sale.js): Dashboard admin untuk membuat sesi promo kilat (preset durasi 2 jam s.d. 3 hari), filter kanal (Web/POS/Semua), dan deteksi otomatis jual rugi (harga flash sale < HPP modal).",
             "Sinkronisasi Kuota Real-Time: Pengurangan sisa kuota otomatis setiap transaksi web/POS terbit, dan otomatis fallback ke harga normal/grosir begitu kuota promo ludes.",
             "Harmonisasi Menyeluruh UI/UX & Standar Touch Ergonomi: 100% adopsi token tema toko dinamis (var(--color-primary)), elevasi touch target native (.btn-native-icon 36-40px, stepper kuantitas keranjang POS 32px), dan standardisasi Bento Card (.card-native) ber-shadow halus.",
+            "Restorasi Penuh 5 Model Gaya Visual Background Toko (100% Solid & Crisp): Minimalis (studio clean flat header), Hero Arch (super-app dome canopy lengkung), Aurora Glow (modern iOS rounded dual-tone), Tech Grid (arsitektur pro teknik 1px blueprint grid), dan Industrial (heavy-duty concrete slate) berfungsi aktif secara instan dan reaktif di etalase toko tanpa efek blur atau kaca buram.",
             "Test Suite Otomatis: 28 test cases mencakup status sesi, filter kanal, evaluasi harga efektif, pembatasan kuota, dan validasi HPP lolos 100%.",
             "Multi-Channel Distribution v1.15.0 (Android versionCode 11500)."
         ]
