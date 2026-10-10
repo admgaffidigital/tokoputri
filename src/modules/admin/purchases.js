@@ -2513,8 +2513,8 @@ window.openPurchaseDetailModal = (poId) => {
                     <span>Cetak Surat PO</span>
                 </button>
                 ${po.items && po.items.length > 0 ? `
-                    <button type="button" onclick="window.printPOLabels?.('${po.id}')" class="h-12 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-600 hover:text-white dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-barcode"></i>
+                    <button type="button" onclick="window.printPOLabels?.('${po.id}')" class="h-12 px-4 rounded-2xl border font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95 shadow-2xs hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                        <i class="fa-solid fa-barcode text-xs"></i>
                         <span>Cetak Label Barang</span>
                     </button>
                 ` : ''}

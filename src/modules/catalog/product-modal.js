@@ -801,18 +801,18 @@ export const rProdMod = () => {
     let wholesaleAndUnitsHtml = '';
     if (p.multiUnits && p.multiUnits.length > 0) {
         wholesaleAndUnitsHtml += `
-        <div class="mb-4 bg-indigo-50/70 dark:bg-indigo-950/20 rounded-2xl p-4 border border-indigo-200/80 dark:border-indigo-800/40 shadow-xs">
-            <p class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 mb-2.5 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-boxes-stacked"></i> Pilihan Satuan Kemasan</p>
+        <div class="mb-4 rounded-2xl p-4 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.05); border: 1px solid rgba(var(--color-primary-rgb), 0.2);">
+            <p class="text-[10px] font-bold mb-2.5 uppercase tracking-widest flex items-center gap-1.5" style="color: var(--color-primary);"><i class="fa-solid fa-boxes-stacked"></i> Pilihan Satuan Kemasan</p>
             <div class="space-y-2">${p.multiUnits.map(mu => {
                 const uMultiplier = parseFloat(mu.multiplier != null ? mu.multiplier : mu.conversionRatio) || 1;
                 const uPrice = parseFloat(mu.price) || 0;
                 return `
-                <div class="flex justify-between items-center text-xs font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-indigo-100 dark:border-slate-700 shadow-2xs">
+                <div class="flex justify-between items-center text-xs font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-2xs">
                     <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-md bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-box"></i></span>
+                        <span class="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-box"></i></span>
                         <span class="text-slate-700 dark:text-slate-200">${esc(mu.name || mu.unitName)} <span class="text-[10px] text-slate-400 font-medium">(${uMultiplier} ${esc(unt)})</span></span>
                     </div>
-                    <span class="font-extrabold text-indigo-600 dark:text-indigo-400">${fCur(uPrice)}</span>
+                    <span class="font-extrabold" style="color: var(--color-primary);">${fCur(uPrice)}</span>
                 </div>`;
             }).join('')}
             </div>

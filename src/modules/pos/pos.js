@@ -1871,7 +1871,7 @@ export const renderCatalog = (isLoadMore = false) => {
 
                 // 4. Badges Lengkap (Varian, Grosir, Poin Reward, Terjual)
                 const variantBadge = hasVariants
-                    ? `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
                     : '';
 
                 const grosirBadge = hasGrosir
@@ -2129,7 +2129,7 @@ const renderCart = () => {
                 <div class="flex-1 min-w-0 pr-1">
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${esc(item.name)}">${baseName}</p>
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                        ${item.isPackagingUnit ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs bg-indigo-600 dark:bg-indigo-500"><i class="fa-solid fa-box text-[7px]"></i>1 ${esc(item.unit)} = ${item.unitMultiplier} ${esc(item.baseUnit || 'pcs')}</span>` : ''}
+                        ${item.isPackagingUnit ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)"><i class="fa-solid fa-box text-[7px]"></i>1 ${esc(item.unit)} = ${item.unitMultiplier} ${esc(item.baseUnit || 'pcs')}</span>` : ''}
                         ${item.isFlashSale ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-[7px] text-amber-300"></i>FLASH SALE ${item.flashSaleDiscount ? `-${item.flashSaleDiscount}%` : ''}</span>` : ''}
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
@@ -2160,18 +2160,18 @@ const renderCart = () => {
                 <!-- Stepper & Subtotal -->
                 <div class="flex flex-col items-end shrink-0">
                     <div class="flex items-center gap-1">
-                        <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
-                            <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
+                        <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
+                            <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-6 h-6 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
                             <input type="number" step="any" min="0.001" value="${formatQty(item.qty)}" onchange="window.posSetQty('${ckey}',this.value)"
-                                class="w-14 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-0.5" title="Kuantitas (${esc(item.unit || 'pcs')})">
-                            <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
+                                class="w-14 text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-0.5" title="Kuantitas (${esc(item.unit || 'pcs')})">
+                            <button onclick="window.posUpdateQty('${ckey}',1)" class="w-6 h-6 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
                         </div>
-                        <button onclick="window.posRemoveItem('${ckey}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer" title="Hapus item">
+                        <button onclick="window.posRemoveItem('${ckey}')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer active:scale-95 ml-0.5" title="Hapus item">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
                     ${item.isPackagingUnit ? `
-                        <span class="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold mt-1" title="Kuantitas satuan dasar yang dipotong">= ${formatQty(item.qty * (item.unitMultiplier || 1))} ${esc(item.baseUnit || 'pcs')}</span>
+                        <span class="text-[9px] font-bold mt-1" style="color:var(--color-primary)" title="Kuantitas satuan dasar yang dipotong">= ${formatQty(item.qty * (item.unitMultiplier || 1))} ${esc(item.baseUnit || 'pcs')}</span>
                     ` : ''}
                     ${/^(kg|kilo|kilogram|meter|m|ltr|liter|m2|m3|ons|gram|g)$/i.test((item.unit || '').trim()) ? `
                     <div class="flex items-center gap-0.5 mt-1 justify-end">
@@ -4538,8 +4538,8 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <button onclick="window.posClearCart()" class="text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Kosongkan keranjang">
                             <i class="fa-solid fa-trash-can text-rose-500 text-[9px]"></i><span>Kosongkan</span>
                         </button>
-                        <button onclick="window.closePOSCartDrawer()" class="w-7 h-7 rounded-lg bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center justify-center transition-all cursor-pointer shadow-2xs" title="Tutup Keranjang">
-                            <i class="fa-solid fa-xmark text-[11px]"></i>
+                        <button onclick="window.closePOSCartDrawer()" class="w-8 h-8 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Tutup Keranjang">
+                            <i class="fa-solid fa-xmark text-xs"></i>
                         </button>
                     </div>
                 </div>

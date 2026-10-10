@@ -368,12 +368,12 @@ window.rAdmItms = t => {
 
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Varian Aktif</span>
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                        <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary)">Varian Aktif</span>
+                        <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">${st.activeVar}</p>
+                    <p class="text-xl sm:text-2xl font-black tracking-tight" style="color: var(--color-primary)">${st.activeVar}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-0.5">Opsi Rasa, Ukuran &amp; Warna</p>
                 </div>
 
@@ -603,11 +603,11 @@ window.rAdmItms = t => {
                     ${isP ? `
                         <div class="flex items-center gap-2 flex-wrap mb-1.5">
                             <span class="text-base sm:text-lg font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</span>
-                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-700/80 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-300 px-2 py-0.5 rounded-md border border-slate-200/60 hover:border-indigo-300 dark:border-slate-600/60 transition-colors cursor-pointer" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Klik untuk Cetak Label Barcode &amp; Harga">
+                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)] px-2 py-0.5 rounded-md border border-slate-200/60 hover:border-[var(--color-primary)] dark:border-slate-600/60 transition-colors cursor-pointer" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Klik untuk Cetak Label Barcode &amp; Harga">
                                 <i class="fa-solid fa-barcode text-[8.5px]"></i> ${esc(x.sku || 'TANPA SKU')}
                             </span>
                             ${x.variants && x.variants.length > 0 ? `
-                                <span class="inline-flex items-center gap-1 text-[9px] font-black text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800" title="${x.variants.length} Varian">
+                                <span class="inline-flex items-center gap-1 text-[9px] font-black border px-2 py-0.5 rounded-md" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="${x.variants.length} Varian">
                                     <i class="fa-solid fa-layer-group text-[8.5px]"></i> ${x.variants.length} Varian
                                 </span>
                             ` : ''}
@@ -711,7 +711,7 @@ window.rAdmItms = t => {
                             <span class="hidden sm:inline">Harga</span>
                         </button>
 
-                        <button type="button" class="h-10 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-600 hover:text-white dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Cetak Label Harga &amp; Barcode Barang">
+                        <button type="button" class="h-10 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Cetak Label Harga &amp; Barcode Barang">
                             <i class="fa-solid fa-barcode text-xs"></i>
                             <span class="hidden sm:inline">Label</span>
                         </button>

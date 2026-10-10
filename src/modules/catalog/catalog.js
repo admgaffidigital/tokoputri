@@ -297,7 +297,7 @@ export const rCat = () => {
             : '';
 
         const variantBadge = (p.variants && p.variants.length > 0)
-            ? `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
+            ? `<span class="px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider border" style="color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
             : '';
 
         const grosirBadge = (p.wholesale?.length && !p.variants?.length)
@@ -338,7 +338,7 @@ export const rCat = () => {
             } else {
                 displayPriceHtml = parseFloat(p.price) > 0 ? fCur(p.price) : 'Pilih Varian';
             }
-            variantBadgeLabelHtml = `<span class="text-[9px] sm:text-[9.5px] text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-wider flex items-center gap-1 leading-none"><i class="fa-solid fa-sliders text-[7.5px]"></i> PILIH VARIAN</span>`;
+            variantBadgeLabelHtml = `<span class="text-[9px] sm:text-[9.5px] font-extrabold uppercase tracking-wider flex items-center gap-1 leading-none" style="color: var(--color-primary);"><i class="fa-solid fa-sliders text-[7.5px]"></i> PILIH VARIAN</span>`;
         } else {
             displayPriceHtml = fCur(p.price);
         }

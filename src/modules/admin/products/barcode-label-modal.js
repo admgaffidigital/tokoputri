@@ -189,11 +189,19 @@ export const renderBarcodeLabelModalContent = () => {
         fontSize: 10
     });
 
+    const isPaper = (k) => labelSettings.paperSize === k;
+    const paperBtnClass = (k) => isPaper(k) 
+        ? 'p-2.5 rounded-xl border text-left transition-all cursor-pointer shadow-2xs font-bold' 
+        : 'p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300 text-left transition-all cursor-pointer';
+    const paperBtnStyle = (k) => isPaper(k) 
+        ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary); color: var(--color-primary);' 
+        : '';
+
     container.innerHTML = `
         <!-- 1. HEADER MODAL (SOLID PINNED) -->
         <div class="shrink-0 px-5 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
             <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0 bg-indigo-600">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-barcode"></i>
                 </div>
                 <div class="min-w-0">
@@ -201,7 +209,7 @@ export const renderBarcodeLabelModalContent = () => {
                         <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
                             Cetak Label Barcode &amp; Harga Barang
                         </h3>
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                        <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border shrink-0" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                             Code 128 • Universal
                         </span>
                     </div>
@@ -226,50 +234,50 @@ export const renderBarcodeLabelModalContent = () => {
                     <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <i class="fa-solid fa-print text-indigo-600 dark:text-indigo-400"></i>
+                                <i class="fa-solid fa-print" style="color: var(--color-primary)"></i>
                                 <span>Pilih Format Printer &amp; Ukuran Label</span>
                             </span>
                             <span class="text-[10px] font-bold text-slate-400">Universal Support</span>
                         </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-40x30')" class="p-2.5 rounded-xl border text-left transition-all cursor-pointer ${labelSettings.paperSize === 'thermal-40x30' ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-40x30')" class="${paperBtnClass('thermal-40x30')}" style="${paperBtnStyle('thermal-40x30')}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[11px] font-black">Thermal 40x30</span>
-                                    <span class="text-[9px] px-1 py-0.2 rounded bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold">Populer</span>
+                                    <span class="text-[9px] px-1 py-0.2 rounded font-bold" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">Populer</span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 block">Stiker Rak &amp; Barang</span>
+                                <span class="text-[10px] text-slate-400 block font-normal">Stiker Rak &amp; Barang</span>
                             </button>
 
-                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-50x30')" class="p-2.5 rounded-xl border text-left transition-all cursor-pointer ${labelSettings.paperSize === 'thermal-50x30' ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-50x30')" class="${paperBtnClass('thermal-50x30')}" style="${paperBtnStyle('thermal-50x30')}">
                                 <span class="text-[11px] font-black block mb-1">Thermal 50x30</span>
-                                <span class="text-[10px] text-slate-400 block">Stiker Ekstra Lega</span>
+                                <span class="text-[10px] text-slate-400 block font-normal">Stiker Ekstra Lega</span>
                             </button>
 
-                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-58mm')" class="p-2.5 rounded-xl border text-left transition-all cursor-pointer ${labelSettings.paperSize === 'thermal-58mm' ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-58mm')" class="${paperBtnClass('thermal-58mm')}" style="${paperBtnStyle('thermal-58mm')}">
                                 <span class="text-[11px] font-black block mb-1">Roll 58 mm</span>
-                                <span class="text-[10px] text-slate-400 block">Continuous Stiker</span>
+                                <span class="text-[10px] text-slate-400 block font-normal">Continuous Stiker</span>
                             </button>
 
-                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-80mm')" class="p-2.5 rounded-xl border text-left transition-all cursor-pointer ${labelSettings.paperSize === 'thermal-80mm' ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+                            <button type="button" onclick="window.setBarcodeLabelPaper('thermal-80mm')" class="${paperBtnClass('thermal-80mm')}" style="${paperBtnStyle('thermal-80mm')}">
                                 <span class="text-[11px] font-black block mb-1">Roll 80 mm</span>
-                                <span class="text-[10px] text-slate-400 block">Label POS Lebar</span>
+                                <span class="text-[10px] text-slate-400 block font-normal">Label POS Lebar</span>
                             </button>
 
-                            <button type="button" onclick="window.setBarcodeLabelPaper('a4-3x10')" class="p-2.5 rounded-xl border text-left transition-all cursor-pointer ${labelSettings.paperSize === 'a4-3x10' ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+                            <button type="button" onclick="window.setBarcodeLabelPaper('a4-3x10')" class="${paperBtnClass('a4-3x10')}" style="${paperBtnStyle('a4-3x10')}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[11px] font-black">Kertas A4 (3x10)</span>
                                     <span class="text-[9px] px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">30 Pcs</span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 block">Printer Biasa / Inkjet</span>
+                                <span class="text-[10px] text-slate-400 block font-normal">Printer Biasa / Inkjet</span>
                             </button>
 
-                            <button type="button" onclick="window.setBarcodeLabelPaper('a4-2x7')" class="p-2.5 rounded-xl border text-left transition-all cursor-pointer ${labelSettings.paperSize === 'a4-2x7' ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300'}">
+                            <button type="button" onclick="window.setBarcodeLabelPaper('a4-2x7')" class="${paperBtnClass('a4-2x7')}" style="${paperBtnStyle('a4-2x7')}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[11px] font-black">Kertas A4 (2x7)</span>
                                     <span class="text-[9px] px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">14 Pcs</span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 block">Label Besar A4</span>
+                                <span class="text-[10px] text-slate-400 block font-normal">Label Besar A4</span>
                             </button>
                         </div>
                     </div>
@@ -278,14 +286,14 @@ export const renderBarcodeLabelModalContent = () => {
                     <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
                         <div class="flex items-center justify-between flex-wrap gap-2">
                             <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <i class="fa-solid fa-list-check text-indigo-600 dark:text-indigo-400"></i>
+                                <i class="fa-solid fa-list-check" style="color: var(--color-primary)"></i>
                                 <span>Tentukan Jumlah Label per Varian</span>
                             </span>
                             <div class="flex items-center gap-1.5 text-[11px]">
                                 <button type="button" onclick="window.setAllBarcodeLabelQty(1)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-all cursor-pointer">
                                     Set 1 Pcs
                                 </button>
-                                <button type="button" onclick="window.setAllBarcodeLabelQty('stock')" class="px-2 py-0.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200/70 transition-all cursor-pointer">
+                                <button type="button" onclick="window.setAllBarcodeLabelQty('stock')" class="px-2 py-0.5 rounded-lg font-bold border transition-all cursor-pointer" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                     Sesuai Stok
                                 </button>
                                 <button type="button" onclick="window.setAllBarcodeLabelQty(0)" class="px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 text-rose-600 font-bold transition-all cursor-pointer">
@@ -298,9 +306,11 @@ export const renderBarcodeLabelModalContent = () => {
                         <div class="space-y-2.5 max-h-[340px] overflow-y-auto custom-scrollbar pr-1">
                             ${labelItemsQueue.map((it, idx) => {
                                 const isInspected = activePreviewIndex === idx;
+                                const rowBorderClass = isInspected ? 'shadow-2xs' : 'border-slate-200/90 dark:border-slate-700/80 bg-slate-50/40 dark:bg-slate-800/40 hover:border-slate-300';
+                                const rowStyle = isInspected ? 'background: rgba(var(--color-primary-rgb), 0.05); border: 1.5px solid var(--color-primary);' : '';
                                 return `
-                                    <div class="p-3 sm:p-3.5 rounded-xl border transition-all ${isInspected ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 shadow-2xs' : 'border-slate-200/90 dark:border-slate-700/80 bg-slate-50/40 dark:bg-slate-800/40 hover:border-slate-300'} flex items-center justify-between gap-3">
-                                        <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="window.selectBarcodePreviewIndex(${idx})">
+                                    <div class="p-3 sm:p-3.5 rounded-xl border transition-all ${rowBorderClass}" style="${rowStyle} display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+                                        <div class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1" onclick="window.selectBarcodePreviewIndex(${idx})">
                                             ${it.hex ? `
                                                 <div class="w-5 h-5 rounded-full border border-slate-300 shadow-2xs shrink-0" style="background-color: ${esc(it.hex)}"></div>
                                             ` : `
@@ -308,12 +318,12 @@ export const renderBarcodeLabelModalContent = () => {
                                                     #${idx + 1}
                                                 </div>
                                             `}
-                                            <div class="min-w-0">
+                                            <div class="min-w-0 flex-1">
                                                 <div class="flex items-center gap-1.5 flex-wrap">
                                                     <span class="text-xs font-black text-slate-800 dark:text-white truncate">
                                                         ${esc(it.variantName || it.name)}
                                                     </span>
-                                                    ${isInspected ? `<span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase bg-indigo-600 text-white">Preview</span>` : ''}
+                                                    ${isInspected ? `<span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase text-white shadow-2xs" style="background: var(--color-primary);">Preview</span>` : ''}
                                                 </div>
                                                 <div class="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
                                                     <span class="font-mono font-bold text-slate-600 dark:text-slate-300">${esc(it.sku)}</span>
@@ -325,14 +335,14 @@ export const renderBarcodeLabelModalContent = () => {
                                             </div>
                                         </div>
 
-                                        <!-- STEPPER KUANTITAS -->
+                                        <!-- STEPPER KUANTITAS ERGONOMIS SENTUH -->
                                         <div class="flex items-center gap-1.5 shrink-0">
-                                            <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, -1)" class="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95">
-                                                <i class="fa-solid fa-minus text-[10px]"></i>
+                                            <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, -1)" class="btn-native-icon w-9 h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Kurangi 1">
+                                                <i class="fa-solid fa-minus text-[11px]"></i>
                                             </button>
-                                            <input type="number" min="0" max="999" value="${it.qty}" onchange="window.setBarcodeLabelQtyDirect(${idx}, this.value)" class="w-12 h-7 text-center font-mono font-black text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500">
-                                            <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, 1)" class="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95">
-                                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                            <input type="number" min="0" max="999" value="${it.qty}" onchange="window.setBarcodeLabelQtyDirect(${idx}, this.value)" class="w-14 h-9 text-center font-mono font-black text-sm border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
+                                            <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, 1)" class="btn-native-icon w-9 h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Tambah 1">
+                                                <i class="fa-solid fa-plus text-[11px]"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -344,33 +354,33 @@ export const renderBarcodeLabelModalContent = () => {
                     <!-- TOGGLE OPSI KONTEN LABEL -->
                     <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2.5">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                            <i class="fa-solid fa-sliders text-indigo-600 dark:text-indigo-400"></i>
+                            <i class="fa-solid fa-sliders" style="color: var(--color-primary)"></i>
                             <span>Opsi Tampilan Informasi Stiker</span>
                         </span>
                         
                         <div class="grid grid-cols-2 gap-2.5 text-xs font-bold text-slate-700 dark:text-slate-300">
                             <label class="flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" ${labelSettings.showStoreName ? 'checked' : ''} onchange="window.toggleBarcodeOption('showStoreName', this.checked)" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                                <input type="checkbox" ${labelSettings.showStoreName ? 'checked' : ''} onchange="window.toggleBarcodeOption('showStoreName', this.checked)" class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                                 <span>Kop Nama Toko</span>
                             </label>
 
                             <label class="flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" ${labelSettings.showPrice ? 'checked' : ''} onchange="window.toggleBarcodeOption('showPrice', this.checked)" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                                <input type="checkbox" ${labelSettings.showPrice ? 'checked' : ''} onchange="window.toggleBarcodeOption('showPrice', this.checked)" class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                                 <span>Harga Jual Produk</span>
                             </label>
 
                             <label class="flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" ${labelSettings.showUnit ? 'checked' : ''} onchange="window.toggleBarcodeOption('showUnit', this.checked)" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                                <input type="checkbox" ${labelSettings.showUnit ? 'checked' : ''} onchange="window.toggleBarcodeOption('showUnit', this.checked)" class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                                 <span>Satuan Barang (/ pcs)</span>
                             </label>
 
                             <label class="flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" ${labelSettings.showSkuText ? 'checked' : ''} onchange="window.toggleBarcodeOption('showSkuText', this.checked)" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                                <input type="checkbox" ${labelSettings.showSkuText ? 'checked' : ''} onchange="window.toggleBarcodeOption('showSkuText', this.checked)" class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                                 <span>Teks SKU di Bawah Barcode</span>
                             </label>
 
                             <label class="flex items-center gap-2 cursor-pointer select-none col-span-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500">
-                                <input type="checkbox" ${labelSettings.showBorderGuide ? 'checked' : ''} onchange="window.toggleBarcodeOption('showBorderGuide', this.checked)" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                                <input type="checkbox" ${labelSettings.showBorderGuide ? 'checked' : ''} onchange="window.toggleBarcodeOption('showBorderGuide', this.checked)" class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                                 <span>Garis Batas Potong (Gunting) untuk Kertas Stiker Polos A4</span>
                             </label>
                         </div>
@@ -384,7 +394,7 @@ export const renderBarcodeLabelModalContent = () => {
                     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <i class="fa-solid fa-eye text-indigo-600 dark:text-indigo-400"></i>
+                                <i class="fa-solid fa-eye" style="color: var(--color-primary)"></i>
                                 <span>Pratinjau Fisik Stiker Label</span>
                             </span>
                             <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">
@@ -409,7 +419,7 @@ export const renderBarcodeLabelModalContent = () => {
                                         ${esc(activePreviewItem.name)}
                                     </p>
                                     ${activePreviewItem.variantName ? `
-                                        <p class="text-[9px] font-bold text-indigo-600 leading-tight truncate mt-0.5">
+                                        <p class="text-[9px] font-bold leading-tight truncate mt-0.5" style="color: var(--color-primary);">
                                             [${esc(activePreviewItem.variantName)}]
                                         </p>
                                     ` : ''}
@@ -440,7 +450,7 @@ export const renderBarcodeLabelModalContent = () => {
                         <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 space-y-2">
                             <div class="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
                                 <span>Total Stiker Dicetak:</span>
-                                <span class="text-base font-black text-indigo-600 dark:text-indigo-400 font-mono">${totalLabelsCount} Lembar</span>
+                                <span class="text-base font-black font-mono" style="color: var(--color-primary);">${totalLabelsCount} Lembar</span>
                             </div>
 
                             ${labelSettings.paperSize.startsWith('a4') ? `
@@ -476,7 +486,7 @@ export const renderBarcodeLabelModalContent = () => {
                     <span>RawBT / Bluetooth</span>
                 </button>
 
-                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="flex-1 sm:flex-initial h-11 sm:h-12 px-4 sm:px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="btn-native-action flex-1 sm:flex-initial h-11 sm:h-12 px-4 sm:px-6 rounded-xl text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-print text-xs"></i>
                     <span>Cetak Sekarang (${totalLabelsCount})</span>
                 </button>

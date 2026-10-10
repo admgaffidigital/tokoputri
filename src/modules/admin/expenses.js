@@ -661,13 +661,13 @@ export const renderExpensesAdminView = () => {
                                             </td>
                                             <td class="py-3.5 px-4 text-center whitespace-nowrap">
                                                 <div class="inline-flex items-center gap-1.5">
-                                                    <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak Bukti Kas Keluar (BKK)" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak Bukti Kas Keluar (BKK)" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
                                                         <i class="fa-solid fa-print text-xs"></i>
                                                     </button>
-                                                    <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit Pengeluaran" class="w-7 h-7 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 flex items-center justify-center transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit Pengeluaran" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-blue-600 dark:text-blue-400 bg-blue-50/70 hover:bg-blue-100 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
                                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                                     </button>
-                                                    <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus Pengeluaran" class="w-7 h-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus Pengeluaran" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-50/70 hover:bg-rose-100 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs">
                                                         <i class="fa-solid fa-trash-can text-xs"></i>
                                                     </button>
                                                 </div>
@@ -680,54 +680,54 @@ export const renderExpensesAdminView = () => {
                     </div>
 
                     <!-- Mobile Cards (< 768px) -->
-                    <div class="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+                    <div class="md:hidden p-3.5 space-y-3">
                         ${filteredList.map(exp => {
                             const catObj = EXPENSE_CATEGORIES.find(c => c.key === exp.category) || EXPENSE_CATEGORIES[6];
                             const srcObj = EXPENSE_SOURCES.find(s => s.key === exp.source) || EXPENSE_SOURCES[0];
                             const hasReceipt = Boolean(exp.receiptImg);
 
                             return `
-                                <div class="p-4 space-y-2.5">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                <div class="card-native p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-3">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-1.5 flex-wrap">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
                                                 <i class="fa-solid ${catObj.icon} text-[9px]" style="color: var(--color-primary)"></i>
                                                 <span>${catObj.label}</span>
                                             </span>
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                                                exp.source === 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600' :
-                                                exp.source === 'bank' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600' :
-                                                'bg-purple-50 dark:bg-purple-950/40 text-purple-600'
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold ${
+                                                exp.source === 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200/60' :
+                                                exp.source === 'bank' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200/60' :
+                                                'bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200/60'
                                             }">
                                                 <i class="fa-solid ${srcObj.icon} text-[8px]"></i>
                                                 <span>${srcObj.shortLabel}</span>
                                             </span>
                                         </div>
-                                        <span class="text-[10px] text-slate-400 font-bold">${formatIndoDate(exp.date)}</span>
+                                        <span class="text-[10.5px] text-slate-400 font-bold shrink-0">${formatIndoDate(exp.date)}</span>
                                     </div>
 
                                     <div>
                                         <p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${esc(exp.desc)}</p>
-                                        ${exp.recipient ? `<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: ${esc(exp.recipient)}</p>` : ''}
+                                        ${exp.recipient ? `<p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1"><i class="fa-solid fa-store text-slate-400 text-[9px]"></i> Penerima: <span class="font-bold text-slate-600 dark:text-slate-300">${esc(exp.recipient)}</span></p>` : ''}
                                     </div>
 
-                                    <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                                    <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80 gap-2">
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm font-black text-slate-800 dark:text-white">- ${fCur(exp.amount)}</span>
+                                            <span class="text-sm font-black text-slate-900 dark:text-white">- ${fCur(exp.amount)}</span>
                                             ${hasReceipt ? `
-                                                <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                                <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" class="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer active:scale-95 border border-amber-300/60">
                                                     <i class="fa-solid fa-image text-[9px]"></i> Nota
                                                 </button>
                                             ` : ''}
                                         </div>
-                                        <div class="flex items-center gap-1">
-                                            <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak BKK" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white flex items-center justify-center active:scale-90">
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            <button type="button" onclick="window.printExpenseSlip('${exp.id}')" title="Cetak BKK" class="btn-native-icon w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
                                                 <i class="fa-solid fa-print text-xs"></i>
                                             </button>
-                                            <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit" class="w-8 h-8 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 flex items-center justify-center active:scale-90">
+                                            <button type="button" onclick="window.openExpenseModal('${exp.id}')" title="Edit" class="btn-native-icon w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200/60 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
                                                 <i class="fa-solid fa-pen-to-square text-xs"></i>
                                             </button>
-                                            <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus" class="w-8 h-8 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center active:scale-90">
+                                            <button type="button" onclick="window.confirmDeleteExpense('${exp.id}')" title="Hapus" class="btn-native-icon w-9 h-9 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer">
                                                 <i class="fa-solid fa-trash-can text-xs"></i>
                                             </button>
                                         </div>

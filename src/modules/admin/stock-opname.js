@@ -747,7 +747,7 @@ export const renderSoActiveView = (categories, brands) => {
                         
                         <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                             ${soSearchQuery ? `
-                                <button onclick="window.clearSoSearch()" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg text-xs" title="Bersihkan">
+                                <button onclick="window.clearSoSearch()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl text-xs active:scale-95 transition-all cursor-pointer" title="Bersihkan">
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>` : ''}
                             <button onclick="window.openCameraScanner && window.openCameraScanner('so-quick-search-input')" class="px-2.5 py-1.5 rounded-xl primary-bg-soft primary-border border primary-text hover:bg-[rgba(var(--color-primary-rgb),0.2)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95" title="Scan Barcode via Kamera HP">
@@ -872,7 +872,7 @@ export const renderSoActiveItems = () => {
 
             <!-- List Item Rows -->
             ${items.map(item => `
-                <div id="so-row-${item.key}" class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all shadow-2xs space-y-3 lg:space-y-0">
+                <div id="so-row-${item.key}" class="card-native p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all shadow-2xs space-y-3 lg:space-y-0">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
                         <!-- Col 1: Informasi Produk (Desktop: 5 cols) -->
                         <div class="lg:col-span-5 flex items-center gap-3 min-w-0">
@@ -919,17 +919,17 @@ export const renderSoActiveItems = () => {
                                     Fisik: <b class="so-phys-total-display text-slate-800 dark:text-white font-black">${item.physicalStock !== null ? item.physicalStock : '-'}</b>
                                 </span>
                             </div>
-                            <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-8 px-2 rounded-xl primary-bg-soft primary-border border primary-text hover:bg-[rgba(var(--color-primary-rgb),0.2)] font-black text-[10px] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik toko &amp; gudang dengan sistem">
+                            <button type="button" onclick="window.matchSoItem('${item.key}')" class="btn-native-action h-9 px-3 rounded-xl border font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary);" title="Samakan fisik toko &amp; gudang dengan sistem">
                                 =
                             </button>
                         </div>
 
                         <!-- MOBILE ONLY: Compact Bar Sistem vs Fisik (Touch-Friendly) -->
-                        <div class="lg:hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
-                            <div class="flex items-center justify-between text-xs">
+                        <div class="lg:hidden p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2.5">
+                            <div class="flex items-center justify-between text-xs gap-2">
                                 <span class="text-[10px] font-bold text-slate-400">Sistem: <span class="text-teal-600 dark:text-teal-400 font-bold"><i class="fa-solid fa-store text-[9px] mr-0.5"></i>${item.systemStoreStock}</span> | <span class="text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-warehouse text-[9px] mr-0.5"></i>${item.systemWarehouseStock}</span> (Tot: ${item.systemStock})</span>
-                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="px-2.5 py-1 rounded-xl primary-bg-soft primary-border border primary-text font-black text-[10px] active:scale-95" title="Samakan fisik = sistem">
-                                    = Samakan
+                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="btn-native-action h-8 px-3 rounded-xl border font-black text-[10.5px] flex items-center gap-1 active:scale-95 shadow-2xs cursor-pointer shrink-0" style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary);" title="Samakan fisik = sistem">
+                                    <i class="fa-solid fa-equals text-[9px]"></i> Samakan
                                 </button>
                             </div>
                             <div class="grid grid-cols-2 gap-2">

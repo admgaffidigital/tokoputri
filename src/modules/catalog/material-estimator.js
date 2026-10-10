@@ -357,8 +357,8 @@ export const renderMaterialEstimatorModalContent = () => {
                                 <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
                                 <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
                             </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="w-7 h-7 rounded-lg bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-90 active:scale-90 transition-all cursor-pointer shrink-0" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus"></i>
+                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                                <i class="fa-solid fa-plus text-xs"></i>
                             </button>
                         </div>
                         `).join('')}
@@ -408,9 +408,9 @@ export const renderMaterialEstimatorModalContent = () => {
                     <div>
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Cadangan Potongan / Waste Factor</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 5)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 5 ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">5% Minimal</button>
-                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 10)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 10 ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">10% Standar</button>
-                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 15)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 15 ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}">15% Diagonal</button>
+                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 5)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 5 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 5 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}">5% Minimal</button>
+                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 10)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 10 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 10 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}">10% Standar</button>
+                            <button type="button" onclick="window.updateEstimatorTileField('wastePercent', 15)" class="py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${tileState.wastePercent === 15 ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-2xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'}" style="${tileState.wastePercent === 15 ? 'background: rgba(var(--color-primary-rgb), 0.08); border-color: var(--color-primary);' : ''}">15% Diagonal</button>
                         </div>
                     </div>
 
@@ -418,12 +418,12 @@ export const renderMaterialEstimatorModalContent = () => {
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Semen Perekat Keramik (Adhesive)?</span>
                             <input type="checkbox" ${tileState.includeAdhesive ? 'checked' : ''} onchange="window.updateEstimatorTileField('includeAdhesive', this.checked)"
-                                class="w-4 h-4 rounded text-indigo-600 accent-indigo-600 cursor-pointer">
+                                class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Semen Pengisi Nat (Tile Grout)?</span>
                             <input type="checkbox" ${tileState.includeGrout ? 'checked' : ''} onchange="window.updateEstimatorTileField('includeGrout', this.checked)"
-                                class="w-4 h-4 rounded text-indigo-600 accent-indigo-600 cursor-pointer">
+                                class="w-4 h-4 rounded accent-[var(--color-primary)] cursor-pointer">
                         </div>
                     </div>
                 </div>
@@ -490,8 +490,8 @@ export const renderMaterialEstimatorModalContent = () => {
                                 <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
                                 <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
                             </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="w-7 h-7 rounded-lg bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-90 active:scale-90 transition-all cursor-pointer shrink-0" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus"></i>
+                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                                <i class="fa-solid fa-plus text-xs"></i>
                             </button>
                         </div>
                         `).join('')}
@@ -614,8 +614,8 @@ export const renderMaterialEstimatorModalContent = () => {
                                 <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
                                 <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
                             </div>
-                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="w-7 h-7 rounded-lg bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-90 active:scale-90 transition-all cursor-pointer shrink-0" title="Tambah ke Belanja">
-                                <i class="fa-solid fa-plus"></i>
+                            <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
+                                <i class="fa-solid fa-plus text-xs"></i>
                             </button>
                         </div>
                         `).join('')}
