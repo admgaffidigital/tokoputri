@@ -4500,7 +4500,7 @@ const buildPOSLayout = ({ isStorefront }) => {
 
         <!-- FLOATING CART BAR (Khusus Mobile < lg saat keranjang ada isi with safe-area) -->
         <div id="pos-mobile-floating-bar" class="lg:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
-            <div class="backdrop-blur-xl bg-slate-900/95 dark:bg-slate-950/95 text-white p-3 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.35)] flex items-center justify-between border border-white/15 dark:border-white/10 cursor-pointer active:scale-[0.99] transition-all" onclick="window.openPOSCartDrawer()">
+            <div class="bg-slate-900 dark:bg-slate-950 text-white p-3 rounded-2xl flex items-center justify-between border border-slate-700/80 cursor-pointer active:scale-[0.99] transition-all" onclick="window.openPOSCartDrawer()">
                 <div class="flex items-center gap-2.5">
                     <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shrink-0" style="background:linear-gradient(135deg, var(--color-primary-light,#34d399), var(--color-primary,#10b981))">
                         <i class="fa-solid fa-cart-shopping"></i>

@@ -1176,16 +1176,13 @@ export const showClientPaymentSuccessModal = ({ orderId, amount }) => {
         m.id = 'modal-client-pay-success';
         document.body.appendChild(m);
     }
-    m.className = 'fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none';
+    m.className = 'fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/75 transition-opacity duration-300 opacity-0 pointer-events-none';
     m.style.zIndex = '150';
 
     const shortId = orderId ? (orderId.split('-').pop() || orderId) : '-';
 
     m.innerHTML = `
         <div id="modal-client-pay-success-box" class="bg-white dark:bg-slate-900 w-full max-w-sm sm:max-w-md rounded-[2.25rem] p-6 sm:p-7 shadow-2xl border border-slate-200/90 dark:border-slate-800 text-center relative overflow-hidden transform scale-95 transition-all duration-300 pointer-events-auto">
-            <!-- Radiant Background Glow -->
-            <div class="absolute -top-16 -left-16 w-36 h-36 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 blur-2xl pointer-events-none"></div>
-            <div class="absolute -bottom-16 -right-16 w-36 h-36 rounded-full bg-[rgba(var(--color-primary-rgb),0.1)] blur-2xl pointer-events-none"></div>
 
             <!-- Tombol Tutup X Pojok Kanan Atas -->
             <button type="button" onclick="window.closeClientPaymentSuccessModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer" title="Tutup">

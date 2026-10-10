@@ -97,7 +97,7 @@ export const renderStorefrontFlashSale = () => {
             </div>
 
             ${remaining <= 3 && !isSoldOut && quota > 0 ? `
-            <div class="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-amber-500/95 backdrop-blur-xs px-1.5 py-0.5 text-[9px] font-black text-white shadow-2xs">
+            <div class="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-amber-500 px-1.5 py-0.5 text-[9px] font-black text-white shadow-2xs">
                 <span>🔥 Sisa ${remaining}!</span>
             </div>` : ''}
 
@@ -105,7 +105,7 @@ export const renderStorefrontFlashSale = () => {
             <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-slate-50 dark:bg-slate-800/50 p-2.5 flex items-center justify-center border-b border-slate-100 dark:border-slate-800" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}')">
                 <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-108" onerror="this.src='/favicon.png'">
                 ${isSoldOut ? `
-                <div class="absolute inset-0 bg-slate-950/75 backdrop-blur-2xs flex flex-col items-center justify-center p-2 text-center text-white">
+                <div class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-2 text-center text-white">
                     <span class="rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest shadow-md text-white" style="background: var(--color-primary-dark);">HABIS TERJUAL</span>
                     <span class="mt-1 text-[9px] font-medium text-slate-300">Kuota promo terpenuhi</span>
                 </div>` : ''}
@@ -157,10 +157,6 @@ export const renderStorefrontFlashSale = () => {
 
     container.innerHTML = `
     <div class="bento-island-card relative overflow-hidden rounded-[1.75rem] p-4 sm:p-5 shadow-xs border transition-all duration-300" style="border-color: rgba(var(--color-primary-rgb), 0.22);">
-        <!-- Dekorasi Efek Cahaya Latar Harmonis Tema -->
-        <div class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full blur-3xl opacity-35 dark:opacity-20" style="background: var(--color-primary);"></div>
-        <div class="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-amber-500/20 blur-3xl dark:bg-amber-500/10"></div>
-
         <!-- Header Panggung Flash Sale -->
         <div class="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b pb-3.5 mb-3.5" style="border-color: rgba(var(--color-primary-rgb), 0.12);">
             <div class="flex items-center gap-3">
@@ -180,8 +176,8 @@ export const renderStorefrontFlashSale = () => {
                 </div>
             </div>
 
-            <!-- Countdown Timer Block Harmonis Tema -->
-            <div class="flex items-center gap-2 self-start sm:self-auto rounded-2xl bg-white/90 dark:bg-slate-800/90 border px-3 py-1.5 shadow-2xs backdrop-blur-xs" style="border-color: rgba(var(--color-primary-rgb), 0.25);">
+            <!-- Countdown Timer Block Harmonis Tema (Solid & Bebas Kaca) -->
+            <div class="flex items-center gap-2 self-start sm:self-auto rounded-2xl bg-white dark:bg-slate-800 border px-3 py-1.5 shadow-2xs" style="border-color: rgba(var(--color-primary-rgb), 0.25);">
                 <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline">Berakhir:</span>
                 <div class="flex items-center gap-1 font-mono font-black" style="color: var(--color-primary);">
                     <span id="fs-cd-h" class="min-w-[24px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.h}</span>

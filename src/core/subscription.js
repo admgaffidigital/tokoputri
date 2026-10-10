@@ -236,7 +236,7 @@ export const checkAndEnforceSubscriptionLockout = () => {
     if (!lockoutEl) {
         lockoutEl = document.createElement('div');
         lockoutEl.id = 'subscription-lockout-modal';
-        lockoutEl.className = 'fixed inset-0 z-[120000] bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4 select-none';
+        lockoutEl.className = 'fixed inset-0 z-[120000] bg-slate-950 flex items-center justify-center p-4 select-none';
         document.body.appendChild(lockoutEl);
     }
 
@@ -429,7 +429,7 @@ export const openRenewalModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'renewal-input-modal';
-        m.className = 'fixed inset-0 z-[10500] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4';
+        m.className = 'fixed inset-0 z-[10500] bg-slate-950/90 flex items-center justify-center p-4';
         document.body.appendChild(m);
     }
     m.innerHTML = `
@@ -489,8 +489,7 @@ export const getSubscriptionBentoHtml = () => {
     }
 
     return `
-        <div class="mt-6 p-5 sm:p-6 rounded-[2rem] border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white shadow-xl relative overflow-hidden">
-            <div class="pointer-events-none absolute right-0 bottom-0 w-52 h-52 rounded-full" style="background: radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 75%);"></div>
+        <div class="mt-6 p-5 sm:p-6 rounded-[2rem] border border-slate-200/80 dark:border-slate-800 bg-slate-900 text-white shadow-xl relative overflow-hidden">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
                 <div class="flex items-start sm:items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-amber-500/20">

@@ -156,12 +156,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-CR3Y66Ox.js"></script>
+    <script type="module" crossorigin src="/assets/index-rTA4kuUK.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-DyXkvpNW.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-AyXvLbB_.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1236,7 +1236,7 @@
         </div>
 
         <!-- Footer Action Bar (Fixed Pinned) -->
-        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white/95 dark:bg-[#0b1121]/95 backdrop-blur-md flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 shrink-0" style="padding-bottom: max(0.9rem, env(safe-area-inset-bottom));">
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0b1121] flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 shrink-0" style="padding-bottom: max(0.9rem, env(safe-area-inset-bottom));">
           <div class="flex items-center gap-2 w-full sm:w-auto">
             <button type="button" onclick="closeDeliveryModal()" class="btn-native-action px-3.5 h-11 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 shadow-2xs">
               Tutup
@@ -1283,7 +1283,7 @@
         </div>
 
         <!-- Footer Action Bar (Fixed Pinned) -->
-        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white/95 dark:bg-[#0b1121]/95 backdrop-blur-md flex items-center justify-between gap-3 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0b1121] flex items-center justify-between gap-3 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
           <button type="button" onclick="closeDeliverySignatureModal()" class="btn-native-action border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 shadow-2xs">
             Batal
           </button>
@@ -2046,11 +2046,11 @@
           </div>
           <!-- MOBILE HEADER QUICK-SEARCH CAPSULE (INSTANT DISCOVERY) -->
           <div class="mx-auto mt-2 flex w-full items-center gap-2 px-1 sm:hidden">
-            <div class="group relative flex-1 flex items-center bg-white/20 dark:bg-black/30 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 px-3 py-1.5 text-white shadow-inner focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:border-[var(--color-primary)] focus-within:shadow-md transition-all">
-              <i class="fa-solid fa-magnifying-glass text-xs mr-2 text-white/90 group-focus-within:text-slate-400 dark:group-focus-within:text-slate-400 transition-colors"></i>
-              <input type="text" id="mobile-header-search" placeholder="Cari semen, cat, pipa, keramik, alat teknik..." autocomplete="off" class="w-full bg-transparent text-xs font-semibold placeholder:text-white/80 group-focus-within:placeholder:text-slate-400 outline-none text-white group-focus-within:text-slate-900 dark:group-focus-within:text-white" oninput="if(window.handleMobileHeaderSearch) window.handleMobileHeaderSearch(this.value);" onfocus="if(window.onMobileSearchFocus) window.onMobileSearchFocus()" onkeydown="if(event.key === 'Enter') { this.blur(); }">
-              <button type="button" id="mobile-header-search-clear" onclick="window.clearMobileHeaderSearch()" class="hidden text-white/80 group-focus-within:text-slate-400 hover:text-white dark:hover:text-white p-1 text-xs mr-1 active:scale-90" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
-              <button type="button" onclick="openCameraScanner('mobile-header-search')" class="text-white/90 group-focus-within:text-[var(--color-primary)] hover:text-white p-1 active:scale-90 transition-all shrink-0" title="Scan Barcode"><i class="fa-solid fa-qrcode text-xs"></i></button>
+            <div class="group relative flex-1 flex items-center bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-slate-800 dark:text-white shadow-xs focus-within:border-[var(--color-primary)] transition-all">
+              <i class="fa-solid fa-magnifying-glass text-xs mr-2 text-slate-400 dark:text-slate-500 group-focus-within:text-[var(--color-primary)] transition-colors"></i>
+              <input type="text" id="mobile-header-search" placeholder="Cari semen, cat, pipa, keramik, alat teknik..." autocomplete="off" class="w-full bg-transparent text-xs font-semibold placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none text-slate-800 dark:text-white" oninput="if(window.handleMobileHeaderSearch) window.handleMobileHeaderSearch(this.value);" onfocus="if(window.onMobileSearchFocus) window.onMobileSearchFocus()" onkeydown="if(event.key === 'Enter') { this.blur(); }">
+              <button type="button" id="mobile-header-search-clear" onclick="window.clearMobileHeaderSearch()" class="hidden text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 text-xs mr-1 active:scale-90" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
+              <button type="button" onclick="openCameraScanner('mobile-header-search')" class="text-slate-500 hover:text-[var(--color-primary)] p-1 active:scale-90 transition-all shrink-0" title="Scan Barcode"><i class="fa-solid fa-qrcode text-xs"></i></button>
             </div>
           </div>
         </div>
@@ -2956,8 +2956,6 @@
             <div class="mx-auto block w-full max-w-5xl" id="admin-dashboard-view">
               <!-- Welcome Banner -->
               <div class="relative mb-7 overflow-hidden rounded-[1.5rem] border border-slate-700/60 bg-slate-900 p-6 shadow-xl dark:bg-slate-800 sm:p-8">
-                <div class="pointer-events-none absolute -right-8 -top-8 h-48 w-48 rounded-full border border-white/10 bg-white/5 opacity-30"></div>
-                <div class="pointer-events-none absolute -bottom-6 -left-6 h-36 w-36 rounded-full border border-white/10 bg-white/5 opacity-20"></div>
                 <div class="relative z-10 flex items-center justify-between gap-4">
                   <div>
                     <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-white opacity-60" id="admin-dashboard-welcome-tag">Panel Kontrol Owner</p>

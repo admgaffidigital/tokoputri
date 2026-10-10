@@ -37,11 +37,10 @@ const ensurePreviewStyles = () => {
         @keyframes utpSheetIn { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .utp-sheet { animation: utpSheetIn .2s cubic-bezier(.2,.8,.2,1); }
         .utp-canvas {
-            background-color: #e9edf2;
-            background-image: radial-gradient(rgba(15,23,42,.07) 1px, transparent 1px);
-            background-size: 14px 14px;
+            background-color: #f1f5f9;
+            background-image: none;
         }
-        .dark .utp-canvas { background-color: #060b16; background-image: radial-gradient(rgba(148,163,184,.08) 1px, transparent 1px); }
+        .dark .utp-canvas { background-color: #0f172a; background-image: none; }
         .utp-paper {
             position: relative; background: #fff; color: #0b0b0b;
             font-family: 'Courier New', Courier, ui-monospace, monospace;

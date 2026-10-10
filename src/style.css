@@ -59,27 +59,19 @@ input, textarea, [contenteditable="true"] {
 @tailwind components;
 @tailwind utilities;
 
-/* Clean Luxury Canvas & Harmonized Views with Pure Smooth Ambient Wash (Zero Dots, Zero Noise) */
+/* Clean Enterprise Solid Canvas (Zero Blur, Zero Radial Glow, Zero Glassmorphism) */
 body, #app-container {
-  background-color: #F5F1EB;
-  background-image: 
-    radial-gradient(ellipse 90% 50% at 50% -5%, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 45%, transparent 75%),
-    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.09) 0%, rgba(var(--color-primary-rgb), 0.02) 280px, transparent 650px);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: #f8fafc !important; /* Clean Solid Light Canvas (Slate-50) */
+  background-image: none !important;
 }
 .dark body, .dark #app-container,
 html.dark body, html.dark #app-container {
-  background-color: #0b1120;
-  background-image: 
-    radial-gradient(ellipse 90% 50% at 50% -5%, rgba(var(--color-primary-rgb), 0.20) 0%, rgba(var(--color-primary-rgb), 0.05) 50%, transparent 80%),
-    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(var(--color-primary-rgb), 0.03) 300px, transparent 700px);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: #0f172a !important; /* Clean Solid Dark Canvas (Slate-900) */
+  background-image: none !important;
 }
 
-/* Biarkan background canvas & dynamic-bg-container bersinar ke seluruh etalase pelanggan,
-   TETAPI panel CMS (#view-admin) dan login admin (#view-admin-login) WAJIB berlatar solid kokoh anti-flicker */
+/* Biarkan background canvas bersih bersinar ke seluruh etalase pelanggan,
+   panel CMS (#view-admin) dan login admin (#view-admin-login) berlatar solid kokoh anti-flicker */
 .view-section:not(#view-admin-login):not(#view-admin) {
   background-color: transparent !important;
 }
@@ -88,17 +80,11 @@ html.dark .view-section:not(#view-admin-login):not(#view-admin) {
   background-color: transparent !important;
 }
 
-/* Latar Belakang Solid Anti-Flicker & Isolasi GPU untuk Panel Admin CMS & Login */
-#view-admin {
-  background-color: #F8F6F2 !important;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
+/* Latar Belakang Solid Murni untuk Panel Admin CMS & Login (Bebas Efek Kaca & Bebas Blur) */
+#view-admin,
 #view-admin-login {
-  background: radial-gradient(circle at 50% -10%, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(var(--color-primary-rgb), 0.04) 45%, transparent 75%), #F8F6F2 !important;
+  background-color: #f8fafc !important;
+  background-image: none !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
@@ -106,17 +92,11 @@ html.dark .view-section:not(#view-admin-login):not(#view-admin) {
 }
 
 .dark #view-admin,
-html.dark #view-admin {
-  background-color: #0b1120 !important;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
+html.dark #view-admin,
 .dark #view-admin-login,
 html.dark #view-admin-login {
-  background: radial-gradient(circle at 50% -10%, rgba(var(--color-primary-rgb), 0.22) 0%, rgba(var(--color-primary-rgb), 0.06) 45%, transparent 75%), #0b1120 !important;
+  background-color: #0f172a !important;
+  background-image: none !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
@@ -653,16 +633,12 @@ html.dark #view-admin-login {
     background: linear-gradient(160deg, #1a2235 0%, #131b2c 55%, #0d1424 100%);
 }
 
-/* Ambient Radial Aura Halus Beraksen Tema Toko */
+/* Ambient Radial Aura Halus Beraksen Tema Toko (Dinonaktifkan demi estetika solid murni) */
 .pos-smart-cover .cover-surface-glow {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(ellipse at 50% 45%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 65%);
-    opacity: 1;
+    display: none !important;
 }
 .dark .pos-smart-cover .cover-surface-glow {
-    background: radial-gradient(ellipse at 50% 45%, rgba(var(--color-primary-rgb), 0.14) 0%, transparent 70%);
+    display: none !important;
 }
 
 /* Central Content */
@@ -2750,12 +2726,12 @@ html.dark .primary-gradient-card-border {
     border-color: rgba(var(--color-primary-rgb), 0.3) !important;
 }
 
-/* Dekorasi blur bulat di sudut card */
+/* Dekorasi blur bulat di sudut card (Dinonaktifkan total demi estetika bersih) */
 .primary-blur-orb {
-    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+    display: none !important;
 }
 .primary-blur-orb-hover:hover .primary-blur-orb {
-    background-color: rgba(var(--color-primary-rgb), 0.2) !important;
+    display: none !important;
 }
 
 /* Sembunyikan kontrol native play/pause pada video banner agar tampilan bersih */
@@ -2830,265 +2806,89 @@ html.dark #app-container[data-has-custom-bg="true"] {
 }
 
 /* ══════════════════════════════════════════════════════════
-   GAYA LATAR BELAKANG & TEMA VISUAL (DISTINCT THEME STYLES)
-   Setiap gaya memiliki karakter visual, warna kanvas, 
-   siluet header, dan kontras kartu yang nyata & berbeda 100%.
+   GAYA LATAR BELAKANG & TEMA VISUAL (100% SOLID & BEBAS BLUR / KACA)
+   Menjamin kanvas latar belakang, header, kartu, dan navigasi
+   bersih murni, tajam, solid tanpa efek blur kabur atau kaca buram.
    ══════════════════════════════════════════════════════════ */
 
-/* ─── 1. MINIMALIS (Warm Luxury Linen Studio / Tokopedia & Apple Style) ─── */
-[data-bg-style="minimalist"],
-[data-bg-style="minimalist"] #app-container {
-    background-color: #F5F1EB !important;
-    background-image: 
-        radial-gradient(ellipse 90% 50% at 50% -5%, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 45%, transparent 75%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.09) 0%, rgba(var(--color-primary-rgb), 0.02) 280px, transparent 650px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-.dark[data-bg-style="minimalist"],
-.dark[data-bg-style="minimalist"] #app-container,
-html.dark[data-bg-style="minimalist"],
-html.dark[data-bg-style="minimalist"] #app-container {
-    background-color: #0B1120 !important;
-    background-image: 
-        radial-gradient(ellipse 90% 50% at 50% -5%, rgba(var(--color-primary-rgb), 0.20) 0%, rgba(var(--color-primary-rgb), 0.05) 50%, transparent 80%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(var(--color-primary-rgb), 0.03) 300px, transparent 700px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-[data-bg-style="minimalist"] .glass-header {
-    background: var(--color-primary);
-    border-radius: 0;
-    box-shadow: none !important;
+[data-bg-style],
+[data-bg-style] #app-container {
+    background-color: #f8fafc !important;
+    background-image: none !important;
 }
 
-/* ─── UNIVERSAL BENTO ISLAND CARDS (Harmoni Busana Menyeluruh) ─── */
-.bento-island-card {
-    background-color: #ffffff !important;
-    border: 1px solid rgba(var(--color-primary-rgb), 0.16) !important;
-    box-shadow: none !important;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-html.dark .bento-island-card,
-.dark .bento-island-card {
+.dark[data-bg-style],
+.dark[data-bg-style] #app-container,
+html.dark[data-bg-style],
+html.dark[data-bg-style] #app-container {
     background-color: #0f172a !important;
-    border: 1px solid rgba(var(--color-primary-rgb), 0.24) !important;
-    box-shadow: none !important;
+    background-image: none !important;
 }
 
-/* ─── 1. MINIMALIS BENTO & THEME HARMONY ─── */
-[data-bg-style="minimalist"] #reward-catalog-container,
-[data-bg-style="minimalist"] #dynamic-vouchers-container,
-[data-bg-style="minimalist"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.15) !important;
+/* Header Solid Bersih Tanpa Lengkung Berlebih & Tanpa Efek Kaca */
+.glass-header,
+[data-bg-style] .glass-header,
+[data-bg-style] #view-catalog .glass-header,
+[data-bg-style] .view-section .glass-header {
+    background: var(--color-primary) !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
     box-shadow: none !important;
-}
-html.dark[data-bg-style="minimalist"] #reward-catalog-container,
-html.dark[data-bg-style="minimalist"] #dynamic-vouchers-container,
-html.dark[data-bg-style="minimalist"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.20) !important;
-    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
-/* ─── 2. HERO ARCH (Lengkung Kanopi Emas / Stage Dome) ─── */
-[data-bg-style="hero_arch"],
-[data-bg-style="hero_arch"] #app-container {
-    background-color: #F5F2EC !important;
-    background-image: 
-        radial-gradient(ellipse 100% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.20) 0%, rgba(var(--color-primary-rgb), 0.06) 45%, transparent 80%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.03) 320px, transparent 720px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-.dark[data-bg-style="hero_arch"],
-.dark[data-bg-style="hero_arch"] #app-container,
-html.dark[data-bg-style="hero_arch"],
-html.dark[data-bg-style="hero_arch"] #app-container {
-    background-color: #0A0F1D !important;
-    background-image: 
-        radial-gradient(ellipse 100% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.24) 0%, rgba(var(--color-primary-rgb), 0.07) 50%, transparent 80%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 320px, transparent 720px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-[data-bg-style="hero_arch"] #view-catalog .glass-header {
-    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    border-radius: 0 0 2.25rem 2.25rem;
-    padding-bottom: 1.45rem;
-    box-shadow: none !important;
-}
-[data-bg-style="hero_arch"] .view-section:not(#view-catalog) .glass-header {
-    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    border-radius: 0;
-    padding-bottom: 0.75rem;
-    box-shadow: none !important;
-}
-[data-bg-style="hero_arch"] #reward-catalog-container,
-[data-bg-style="hero_arch"] #dynamic-vouchers-container,
-[data-bg-style="hero_arch"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.20) !important;
-    box-shadow: none !important;
-}
-html.dark[data-bg-style="hero_arch"] #reward-catalog-container,
-html.dark[data-bg-style="hero_arch"] #dynamic-vouchers-container,
-html.dark[data-bg-style="hero_arch"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.26) !important;
-    box-shadow: none !important;
+html.dark .glass-header,
+html.dark [data-bg-style] .glass-header {
+    background: var(--color-primary) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
-/* ─── 3. AURORA GLOW (Gradien Suasana Mewah / Luminous Ambient) ─── */
-[data-bg-style="aurora_glow"],
-[data-bg-style="aurora_glow"] #app-container,
-[data-bg-style="dual_tone"],
-[data-bg-style="dual_tone"] #app-container {
-    background-color: #F4EFF6 !important;
-    background-image: 
-        radial-gradient(circle 550px at 15% 10%, rgba(var(--color-primary-rgb), 0.20) 0%, transparent 70%),
-        radial-gradient(circle 500px at 85% 20%, rgba(var(--color-primary-rgb), 0.15) 0%, transparent 65%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.02) 400px, transparent 800px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-.dark[data-bg-style="aurora_glow"],
-.dark[data-bg-style="aurora_glow"] #app-container,
-html.dark[data-bg-style="aurora_glow"],
-html.dark[data-bg-style="aurora_glow"] #app-container {
-    background-color: #080C16 !important;
-    background-image: 
-        radial-gradient(circle 550px at 15% 10%, rgba(var(--color-primary-rgb), 0.26) 0%, transparent 70%),
-        radial-gradient(circle 500px at 85% 20%, rgba(var(--color-primary-rgb), 0.20) 0%, transparent 65%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 400px, transparent 800px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-[data-bg-style="aurora_glow"] #view-catalog .glass-header,
-[data-bg-style="dual_tone"] #view-catalog .glass-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    border-radius: 0 0 1.5rem 1.5rem;
-    padding-bottom: 1.15rem;
+/* Bottom Navigation Bar Solid & Bebas Kaca */
+.glass-nav,
+#bottom-nav-bar {
+    background-color: #ffffff !important;
+    border-top: 1px solid #e2e8f0 !important;
     box-shadow: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-}
-[data-bg-style="aurora_glow"] .view-section:not(#view-catalog) .glass-header,
-[data-bg-style="dual_tone"] .view-section:not(#view-catalog) .glass-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    border-radius: 0;
-    padding-bottom: 0.75rem;
-    box-shadow: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-[data-bg-style="aurora_glow"] #reward-catalog-container,
-[data-bg-style="aurora_glow"] #dynamic-vouchers-container,
-[data-bg-style="aurora_glow"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
-    box-shadow: none !important;
-}
-html.dark[data-bg-style="aurora_glow"] #reward-catalog-container,
-html.dark[data-bg-style="aurora_glow"] #dynamic-vouchers-container,
-html.dark[data-bg-style="aurora_glow"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.30) !important;
-    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
-/* ─── 4. TECH GRID (Arsitektur Presisi / Cool Graphite & Slate) ─── */
-[data-bg-style="tech_grid"],
-[data-bg-style="tech_grid"] #app-container,
-[data-bg-style="geometric_3d"],
-[data-bg-style="geometric_3d"] #app-container {
-    background-color: #EBF0F5 !important;
-    background-image: 
-        radial-gradient(ellipse 90% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.16) 0%, transparent 70%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(30, 41, 59, 0.04) 300px, transparent 700px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-.dark[data-bg-style="tech_grid"],
-.dark[data-bg-style="tech_grid"] #app-container,
-html.dark[data-bg-style="tech_grid"],
-html.dark[data-bg-style="tech_grid"] #app-container {
-    background-color: #0A0E17 !important;
-    background-image: 
-        radial-gradient(ellipse 90% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.22) 0%, transparent 70%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(30, 41, 59, 0.18) 300px, transparent 700px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-[data-bg-style="tech_grid"] #view-catalog .glass-header,
-[data-bg-style="geometric_3d"] #view-catalog .glass-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
-    border-radius: 0 0 1rem 1rem;
-    padding-bottom: 1.1rem;
+html.dark .glass-nav,
+html.dark #bottom-nav-bar,
+.dark .glass-nav,
+.dark #bottom-nav-bar {
+    background-color: #0f172a !important;
+    border-top: 1px solid #334155 !important;
     box-shadow: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-[data-bg-style="tech_grid"] .view-section:not(#view-catalog) .glass-header,
-[data-bg-style="geometric_3d"] .view-section:not(#view-catalog) .glass-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
-    border-radius: 0;
-    padding-bottom: 0.75rem;
-    box-shadow: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-[data-bg-style="tech_grid"] #reward-catalog-container,
-[data-bg-style="tech_grid"] #dynamic-vouchers-container,
-[data-bg-style="tech_grid"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.20) !important;
-    box-shadow: none !important;
-}
-html.dark[data-bg-style="tech_grid"] #reward-catalog-container,
-html.dark[data-bg-style="tech_grid"] #dynamic-vouchers-container,
-html.dark[data-bg-style="tech_grid"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.28) !important;
-    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
-/* ─── 5. INDUSTRIAL (Heavy-Duty Toko Bangunan & Teknik) ─── */
-[data-bg-style="industrial"],
-[data-bg-style="industrial"] #app-container {
-    background-color: #DFE5EC !important;
-    background-image: 
-        radial-gradient(ellipse 90% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 75%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(15, 23, 42, 0.06) 350px, transparent 750px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-.dark[data-bg-style="industrial"],
-.dark[data-bg-style="industrial"] #app-container,
-html.dark[data-bg-style="industrial"],
-html.dark[data-bg-style="industrial"] #app-container {
-    background-color: #101622 !important;
-    background-image: 
-        radial-gradient(ellipse 90% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.24) 0%, transparent 75%),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(15, 23, 42, 0.30) 350px, transparent 750px) !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}
-[data-bg-style="industrial"] #view-catalog .glass-header {
-    background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%);
-    border-radius: 0 0 1.25rem 1.25rem;
-    padding-bottom: 1.15rem;
+/* ─── SOLID CLEAN CARDS & BENTO BOXES (100% Solid Opacity, Anti-Kaca) ─── */
+.card-modern,
+.card-native,
+.bento-island-card,
+[data-bg-style] .bento-island-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
     box-shadow: none !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
-[data-bg-style="industrial"] .view-section:not(#view-catalog) .glass-header {
-    background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%);
-    border-radius: 0;
-    padding-bottom: 0.75rem;
+
+html.dark .card-modern,
+html.dark .card-native,
+html.dark .bento-island-card,
+.dark .card-modern,
+.dark .card-native,
+.dark .bento-island-card,
+html.dark[data-bg-style] .bento-island-card {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
     box-shadow: none !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
-}
-[data-bg-style="industrial"] #reward-catalog-container,
-[data-bg-style="industrial"] #dynamic-vouchers-container,
-[data-bg-style="industrial"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.24) !important;
-    box-shadow: none !important;
-}
-html.dark[data-bg-style="industrial"] #reward-catalog-container,
-html.dark[data-bg-style="industrial"] #dynamic-vouchers-container,
-html.dark[data-bg-style="industrial"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.32) !important;
-    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 /* === MINI SMARTPHONE MOCKUP CARDS (CMS ADMIN PREVIEWS) === */

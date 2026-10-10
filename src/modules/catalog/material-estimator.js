@@ -305,7 +305,7 @@ export const renderMaterialEstimatorModalContent = () => {
                             </h4>
                             <p class="text-xs text-slate-300 mt-1">Total kebutuhan volume: <b class="text-white">${res.totalVolumeLiters} Liter / Kg</b> (${res.coats}x lapis)</p>
                         </div>
-                        <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-xl text-amber-400 border border-white/20 shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-amber-400 border border-slate-700 shrink-0">
                             <i class="fa-solid fa-bucket"></i>
                         </div>
                     </div>
@@ -438,7 +438,7 @@ export const renderMaterialEstimatorModalContent = () => {
                             <h4 class="text-3xl font-black mt-1 tracking-tight text-white">${res.totalBoxes} Dus Keramik</h4>
                             <p class="text-xs text-indigo-200 mt-1">Ukuran: <b>${res.spec.name}</b> (Coverage: ${res.spec.coveragePerBox} m²/dus)</p>
                         </div>
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 backdrop-blur-md flex items-center justify-center text-xl text-indigo-300 border border-indigo-400/30 shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-indigo-300 border border-slate-700 shrink-0">
                             <i class="fa-solid fa-border-all"></i>
                         </div>
                     </div>
@@ -562,7 +562,7 @@ export const renderMaterialEstimatorModalContent = () => {
                             </h4>
                             <p class="text-xs text-amber-200 mt-1">Luas Dinding Bersih: <b>${res.netArea} m²</b></p>
                         </div>
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 backdrop-blur-md flex items-center justify-center text-xl text-amber-300 border border-amber-400/30 shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-amber-300 border border-slate-700 shrink-0">
                             <i class="fa-solid fa-trowel-bricks"></i>
                         </div>
                     </div>

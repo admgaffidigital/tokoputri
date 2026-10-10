@@ -135,10 +135,6 @@ export const renderFooter = () => {
           <div class="footer-bento-hub relative overflow-hidden rounded-xl sm:rounded-2xl p-6 sm:p-9 transition-all duration-300">
             <!-- Top Subtle Theme Accent Line (Harmonisasi dengan Header Toko) -->
             <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-85 pointer-events-none"></div>
-            
-            <!-- Atmospheric Subtle Radial Washes Inside Bento -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
-            <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full pointer-events-none opacity-15 dark:opacity-10" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
 
             <!-- SECTION 1: STORE IDENTITY & DUAL ACTION BANNERS -->
             <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-start pb-7 border-b border-slate-100 dark:border-slate-800">

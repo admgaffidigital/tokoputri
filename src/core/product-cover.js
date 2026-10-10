@@ -26,7 +26,7 @@ export const getCoverCategoryMeta = (productOrName) => {
         return {
             icon: 'fa-paint-roller',
             gradient: 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)',
-            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(244, 63, 94, 0.12) 0%, transparent 70%)',
+            bgGlow: 'none',
             textColor: '#e11d48'
         };
     }
@@ -35,7 +35,7 @@ export const getCoverCategoryMeta = (productOrName) => {
         return {
             icon: 'fa-lock',
             gradient: 'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)',
-            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(245, 158, 11, 0.12) 0%, transparent 70%)',
+            bgGlow: 'none',
             textColor: '#d97706'
         };
     }
@@ -44,7 +44,7 @@ export const getCoverCategoryMeta = (productOrName) => {
         return {
             icon: 'fa-hammer',
             gradient: 'linear-gradient(135deg, #64748b 0%, #334155 100%)',
-            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(100, 116, 139, 0.12) 0%, transparent 70%)',
+            bgGlow: 'none',
             textColor: '#475569'
         };
     }
@@ -53,7 +53,7 @@ export const getCoverCategoryMeta = (productOrName) => {
         return {
             icon: 'fa-faucet-drip',
             gradient: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)',
-            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(6, 182, 212, 0.12) 0%, transparent 70%)',
+            bgGlow: 'none',
             textColor: '#0891b2'
         };
     }
@@ -62,7 +62,7 @@ export const getCoverCategoryMeta = (productOrName) => {
         return {
             icon: 'fa-trowel-bricks',
             gradient: 'linear-gradient(135deg, #ea580c 0%, #9a3412 100%)',
-            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(234, 88, 12, 0.12) 0%, transparent 70%)',
+            bgGlow: 'none',
             textColor: '#c2410c'
         };
     }
@@ -71,7 +71,7 @@ export const getCoverCategoryMeta = (productOrName) => {
         return {
             icon: 'fa-toolbox',
             gradient: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
-            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(99, 102, 241, 0.12) 0%, transparent 70%)',
+            bgGlow: 'none',
             textColor: '#4f46e5'
         };
     }
@@ -80,7 +80,7 @@ export const getCoverCategoryMeta = (productOrName) => {
     return {
         icon: 'fa-box-open',
         gradient: 'linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%)',
-        bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(var(--color-primary-rgb), 0.12) 0%, transparent 70%)',
+        bgGlow: 'none',
         textColor: 'var(--color-primary)'
     };
 };

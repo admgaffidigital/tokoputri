@@ -69,10 +69,7 @@ export const renderBackupSyncView = async () => {
     setH('admin-content', `
     <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-3">
         <!-- 1. HERO BANNER: CLOUD REAL-TIME STATUS & SINKRONISASI (SEAMLESS THEME HARMONIZED) -->
-        <div class="backup-sync-hero relative overflow-hidden p-5 sm:p-7 transition-all">
-            <!-- Dekorasi latar belakang lembut bersahabat (Radial Gradient Anti-Hard Disc) -->
-            <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(circle at 90% 10%, rgba(var(--color-primary-rgb), 0.1), transparent 60%), radial-gradient(circle at 10% 90%, rgba(var(--color-primary-rgb), 0.05), transparent 50%);"></div>
-
+        <div class="backup-sync-hero relative overflow-hidden p-5 sm:p-7 transition-all rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                 <div class="space-y-2">
                     <div class="flex items-center gap-2.5 flex-wrap">

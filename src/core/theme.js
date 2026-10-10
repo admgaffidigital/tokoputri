@@ -338,48 +338,9 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
         container.appendChild(overlay);
     }
 
-    // 2. Vector & Atmospheric Shapes sesuai Model Gaya Visual Native App
+    // 2. Vector & Atmospheric Shapes (Nonaktifkan total efek blur / gradien kaca)
+    // Kanvas toko dijaga 100% solid, bersih murni, dan bebas dari distorsi kabur/berawan
     let shapesHtml = '';
-
-    if (style === 'hero_arch') {
-        shapesHtml = `
-            <!-- Hero Arch: Luminous Canopy Dome flowing seamlessly behind the header without sharp cutoff lines -->
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1500px] h-[600px] pointer-events-none" style="background: radial-gradient(ellipse 85% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.20) 0%, rgba(var(--color-primary-rgb), 0.05) 50%, transparent 80%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-[450px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, rgba(var(--color-primary-rgb), 0.02) 60%, transparent 100%);"></div>
-        `;
-    } else if (style === 'aurora_glow') {
-        shapesHtml = `
-            <!-- Aurora Mesh Glow: Luminous Multi-Zone Ambient Wash in Theme Tones -->
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 600px at 15% 15%, rgba(var(--color-primary-rgb), 0.18), transparent 70%), radial-gradient(circle 550px at 85% 25%, rgba(var(--color-primary-rgb), 0.14), transparent 70%), radial-gradient(circle 650px at 50% 55%, rgba(var(--color-primary-rgb), 0.08), transparent 75%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-[520px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.03) 60%, transparent 100%);"></div>
-        `;
-    } else if (style === 'tech_grid') {
-        shapesHtml = `
-            <!-- Tech Grid: Cool Precision Horizon Wash -->
-            <div class="absolute top-0 left-0 right-0 h-[520px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(var(--color-primary-rgb), 0.04) 40%, rgba(30, 41, 59, 0.03) 70%, transparent 100%);"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[480px] pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.12) 0%, transparent 75%);"></div>
-        `;
-    } else if (style === 'industrial') {
-        shapesHtml = `
-            <!-- Industrial: Heavy-Duty Deep Solid Horizon & Bold Steel Ambience -->
-            <div class="absolute top-0 left-0 right-0 h-[560px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.05) 45%, rgba(15, 23, 42, 0.04) 75%, transparent 100%);"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[480px] pointer-events-none" style="background: radial-gradient(ellipse 85% 65% at 50% 0%, rgba(var(--color-primary-rgb), 0.14) 0%, transparent 75%);"></div>
-        `;
-    } else {
-        // Minimalis: Clean Architectural Studio dengan soft top wash & subtle ambient horizon
-        shapesHtml = `
-            <!-- Minimalis Clean Studio: Radiant Warm Canopy & Delicate Horizon Aura -->
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1500px] h-[550px] pointer-events-none" style="background: radial-gradient(ellipse 90% 55% at 50% -5%, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 50%, transparent 80%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-[480px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, rgba(var(--color-primary-rgb), 0.02) 65%, transparent 100%);"></div>
-        `;
-    }
-
-    if (shapesHtml) {
-        const vectorDiv = document.createElement('div');
-        vectorDiv.className = "absolute inset-0 z-0 pointer-events-none";
-        vectorDiv.innerHTML = shapesHtml;
-        container.appendChild(vectorDiv);
-    }
 
     // Re-render footer toko dan katalog hadiah agar dekorasi gaya background langsung harmonis
     if (typeof window !== 'undefined') {
