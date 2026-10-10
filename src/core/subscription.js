@@ -477,22 +477,22 @@ export const getSubscriptionBentoHtml = () => {
 
     let statusBadge = '';
     if (info.isPerpetual) {
-        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5"><i class="fa-solid fa-infinity text-xs"></i> Seumur Hidup</span>`;
+        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-infinity text-xs text-emerald-400"></i> Seumur Hidup</span>`;
     } else if (info.isLocked) {
-        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-500/30 flex items-center gap-1.5"><i class="fa-solid fa-lock text-xs"></i> Terkunci</span>`;
+        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-950/80 text-rose-400 border border-rose-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-lock text-xs text-rose-400"></i> Terkunci</span>`;
     } else if (info.isGrace) {
-        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-xs"></i> Masa Tenggang (${info.graceDaysLeft} Hari)</span>`;
+        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-950/80 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs text-amber-400"></i> Masa Tenggang (${info.graceDaysLeft} Hari)</span>`;
     } else if (info.isExpiringSoon) {
-        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30 flex items-center gap-1.5"><i class="fa-solid fa-clock text-xs"></i> ${info.daysLeft} Hari Lagi</span>`;
+        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-950/80 text-blue-300 border border-blue-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-clock text-xs text-blue-400"></i> ${info.daysLeft} Hari Lagi</span>`;
     } else {
-        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5"><i class="fa-solid fa-shield-check text-xs"></i> Aktif (${info.daysLeft} Hari)</span>`;
+        statusBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-shield-check text-xs text-emerald-400"></i> Aktif (${info.daysLeft} Hari)</span>`;
     }
 
     return `
-        <div class="mt-6 p-5 sm:p-6 rounded-[2rem] border border-slate-200/80 dark:border-slate-800 bg-slate-900 text-white shadow-xl relative overflow-hidden">
+        <div class="mt-6 p-5 sm:p-6 rounded-[2rem] border border-slate-700/80 bg-slate-900 text-white shadow-xl relative overflow-hidden">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
                 <div class="flex items-start sm:items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-amber-500/20">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-amber-500/20">
                         <i class="fa-solid fa-crown"></i>
                     </div>
                     <div>
@@ -500,7 +500,7 @@ export const getSubscriptionBentoHtml = () => {
                             <span class="text-[10px] font-black uppercase tracking-widest text-amber-400">Model Layanan Terkelola (SaaS)</span>
                             ${statusBadge}
                         </div>
-                        <h3 class="text-base sm:text-lg font-black tracking-tight leading-tight">Paket Lisensi: <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-400">Pro Managed Store</span></h3>
+                        <h3 class="text-base sm:text-lg font-black tracking-tight leading-tight text-white">Paket Lisensi: <span class="text-amber-400 font-black">Pro Managed Store</span></h3>
                         <p class="text-xs text-slate-400 mt-0.5">
                             Masa Aktif: <b class="text-slate-200">${info.expiryDateFormatted}</b> • Kode Toko: <b class="text-slate-200">${esc(info.storeCode)}</b>
                         </p>
@@ -513,7 +513,7 @@ export const getSubscriptionBentoHtml = () => {
                     <button type="button" onclick="window.openRenewalModal && window.openRenewalModal()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold transition-all flex items-center gap-2 active:scale-95 cursor-pointer shadow-xs">
                         <i class="fa-solid fa-key text-amber-400"></i> Masukkan Lisensi
                     </button>
-                    <a href="${waUrl}" target="_blank" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-xs font-bold transition-all flex items-center gap-2 active:scale-95 cursor-pointer shadow-md shadow-emerald-900/30">
+                    <a href="${waUrl}" target="_blank" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all flex items-center gap-2 active:scale-95 cursor-pointer shadow-md shadow-emerald-950/50" style="background-color: #10b981;">
                         <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Dukungan
                     </a>
                 </div>
