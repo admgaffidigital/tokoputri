@@ -691,6 +691,11 @@ const initBarcodeListener = () => {
 
         // 10. Pintasan Escape: Tutup Modal Terbuka atau Bersihkan Pencarian
         if (e.key === 'Escape') {
+            const mobileMenu = el('pos-mobile-quick-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                closePOSMobileMenu();
+                return;
+            }
             if (el('modal-pos-cash-movement')) { 
                 if (typeof window.closePOSCashMovementModal === 'function') window.closePOSCashMovementModal(); 
                 return; 
@@ -1280,13 +1285,13 @@ export const renderHeldBadges = () => {
     if (sfTarget) {
         if (count > 0) {
             sfTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-md cursor-pointer animate-pulse whitespace-nowrap shrink-0" title="Ada ${count} transaksi antrean tertahan (F8)">
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black inline-flex items-center gap-1 sm:gap-1.5 transition-all active:scale-95 shadow-md cursor-pointer animate-pulse whitespace-nowrap shrink-0" title="Ada ${count} transaksi antrean tertahan (F8)">
                 <i class="fa-solid fa-hourglass-half text-xs"></i>
-                <span class="whitespace-nowrap">${count} Parkir</span>
+                <span class="whitespace-nowrap"><span class="sm:hidden">${count}</span><span class="hidden sm:inline">${count} Parkir</span></span>
             </button>`;
         } else {
             sfTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white/90 hover:text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0" title="Daftar Transaksi Tertahan (F8)">
+            <button onclick="window.openPOSHeldModal()" class="w-8 h-8 sm:w-auto sm:h-8 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white/90 hover:text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 shadow-2xs" title="Daftar Transaksi Tertahan (F8)">
                 <i class="fa-solid fa-hourglass-half text-xs"></i>
                 <span class="hidden sm:inline whitespace-nowrap">Parkir (0)</span>
             </button>`;
@@ -4256,6 +4261,31 @@ export const initPOSNetworkMonitoring = () => {
     }
 };
 
+// ─── Quick Action Menu Popover Kasir Mobile (Titik Tiga [⋮]) ──
+export const togglePOSMobileMenu = (e) => {
+    if (e && typeof e.stopPropagation === 'function') {
+        e.stopPropagation();
+    }
+    const m = el('pos-mobile-quick-menu');
+    const bd = el('pos-mobile-menu-backdrop');
+    if (!m) return;
+    const isHidden = m.classList.contains('hidden');
+    if (isHidden) {
+        m.classList.remove('hidden');
+        if (bd) bd.classList.remove('hidden');
+    } else {
+        m.classList.add('hidden');
+        if (bd) bd.classList.add('hidden');
+    }
+};
+
+export const closePOSMobileMenu = () => {
+    const m = el('pos-mobile-quick-menu');
+    const bd = el('pos-mobile-menu-backdrop');
+    if (m) m.classList.add('hidden');
+    if (bd) bd.classList.add('hidden');
+};
+
 // ─── Layout Generator Terpadu ────────────────────────────────
 const buildPOSLayout = ({ isStorefront }) => {
     const cashierSession = typeof window.getCashierSession === 'function' ? window.getCashierSession() : null;
@@ -4264,25 +4294,26 @@ const buildPOSLayout = ({ isStorefront }) => {
 
     const headerHTML = isStorefront
         ? `
-        <!-- STOREFRONT POS HEADER (Proteksi Anti-Tabrakan Status Bar / Safe-Area) -->
-        <header class="glass-header pos-storefront-header sticky top-0 z-30 flex shrink-0 items-center justify-between text-white shadow-md">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <button onclick="window.exitPOSMode()" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Kembali ke Etalase Toko">
+        <!-- STOREFRONT POS HEADER (Proteksi Anti-Tabrakan Status Bar & Optimal Mobile Native) -->
+        <header class="glass-header pos-storefront-header sticky top-0 z-30 flex shrink-0 items-center justify-between text-white shadow-md relative">
+            <!-- Sisi Kiri: Tombol Back + Nama Toko & Kasir (Lega, Anti-Wrap, Membentang Maksimal) -->
+            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 mr-1.5 sm:mr-3">
+                <button onclick="window.exitPOSMode()" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Kembali ke Etalase Toko">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm shrink-0 shadow-xs bg-black/20">
-                        <i class="fa-solid fa-cash-register"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <h1 class="text-xs font-black uppercase tracking-wider leading-none text-white truncate">${storeName}</h1>
-                        <div class="flex items-center gap-1.5 mt-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                            <span class="text-[10px] text-white/90 font-medium truncate">${esc(cashierName)}</span>
-                        </div>
+                <div class="hidden sm:flex w-8 h-8 rounded-xl items-center justify-center text-white text-sm shrink-0 shadow-xs bg-black/20">
+                    <i class="fa-solid fa-cash-register"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h1 class="text-xs sm:text-sm font-black uppercase tracking-wide leading-tight text-white truncate drop-shadow-2xs">${storeName}</h1>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse shrink-0"></span>
+                        <span class="text-[10px] text-white/95 font-medium truncate">${esc(cashierName)}</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Sisi Kanan: Action Buttons & Menu Opsi Kasir Mobile [⋮] -->
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
                 <span class="pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30">
                     <span class="relative flex h-2 w-2">
@@ -4298,17 +4329,113 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-storefront" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-storefront" class="flex items-center shrink-0"></div>
-                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
+
+                <!-- Tombol Desktop Lengkap (sm:flex / sm:inline-flex) -->
+                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="hidden sm:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
                     <i class="fa-solid fa-calculator"></i>
                 </button>
-                <button onclick="window.openShoppingGuideModal && window.openShoppingGuideModal('pos')" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0" title="Buku Panduan Kasir POS">
+                <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="hidden sm:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Pengaturan Printer Kasir & Thermal [F7]">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+                <button onclick="window.openShoppingGuideModal && window.openShoppingGuideModal('pos')" class="hidden sm:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Buku Panduan Kasir POS">
                     <i class="fa-solid fa-circle-question"></i>
                 </button>
-                <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer whitespace-nowrap shrink-0" title="Keluar Mode Kasir">
+                <button onclick="window.cashierLogout()" class="hidden sm:inline-flex h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer whitespace-nowrap shrink-0" title="Keluar Mode Kasir">
                     <i class="fa-solid fa-power-off text-xs"></i>
-                    <span class="hidden sm:inline">Keluar</span>
+                    <span>Keluar</span>
+                </button>
+
+                <!-- Tombol Menu Opsi Kasir Mobile [⋮] (Khusus Layar HP < sm) -->
+                <button id="pos-mobile-menu-btn" onclick="window.togglePOSMobileMenu(event)" class="sm:hidden w-8 h-8 rounded-xl bg-black/20 hover:bg-black/30 active:scale-90 text-white flex items-center justify-center text-sm transition-all cursor-pointer shrink-0 shadow-2xs" title="Menu Opsi Kasir">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
                 </button>
             </div>
+
+            <!-- Popover Menu Opsi Kasir Mobile (100% Solid & Crisp Modern) -->
+            <div id="pos-mobile-quick-menu" class="pos-mobile-quick-menu hidden absolute right-2 top-[calc(100%+6px)] z-50 w-64 max-w-[calc(100vw-1rem)] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1 overflow-hidden">
+                <div class="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-xs text-[var(--color-primary)]"></i>
+                        <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200">Menu Aksi Kasir</span>
+                    </div>
+                    <button onclick="window.closePOSMobileMenu()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 text-xs cursor-pointer active:scale-90" title="Tutup Menu">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="p-1 space-y-0.5">
+                    <button onclick="window.closePOSMobileMenu(); window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos');" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-800/60">
+                            <i class="fa-solid fa-calculator text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight flex items-center justify-between">
+                                <span>Estimator Material</span>
+                                <span class="text-[10px] text-slate-400 font-mono">F3</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Cat, keramik, semen, atap</div>
+                        </div>
+                    </button>
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 border border-sky-200/60 dark:border-sky-800/60">
+                            <i class="fa-solid fa-print text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight flex items-center justify-between">
+                                <span>Printer Thermal</span>
+                                <span class="text-[10px] text-slate-400 font-mono">F7</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Bluetooth ESC/POS & kertas</div>
+                        </div>
+                    </button>
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPOSCashMovementModal==='function') window.openPOSCashMovementModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/60 dark:border-emerald-800/60">
+                            <i class="fa-solid fa-money-bill-transfer text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight flex items-center justify-between">
+                                <span>Catat Kas Laci</span>
+                                <span class="text-[10px] text-slate-400 font-mono">F11</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Kas masuk / biaya operasional</div>
+                        </div>
+                    </button>
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPOSShiftSummaryModal==='function') window.openPOSShiftSummaryModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-200/60 dark:border-indigo-800/60">
+                            <i class="fa-solid fa-chart-pie text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight">
+                                <span>Ringkasan Shift</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">X-Report saldo & rekap kasir</div>
+                        </div>
+                    </button>
+                    <button onclick="window.closePOSMobileMenu(); window.openShoppingGuideModal && window.openShoppingGuideModal('pos');" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-200/60 dark:border-purple-800/60">
+                            <i class="fa-solid fa-circle-question text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight">
+                                <span>Panduan Kasir POS</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Petunjuk & shortcut kasir</div>
+                        </div>
+                    </button>
+                </div>
+                <div class="p-1 pt-1.5 border-t border-slate-100 dark:border-slate-800">
+                    <button onclick="window.closePOSMobileMenu(); window.cashierLogout();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-rose-100/70 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-200/60 dark:border-rose-800/60">
+                            <i class="fa-solid fa-power-off text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-black leading-tight">Keluar Mode Kasir</div>
+                            <div class="text-[10px] text-rose-500/80 truncate mt-0.5">Tutup sesi terminal kasir</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <!-- Backdrop Click-Outside Dismissal -->
+            <div id="pos-mobile-menu-backdrop" class="hidden fixed inset-0 z-40 bg-black/25" onclick="window.closePOSMobileMenu()"></div>
         </header>`
         : `
         <!-- ADMIN POS ACTION STRIP (lega, nyaman, presisi tinggi, anti-wrap di mobile) -->
@@ -5480,4 +5607,5 @@ window.addToCartWithUnit       = addToCartWithUnit;
 window.posChangeItemUnit       = posChangeItemUnit;
 window.initPOSNetworkMonitoring= initPOSNetworkMonitoring;
 window.getOfflineTxQueue       = getOfflineTxQueue;
-
+window.togglePOSMobileMenu     = togglePOSMobileMenu;
+window.closePOSMobileMenu      = closePOSMobileMenu;

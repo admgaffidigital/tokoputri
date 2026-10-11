@@ -1548,6 +1548,22 @@ body {
     padding-top: max(1.5rem, env(safe-area-inset-top, 1.5rem)) !important;
 }
 
+/* Quick Action Menu Popover Kasir Mobile (100% Solid & Crisp Modern) */
+.pos-mobile-quick-menu {
+    transform-origin: top right;
+    animation: posQuickMenuPop 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes posQuickMenuPop {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
 .glass-nav { 
     background: #ffffff; 
     border-top: 1.5px solid rgba(203, 213, 225, 0.9); 

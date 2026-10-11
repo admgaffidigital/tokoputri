@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-06",
+        "version": "v1.15.6",
+        "date": "2026-10-11",
+        "title": "Redesain Header POS Kasir Mobile (Clean Native Single-Row), Ruang Nama Toko & Kasir Lega, Serta Quick Action Menu [⋮]",
+        "category": "feature",
+        "badge": "Clean Mobile POS Header & Quick Action Menu v1.15.6",
+        "items": [
+            "Header POS Kasir Ramah Smartphone (HP): Merestrukturisasi tata letak header POS kasir layar ponsel pintar (360–390px) dengan wadah judul toko & kasir fleksibel (flex-1 min-w-0 mr-1.5), mengeliminasi masalah teks sempit terpotong menjadi 'P...' dan tumpang tindih. Nama toko dan nama kasir aktif kini tampil 100% utuh, tegak, lapang, dan estetis.",
+            "Quick Action Menu Popover [⋮] (Titik Tiga): Menghadirkan menu aksi cepat modern berdesain 100% Solid & Crisp (tanpa blur) khusus layar ponsel (sm:hidden). Menu ini memuat akses lengkap berikon dan rapi untuk Kalkulator Estimator Material [F3], Pengaturan Printer Thermal [F7], Catat Kas Laci (Kas ±) [F11], Ringkasan Shift (X-Report), Buku Panduan Kasir POS, dan Tombol Keluar Kasir.",
+            "Ergonomi & Optimasi Tombol Esensial Mobile: Tombol status shift dan antrean parkir [⌛] dioptimasi ringkas di ponsel (w-8 h-8 saat 0 antrean dan badge pill saat aktif), membebaskan ruang horizontal maksimal untuk judul etalase toko.",
+            "Desktop Parity Terjaga Penuh: Seluruh tombol aksi horizontal di layar laptop/desktop (sm: ke atas) tetap dipertahankan lengkap tanpa gangguan.",
+            "Multi-Channel Distribution v1.15.6 (Android versionCode 11506)."
+        ]
+    },
+    {
         "id": "log-1-15-05",
         "version": "v1.15.5",
         "date": "2026-10-11",
@@ -79,24 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Verifikasi Presisi Member VIP & Barcode Code 128: Validasi 52 kasus uji logika loyalitas, klasifikasi tiering (Bronze, Silver, Gold, Platinum VIP), perhitungan limit kredit PayLater, serta adopsi engine barcode Code 128 ISO/IEC 15417 pada sisi belakang kartu digital untuk pemindaian scanner kasir fisik.",
             "Integrasi Google Fonts & Tailwind Config: Penambahan font-family 'heading' dan 'industrial' pada tailwind.config.js dan prefetch Google Fonts non-blocking di index.html.",
             "Multi-Channel Distribution v1.15.2 (Android versionCode 11502)."
-        ]
-    },
-    {
-        "id": "log-1-15-01",
-        "version": "v1.15.1",
-        "date": "2026-10-10",
-        "title": "Transparansi Status Stok Dual-Location (Rak Toko vs Gudang Cadangan), Transfer Dua Arah & Pemecahan Batch FIFO Presisi",
-        "category": "feature",
-        "badge": "Dual-Location Transparency & Precision FIFO Transfer v1.15.1",
-        "items": [
-            "Live Status Badge Kartu Pemindahan Internal: Menampilkan indikator real-time stok Rak Toko (Siap Kasir), Gudang Cadangan (Belakang), dan Total Stok Fisik secara presisi di dalam modal tanpa perlu scroll.",
-            "Footer Pinned Modal Transparan: Menampilkan rincian status Total Fisik, Stok Rak, dan Stok Gudang secara terpisah dan jelas di bagian bawah layar ponsel.",
-            "Aksi Pemindahan Dua Arah: Mendukung pemindahan stok dari Gudang ke Rak Toko maupun pengembalian dari Rak Toko kembali ke Gudang.",
-            "Dukungan Multi-Varian Mandiri: Setiap varian produk kini memiliki baris pemindahan independen dengan tombol transfer per-varian.",
-            "Batch Splitting FIFO Presisi: Pemindahan kuantitas parsial otomatis memecah (split) lot batch FIFO tanpa menggandakan atau menghilangkan data persediaan.",
-            "Pencatatan Otomatis Kartu Mutasi Stok: Setiap mutasi internal tercatat resmi di tab Kartu Mutasi Stok dengan stempel waktu, kuantitas, dan lokasi asal/tujuan.",
-            "Sinkronisasi Omnichannel Instan: Penyimpanan langsung ke subkoleksi produk Firestore, penyiaran saveApp(), dan pembaruan localStorage anti-delay.",
-            "Multi-Channel Distribution v1.15.1 (Android versionCode 11501)."
         ]
     }
 ];

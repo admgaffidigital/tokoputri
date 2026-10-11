@@ -1898,7 +1898,7 @@ export const renderShiftHeaderBadge = () => {
                         <span class="hidden sm:inline text-xs font-medium">Shift: </span>
                         <b class="text-white text-xs whitespace-nowrap">${fRp(shift.startingCash)}</b>
                     </button>
-                    <button onclick="window.openPOSCashMovementModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-amber-300 border border-amber-300/30 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 whitespace-nowrap shrink-0" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
+                    <button onclick="window.openPOSCashMovementModal()" class="hidden sm:inline-flex h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-amber-300 border border-amber-300/30 transition-all cursor-pointer shadow-xs active:scale-95 items-center gap-1 whitespace-nowrap shrink-0" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
                         <i class="fa-solid fa-money-bill-transfer text-xs"></i>
                         <span class="hidden md:inline text-xs font-bold">Kas &plusmn;</span>
                     </button>
