@@ -1931,12 +1931,12 @@ export const renderShiftHeaderBadge = () => {
                 <div class="flex items-center gap-1.5 shrink-0">
                     <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
                         <i class="fa-solid fa-cash-register text-emerald-300 text-xs"></i>
-                        <span class="hidden sm:inline text-xs font-medium">Shift: </span>
+                        <span class="hidden xl:inline text-xs font-medium">Shift: </span>
                         <b class="text-white text-xs whitespace-nowrap">${fRp(shift.startingCash)}</b>
                     </button>
-                    <button onclick="window.openPOSCashMovementModal()" class="hidden sm:inline-flex h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-amber-300 border border-amber-300/30 transition-all cursor-pointer shadow-xs active:scale-95 items-center gap-1 whitespace-nowrap shrink-0" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
+                    <button onclick="window.openPOSCashMovementModal()" class="hidden xl:inline-flex h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-amber-300 border border-amber-300/30 transition-all cursor-pointer shadow-xs active:scale-95 items-center gap-1 whitespace-nowrap shrink-0" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
                         <i class="fa-solid fa-money-bill-transfer text-xs"></i>
-                        <span class="hidden md:inline text-xs font-bold">Kas &plusmn;</span>
+                        <span class="text-xs font-bold">Kas &plusmn;</span>
                     </button>
                 </div>`;
             } else {
@@ -1944,12 +1944,12 @@ export const renderShiftHeaderBadge = () => {
                 <div class="flex items-center gap-1.5 shrink-0">
                     <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Klik untuk lihat ringkasan shift (X-Report)">
                         <i class="fa-solid fa-cash-register text-xs"></i>
-                        <span class="hidden sm:inline font-medium">Shift: </span>
+                        <span class="hidden xl:inline font-medium">Shift: </span>
                         <b class="font-black whitespace-nowrap">${fRp(shift.startingCash)}</b>
                     </button>
-                    <button onclick="window.openPOSCashMovementModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80 inline-flex items-center gap-1 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
+                    <button onclick="window.openPOSCashMovementModal()" class="hidden xl:inline-flex h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80 items-center gap-1 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
                         <i class="fa-solid fa-money-bill-transfer text-xs"></i>
-                        <span class="hidden md:inline font-bold">Kas &plusmn;</span>
+                        <span class="font-bold">Kas &plusmn;</span>
                     </button>
                 </div>`;
             }

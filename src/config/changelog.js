@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-09",
+        "version": "v1.15.9",
+        "date": "2026-10-11",
+        "title": "Harmonisasi Tata Letak Responsif Header POS Kasir (Tablet & Mobile), Proteksi Anti-Gepeng & Menu Aksi Cepat Universal",
+        "category": "feature",
+        "badge": "Responsive POS Header & Multi-Device Parity v1.15.9",
+        "items": [
+            "Proteksi Anti-Gepeng Sisi Kiri (Nama Toko & Kasir): Menerapkan batas lebar minimum (min-w-[130px] sm:min-w-[160px] flex-1) pada wadah nama toko dan kasir aktif di header POS Storefront, menjamin teks identitas kasir tidak akan pernah terhimpit menjadi 0px atau tertabrak oleh tombol toolbar di segala ukuran layar (smartphone 360px, tablet 768px-1024px, laptop, dan monitor desktop).",
+            "Harmonisasi Breakpoint Toolbar Sisi Kanan: Mengalihkan tombol aksesoris (Estimator Material F3, Printer Thermal F7, Panduan Kasir, jam detik, dan badge Online) ke breakpoint xl: (1280px ke atas) sehingga layar tablet dan perangkat berskala resolusi 125% tidak lagi mengalami desak-desakan atau tombol Keluar terpotong di tepi kanan.",
+            "Universal Quick Action Menu Popover [⋮]: Memperluas ketersediaan tombol menu opsi cepat titik tiga [⋮] (#pos-mobile-menu-btn) untuk seluruh perangkat berlayar < 1280px (< xl). Semua alat bantu kasir (Estimator, Printer Thermal, Catat Kas Laci F11, Ringkasan Shift X-Report, Panduan, dan Logout) tetap dapat diakses dalam 1 sentuhan cepat.",
+            "Tombol Keluar Kasir & Parkir Antrean Adaptif: Tombol keluar kasir beradaptasi menjadi tombol ikon ringkas pada tablet (md:) dan tombol penuh pada desktop (xl:), sementara tombol antrean parkir (0) mempertahankan ukuran kompak 32px di tablet untuk efisiensi ruang maksimal.",
+            "Rangkaian Pengujian Baru (test:posheader): Menambahkan test suite otomatis scripts/test-pos-header-responsive.mjs dengan 28 kasus uji lolos 100%, serta 13 test suite audit sistem lulus sempurna.",
+            "Multi-Channel Distribution v1.15.9 (Android versionCode 11509)."
+        ]
+    },
+    {
         "id": "log-1-15-08",
         "version": "v1.15.8",
         "date": "2026-10-11",
@@ -73,23 +89,6 @@ export const DEFAULT_CHANGELOG = [
             "Penguatan Guard Input Focus & Multi-Lingkungan: Melengkapi active element guard pada sinkronisasi diskon kasir POS (.pos-disc-val-input) dengan pemeriksaan typeof document === 'undefined' untuk keandalan eksekusi lintas lingkungan (Browser & Node.js test runner).",
             "Audit Kesehatan Sistem & Verifikasi Test Suite 100% Passed: Seluruh 303 kasus uji unit (UOM, Flash Sale, Member VIP, Retur RMA, Delivery DO, Dual-Location Stock, FIFO, Estimator, Barcode Code 128, Lisensi SaaS, dan 78 Modal Sistem) terverifikasi 100% lulus tanpa kegagalan.",
             "Multi-Channel Distribution v1.15.5 (Android versionCode 11505)."
-        ]
-    },
-    {
-        "id": "log-1-15-04",
-        "version": "v1.15.4",
-        "date": "2026-10-10",
-        "title": "Arsitektur Zero-Flicker Partial DOM, Proteksi Fokus Input & Pengetikan Lancar Bebas Mental di Seluruh Modul",
-        "category": "feature",
-        "badge": "Zero-Flicker Partial DOM & Continuous Focus v1.15.4",
-        "items": [
-            "Resolusi Tuntas Input Mental-Mental & Hilang Fokus: Mengeliminasi masalah kolom input yang kehilangan fokus, berkedip, melompatkan kursor (caret), atau menutup keyboard virtual ponsel saat pengguna mengetik di seluruh aplikasi.",
-            "Arsitektur Pembaruan Parsial DOM (Zero-Flicker Partial DOM): Memisahkan kontainer input filter/pencarian dari kontainer hasil data dinamis pada Estimator Material (Paint, Tile, Brick, Roof), Stock Opname Dua Lokasi, Beban Pengeluaran Toko, Laporan Valuasi Stok, Kulakan Pembelian (PO), Master Supplier, Retur RMA, Kartu Piutang Tempo, dan Katalog Master Produk.",
-            "Proteksi Caret & Active Element Guard: Menerapkan pengecekan document.activeElement !== input pada sinkronisasi pencarian silang etalase & kasir POS, mencegah reset posisi caret IME saat pengetikan cepat atau penggunaan virtual keyboard Android/iOS.",
-            "Tombol Bersihkan Instan Dinamis (Reactive Clear Buttons): Integrasi tombol hapus pencarian 1-klik yang responsif dan reaktif tanpa memicu render ulang template kontainer luar.",
-            "Pencegahan Reflow Kartu Ringkasan: Mengoptimalkan pembaruan tabel katalog produk admin agar tidak merekonstruksi ulang 4 kartu ringkasan inventori di setiap ketukan tombol pencarian.",
-            "Seluruh 78 Modal Sistem & Rangkaian Test Suite Lolos 100%: 36 pengujian estimator & desimal, 28 flash sale, 24 multi-satuan UOM, 52 member loyalitas, serta verifikasi modal sinkron 100%.",
-            "Multi-Channel Distribution v1.15.4 (Android versionCode 11504)."
         ]
     }
 ];

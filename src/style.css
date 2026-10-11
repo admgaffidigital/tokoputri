@@ -1506,6 +1506,8 @@ body {
     box-shadow: none !important;
     box-sizing: border-box !important;
     width: 100% !important;
+    max-width: 100vw !important;
+    overflow: visible !important;
     flex-shrink: 0 !important;
     /* Android Status Bar (24-36px), Punch Hole, & iOS Notch Safe Padding */
     padding-top: max(1.25rem, env(safe-area-inset-top, 1.25rem)) !important;
