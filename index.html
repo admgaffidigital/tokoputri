@@ -3294,7 +3294,17 @@
             }
             _log.apply(console, arguments);
           };
-        }
+        // Filter peringatan transien pemutusan saluran stream Firestore saat logout / perpindahan token
+        const _origWarn = console.warn;
+        console.warn = function () {
+          try {
+            const msg = Array.from(arguments).map(a => (typeof a === 'object' && a !== null) ? (a.message || a.toString?.() || '') : String(a)).join(" ");
+            if (msg.includes("WebChannelConnection RPC 'Listen' stream") || msg.includes("transport errored")) {
+              return; // Abaikan reset stream internal Firestore saat sesi diakhiri (harmless SDK reconnection)
+            }
+          } catch (_) {}
+          _origWarn.apply(console, arguments);
+        };
 
         // --- Defensive Shield: Cegah error 'the given Node has no parent' dari Vercel Toolbar / Analytics ---
         try {

@@ -139,6 +139,9 @@ export const detachAllAdminListenersBeforeSignOut = () => {
     if (typeof window.detachPOSHistoryListener === 'function') {
         try { window.detachPOSHistoryListener(); } catch (_) {}
     }
+    if (typeof window.detachAdminSessionGuard === 'function') {
+        try { window.detachAdminSessionGuard(); } catch (_) {}
+    }
     try { detachPrivateDataListener(); } catch (_) {}
     if (aOrdLst) { try { aOrdLst(); } catch (_) {} setAOrdLst(null); } 
     if (aCustLst) { try { aCustLst(); } catch (_) {} setACustLst(null); } 
