@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.16.0** (Android VersionCode: `11600`)
+* **Versi Rilis**: **v1.16.1** (Android VersionCode: `11601`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.16.1 — Integrasi Dinamis Produk Rekomendasi Kalkulator Estimator Bahan Bangunan & Multi-Channel Keranjang (11 Okt 2026)
+- **Integrasi Tambah ke Keranjang Universal (Add to Cart)**: Menghubungkan tombol aksi `(+)` pada kartu produk rekomendasi Kalkulator Estimator Material secara langsung ke keranjang belanja web (`quickAddOrOpenProduct`) dan membuka sheet pilihan varian produk secara otomatis jika produk memiliki opsi warna, motif, atau ukuran.
+- **Deteksi Kanal Otomatis (Storefront Web vs Kasir POS)**: Sistem secara cerdas mendeteksi kanal aktif saat estimator dibuka. Tombol `(+)` langsung memasukkan produk rekomendasi ke kasir POS (`posAddToCart`) jika dibuka dari layar kasir kasir, dan ke keranjang belanja web jika dibuka dari etalase pelanggan.
+- **Pencocokan Kata Kunci Kontekstual Dinamis 100%**: Menghubungkan rekomendasi produk ke database inventori toko riil (`appData.products`) berbasis kata kunci bahan untuk Cat & Plafon, Keramik & Granit, Pasangan Bata/Hebel, dan Atap & Seng Gelombang tanpa data palsu/hardcode.
+- **Tampilan Edukatif & Modal Spesifikasi Produk**: Kartu produk rekomendasi kini interaktif dapat diklik untuk membuka foto besar, rincian, dan spesifikasi produk (`openProductModal`), serta dilengkapi panduan edukatif jika kategori produk belum diinput di inventori toko.
+- **Rangkaian Pengujian Otomatis (`test:estimator`)**: Menambahkan Bagian 6 Uji Rekomendasi Produk Dinamis & Tambah ke Keranjang (44 Passed) dan 15 suite pengujian audit sistem lulus 100%.
+- **Sinkronisasi Multi-Channel v1.16.1**: Android VersionCode `11601`, versionName `1.16.1`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.16.0 — Pusat Laporan Finansial Komprehensif: Ekspor Spreadsheet Excel/CSV, Grafik Tren 12 Bulan SVG, Analitika Kategori & Cetak Lembar Resmi A4 Multi-Tab (11 Okt 2026)
 - **Ekspor Spreadsheet Excel / CSV Universal (RFC 4180)**: Menghadirkan tombol dropdown "Ekspor Excel" dengan dukungan ekspor tab aktif maupun 5 varian laporan terperinci (Laporan Penjualan & Transaksi, Laba Rugi P&L, Valuasi Stok Gudang FIFO, Buku Beban Operasional, dan Rekapitulasi Piutang & Utang). Format CSV mematuhi standar RFC 4180 dengan UTF-8 BOM (`\uFEFF`) agar langsung terbaca sempurna dan rapi di Microsoft Excel Windows tanpa masalah karakter corrupt.

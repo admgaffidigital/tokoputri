@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-01",
+        "version": "v1.16.1",
+        "date": "2026-10-11",
+        "title": "Integrasi Dinamis Produk Rekomendasi Kalkulator Estimator Bahan Bangunan & Multi-Channel Keranjang",
+        "category": "feature",
+        "badge": "Material Estimator Dynamic Cart & Channel Routing v1.16.1",
+        "items": [
+            "Integrasi Tambah ke Keranjang Universal (Add to Cart): Menghubungkan tombol aksi (+) pada kartu produk rekomendasi Kalkulator Estimator Material secara langsung ke keranjang belanja web (quickAddOrOpenProduct) dan deteksi modal varian produk otomatis.",
+            "Deteksi Kanal Otomatis (Storefront Web vs Kasir POS): Sistem mendeteksi secara cerdas kanal aktif saat estimator dibuka. Tombol (+) langsung memasukkan produk rekomendasi ke kasir POS jika dibuka dari layar kasir, dan ke keranjang belanja web jika dibuka dari etalase pelanggan.",
+            "Pencocokan Kata Kunci Kontekstual Dinamis 100%: Menghubungkan rekomendasi produk ke database inventori toko riil (appData.products) berbasis kata kunci bahan untuk Cat, Keramik, Pasangan Bata/Hebel, dan Atap/Seng.",
+            "Tampilan Edukatif & Modal Spesifikasi Produk: Kartu produk rekomendasi kini interaktif dapat diklik untuk membuka foto rincian dan spesifikasi produk (openProductModal), serta dilengkapi panduan edukatif jika kategori produk belum diinput di inventori toko.",
+            "Rangkaian Pengujian Otomatis (test:estimator): Menambahkan Bagian 6 Uji Rekomendasi Produk Dinamis & Tambah ke Keranjang (44 Passed) dan 15 suite pengujian audit sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.1 (Android versionCode 11601)."
+        ]
+    },
+    {
         "id": "log-1-16-00",
         "version": "v1.16.0",
         "date": "2026-10-11",
@@ -75,21 +91,6 @@ export const DEFAULT_CHANGELOG = [
             "Arsitektur Rollback Bersih & Presisi: Mengimplementasikan rollbackSalesReturnStock dan rollbackVendorReturnStock pada engine FIFO terpadu (fifo-inventory.js) dengan penanganan varian dan integritas data tanpa kompromi.",
             "Rangkaian Pengujian Menyeluruh: 55 skenario pengujian RMA lolos 100% dan seluruh 11 test suite sistem audit lolos 100%.",
             "Multi-Channel Distribution v1.15.7 (Android versionCode 11507)."
-        ]
-    },
-    {
-        "id": "log-1-15-06",
-        "version": "v1.15.6",
-        "date": "2026-10-11",
-        "title": "Redesain Header POS Kasir Mobile (Clean Native Single-Row), Ruang Nama Toko & Kasir Lega, Serta Quick Action Menu [⋮]",
-        "category": "feature",
-        "badge": "Clean Mobile POS Header & Quick Action Menu v1.15.6",
-        "items": [
-            "Header POS Kasir Ramah Smartphone (HP): Merestrukturisasi tata letak header POS kasir layar ponsel pintar (360–390px) dengan wadah judul toko & kasir fleksibel (flex-1 min-w-0 mr-1.5), mengeliminasi masalah teks sempit terpotong menjadi 'P...' dan tumpang tindih. Nama toko dan nama kasir aktif kini tampil 100% utuh, tegak, lapang, dan estetis.",
-            "Quick Action Menu Popover [⋮] (Titik Tiga): Menghadirkan menu aksi cepat modern berdesain 100% Solid & Crisp (tanpa blur) khusus layar ponsel (sm:hidden). Menu ini memuat akses lengkap berikon dan rapi untuk Kalkulator Estimator Material [F3], Pengaturan Printer Thermal [F7], Catat Kas Laci (Kas ±) [F11], Ringkasan Shift (X-Report), Buku Panduan Kasir POS, dan Tombol Keluar Kasir.",
-            "Ergonomi & Optimasi Tombol Esensial Mobile: Tombol status shift dan antrean parkir [⌛] dioptimasi ringkas di ponsel (w-8 h-8 saat 0 antrean dan badge pill saat aktif), membebaskan ruang horizontal maksimal untuk judul etalase toko.",
-            "Desktop Parity Terjaga Penuh: Seluruh tombol aksi horizontal di layar laptop/desktop (sm: ke atas) tetap dipertahankan lengkap tanpa gangguan.",
-            "Multi-Channel Distribution v1.15.6 (Android versionCode 11506)."
         ]
     }
 ];
