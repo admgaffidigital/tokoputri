@@ -14,4 +14,3 @@ export * from './reviews.js';
 export * from './products/index.js';
 export * from './session.js';
 export * from './router.js';
-export * from './delivery.js';

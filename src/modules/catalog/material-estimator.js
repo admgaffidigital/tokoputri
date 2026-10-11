@@ -504,7 +504,7 @@ export const renderEstimatorFormHtml = (tab) => {
         return `
         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-3.5">
             <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
-                <i class="fa-solid fa-table-cells text-indigo-500"></i> Parameter Keramik / Granit
+                <i class="fa-solid fa-table-cells text-[var(--color-primary)]"></i> Parameter Keramik / Granit
             </span>
 
             <div class="grid grid-cols-2 gap-2.5">
@@ -803,14 +803,14 @@ export const renderEstimatorResultHtml = (tab) => {
 
         return `
         <!-- Bento Result Card -->
-        <div class="p-5 rounded-3xl bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-900/60 relative overflow-hidden">
+        <div class="p-5 rounded-3xl bg-gradient-to-br from-slate-900 via-cyan-950 to-slate-900 text-white shadow-xl border border-cyan-900/60 relative overflow-hidden">
             <div class="flex items-start justify-between gap-3 relative z-10">
                 <div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-indigo-300">Hasil Estimasi Keramik Lantai</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-cyan-300">Hasil Estimasi Keramik Lantai</span>
                     <h4 class="text-3xl font-black mt-1 tracking-tight text-white">${res.totalBoxes} Dus Keramik</h4>
-                    <p class="text-xs text-indigo-200 mt-1">Ukuran: <b>${res.spec.name}</b> (Coverage: ${res.spec.coveragePerBox} m²/dus)</p>
+                    <p class="text-xs text-cyan-200 mt-1">Ukuran: <b>${res.spec.name}</b> (Coverage: ${res.spec.coveragePerBox} m²/dus)</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-indigo-300 border border-slate-700 shrink-0">
+                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl text-cyan-300 border border-slate-700 shrink-0">
                     <i class="fa-solid fa-border-all"></i>
                 </div>
             </div>
@@ -821,7 +821,7 @@ export const renderEstimatorResultHtml = (tab) => {
                     <p class="text-sm font-black text-white mt-0.5">${res.rawArea} m²</p>
                 </div>
                 <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                    <p class="text-[10px] text-indigo-300 font-bold uppercase">+ Cadangan (${res.wastePercent}%)</p>
+                    <p class="text-[10px] text-cyan-300 font-bold uppercase">+ Cadangan (${res.wastePercent}%)</p>
                     <p class="text-sm font-black text-white mt-0.5">${res.totalAreaWithWaste} m²</p>
                 </div>
                 <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 col-span-2 sm:col-span-1">
@@ -850,7 +850,7 @@ export const renderEstimatorResultHtml = (tab) => {
         ${related.length > 0 ? `
         <div class="pt-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-tags text-indigo-500"></i> Rekomendasi Keramik &amp; Semen di Toko:
+                <i class="fa-solid fa-tags text-[var(--color-primary)]"></i> Rekomendasi Keramik &amp; Semen di Toko:
             </p>
             <div class="grid grid-cols-2 gap-2">
                 ${related.map(p => `

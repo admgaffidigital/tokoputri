@@ -2240,10 +2240,14 @@ const renderCart = () => {
 
     // Sync input diskon dan toggle tipe diskon
     document.querySelectorAll('.pos-disc-val-input').forEach(e => {
-        if (document.activeElement !== e) e.value = posDiscountVal || '';
+        if (e.value !== (posDiscountVal || '') && (typeof document === 'undefined' || document.activeElement !== e)) {
+            e.value = posDiscountVal || '';
+        }
     });
     document.querySelectorAll('.pos-global-disc-target').forEach(e => {
-        if (document.activeElement !== e) e.value = posDiscountVal || '';
+        if (e.value !== (posDiscountVal || '') && (typeof document === 'undefined' || document.activeElement !== e)) {
+            e.value = posDiscountVal || '';
+        }
     });
     document.querySelectorAll('.pos-disc-preview-target').forEach(e => {
         if (discAmt > 0) {

@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.15.0** (Android VersionCode: `11500`)
+* **Versi Rilis**: **v1.15.5** (Android VersionCode: `11505`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -264,6 +264,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.15.5 — Audit Sistem Menyeluruh, Optimasi Code-Splitting Bundle Admin, Harmonisasi Desain Tema Dinamis & Penguatan Guard Input (11 Okt 2026)
+- **Optimasi Bundling & Code-Splitting (Vite 5)**: Melepaskan re-export statis `delivery.js` pada barrel admin (`src/modules/admin/index.js`), memisahkan modul Surat Jalan DO menjadi lazy chunk mandiri (45.89 kB), mengeliminasi warning Vite 100%, memangkas chunk awal admin sebesar 46.24 kB, dan mempercepat kompilasi hingga 49% (10.33s).
+- **Harmonisasi Desain Tema Toko Dinamis (`src/modules/catalog/material-estimator.js`)**: Menyelaraskan seluruh elemen Tab Keramik Kalkulator Estimator mengadopsi token tema dinamis `var(--color-primary)` dan Bento card gradien cyan/slate modern, mengeliminasi warna hardcoded indigo peninggalan lawas.
+- **Penguatan Guard Fokus Input & Multi-Lingkungan (`src/modules/pos/pos.js`)**: Melengkapi *active element guard* pada sinkronisasi diskon kasir POS dengan pengecekan `typeof document === 'undefined'` untuk keandalan eksekusi lintas lingkungan (Browser & Node.js test runner).
+- **Verifikasi Test Suite & Audit 100% Passed**: Menjalankan 11 pengujian otomatis kritis (303 kasus uji unit) dengan hasil 100% lulus tanpa kegagalan.
+- **Sinkronisasi Multi-Channel v1.15.5**: Android VersionCode `11505`, versionName `1.15.5`, bundler Vite, PWA, dan Capacitor.
+
+---
 
 ### v1.15.0 — Flash Sale Engine (Promo Kilat Berbatas Waktu & Kuota), Omnichannel Sync & Proteksi Margin Guard (10 Okt 2026)
 - **Panggung Flash Sale Storefront (`src/modules/catalog/flash-sale-section.js`)**: Live countdown timer per detik, progress bar kuota keterjualan dinamis, badge diskon petir hemat %, dan tombol Beli Kilat 1-sentuhan.
