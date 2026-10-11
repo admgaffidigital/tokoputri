@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-02",
+        "version": "v1.16.2",
+        "date": "2026-10-12",
+        "title": "Resolusi Hierarki Z-Index Modal Estimator, Penayangan Layar Detail Produk & Drawer Varian Cepat On-Top",
+        "category": "feature",
+        "badge": "Estimator Variant Stacking & Modal Z-Index Precision v1.16.2",
+        "items": [
+            "Harmonisasi Z-Index Multi-Layer Modal: Meningkatkan z-index product-modal dari z-[70] menjadi z-[120] dan quick-variant-modal (Drawer Pilih Varian Cepat) dari z-[75] menjadi z-[125], menjamin keduanya selalu tampil di depan (on-top) Kalkulator Estimator Bahan Bangunan (z-[115]) tanpa terjebak di belakang layar estimator.",
+            "Eliminasi Layar Detail Terjebak & Tombol Tertutup: Memperbaiki kendala di mana kartu produk varian (seperti No Drop) dan tombol navigasi panah (< dan >) mengintip di balik kalkulator estimator, kini modal detail produk dan drawer varian muncul secara utuh, bersih, dan interaktif di layar smartphone maupun desktop.",
+            "Pembersihan Sub-Modal Yatim (Orphan Modal Cleanup): Menambahkan proteksi otomatis pada closeMaterialEstimatorModal untuk membersihkan quick-variant-modal jika masih terbuka saat estimator ditutup, mencegah modal yatim menggantung di layar.",
+            "Prioritisasi LIFO Fallback Scan di Router: Memperbarui urutan allKnownModals pada router.js sehingga modal tingkat atas (variantPreview, quickVariant, product) selalu ditutup terlebih dahulu sebelum modal induknya (materialEstimator), menjamin sinkronisasi tombol Back Android 100% mulus.",
+            "Rangkaian Pengujian Baru (test:estimatorzindex): Menambahkan unit test otomatis scripts/test-estimator-variant-zindex.mjs (15 Passed, 0 Failed) serta memverifikasi 16 suite pengujian audit sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.2 (Android versionCode 11602)."
+        ]
+    },
+    {
         "id": "log-1-16-01",
         "version": "v1.16.1",
         "date": "2026-10-11",
@@ -76,21 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Guard Otentikasi Sesi Sebelum Attach Listener Cloud: Menjaga fungsi listenActiveShiftCloud, findActiveShiftInCloud, dan syncActiveShiftFromCloud agar tidak memicu query cloud tanpa sesi staf atau kredensial yang valid.",
             "Test Suite Terpadu (test:authguard): Menambahkan rangkaian pengujian otomatis 17 skenario pada test audit suite (100% Passed).",
             "Multi-Channel Distribution v1.15.8 (Android versionCode 11508)."
-        ]
-    },
-    {
-        "id": "log-1-15-07",
-        "version": "v1.15.7",
-        "date": "2026-10-11",
-        "title": "Tombol Hapus Kartu Returan (RMA Engine) & Rollback Persediaan Otomatis",
-        "category": "feature",
-        "badge": "RMA Return Deletion & Inventory Rollback v1.15.7",
-        "items": [
-            "Tombol Hapus Retur Penjualan (Customer RMA): Menghadirkan tombol hapus permanen pada kartu retur mobile dan tabel desktop dengan dialog konfirmasi aman (danger mode). Saat data retur dihapus, penyesuaian stok fisik dan lot FIFO dibatalkan/dikembalikan otomatis, serta pengeluaran buku kas laci dibersihkan.",
-            "Tombol Hapus Retur Supplier (Vendor RMA): Menghadirkan tombol hapus permanen pada kartu retur supplier dan tabel desktop. Saat dihapus, barang dikembalikan ke lokasi asal persediaan (Rak Toko, Gudang Cadangan, atau Karantina), serta potongan hutang PO supplier dikembalikan normal.",
-            "Arsitektur Rollback Bersih & Presisi: Mengimplementasikan rollbackSalesReturnStock dan rollbackVendorReturnStock pada engine FIFO terpadu (fifo-inventory.js) dengan penanganan varian dan integritas data tanpa kompromi.",
-            "Rangkaian Pengujian Menyeluruh: 55 skenario pengujian RMA lolos 100% dan seluruh 11 test suite sistem audit lolos 100%.",
-            "Multi-Channel Distribution v1.15.7 (Android versionCode 11507)."
         ]
     }
 ];

@@ -820,8 +820,9 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
+        'variantPreview', 'quickVariant', 'product',
         'flashSaleForm',
-        'deliveryOrder', 'deliverySignature',
+        'deliverySignature', 'deliveryOrder',
         'salesReturn', 'vendorReturn',
         'materialEstimator', 'productBarcodeLabel', 'productFifo', 'sessionKicked', 'exitConfirm',
         'colorFloat', 'posLogoutShift',
@@ -836,10 +837,10 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         'posCameraScanner', 'tempoPenalty', 'tempoPayment', 'tempoDetail',
         'expenseReceipt', 'expenseForm', 'customerOrder', 'restock', 'quickprice',
         'member', 'review', 'voucher', 'changelog', 'appDownload', 'guarantee',
-        'security', 'quickVariant', 'variantPreview', 'confirm', 'prompt',
+        'security', 'confirm', 'prompt',
         'printerSettings', 'docPreview', 'receipt', 'adminFAQ', 'adminOrder',
         'admin', 'brand', 'category', 'quickmenu', 'guide', 'terms', 'privacy',
-        'scanner', 'askQuestion', 'product'
+        'scanner', 'askQuestion'
     ];
     for (const name of allKnownModals) {
         if (isModalOpenInDOM(name)) {

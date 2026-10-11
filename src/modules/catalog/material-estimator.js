@@ -1366,6 +1366,12 @@ export const closeMaterialEstimatorModal = (skipHistory = false) => {
     const modal = el('modal-material-estimator');
     const box = el('modal-material-estimator-content');
 
+    // Tutup sub-modal varian cepat jika masih aktif di DOM agar tidak meninggalkan modal yatim
+    const qvModal = el('quick-variant-modal');
+    if (qvModal && !qvModal.classList.contains('hidden') && typeof window.closeQuickVariantSheet === 'function') {
+        window.closeQuickVariantSheet(true);
+    }
+
     const executeClose = () => {
         if (box) {
             box.classList.add('translate-y-full', 'sm:translate-y-10');
