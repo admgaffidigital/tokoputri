@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.15.7** (Android VersionCode: `11507`)
+* **Versi Rilis**: **v1.15.8** (Android VersionCode: `11508`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -264,6 +264,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.15.8 — Pelepasan Listener Realtime Terpusat (Anti-Permission Error Saat Logout) & Penguatan Guard Sesi Kasir POS (11 Okt 2026)
+- **Pelepasan Listener Kolektif Sebelum SignOut (`detachAllAdminListenersBeforeSignOut`)**: Memastikan seluruh listener realtime Firestore (`pos_shifts`, riwayat transaksi POS, data sensitif privat toko `cms_private`, pesanan admin, pelanggan, dan ulasan) terlepas secara sinkron dan tuntas sebelum Firebase `auth.signOut()` dieksekusi saat logout admin, kickout sesi ganda, maupun sesi kadaluarsa.
+- **Resolusi Paripurna Permission-Denied POS Shift**: Mengeliminasi error konsol `[POS Shift] Snapshot listener cms_data error: FirebaseError: Missing or insufficient permissions` pada `pos-shift.js` dengan proteksi pendeteksian kode `permission-denied` serta pemutusan listener otomatis tanpa mencemari log konsol browser.
+- **Guard Otentikasi Sesi Sebelum Attach Listener Cloud**: Menjaga fungsi `listenActiveShiftCloud`, `findActiveShiftInCloud`, dan `syncActiveShiftFromCloud` agar tidak memicu query cloud tanpa sesi staf atau kredensial yang valid.
+- **Test Suite Terpadu (`test:authguard`)**: Menambahkan rangkaian pengujian otomatis 17 skenario pada test audit suite (100% Passed).
+- **Sinkronisasi Multi-Channel v1.15.8**: Android VersionCode `11508`, versionName `1.15.8`, bundler Vite, PWA, dan Capacitor.
+
+---
 
 ### v1.15.7 — Tombol Hapus Kartu Returan (RMA Engine) & Rollback Persediaan Otomatis (11 Okt 2026)
 - **Tombol Hapus Retur Penjualan (Customer RMA)**: Menghadirkan tombol hapus permanen pada kartu retur mobile (Card View) dan tabel desktop (Table View) dengan dialog konfirmasi perlindungan *danger mode*. Saat data retur dihapus, penyesuaian stok fisik dan tiket batch FIFO dibatalkan/dikembalikan otomatis, serta catatan pengeluaran buku kas laci dibersihkan.

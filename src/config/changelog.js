@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-08",
+        "version": "v1.15.8",
+        "date": "2026-10-11",
+        "title": "Pelepasan Listener Realtime Terpusat (Anti-Permission Error Saat Logout) & Penguatan Guard Sesi Kasir POS",
+        "category": "feature",
+        "badge": "Centralized Realtime Listener Cleanup & Auth Guard v1.15.8",
+        "items": [
+            "Pelepasan Listener Kolektif Sebelum SignOut (detachAllAdminListenersBeforeSignOut): Memastikan seluruh listener realtime Firestore (pos_shifts, riwayat transaksi POS, data sensitif privat toko cms_private, pesanan admin, pelanggan, dan ulasan) terlepas secara sinkron dan tuntas sebelum Firebase auth.signOut() dieksekusi saat logout admin, kickout sesi ganda, maupun sesi kadaluarsa.",
+            "Resolusi Paripurna Permission-Denied POS Shift: Mengeliminasi error konsol [POS Shift] Snapshot listener cms_data error: FirebaseError: Missing or insufficient permissions pada pos-shift.js dengan proteksi pendeteksian kode permission-denied serta pemutusan listener otomatis tanpa mencemari log konsol browser.",
+            "Guard Otentikasi Sesi Sebelum Attach Listener Cloud: Menjaga fungsi listenActiveShiftCloud, findActiveShiftInCloud, dan syncActiveShiftFromCloud agar tidak memicu query cloud tanpa sesi staf atau kredensial yang valid.",
+            "Test Suite Terpadu (test:authguard): Menambahkan rangkaian pengujian otomatis 17 skenario pada test audit suite (100% Passed).",
+            "Multi-Channel Distribution v1.15.8 (Android versionCode 11508)."
+        ]
+    },
+    {
         "id": "log-1-15-07",
         "version": "v1.15.7",
         "date": "2026-10-11",
@@ -75,23 +90,6 @@ export const DEFAULT_CHANGELOG = [
             "Pencegahan Reflow Kartu Ringkasan: Mengoptimalkan pembaruan tabel katalog produk admin agar tidak merekonstruksi ulang 4 kartu ringkasan inventori di setiap ketukan tombol pencarian.",
             "Seluruh 78 Modal Sistem & Rangkaian Test Suite Lolos 100%: 36 pengujian estimator & desimal, 28 flash sale, 24 multi-satuan UOM, 52 member loyalitas, serta verifikasi modal sinkron 100%.",
             "Multi-Channel Distribution v1.15.4 (Android versionCode 11504)."
-        ]
-    },
-    {
-        "id": "log-1-15-03",
-        "version": "v1.15.3",
-        "date": "2026-10-10",
-        "title": "Kalkulator Estimator Atap & Seng Interaktif (Spandek Galvalum, Seng Gelombang, Asbes Gelombang & Nok Bubungan)",
-        "category": "feature",
-        "badge": "Roof & Corrugated Sheet Material Estimator v1.15.3",
-        "items": [
-            "Penambahan Tab Estimator Atap & Seng: Menghadirkan kalkulator matematis presisi untuk menghitung kebutuhan Atap Spandek Galvalum (Zincalume), Seng Gelombang (BJLS), dan Asbes Gelombang (Fiber Semen).",
-            "3 Mode Geometri Bidang Konstruksi: Mendukung perhitungan Model Pelana 2 Sisi Miring (Gable Roof), Model Kanopi 1 Sisi Miring (Monopitch / Carport), dan Mode Luas Bersih Langsung (m²).",
-            "Presisi Sambungan & Overlap Lapangan: Memperhitungkan lebar efektif overlap samping (75 cm untuk Spandek & Seng, 95 cm untuk Asbes) serta end-lap sambungan ujung 20 cm sesuai pilihan panjang lembar (3m, 4m, 5m, 6m untuk Spandek; 1.5m s.d. 3.0m untuk Seng & Asbes).",
-            "Perhitungan Otomatis Aksesoris & Pengencang: Menghitung kebutuhan Baut Roofing SDS 12-14x50mm (box isi 100), Paku Payung Seng Galvanis (kg isi ~70 pcs), Paku Asbes Berkaret (pack isi 50), serta Batang Nok Bubungan Puncak.",
-            "Integrasi Omnichannel Lengkap: Salin rincian format WhatsApp, konsultasi langsung ke WA Toko Putri, integrasi tombol cepat kasir POS [F3], dan rekomendasi produk etalase toko.",
-            "Rangkaian Pengujian Otomatis: 36 unit test estimator lolos 100% dan seluruh 78 modal sistem sinkron.",
-            "Multi-Channel Distribution v1.15.3 (Android versionCode 11503)."
         ]
     }
 ];

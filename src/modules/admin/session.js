@@ -188,6 +188,19 @@ export const attachAdminSessionGuard = () => {
                 try {
                     window.isAdm = false;
                     window.__localIsAdm = false;
+                    if (typeof window.detachAllAdminListenersBeforeSignOut === 'function') {
+                        try { window.detachAllAdminListenersBeforeSignOut(); } catch (_) {}
+                    } else {
+                        if (typeof window.detachActiveShiftListener === 'function') {
+                            try { window.detachActiveShiftListener(); } catch (_) {}
+                        }
+                        if (typeof window.detachPOSHistoryListener === 'function') {
+                            try { window.detachPOSHistoryListener(); } catch (_) {}
+                        }
+                        if (typeof window.detachPrivateDataListener === 'function') {
+                            try { window.detachPrivateDataListener(); } catch (_) {}
+                        }
+                    }
                     if (auth && typeof auth.signOut === 'function') {
                         await auth.signOut();
                     }
@@ -202,7 +215,9 @@ export const attachAdminSessionGuard = () => {
                 showSessionKickedModal(newDeviceName);
             }
         }, (err) => {
-            console.warn('Admin session guard listener error:', err);
+            if (err?.code !== 'permission-denied' && !err?.message?.includes('insufficient permissions')) {
+                console.warn('Admin session guard listener error:', err);
+            }
         });
 };
 

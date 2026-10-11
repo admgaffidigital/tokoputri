@@ -108,6 +108,11 @@ export const isShiftActive = () => {
 };
 
 export const findActiveShiftInCloud = async (cashierUid = null) => {
+    const cashierSession = typeof getCashierSession === 'function' ? getCashierSession() : null;
+    const isAuth = !!(auth?.currentUser || window.isAdm || window.__localIsAdm || cashierSession);
+    if (!isAuth) {
+        return null;
+    }
     const identity = getCurrentCashierIdentity();
 
     try {
@@ -131,7 +136,9 @@ export const findActiveShiftInCloud = async (cashierUid = null) => {
             }
         }
     } catch (err) {
-        console.warn('[POS Shift] Cek open shift cms_data:', err);
+        if (err?.code !== 'permission-denied' && !err?.message?.includes('insufficient permissions')) {
+            console.warn('[POS Shift] Cek open shift cms_data:', err);
+        }
     }
 
     try {
@@ -154,7 +161,9 @@ export const findActiveShiftInCloud = async (cashierUid = null) => {
             }
         }
     } catch (err) {
-        console.warn('[POS Shift] Cek open shift root pos_shifts:', err);
+        if (err?.code !== 'permission-denied' && !err?.message?.includes('insufficient permissions')) {
+            console.warn('[POS Shift] Cek open shift root pos_shifts:', err);
+        }
     }
 
     return null;
@@ -163,6 +172,13 @@ export const findActiveShiftInCloud = async (cashierUid = null) => {
 export const listenActiveShiftCloud = (shiftId) => {
     if (!shiftId) return;
     detachActiveShiftListener();
+
+    // Guard: Hanya pasang listener jika pengguna memiliki sesi/auth aktif
+    const cashierSession = typeof getCashierSession === 'function' ? getCashierSession() : null;
+    const isAuth = !!(auth?.currentUser || window.isAdm || window.__localIsAdm || cashierSession);
+    if (!isAuth) {
+        return;
+    }
 
     try {
         const docRef = db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftId);
@@ -200,16 +216,30 @@ export const listenActiveShiftCloud = (shiftId) => {
                 }
             }
         }, err => {
+            const isPermissionError = err?.code === 'permission-denied' || 
+                (err?.message && (err.message.includes('Missing or insufficient permissions') || err.message.includes('insufficient permissions')));
+            if (isPermissionError || !auth?.currentUser) {
+                // Sesi telah berakhir atau pengguna logout - lepas listener secara damai tanpa peringatan error
+                detachActiveShiftListener();
+                return;
+            }
             console.warn('[POS Shift] Snapshot listener cms_data error:', err);
         });
     } catch (err) {
-        console.warn('[POS Shift] Gagal attach snapshot listener:', err);
+        if (err?.code !== 'permission-denied' && !err?.message?.includes('insufficient permissions')) {
+            console.warn('[POS Shift] Gagal attach snapshot listener:', err);
+        }
     }
 };
 
 export const syncActiveShiftFromCloud = async () => {
-    const identity = getCurrentCashierIdentity();
+    const cashierSession = typeof getCashierSession === 'function' ? getCashierSession() : null;
+    const isAuth = !!(auth?.currentUser || window.isAdm || window.__localIsAdm || cashierSession);
     const localShift = getActiveShift();
+    if (!isAuth) {
+        return localShift;
+    }
+    const identity = getCurrentCashierIdentity();
 
     // 1. Jika ada shift lokal, cek apakah masih valid dan sesuai dengan akun ini di cloud
     if (localShift && localShift.status === 'open' && isShiftOwnedByCashier(localShift, identity)) {
@@ -234,8 +264,12 @@ export const syncActiveShiftFromCloud = async () => {
                 }
             }
         } catch (e) {
-            console.warn('[POS Shift] Gagal verifikasi local shift ke cloud:', e);
-            listenActiveShiftCloud(localShift.id);
+            if (e?.code !== 'permission-denied' && !e?.message?.includes('insufficient permissions')) {
+                console.warn('[POS Shift] Gagal verifikasi local shift ke cloud:', e);
+            }
+            if (e?.code !== 'permission-denied') {
+                listenActiveShiftCloud(localShift.id);
+            }
             return localShift;
         }
     }
@@ -259,7 +293,9 @@ export const syncActiveShiftFromCloud = async () => {
             }
         }
     } catch (e) {
-        console.warn('[POS Shift] Gagal cari shift open di cloud:', e);
+        if (e?.code !== 'permission-denied' && !e?.message?.includes('insufficient permissions')) {
+            console.warn('[POS Shift] Gagal cari shift open di cloud:', e);
+        }
     }
 
     return getActiveShift();

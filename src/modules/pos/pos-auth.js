@@ -241,6 +241,12 @@ export const processCashierLogin = async () => {
             const docSnap = await docRef.get();
 
             if (!docSnap.exists) {
+                if (typeof window.detachActiveShiftListener === 'function') {
+                    try { window.detachActiveShiftListener(); } catch (_) {}
+                }
+                if (typeof window.detachPOSHistoryListener === 'function') {
+                    try { window.detachPOSHistoryListener(); } catch (_) {}
+                }
                 await auth.signOut();
                 showErr('Akun ini bukan akun staf/kasir yang terdaftar di toko ini.');
                 return;
@@ -249,6 +255,12 @@ export const processCashierLogin = async () => {
             const staffData = docSnap.data() || {};
 
             if (staffData.isActive === false) {
+                if (typeof window.detachActiveShiftListener === 'function') {
+                    try { window.detachActiveShiftListener(); } catch (_) {}
+                }
+                if (typeof window.detachPOSHistoryListener === 'function') {
+                    try { window.detachPOSHistoryListener(); } catch (_) {}
+                }
                 await auth.signOut();
                 showErr('Akun staf ini telah dinonaktifkan oleh Owner toko.');
                 return;
@@ -261,6 +273,12 @@ export const processCashierLogin = async () => {
                                  staffData.permissions?.pos !== false;
 
             if (!hasPosAccess) {
+                if (typeof window.detachActiveShiftListener === 'function') {
+                    try { window.detachActiveShiftListener(); } catch (_) {}
+                }
+                if (typeof window.detachPOSHistoryListener === 'function') {
+                    try { window.detachPOSHistoryListener(); } catch (_) {}
+                }
                 await auth.signOut();
                 showErr('Akun ini tidak memiliki hak akses kasir POS.');
                 return;

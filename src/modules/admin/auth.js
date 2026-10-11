@@ -130,6 +130,23 @@ export const applyStaffMenuPermissions = () => {
 };
 
 /**
+ * Lepas seluruh Firestore realtime listeners SEBELUM signOut agar tidak terpicu permission-denied
+ */
+export const detachAllAdminListenersBeforeSignOut = () => {
+    if (typeof window.detachActiveShiftListener === 'function') {
+        try { window.detachActiveShiftListener(); } catch (_) {}
+    }
+    if (typeof window.detachPOSHistoryListener === 'function') {
+        try { window.detachPOSHistoryListener(); } catch (_) {}
+    }
+    try { detachPrivateDataListener(); } catch (_) {}
+    if (aOrdLst) { try { aOrdLst(); } catch (_) {} setAOrdLst(null); } 
+    if (aCustLst) { try { aCustLst(); } catch (_) {} setACustLst(null); } 
+    if (aRevLst) { try { aRevLst(); } catch (_) {} setARevLst(null); } 
+};
+window.detachAllAdminListenersBeforeSignOut = detachAllAdminListenersBeforeSignOut;
+
+/**
  * Cek akses admin atau redirect ke halaman login
  */
 export const checkAdminAccess = async () => {
@@ -142,6 +159,7 @@ export const checkAdminAccess = async () => {
                 detachAdminSessionGuard();
                 localStorage.removeItem('freshmart_admin_session_id');
                 clearActiveStaff();
+                detachAllAdminListenersBeforeSignOut();
                 await auth.signOut();
                 window.isAdm = false;
                 window.__localIsAdm = false;
@@ -407,6 +425,7 @@ export const processAdminLogin = async () => {
             .collection('cashier_accounts').doc(loggedInUser.uid).get();
 
         if (!staffDoc.exists) {
+            detachAllAdminListenersBeforeSignOut();
             await auth.signOut();
             localStorage.removeItem('freshmart_admin_session_id');
             clearActiveStaff();
@@ -415,6 +434,7 @@ export const processAdminLogin = async () => {
 
         const staffData = staffDoc.data() || {};
         if (staffData.isActive === false) {
+            detachAllAdminListenersBeforeSignOut();
             await auth.signOut();
             localStorage.removeItem('freshmart_admin_session_id');
             clearActiveStaff();
@@ -501,13 +521,7 @@ export const logoutAdmin = async () => {
             }
         } catch (_) {}
         // Detach seluruh Firestore realtime listeners SEBELUM signOut agar tidak terpicu permission-denied
-        if (typeof window.detachPOSHistoryListener === 'function') {
-            window.detachPOSHistoryListener();
-        }
-        try { detachPrivateDataListener(); } catch (_) {}
-        if (aOrdLst) { aOrdLst(); setAOrdLst(null); } 
-        if (aCustLst) { aCustLst(); setACustLst(null); } 
-        if (aRevLst) { aRevLst(); setARevLst(null); } 
+        detachAllAdminListenersBeforeSignOut();
         await auth.signOut();
         window.isAdm = false; 
         window.__localIsAdm = false;

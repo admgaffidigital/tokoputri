@@ -339,6 +339,16 @@ window.addEventListener('DOMContentLoaded', async () => {
                 const staffData = staffDoc.data() || {};
                 if (staffData.isActive === false) {
                     clearActiveStaff();
+                    if (typeof window.detachAllAdminListenersBeforeSignOut === 'function') {
+                        try { window.detachAllAdminListenersBeforeSignOut(); } catch (_) {}
+                    } else {
+                        if (typeof window.detachActiveShiftListener === 'function') {
+                            try { window.detachActiveShiftListener(); } catch (_) {}
+                        }
+                        if (typeof window.detachPOSHistoryListener === 'function') {
+                            try { window.detachPOSHistoryListener(); } catch (_) {}
+                        }
+                    }
                     await auth.signOut();
                     return;
                 }
@@ -382,6 +392,16 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         // Jika bukan staf dan bukan owner, paksa sign out demi keamanan
         clearActiveStaff();
+        if (typeof window.detachAllAdminListenersBeforeSignOut === 'function') {
+            try { window.detachAllAdminListenersBeforeSignOut(); } catch (_) {}
+        } else {
+            if (typeof window.detachActiveShiftListener === 'function') {
+                try { window.detachActiveShiftListener(); } catch (_) {}
+            }
+            if (typeof window.detachPOSHistoryListener === 'function') {
+                try { window.detachPOSHistoryListener(); } catch (_) {}
+            }
+        }
         await auth.signOut();
         return;
     }
@@ -443,6 +463,16 @@ window.addEventListener('DOMContentLoaded', async () => {
         window.__localIsAdm = false;
         // Lepas listener dan bersihkan data sensitif dari memori
         detachPrivateDataListener();
+        if (typeof window.detachAllAdminListenersBeforeSignOut === 'function') {
+            try { window.detachAllAdminListenersBeforeSignOut(); } catch (_) {}
+        } else {
+            if (typeof window.detachActiveShiftListener === 'function') {
+                try { window.detachActiveShiftListener(); } catch (_) {}
+            }
+            if (typeof window.detachPOSHistoryListener === 'function') {
+                try { window.detachPOSHistoryListener(); } catch (_) {}
+            }
+        }
         if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
     }
 });
