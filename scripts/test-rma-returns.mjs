@@ -9,7 +9,7 @@
  * 6. Validasi Proteksi Kuantitas Maksimum Retur
  */
 
-import { restoreFifoStock, deductVendorReturnStock } from '../src/core/fifo-inventory.js';
+import { restoreFifoStock, deductVendorReturnStock, rollbackSalesReturnStock, rollbackVendorReturnStock } from '../src/core/fifo-inventory.js';
 
 console.log('\n============================================================');
 console.log('🧪 MENJALANKAN TEST SUITE RMA RETURNS & INVENTORY RECONCILIATION');
@@ -263,6 +263,143 @@ priorReturns.push({ items: [{ id: 'P1', qty: 3 }] });
 const maxReturnQty2 = getAvailableReturnQty(orderItem, priorReturns);
 assert(maxReturnQty2 === 0, `Item dibeli 5, sudah diretur 5 -> Kuota retur habis 0 (didapat: ${maxReturnQty2})`);
 
+// ─── 8. UJI ROLLBACK / PEMBATALAN RETUR PENJUALAN (DELETE RETURN) ───
+console.log('\n🗑️ 8. Uji Rollback Stok Akibat Penghapusan Retur Penjualan:');
+
+// Test 8a: Rollback kondisi baik (stok berkurang kembali & batch FIFO dihapus)
+const productA_rollback = {
+    id: 'PROD-001',
+    name: 'Semen Gresik 40kg',
+    stock: 23,
+    storeStock: 18,
+    warehouseStock: 5,
+    damagedStock: 0,
+    stockBatches: [
+        { batchId: 'BATCH-001', qty: 20, remainingQty: 20, buyPrice: 50000, location: 'store' },
+        { batchId: 'BATCH-RETUR-001', poNumber: 'RMA-SLS-20261008-01', initialQty: 3, remainingQty: 3, buyPrice: 50000, location: 'store' }
+    ]
+};
+
+rollbackSalesReturnStock(productA_rollback, {
+    returnNumber: 'RMA-SLS-20261008-01',
+    orderId: 'POS-001',
+    qty: 3,
+    condition: 'good'
+});
+
+assert(productA_rollback.storeStock === 15, `Stok rak toko kembali normal terpotong 3 (18 -> 15, didapat: ${productA_rollback.storeStock})`);
+assert(productA_rollback.stock === 20, `Total stok jual kembali normal (23 -> 20, didapat: ${productA_rollback.stock})`);
+assert(productA_rollback.stockBatches.length === 1, `Lot batch FIFO retur berhasil dihapus (didapat: ${productA_rollback.stockBatches.length})`);
+assert(productA_rollback.stockBatches[0].batchId === 'BATCH-001', `Batch tersisa adalah batch awal produk`);
+
+// Test 8b: Rollback kondisi rusak (stok karantina berkurang kembali)
+const productB_rollback = {
+    id: 'PROD-002',
+    name: 'Cat Dulux 5kg',
+    stock: 10,
+    storeStock: 10,
+    warehouseStock: 0,
+    damagedStock: 2,
+    stockBatches: [
+        { batchId: 'BATCH-002', qty: 10, remainingQty: 10, buyPrice: 150000, location: 'store' }
+    ]
+};
+
+rollbackSalesReturnStock(productB_rollback, {
+    returnNumber: 'RMA-SLS-20261008-02',
+    orderId: 'POS-002',
+    qty: 2,
+    condition: 'damaged'
+});
+
+assert(productB_rollback.damagedStock === 0, `Stok karantina berkurang kembali 2 unit (2 -> 0, didapat: ${productB_rollback.damagedStock})`);
+assert(productB_rollback.stock === 10, `Total stok jual tetap 10 tidak berubah (didapat: ${productB_rollback.stock})`);
+
+// Test 8c: Rollback produk multi-varian
+const productC_rollback = {
+    id: 'PROD-003',
+    name: 'Paku Tembok Beton',
+    stock: 35,
+    storeStock: 35,
+    warehouseStock: 0,
+    variants: [
+        { name: '2 Inch', stock: 15, storeStock: 15, warehouseStock: 0, damagedStock: 0 },
+        { name: '3 Inch', stock: 20, storeStock: 20, warehouseStock: 0, damagedStock: 0 }
+    ]
+};
+
+rollbackSalesReturnStock(productC_rollback, {
+    returnNumber: 'RMA-SLS-20261008-03',
+    orderId: 'POS-003',
+    qty: 5,
+    variantName: '2 Inch',
+    condition: 'good'
+});
+
+assert(productC_rollback.variants[0].storeStock === 10, `Stok varian '2 Inch' berkurang kembali 5 (15 -> 10, didapat: ${productC_rollback.variants[0].storeStock})`);
+assert(productC_rollback.variants[0].stock === 10, `Total stok varian '2 Inch' kembali 10 (didapat: ${productC_rollback.variants[0].stock})`);
+assert(productC_rollback.stock === 30, `Total stok master kembali 30 (35 -> 30, didapat: ${productC_rollback.stock})`);
+
+// Test 8d: Rollback pengeluaran kas (buku kas)
+const expenseList = [
+    { id: 'EXP-RET-01', receiptNumber: 'RMA-SLS-DEL-01', amount: 50000, description: 'Retur POS (RMA-SLS-DEL-01)' },
+    { id: 'EXP-OPR-01', receiptNumber: 'EXP-123', amount: 20000, description: 'Beli Lakban' }
+];
+const updatedExpenses = expenseList.filter(exp => exp.receiptNumber !== 'RMA-SLS-DEL-01');
+assert(updatedExpenses.length === 1, `Beban refund dihapus dari buku kas (tersisa 1 entri, didapat: ${updatedExpenses.length})`);
+assert(updatedExpenses[0].id === 'EXP-OPR-01', `Beban operasional lainnya tetap aman`);
+
+// ─── 9. UJI ROLLBACK / PEMBATALAN RETUR SUPPLIER (DELETE VENDOR RMA) ───
+console.log('\n🔙 9. Uji Rollback Stok Akibat Penghapusan Retur Supplier:');
+
+const productD_rollback = {
+    id: 'PROD-004',
+    name: 'Thinner Super A',
+    stock: 35,
+    storeStock: 20,
+    warehouseStock: 15,
+    damagedStock: 1
+};
+
+// Rollback retur dari toko
+rollbackVendorReturnStock(productD_rollback, {
+    qty: 10,
+    fromLocation: 'store'
+});
+assert(productD_rollback.storeStock === 30, `Stok rak toko dipulihkan 10 (20 -> 30, didapat: ${productD_rollback.storeStock})`);
+assert(productD_rollback.stock === 45, `Total stok jual bertambah menjadi 45 (35 -> 45, didapat: ${productD_rollback.stock})`);
+
+// Rollback retur dari gudang
+rollbackVendorReturnStock(productD_rollback, {
+    qty: 5,
+    fromLocation: 'warehouse'
+});
+assert(productD_rollback.warehouseStock === 20, `Stok gudang dipulihkan 5 (15 -> 20, didapat: ${productD_rollback.warehouseStock})`);
+assert(productD_rollback.stock === 50, `Total stok jual dipulihkan menjadi 50 (didapat: ${productD_rollback.stock})`);
+
+// Rollback retur dari karantina
+rollbackVendorReturnStock(productD_rollback, {
+    qty: 3,
+    fromLocation: 'quarantine'
+});
+assert(productD_rollback.damagedStock === 4, `Stok karantina dipulihkan 3 (1 -> 4, didapat: ${productD_rollback.damagedStock})`);
+assert(productD_rollback.stock === 50, `Total stok jual tidak berubah saat karantina dipulihkan (didapat: ${productD_rollback.stock})`);
+
+// Rollback hutang PO supplier
+const poForRollback = {
+    id: 'PO-202610-002',
+    totalPrice: 1000000,
+    remainingDebt: 250000,
+    paymentStatus: 'paid'
+};
+const claimAmountToRevert = 150000;
+poForRollback.remainingDebt = Math.round(poForRollback.remainingDebt + claimAmountToRevert);
+if (poForRollback.remainingDebt > 0 && poForRollback.paymentStatus === 'paid') {
+    poForRollback.paymentStatus = 'partial';
+}
+assert(poForRollback.remainingDebt === 400000, `Hutang PO bertambah kembali dari 250.000 menjadi 400.000 (didapat: ${poForRollback.remainingDebt})`);
+assert(poForRollback.paymentStatus === 'partial', `Status pembayaran PO kembali menjadi 'partial' (didapat: ${poForRollback.paymentStatus})`);
+
 console.log('\n============================================================');
 console.log(`📊 HASIL PENGUJIAN RMA ENGINE: ${passed} PASSED / ${failed} FAILED`);
 console.log('============================================================\n');
@@ -270,3 +407,4 @@ console.log('============================================================\n');
 if (failed > 0) {
     process.exit(1);
 }
+

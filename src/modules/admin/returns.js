@@ -24,7 +24,7 @@
 
 import { appData } from '../../core/state.js';
 import { saveApp } from '../../services/storage.js';
-import { restoreFifoStock, deductVendorReturnStock } from '../../core/fifo-inventory.js';
+import { restoreFifoStock, deductVendorReturnStock, rollbackSalesReturnStock, rollbackVendorReturnStock } from '../../core/fifo-inventory.js';
 import { 
     el, show, hide, setIn, setH, esc, fCur,
     showToast, showConfirm, sLoad, hLoad,
@@ -399,7 +399,7 @@ const renderSalesReturnsTableHtml = () => {
                                 </div>
                             </div>
 
-                            <!-- Bottom Action Bar: Tombol Cetak Native Touch Target 40px -->
+                            <!-- Bottom Action Bar: Tombol Cetak & Aksi Native Touch Target 40px -->
                             <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
                                 <button type="button" onclick="window.printSalesReturnA4('${esc(r.id)}')" class="btn-native-action flex-1 h-10 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer">
                                     <i class="fa-solid fa-file-invoice text-xs"></i>
@@ -408,6 +408,9 @@ const renderSalesReturnsTableHtml = () => {
                                 <button type="button" onclick="window.printSalesReturnThermal('${esc(r.id)}')" class="btn-native-action flex-1 h-10 rounded-xl sm:rounded-2xl border border-[rgba(var(--color-primary-rgb),0.3)] text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary);">
                                     <i class="fa-solid fa-print text-xs"></i>
                                     <span>Struk Thermal</span>
+                                </button>
+                                <button type="button" onclick="window.deleteSalesReturn('${esc(r.id)}')" title="Hapus Riwayat Retur Penjualan" class="btn-native-action w-10 h-10 rounded-xl sm:rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-center shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </div>
                         </div>
@@ -430,7 +433,7 @@ const renderSalesReturnsTableHtml = () => {
                             <th class="py-3.5 px-4">Barang Diretur</th>
                             <th class="py-3.5 px-4 text-right">Nilai Kompensasi</th>
                             <th class="py-3.5 px-4">Metode</th>
-                            <th class="py-3.5 px-4 text-center">Cetak Bukti</th>
+                            <th class="py-3.5 px-4 text-center">Aksi / Cetak</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
@@ -477,6 +480,9 @@ const renderSalesReturnsTableHtml = () => {
                                             </button>
                                             <button type="button" onclick="window.printSalesReturnThermal('${esc(r.id)}')" title="Cetak Struk Thermal RawBT" class="btn-native-action h-9 px-2.5 rounded-xl border text-xs font-bold flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                                 <i class="fa-solid fa-print text-xs"></i> <span>Struk</span>
+                                            </button>
+                                            <button type="button" onclick="window.deleteSalesReturn('${esc(r.id)}')" title="Hapus Riwayat Retur Penjualan" class="btn-native-action h-9 w-9 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-center shadow-2xs active:scale-95 cursor-pointer">
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -596,11 +602,14 @@ const renderVendorReturnsTableHtml = () => {
                                 </div>
                             </div>
 
-                            <!-- Bottom Action Bar: Tombol Cetak Native Touch Target 40px -->
-                            <div class="pt-1 border-t border-slate-100 dark:border-slate-800">
-                                <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" class="btn-native-action w-full h-10 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer">
+                            <!-- Bottom Action Bar: Tombol Cetak & Aksi Native Touch Target 40px -->
+                            <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                                <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" class="btn-native-action flex-1 h-10 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer">
                                     <i class="fa-solid fa-print text-xs text-amber-500"></i>
-                                    <span>Cetak Surat Jalan Retur Barang (A4)</span>
+                                    <span>Cetak Surat Jalan Retur (A4)</span>
+                                </button>
+                                <button type="button" onclick="window.deleteVendorReturn('${esc(r.id)}')" title="Hapus Riwayat Retur Supplier" class="btn-native-action w-10 h-10 rounded-xl sm:rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-center shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </div>
                         </div>
@@ -623,7 +632,7 @@ const renderVendorReturnsTableHtml = () => {
                             <th class="py-3.5 px-4">Barang Dikembalikan</th>
                             <th class="py-3.5 px-4 text-right">Nilai Klaim HPP</th>
                             <th class="py-3.5 px-4">Penyelesaian</th>
-                            <th class="py-3.5 px-4 text-center">Cetak Surat</th>
+                            <th class="py-3.5 px-4 text-center">Aksi / Cetak</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
@@ -661,9 +670,14 @@ const renderVendorReturnsTableHtml = () => {
                                         ${methodBadge}
                                     </td>
                                     <td class="py-3.5 px-4 text-center">
-                                        <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" title="Cetak Surat Jalan Retur Barang" class="btn-native-action h-9 px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
-                                            <i class="fa-solid fa-print text-xs text-amber-500"></i> <span>Cetak A4</span>
-                                        </button>
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" title="Cetak Surat Jalan Retur Barang" class="btn-native-action h-9 px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
+                                                <i class="fa-solid fa-print text-xs text-amber-500"></i> <span>A4</span>
+                                            </button>
+                                            <button type="button" onclick="window.deleteVendorReturn('${esc(r.id)}')" title="Hapus Riwayat Retur Supplier" class="btn-native-action h-9 w-9 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-center shadow-2xs active:scale-95 cursor-pointer">
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             `;
@@ -1842,6 +1856,145 @@ export const printVendorReturnA4 = (returnId) => {
     }
 };
 
+/**
+ * Hapus riwayat retur penjualan konsumen & rollback stok fisik dan beban kas
+ */
+export const deleteSalesReturn = async (returnId) => {
+    if (!returnId) return;
+    const record = (appData.salesReturns || []).find(r => r.id === returnId);
+    if (!record) {
+        showToast('Data retur penjualan tidak ditemukan!');
+        return;
+    }
+
+    const confirmMsg = `Hapus permanen riwayat retur penjualan <b>#${esc(returnId)}</b>?<br><br>` +
+        `<span class="text-xs text-slate-500 dark:text-slate-400">` +
+        `• Penyesuaian stok fisik barang akan dibatalkan/dikembalikan.<br>` +
+        `• Catatan pengeluaran buku kas laci terkait akan dibersihkan.<br>` +
+        `• Tindakan ini tidak dapat dibatalkan.</span>`;
+
+    let confirmed = true;
+    if (typeof showConfirm === 'function') {
+        confirmed = await showConfirm('Hapus Retur Penjualan', confirmMsg, null, 'Ya, Hapus Retur', true);
+    } else if (typeof window !== 'undefined' && typeof window.showConfirm === 'function') {
+        confirmed = await window.showConfirm('Hapus Retur Penjualan', confirmMsg, null, 'Ya, Hapus Retur', true);
+    }
+    if (!confirmed) return;
+
+    sLoad('Menghapus riwayat retur...');
+
+    try {
+        // 1. Rollback Restorasi Stok Produk
+        if (Array.isArray(record.items)) {
+            record.items.forEach(it => {
+                const prod = (appData.products || []).find(p => String(p.id) === String(it.id));
+                if (prod) {
+                    rollbackSalesReturnStock(prod, {
+                        returnNumber: record.id,
+                        orderId: record.orderId,
+                        qty: it.qty,
+                        variantName: it.variantName,
+                        condition: it.condition
+                    });
+                }
+            });
+        }
+
+        // 2. Rollback Pengeluaran Buku Kas jika refund tunai (cash)
+        if (record.refundMethod === 'cash' && Array.isArray(appData.expenses)) {
+            appData.expenses = appData.expenses.filter(exp => 
+                exp.receiptNumber !== returnId && 
+                !(exp.id && exp.id.startsWith('EXP-RET-') && exp.description && exp.description.includes(returnId))
+            );
+        }
+
+        // 3. Hapus entri retur dari appData.salesReturns
+        appData.salesReturns = (appData.salesReturns || []).filter(r => r.id !== returnId);
+
+        // 4. Simpan ke database
+        await saveApp(['salesReturns', 'expenses', 'products']);
+
+        hLoad();
+        renderReturnsView();
+        showToast(`✅ Riwayat retur penjualan ${returnId} berhasil dihapus!`);
+    } catch (e) {
+        hLoad();
+        console.error('Error hapus sales return:', e);
+        showToast('Gagal menghapus retur: ' + (e.message || ''));
+    }
+};
+
+/**
+ * Hapus riwayat retur pembelian supplier & rollback stok fisik serta potongan hutang PO
+ */
+export const deleteVendorReturn = async asyncReturnId => {
+    const returnId = asyncReturnId;
+    if (!returnId) return;
+    const record = (appData.vendorReturns || []).find(r => r.id === returnId);
+    if (!record) {
+        showToast('Data retur supplier tidak ditemukan!');
+        return;
+    }
+
+    const confirmMsg = `Hapus permanen riwayat retur supplier <b>#${esc(returnId)}</b>?<br><br>` +
+        `<span class="text-xs text-slate-500 dark:text-slate-400">` +
+        `• Kuantitas barang yang dikembalikan akan dipulihkan ke stok toko/gudang/karantina.<br>` +
+        `${record.settlementMethod === 'ap_deduction' && record.poId ? '• Penyesuaian potongan hutang PO terkait akan dikembalikan.<br>' : ''}` +
+        `• Tindakan ini tidak dapat dibatalkan.</span>`;
+
+    let confirmed = true;
+    if (typeof showConfirm === 'function') {
+        confirmed = await showConfirm('Hapus Retur Supplier', confirmMsg, null, 'Ya, Hapus Retur', true);
+    } else if (typeof window !== 'undefined' && typeof window.showConfirm === 'function') {
+        confirmed = await window.showConfirm('Hapus Retur Supplier', confirmMsg, null, 'Ya, Hapus Retur', true);
+    }
+    if (!confirmed) return;
+
+    sLoad('Menghapus retur supplier...');
+
+    try {
+        // 1. Rollback Pemotongan Stok Fisik Produk (tambahkan kembali ke lokasi asal)
+        if (Array.isArray(record.items)) {
+            record.items.forEach(it => {
+                const prod = (appData.products || []).find(p => String(p.id) === String(it.id || it.productId));
+                if (prod) {
+                    rollbackVendorReturnStock(prod, {
+                        qty: it.qty,
+                        variantName: it.variantName,
+                        fromLocation: it.fromLocation
+                    });
+                }
+            });
+        }
+
+        // 2. Rollback Pemotongan Hutang PO jika settlementMethod === 'ap_deduction'
+        if (record.settlementMethod === 'ap_deduction' && record.poId && Array.isArray(appData.purchases)) {
+            const po = appData.purchases.find(p => String(p.id) === String(record.poId));
+            if (po) {
+                const totalClaim = parseFloat(record.totalClaim) || 0;
+                po.remainingDebt = Math.round((parseFloat(po.remainingDebt) || 0) + totalClaim);
+                if (po.remainingDebt > 0 && po.paymentStatus === 'paid') {
+                    po.paymentStatus = 'partial';
+                }
+            }
+        }
+
+        // 3. Hapus entri dari appData.vendorReturns
+        appData.vendorReturns = (appData.vendorReturns || []).filter(r => r.id !== returnId);
+
+        // 4. Simpan ke database
+        await saveApp(['vendorReturns', 'purchases', 'products']);
+
+        hLoad();
+        renderReturnsView();
+        showToast(`✅ Riwayat retur supplier ${returnId} berhasil dihapus!`);
+    } catch (e) {
+        hLoad();
+        console.error('Error hapus vendor return:', e);
+        showToast('Gagal menghapus retur supplier: ' + (e.message || ''));
+    }
+};
+
 // Ekspos fungsi ke objek global window
 if (typeof window !== 'undefined') {
     window.renderReturnsView = renderReturnsView;
@@ -1875,4 +2028,7 @@ if (typeof window !== 'undefined') {
     window.printSalesReturnThermal = printSalesReturnThermal;
     window.printSalesReturnA4 = printSalesReturnA4;
     window.printVendorReturnA4 = printVendorReturnA4;
+    window.deleteSalesReturn = deleteSalesReturn;
+    window.deleteVendorReturn = deleteVendorReturn;
 }
+

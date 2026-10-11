@@ -702,3 +702,107 @@ export const deductVendorReturnStock = (product, returnData = {}) => {
     return { fromLocation, qty };
 };
 
+/**
+ * Membatalkan/merollback restorasi stok akibat penghapusan data Retur Penjualan (Customer RMA).
+ * Jika sebelumnya barang kondisi baik dikembalikan ke Rak Toko, stok dikurangi kembali dan lot batch retur dihapus.
+ * Jika sebelumnya barang kondisi rusak dimasukkan ke Karantina, stok karantina dikurangi kembali.
+ * 
+ * @param {Object} product Objek produk
+ * @param {Object} returnData { returnNumber, orderId, qty, variantName, condition }
+ * @returns {Object} Hasil pembatalan { rollbackedLocation, qty }
+ */
+export const rollbackSalesReturnStock = (product, returnData = {}) => {
+    if (!product) return null;
+    normalizeProductInventory(product);
+
+    const qty = parseFloat(returnData.qty) || 0;
+    if (qty <= 0) return null;
+
+    const condition = returnData.condition || 'good';
+    const variantName = returnData.variantName || '';
+    const returnNumber = returnData.returnNumber || '';
+    const orderId = returnData.orderId || '';
+
+    let targetObj = product;
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) targetObj = v;
+    }
+
+    if (condition === 'damaged') {
+        // Kurangi dari karantina barang rusak
+        targetObj.damagedStock = Math.max(0, parseFloat(((parseFloat(targetObj.damagedStock) || 0) - qty).toFixed(3)));
+        if (targetObj !== product && Array.isArray(product.variants)) {
+            product.damagedStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.damagedStock) || 0), 0);
+        }
+        return { rollbackedLocation: 'quarantine', qty };
+    }
+
+    // Kondisi baik: kurangi dari rak toko (storeStock)
+    targetObj.storeStock = Math.max(0, parseFloat(((parseFloat(targetObj.storeStock) || 0) - qty).toFixed(3)));
+    targetObj.stock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + (parseFloat(targetObj.warehouseStock) || 0)).toFixed(3));
+
+    if (variantName && Array.isArray(product.variants)) {
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    } else {
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    }
+
+    // Hapus lot batch FIFO yang dibuat khusus untuk retur ini jika masih ada
+    if (Array.isArray(product.stockBatches)) {
+        const bIdx = product.stockBatches.findIndex(b => 
+            (returnNumber && b.poNumber === returnNumber) ||
+            (orderId && b.poNumber === `RETUR-${orderId}`) ||
+            (b.batchId && b.batchId.startsWith('BATCH-RETUR-') && b.initialQty === qty && b.remainingQty === qty && (!variantName || b.variantName === variantName))
+        );
+        if (bIdx > -1) {
+            product.stockBatches.splice(bIdx, 1);
+        }
+    }
+
+    return { rollbackedLocation: 'store', qty };
+};
+
+/**
+ * Membatalkan/merollback pemotongan stok akibat penghapusan data Retur Pembelian Supplier (Vendor Return).
+ * Menambahkan kembali kuantitas fisik ke lokasi asal (Rak Toko, Gudang Cadangan, atau Karantina).
+ * 
+ * @param {Object} product Objek produk
+ * @param {Object} returnData { qty, variantName, fromLocation }
+ * @returns {Object} Hasil pembatalan { rollbackedLocation, qty }
+ */
+export const rollbackVendorReturnStock = (product, returnData = {}) => {
+    if (!product) return null;
+    normalizeProductInventory(product);
+
+    const qty = parseFloat(returnData.qty) || 0;
+    if (qty <= 0) return null;
+
+    const fromLocation = returnData.fromLocation === 'warehouse' ? 'warehouse' : (returnData.fromLocation === 'quarantine' ? 'quarantine' : 'store');
+    const variantName = returnData.variantName || '';
+
+    let targetObj = product;
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) targetObj = v;
+    }
+
+    const locKey = fromLocation === 'warehouse' ? 'warehouseStock' : (fromLocation === 'quarantine' ? 'damagedStock' : 'storeStock');
+    targetObj[locKey] = parseFloat(((parseFloat(targetObj[locKey]) || 0) + qty).toFixed(3));
+    targetObj.stock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + (parseFloat(targetObj.warehouseStock) || 0)).toFixed(3));
+
+    if (variantName && Array.isArray(product.variants)) {
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.damagedStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.damagedStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    } else {
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    }
+
+    return { rollbackedLocation: fromLocation, qty };
+};
+
+

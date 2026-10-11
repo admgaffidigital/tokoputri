@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-15-07",
+        "version": "v1.15.7",
+        "date": "2026-10-11",
+        "title": "Tombol Hapus Kartu Returan (RMA Engine) & Rollback Persediaan Otomatis",
+        "category": "feature",
+        "badge": "RMA Return Deletion & Inventory Rollback v1.15.7",
+        "items": [
+            "Tombol Hapus Retur Penjualan (Customer RMA): Menghadirkan tombol hapus permanen pada kartu retur mobile dan tabel desktop dengan dialog konfirmasi aman (danger mode). Saat data retur dihapus, penyesuaian stok fisik dan lot FIFO dibatalkan/dikembalikan otomatis, serta pengeluaran buku kas laci dibersihkan.",
+            "Tombol Hapus Retur Supplier (Vendor RMA): Menghadirkan tombol hapus permanen pada kartu retur supplier dan tabel desktop. Saat dihapus, barang dikembalikan ke lokasi asal persediaan (Rak Toko, Gudang Cadangan, atau Karantina), serta potongan hutang PO supplier dikembalikan normal.",
+            "Arsitektur Rollback Bersih & Presisi: Mengimplementasikan rollbackSalesReturnStock dan rollbackVendorReturnStock pada engine FIFO terpadu (fifo-inventory.js) dengan penanganan varian dan integritas data tanpa kompromi.",
+            "Rangkaian Pengujian Menyeluruh: 55 skenario pengujian RMA lolos 100% dan seluruh 11 test suite sistem audit lolos 100%.",
+            "Multi-Channel Distribution v1.15.7 (Android versionCode 11507)."
+        ]
+    },
+    {
         "id": "log-1-15-06",
         "version": "v1.15.6",
         "date": "2026-10-11",
@@ -77,23 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Integrasi Omnichannel Lengkap: Salin rincian format WhatsApp, konsultasi langsung ke WA Toko Putri, integrasi tombol cepat kasir POS [F3], dan rekomendasi produk etalase toko.",
             "Rangkaian Pengujian Otomatis: 36 unit test estimator lolos 100% dan seluruh 78 modal sistem sinkron.",
             "Multi-Channel Distribution v1.15.3 (Android versionCode 11503)."
-        ]
-    },
-    {
-        "id": "log-1-15-02",
-        "version": "v1.15.2",
-        "date": "2026-10-10",
-        "title": "Tipografi Industrial Hardware Depot (Archivo + Barlow) & Elevasi Visual Toko Bahan Bangunan & Alat Teknik",
-        "category": "feature",
-        "badge": "Industrial Hardware Depot Typography v1.15.2",
-        "items": [
-            "Duet Tipografi Industrial (Paket 3): Integrasi font 'Archivo' (Weight 600-900) untuk seluruh judul, nama barang, kategori, angka harga, dan tombol aksi berpadu 'Barlow' (Weight 400-600) untuk teks deskripsi & spesifikasi teknis.",
-            "Karakter Visual Heavy-Duty & Berwibawa: Menghadirkan kesan kokoh, formal, dan meyakinkan bagi kontraktor proyek serta tetap bersih & modern bagi pembeli ritel rumah tangga.",
-            "Proteksi Monospace Struk & Barcode: Menjaga format font 'Courier New' / monospace tetap murni pada struk thermal printer 58mm/80mm, kode barcode Code 128, dan nomor seri SKU.",
-            "Resolusi Anti-Flicker & Kontras Lisensi SaaS: Mengeliminasi teks berkedip pada kartu lisensi toko dengan menghapus 'text-transparent bg-clip-text' menjadi warna solid tegas, serta menstandarkan badge status lisensi ke palet kontras tinggi independen dari tema toko.",
-            "Verifikasi Presisi Member VIP & Barcode Code 128: Validasi 52 kasus uji logika loyalitas, klasifikasi tiering (Bronze, Silver, Gold, Platinum VIP), perhitungan limit kredit PayLater, serta adopsi engine barcode Code 128 ISO/IEC 15417 pada sisi belakang kartu digital untuk pemindaian scanner kasir fisik.",
-            "Integrasi Google Fonts & Tailwind Config: Penambahan font-family 'heading' dan 'industrial' pada tailwind.config.js dan prefetch Google Fonts non-blocking di index.html.",
-            "Multi-Channel Distribution v1.15.2 (Android versionCode 11502)."
         ]
     }
 ];

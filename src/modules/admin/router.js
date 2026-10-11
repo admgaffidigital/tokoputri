@@ -83,6 +83,30 @@ if (typeof window.openSalesReturnModal !== 'function') {
     };
 }
 
+if (typeof window.deleteSalesReturn !== 'function') {
+    window.deleteSalesReturn = (returnId) => {
+        import('./returns.js').then(m => {
+            if (m && typeof m.deleteSalesReturn === 'function') {
+                m.deleteSalesReturn(returnId);
+            }
+        }).catch(err => {
+            console.error('[Returns] Gagal memanggil deleteSalesReturn via proxy:', err);
+        });
+    };
+}
+
+if (typeof window.deleteVendorReturn !== 'function') {
+    window.deleteVendorReturn = (returnId) => {
+        import('./returns.js').then(m => {
+            if (m && typeof m.deleteVendorReturn === 'function') {
+                m.deleteVendorReturn(returnId);
+            }
+        }).catch(err => {
+            console.error('[Returns] Gagal memanggil deleteVendorReturn via proxy:', err);
+        });
+    };
+}
+
 export const openAdminTab = (t, fH = false) => {
     // Verifikasi hak akses pengguna untuk modul ini
     const permKey = t === 'staff' ? 'cashiers' : t;
