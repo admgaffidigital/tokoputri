@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.15.6** (Android VersionCode: `11506`)
+* **Versi Rilis**: **v1.15.7** (Android VersionCode: `11507`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -264,6 +264,22 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.15.7 — Tombol Hapus Kartu Returan (RMA Engine) & Rollback Persediaan Otomatis (11 Okt 2026)
+- **Tombol Hapus Retur Penjualan (Customer RMA)**: Menghadirkan tombol hapus permanen pada kartu retur mobile (Card View) dan tabel desktop (Table View) dengan dialog konfirmasi perlindungan *danger mode*. Saat data retur dihapus, penyesuaian stok fisik dan tiket batch FIFO dibatalkan/dikembalikan otomatis, serta catatan pengeluaran buku kas laci dibersihkan.
+- **Tombol Hapus Retur Supplier (Vendor RMA)**: Menghadirkan tombol hapus permanen pada kartu retur supplier dan tabel desktop. Saat dihapus, barang dikembalikan ke lokasi asal persediaan (*Rak Toko*, *Gudang Cadangan*, atau *Karantina*), serta potongan hutang PO supplier dikembalikan normal.
+- **Arsitektur Rollback Bersih & Presisi (`src/core/fifo-inventory.js`)**: Mengimplementasikan `rollbackSalesReturnStock` dan `rollbackVendorReturnStock` pada engine FIFO terpadu dengan penanganan multi-varian dan integritas data tanpa kompromi.
+- **Rangkaian Pengujian Menyeluruh**: 55 skenario pengujian RMA Engine lolos 100% dan seluruh 11 test suite sistem audit lolos 100%.
+- **Sinkronisasi Multi-Channel v1.15.7**: Android VersionCode `11507`, versionName `1.15.7`, bundler Vite, PWA, dan Capacitor.
+
+---
+
+### v1.15.6 — Redesain Header POS Kasir Mobile (Clean Native Single-Row), Ruang Nama Toko & Kasir Lega, Serta Quick Action Menu [⋮] (11 Okt 2026)
+- **Header POS Kasir Ramah Smartphone (HP)**: Merestrukturisasi tata letak header POS kasir layar ponsel pintar (360–390px) dengan wadah judul toko & kasir fleksibel (`flex-1 min-w-0 mr-1.5`), mengeliminasi masalah teks sempit terpotong menjadi 'P...' dan tumpang tindih. Nama toko dan nama kasir aktif kini tampil 100% utuh, tegak, lapang, dan estetis.
+- **Quick Action Menu Popover [⋮] (Titik Tiga)**: Menghadirkan menu aksi cepat modern berdesain 100% Solid & Crisp (tanpa blur) khusus layar ponsel (`sm:hidden`). Menu ini memuat akses lengkap berikon dan rapi untuk Estimator Material [F3], Printer Thermal [F7], Catat Kas Laci [F11], Ringkasan Shift (X-Report), Buku Panduan Kasir, dan Tombol Keluar Kasir.
+- **Sinkronisasi Multi-Channel v1.15.6**: Android VersionCode `11506`, versionName `1.15.6`, bundler Vite, PWA, dan Capacitor.
+
+---
 
 ### v1.15.5 — Audit Sistem Menyeluruh, Optimasi Code-Splitting Bundle Admin, Harmonisasi Desain Tema Dinamis & Penguatan Guard Input (11 Okt 2026)
 - **Optimasi Bundling & Code-Splitting (Vite 5)**: Melepaskan re-export statis `delivery.js` pada barrel admin (`src/modules/admin/index.js`), memisahkan modul Surat Jalan DO menjadi lazy chunk mandiri (45.89 kB), mengeliminasi warning Vite 100%, memangkas chunk awal admin sebesar 46.24 kB, dan mempercepat kompilasi hingga 49% (10.33s).
