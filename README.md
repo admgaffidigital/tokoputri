@@ -265,6 +265,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.15.9 — Harmonisasi Tata Letak Responsif Header POS Kasir, Proteksi Anti-Gepeng & Menu Aksi Cepat Universal (11 Okt 2026)
+- **Proteksi Anti-Gepeng Sisi Kiri (Nama Toko & Kasir)**: Menerapkan batas lebar minimum (`min-w-[130px] sm:min-w-[160px] flex-1`) pada wadah nama toko dan kasir aktif di header POS Storefront, menjamin teks identitas kasir tidak akan pernah terhimpit menjadi 0px atau tertabrak oleh tombol toolbar di segala ukuran layar (smartphone 360px, tablet 768px-1024px, laptop, dan monitor desktop).
+- **Harmonisasi Breakpoint Toolbar Sisi Kanan**: Mengalihkan tombol aksesoris (Estimator Material `[F3]`, Printer Thermal `[F7]`, Panduan Kasir, jam detik, dan badge Online) ke breakpoint `xl:` (1280px ke atas) sehingga layar tablet dan perangkat berskala resolusi 125% tidak lagi mengalami desak-desakan atau tombol Keluar terpotong di tepi kanan.
+- **Universal Quick Action Menu Popover [⋮]**: Memperluas ketersediaan tombol menu opsi cepat titik tiga `[⋮]` (`#pos-mobile-menu-btn`) untuk seluruh perangkat berlayar `< 1280px` (`< xl`). Semua alat bantu kasir (Estimator, Printer Thermal, Catat Kas Laci `[F11]`, Ringkasan Shift X-Report, Panduan, dan Logout) tetap dapat diakses dalam 1 sentuhan cepat.
+- **Tombol Keluar Kasir & Parkir Antrean Adaptif**: Tombol keluar kasir beradaptasi menjadi tombol ikon ringkas pada tablet (`md:`) dan tombol penuh pada desktop (`xl:`), sementara tombol antrean parkir (0) mempertahankan ukuran kompak 32px di tablet untuk efisiensi ruang maksimal.
+- **Rangkaian Pengujian Baru (`test:posheader`)**: Menambahkan test suite otomatis `scripts/test-pos-header-responsive.mjs` dengan 28 kasus uji lolos 100%, serta 13 test suite audit sistem lulus sempurna.
+- **Sinkronisasi Multi-Channel v1.15.9**: Android VersionCode `11509`, versionName `1.15.9`, bundler Vite, PWA, dan Capacitor.
+
+---
+
 ### v1.15.8 — Pelepasan Listener Realtime Terpusat (Anti-Permission Error Saat Logout) & Penguatan Guard Sesi Kasir POS (11 Okt 2026)
 - **Pelepasan Listener Kolektif Sebelum SignOut (`detachAllAdminListenersBeforeSignOut`)**: Memastikan seluruh listener realtime Firestore (`pos_shifts`, riwayat transaksi POS, data sensitif privat toko `cms_private`, pesanan admin, pelanggan, dan ulasan) terlepas secara sinkron dan tuntas sebelum Firebase `auth.signOut()` dieksekusi saat logout admin, kickout sesi ganda, maupun sesi kadaluarsa.
 - **Resolusi Paripurna Permission-Denied POS Shift**: Mengeliminasi error konsol `[POS Shift] Snapshot listener cms_data error: FirebaseError: Missing or insufficient permissions` pada `pos-shift.js` dengan proteksi pendeteksian kode `permission-denied` serta pemutusan listener otomatis tanpa mencemari log konsol browser.
