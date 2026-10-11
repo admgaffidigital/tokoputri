@@ -3294,6 +3294,8 @@
             }
             _log.apply(console, arguments);
           };
+        }
+
         // Filter peringatan transien pemutusan saluran stream Firestore saat logout / perpindahan token
         const _origWarn = console.warn;
         console.warn = function () {
