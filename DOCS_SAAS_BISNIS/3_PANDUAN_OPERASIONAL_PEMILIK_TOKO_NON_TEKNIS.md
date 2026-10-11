@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.15.0**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.16.0**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -259,19 +259,27 @@ Agar laporan laba bersih toko Anda 100% riil dan akurat, seluruh biaya toko waji
 
 ---
 
-## BAB 12 — PUSAT LAPORAN EKSEKUTIF, LABA BERSIH & EKSPOR DATA KE EXCEL
+## BAB 12 — PUSAT LAPORAN EKSEKUTIF, ANALITIKA KATEGORI & EKSPOR DATA KE EXCEL
 
-Pusat Laporan Toko Putri mengonsolidasi seluruh aktivitas bisnis ke dalam 7 tab analisis real-time:
+Pusat Laporan Toko Putri mengonsolidasi seluruh aktivitas bisnis ke dalam tab analisis real-time, visualisasi grafik tahunan, dan format cetak lembar resmi:
 
 1. Buka menu **"Laporan Terpadu" (Reports)**.
-2. Pilih rentang waktu: **Hari Ini, 7 Hari Terakhir, Bulan Ini, atau Pilih Tanggal Sendiri**.
-3. **Laporan yang Tersedia:**
-   - **Laporan Laba Rugi (P&L):** Menampilkan perbandingan Total Penjualan, Total HPP Kulakan, Laba Kotor, Pengeluaran Toko, hingga **Laba Bersih Riil** yang Anda kantongi.
-   - **Laporan Penjualan & Kasir:** Analisis transaksi POS vs Web, distribusi metode bayar (Tunai vs QRIS vs Transfer vs Tempo), serta daftar 10 Produk Terlaris (*Top Selling Products*).
-   - **Laporan Valuasi Stok Rak:** Total nilai rupiah aset seluruh barang yang ada di toko Anda berdasarkan harga modal kulakan.
-   - **Laporan Piutang Pelanggan:** Daftar seluruh sisa tagihan berjalan yang belum lunas.
-4. **Ekspor Data:**
-   - Klik tombol **"Ekspor ke Excel (.xlsx)"** untuk mengunduh laporan pembukuan rapi yang siap dibuka di Microsoft Excel.
+2. Pilih rentang waktu: **Hari Ini, 7 Hari Terakhir, Bulan Ini, atau Pilih Tanggal/Bulan Sendiri**.
+3. **Visualisasi Grafik Tren Finansial 12 Bulan (Native Responsive SVG):**
+   - Menampilkan komparasi performa tahunan antara **Omzet Penjualan** dan **Laba Bersih** dari Januari hingga Desember.
+   - Dilengkapi skala garis acuan otomatis, *tooltip* interaktif saat kursor/jari menyentuh kolom batang, dan fitur klik batang bulan untuk langsung memfilter data laporan.
+4. **Analitika Profitabilitas Kategori Material:**
+   - Pada Tab Penjualan, sistem otomatis mengelompokkan data per kategori material bangunan (Semen, Cat, Besi, Keramik, Alat Teknik, dll.).
+   - Menyajikan kuantitas terjual, omset bruto, modal kulakan (HPP), laba kotor, persentase margin keuntungan %, serta visualisasi bar kontribusi omset.
+5. **Laporan Keuangan Terpadu:**
+   - **Laporan Laba Rugi (P&L):** Menampilkan perbandingan Total Penjualan, Beban Pokok Penjualan (HPP FIFO), Laba Kotor, Buku Beban Usaha Toko, Pajak, hingga **Laba Bersih Riil**.
+   - **Laporan Penjualan & Kasir:** Analisis transaksi POS vs Web, distribusi metode bayar (Tunai vs QRIS vs Transfer vs Tempo), dan produk terlaris.
+   - **Laporan Valuasi Stok Gudang:** Total nilai rupiah aset seluruh persediaan di rak toko dan gudang cadangan berdasarkan modal kulakan FIFO.
+   - **Laporan Utang & Piutang (AP/AR):** Rekapitulasi sisa tagihan berjalan pelanggan (Tempo & Putri PayLater) bersanding dengan utang dagang supplier PO kulakan.
+6. **Ekspor Spreadsheet Excel / CSV Universal (RFC 4180):**
+   - Klik tombol **"Ekspor Excel"** untuk mengunduh file `.csv` dengan penanda UTF-8 BOM (`\uFEFF`) yang langsung terbuka rapi di Microsoft Excel Windows tanpa masalah karakter korup. Mendukung ekspor tab aktif maupun 5 format pembukuan spesifik.
+7. **Cetak Lembar Resmi A4 Akuntansi (`.a4-page`):**
+   - Klik tombol cetak untuk menerbitkan dokumen resmi ber-kop surat toko, nomor audit, ringkasan KPI, dan legalitas tanda tangan 3 kolom (*Dibuat Oleh*, *Diperiksa Oleh*, *Disetujui Oleh*) untuk Tab Penjualan (`DOC-SALES`), Valuasi Stok (`DOC-STK`), Utang Piutang (`DOC-APAR`), dan Beban Toko (`DOC-EXP`).
 
 ---
 
