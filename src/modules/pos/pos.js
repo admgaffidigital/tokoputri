@@ -4867,6 +4867,7 @@ const exposeToWindow = () => {
     window.addToCartWithUnit       = addToCartWithUnit;
     window.posChangeItemUnit       = posChangeItemUnit;
     window.addEstimatorToPOSCart   = addEstimatorToPOSCart;
+    window.posAddEstimatorToCart   = addEstimatorToPOSCart;
     window.addToCartPOSWithVariant = addToCartWithVariant;
     window.posUpdateQty            = updateQty;
     window.posSetQty               = setQty;

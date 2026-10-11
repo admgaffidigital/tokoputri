@@ -643,4 +643,5 @@ window.handleSort = handleSort;
 window.toggleView = toggleView;
 window.loadMoreProducts = loadMoreProducts;
 window.quickAddOrOpenProduct = quickAddOrOpenProduct;
+window.addToCart = (productId) => quickAddOrOpenProduct(null, productId);
 window.renderCatalogSkeleton = renderCatalogSkeleton;

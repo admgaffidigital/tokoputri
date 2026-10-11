@@ -10,8 +10,13 @@ import {
     calculateRoofNeeds,
     setEstimatorRoofMode,
     setEstimatorRoofType,
-    updateEstimatorRoofField
+    updateEstimatorRoofField,
+    findRelatedStoreProducts,
+    renderRelatedProductsHtml,
+    addStoreProductFromEstimator,
+    openMaterialEstimatorModal
 } from '../src/modules/catalog/material-estimator.js';
+import { appData } from '../src/core/state.js';
 
 console.log('\n============================================================');
 console.log('🧪 MENJALANKAN TEST SUITE ESTIMATOR MATERIAL & POS DESIMAL');
@@ -129,10 +134,62 @@ assert(sub3 === 21250, `2.5 meter kabel @ Rp 8.500 = Rp 21.250 (didapat: ${sub3}
 const subGlitch = calcSubtotal(24000, 0.3);
 assert(subGlitch === 7200, `24000 * 0.3 terbulatkan sempurna ke Rp 7.200 tanpa pecahan floating point (didapat: ${subGlitch})`);
 
+// ─── 6. UJI REKOMENDASI PRODUK DINAMIS DARI DATABASE TOKO ─────
+console.log('\n📦 6. Uji Rekomendasi Produk Dinamis & Tambah ke Keranjang:');
+
+// Setup mock produk toko aktif di appData.products
+appData.products = [
+    { id: 'prod-cat-1', name: 'Cat Tembok Dulux Weathershield 2.5L', category: 'Cat & Finishing', price: 245000, isActive: true },
+    { id: 'prod-cat-2', name: 'Alkali Sealer Mowilex Precoat 2.5L', category: 'Cat & Finishing', price: 165000, isActive: true },
+    { id: 'prod-tile-1', name: 'Keramik Roman 40x40 G4001', category: 'Lantai & Dinding', price: 78000, isActive: true },
+    { id: 'prod-brick-1', name: 'Bata Ringan Hebel Citicon 10cm', category: 'Material Konstruksi', price: 10500, isActive: true },
+    { id: 'prod-roof-1', name: 'Atap Spandek Galvalum 0.30mm (4m)', category: 'Atap & Plafon', price: 135000, isActive: true },
+    { id: 'prod-non-mat', name: 'Sabun Cuci Tangan 500ml', category: 'Kebutuhan Harian', price: 15000, isActive: true }
+];
+
+const matchedPaints = findRelatedStoreProducts('paint');
+assert(matchedPaints.length === 2, `Pencocokan cat menghasilkan 2 produk toko (didapat: ${matchedPaints.length})`);
+assert(matchedPaints.some(p => p.id === 'prod-cat-1'), `Produk Dulux ditemukan dalam rekomendasi cat`);
+
+const matchedTiles = findRelatedStoreProducts('tile');
+assert(matchedTiles.length === 1 && matchedTiles[0].id === 'prod-tile-1', `Produk Keramik Roman ditemukan dalam rekomendasi keramik`);
+
+const matchedBricks = findRelatedStoreProducts('brick');
+assert(matchedBricks.length === 1 && matchedBricks[0].id === 'prod-brick-1', `Produk Hebel Citicon ditemukan dalam rekomendasi bata`);
+
+const matchedRoofs = findRelatedStoreProducts('roof');
+assert(matchedRoofs.length === 1 && matchedRoofs[0].id === 'prod-roof-1', `Produk Spandek ditemukan dalam rekomendasi atap`);
+
+// Non-material tidak boleh bocor ke rekomendasi
+assert(!matchedPaints.some(p => p.id === 'prod-non-mat'), `Produk non-material tidak bocor ke rekomendasi`);
+
+// Uji integrasi aksi tambah ke keranjang Storefront
+let addedToStorefrontId = null;
+globalThis.window = globalThis.window || {};
+globalThis.window.quickAddOrOpenProduct = (e, id) => {
+    addedToStorefrontId = id;
+};
+
+// Simulasi mode Storefront
+openMaterialEstimatorModal('storefront');
+addStoreProductFromEstimator('prod-cat-1');
+assert(addedToStorefrontId === 'prod-cat-1', `addStoreProductFromEstimator berhasil memanggil quickAddOrOpenProduct di Storefront`);
+
+// Uji integrasi aksi tambah ke kasir POS
+let addedToPOSId = null;
+globalThis.window.posAddToCart = (id) => {
+    addedToPOSId = id;
+};
+
+// Simulasi mode POS
+openMaterialEstimatorModal('pos');
+addStoreProductFromEstimator('prod-roof-1');
+assert(addedToPOSId === 'prod-roof-1', `addStoreProductFromEstimator berhasil memanggil posAddToCart di mode Kasir POS`);
+
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passed} Passed, ${failed} Failed`);
 if (failed === 0) {
-    console.log('✨ SEMUA KALKULASI ESTIMATOR & PRESISI DESIMAL 100% VALID! ✅\n');
+    console.log('✨ SEMUA KALKULASI ESTIMATOR, REKOMENDASI & CART 100% VALID! ✅\n');
 } else {
     process.exit(1);
 }

@@ -383,7 +383,7 @@ export const calculateRoofNeeds = () => {
 };
 
 // ─── PENCARIAN REKOMENDASI PRODUK TOKO ───────────────────────
-const findRelatedStoreProducts = (type) => {
+export const findRelatedStoreProducts = (type) => {
     const prods = Array.isArray(appData.products) ? appData.products : [];
     if (type === 'paint') {
         return prods.filter(p => {
@@ -391,7 +391,9 @@ const findRelatedStoreProducts = (type) => {
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
             return text.includes('cat') || text.includes('mowilex') || text.includes('dulux') || 
                    text.includes('avitex') || text.includes('no drop') || text.includes('plamir') || 
-                   text.includes('alkali') || text.includes('sealer');
+                   text.includes('alkali') || text.includes('sealer') || text.includes('kuas') || 
+                   text.includes('rol') || text.includes('thinner') || text.includes('nippon') || 
+                   text.includes('aquaproof') || text.includes('danapaint') || text.includes('vinilex');
         }).slice(0, 4);
     }
     if (type === 'tile') {
@@ -399,7 +401,9 @@ const findRelatedStoreProducts = (type) => {
             if (!p || p.isActive === false || p.isActive === 'false') return false;
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
             return text.includes('keramik') || text.includes('granit') || text.includes('tile') || 
-                   text.includes('nat') || text.includes('perekat');
+                   text.includes('nat') || text.includes('perekat') || text.includes('granite') || 
+                   text.includes('marmer') || text.includes('m-400') || text.includes('mu-400') || 
+                   text.includes('plint') || text.includes('stepnosing');
         }).slice(0, 4);
     }
     if (type === 'brick') {
@@ -407,7 +411,9 @@ const findRelatedStoreProducts = (type) => {
             if (!p || p.isActive === false || p.isActive === 'false') return false;
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
             return text.includes('hebel') || text.includes('bata') || text.includes('mortar') || 
-                   text.includes('semen') || text.includes('pasir');
+                   text.includes('semen') || text.includes('pasir') || text.includes('bata ringan') || 
+                   text.includes('thinbed') || text.includes('tiga roda') || text.includes('gresik') || 
+                   text.includes('padang') || text.includes('holcim') || text.includes('dynamix');
         }).slice(0, 4);
     }
     if (type === 'roof') {
@@ -418,10 +424,52 @@ const findRelatedStoreProducts = (type) => {
                    text.includes('asbes') || text.includes('atap') || text.includes('zincalume') || 
                    text.includes('galvalum') || text.includes('roofing') || text.includes('paku payung') || 
                    text.includes('nok') || text.includes('bubungan') || text.includes('baja ringan') || 
-                   text.includes('reng');
+                   text.includes('reng') || text.includes('baut') || text.includes('genteng') || 
+                   text.includes('onduline') || text.includes('alderon') || text.includes('polycarbonate');
         }).slice(0, 4);
     }
     return [];
+};
+
+/**
+ * Render Kartu Rekomendasi Produk Toko (Terkoneksi Dinamis ke Database)
+ */
+export const renderRelatedProductsHtml = (type, iconClass, labelText, defaultIcon = 'fa-tags') => {
+    const related = findRelatedStoreProducts(type);
+    if (related.length > 0) {
+        return `
+        <div class="pt-2">
+            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                <i class="${iconClass} text-[var(--color-primary)]"></i> ${labelText}:
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+                ${related.map(p => `
+                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs hover:border-[var(--color-primary)] transition-all">
+                    <div onclick="window.openProductModal && window.openProductModal('${esc(p.id)}')" class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs cursor-pointer" title="Lihat detail ${esc(p.name)}">
+                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid ${defaultIcon} text-slate-400"></i>`}
+                    </div>
+                    <div onclick="window.openProductModal && window.openProductModal('${esc(p.id)}')" class="min-w-0 flex-1 cursor-pointer" title="Lihat detail ${esc(p.name)}">
+                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate hover:text-[var(--color-primary)]">${esc(p.name)}</p>
+                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
+                    </div>
+                    <button type="button" onclick="window.addStoreProductFromEstimator('${esc(p.id)}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ${esc(p.name)} ke Keranjang">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </div>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+    return `
+    <div class="pt-2">
+        <div class="p-3 rounded-xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2.5">
+            <i class="fa-solid fa-cubes-stacked text-amber-500 text-sm shrink-0"></i>
+            <div class="min-w-0">
+                <p class="font-bold text-[11px] text-slate-700 dark:text-slate-200">Katalog Toko Terhubung Otomatis</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Produk yang Anda daftarkan di Master Produk Toko (kategori ${type}) akan otomatis muncul dan dapat dibeli langsung di sini.</p>
+            </div>
+        </div>
+    </div>`;
 };
 
 // ─── RENDER SUB-KOMPONEN FORM & HASIL ESTIMATOR (ZERO-FLICKER ARCHITECTURE) ───
@@ -772,29 +820,7 @@ export const renderEstimatorResultHtml = (tab) => {
         </div>
 
         <!-- Katalog Produk Terkait di Toko -->
-        ${related.length > 0 ? `
-        <div class="pt-2">
-            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-tags text-[var(--color-primary)]"></i> Rekomendasi Produk Cat di Toko Kami:
-            </p>
-            <div class="grid grid-cols-2 gap-2">
-                ${related.map(p => `
-                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-paint-roller text-slate-400"></i>`}
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                    </div>
-                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
-                </div>
-                `).join('')}
-            </div>
-        </div>
-        ` : ''}`;
+        ${renderRelatedProductsHtml('paint', 'fa-solid fa-paintbrush', 'Rekomendasi Produk Cat di Toko Kami', 'fa-paint-roller')}`;
     }
 
     if (tab === 'tile') {
@@ -847,29 +873,7 @@ export const renderEstimatorResultHtml = (tab) => {
         </div>
 
         <!-- Produk Terkait -->
-        ${related.length > 0 ? `
-        <div class="pt-2">
-            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-tags text-[var(--color-primary)]"></i> Rekomendasi Keramik &amp; Semen di Toko:
-            </p>
-            <div class="grid grid-cols-2 gap-2">
-                ${related.map(p => `
-                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-border-all text-slate-400"></i>`}
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                    </div>
-                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
-                </div>
-                `).join('')}
-            </div>
-        </div>
-        ` : ''}`;
+        ${renderRelatedProductsHtml('tile', 'fa-solid fa-border-all', 'Rekomendasi Keramik & Semen di Toko', 'fa-border-all')}`;
     }
 
     if (tab === 'brick') {
@@ -924,29 +928,7 @@ export const renderEstimatorResultHtml = (tab) => {
         </div>
 
         <!-- Produk Terkait -->
-        ${related.length > 0 ? `
-        <div class="pt-2">
-            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-tags text-amber-500"></i> Rekomendasi Bata &amp; Semen Mortar di Toko:
-            </p>
-            <div class="grid grid-cols-2 gap-2">
-                ${related.map(p => `
-                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-cubes text-slate-400"></i>`}
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                    </div>
-                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
-                </div>
-                `).join('')}
-            </div>
-        </div>
-        ` : ''}`;
+        ${renderRelatedProductsHtml('brick', 'fa-solid fa-trowel-bricks', 'Rekomendasi Bata & Semen Mortar di Toko', 'fa-cubes')}`;
     }
 
     if (tab === 'roof') {
@@ -1020,29 +1002,7 @@ export const renderEstimatorResultHtml = (tab) => {
         </div>
 
         <!-- Rekomendasi Produk Terkait Toko -->
-        ${related.length > 0 ? `
-        <div class="pt-2">
-            <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-tags text-sky-500"></i> Rekomendasi Atap, Seng &amp; Nok di Toko:
-            </p>
-            <div class="grid grid-cols-2 gap-2">
-                ${related.map(p => `
-                <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs">
-                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs">
-                        ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-house-chimney text-slate-400"></i>`}
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</p>
-                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
-                    </div>
-                    <button type="button" onclick="window.addStoreProductFromEstimator('${p.id}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ke Belanja">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
-                </div>
-                `).join('')}
-            </div>
-        </div>
-        ` : ''}`;
+        ${renderRelatedProductsHtml('roof', 'fa-solid fa-roof-chimney', 'Rekomendasi Atap, Seng & Nok di Toko', 'fa-house-chimney')}`;
     }
 
     return '';
@@ -1341,9 +1301,14 @@ export const shareEstimatorToWA = (type) => {
     window.open(url, '_blank');
 };
 
-export const addEstimatorToPOSCart = (name, qty, unit) => {
-    if (typeof window.posAddToCartQty === 'function') {
-        // Cek apakah ada produk generik atau buat item instan
+export const addEstimatorToPOSCart = (name, qty, unit, estPrice = 0) => {
+    if (typeof window.posAddEstimatorToCart === 'function') {
+        window.posAddEstimatorToCart(name, qty, unit, estPrice);
+        closeMaterialEstimatorModal();
+    } else if (typeof window.posAddToCartQty === 'function') {
+        showToast(`Estimasi ${name} (${qty} ${unit}) dimasukkan ke kasir.`);
+        closeMaterialEstimatorModal();
+    } else {
         showToast(`Estimasi ${name} (${qty} ${unit}) siap dimasukkan ke kasir.`);
         closeMaterialEstimatorModal();
     }
@@ -1354,11 +1319,17 @@ export const addStoreProductFromEstimator = (productId) => {
         if (typeof window.posAddToCart === 'function') {
             window.posAddToCart(productId);
             showToast('Produk ditambahkan ke kasir POS!', 'success');
+        } else if (typeof window.quickAddOrOpenProduct === 'function') {
+            window.quickAddOrOpenProduct(null, productId);
         }
     } else {
-        if (typeof window.addToCart === 'function') {
+        if (typeof window.quickAddOrOpenProduct === 'function') {
+            window.quickAddOrOpenProduct(null, productId);
+        } else if (typeof window.addToCart === 'function') {
             window.addToCart(productId);
             showToast('Produk ditambahkan ke keranjang belanja!', 'success');
+        } else if (typeof window.openProductModal === 'function') {
+            window.openProductModal(productId);
         }
     }
 };
@@ -1367,9 +1338,11 @@ export const addStoreProductFromEstimator = (productId) => {
 export const openMaterialEstimatorModal = (source = 'storefront') => {
     estimatorSource = source;
 
-    if (typeof window.pushModalHistory === 'function') {
+    if (typeof window !== 'undefined' && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('materialEstimator');
     }
+
+    if (typeof document === 'undefined') return;
 
     const modal = el('modal-material-estimator');
     if (!modal) return;
@@ -1385,10 +1358,11 @@ export const openMaterialEstimatorModal = (source = 'storefront') => {
     }, 10);
 
     renderMaterialEstimatorModalContent();
-    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
 export const closeMaterialEstimatorModal = (skipHistory = false) => {
+    if (typeof document === 'undefined') return;
     const modal = el('modal-material-estimator');
     const box = el('modal-material-estimator-content');
 
