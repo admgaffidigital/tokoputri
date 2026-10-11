@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.15.9** (Android VersionCode: `11509`)
+* **Versi Rilis**: **v1.16.0** (Android VersionCode: `11600`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -169,11 +169,17 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 * **Integrasi Omnichannel POS Kasir & Web**: Evaluasi otomatis harga diskon promo kilat via `getEffP`, tag penanda hijau `⚡ FLASH SALE (-XX%)` di kasir, pemotongan kuota real-time saat transaksi terbit, dan graceful fallback ke harga reguler/grosir saat kuota habis.
 * **CMS Manajemen Admin & Margin Guard (`src/modules/admin/flash-sale.js`)**: Pembuatan sesi dengan preset durasi cepat (+2 Jam s.d. +3 Hari), filter kanal (Web, Kasir POS, Omnichannel), dan proteksi visual Margin Guard pendeteksi harga jual di bawah modal kulakan (HPP).
 
-### 15. Sistem Cetak Label Barcode SKU & Harga Universal
+### 16. Sistem Cetak Label Barcode SKU & Harga Universal
 * **Multi-Printer Universal**: Kompatibel dengan printer Thermal Stiker Roll (`40x30 mm`, `50x30 mm`, continuous roll) dan Kertas Lembaran A4 biasa (`Grid 3x10` 30 label & `Grid 2x7` 14 label) menggunakan barcode vektor Code 128 murni.
 
-### 16. Proteksi UI/UX Native App & Ergonomi Anti-Gepeng Seluruh Sistem
+### 17. Proteksi UI/UX Native App & Ergonomi Anti-Gepeng Seluruh Sistem
 * **Standar Sentuh Ergonomis**: Seluruh tombol aksi dilindungi `min-height: 2.5rem !important` (40px-44px), `flex-shrink: 0 !important`, rasio 1:1 kaku pada tombol ikon, serta `white-space: nowrap` pada seluruh badge status agar tidak gepeng atau terlipat di smartphone.
+
+### 18. Pusat Laporan Finansial Komprehensif, Ekspor Spreadsheet & Grafik SVG (v1.16.0)
+* **Ekspor Spreadsheet Excel / CSV Universal (RFC 4180)**: Ekspor 1-klik untuk seluruh tab laporan (Penjualan, Laba Rugi P&L, Valuasi Stok FIFO, Pengeluaran Toko, dan Utang Piutang Usaha) dengan penyematan UTF-8 BOM (`\uFEFF`) menjamin kompatibilitas langsung tanpa karakter rusak pada Microsoft Excel di Windows, Google Sheets, dan Numbers.
+* **Grafik Tren Performa Finansial 12 Bulan (Native Responsive SVG)**: Visualisasi tren omset dan laba bersih 12 bulan dalam grafik batang SVG native ringan tanpa pustaka pihak ketiga eksternal, dilengkapi skala Y dinamis, tooltip melayang interaktif, dan filter bulan 1-klik.
+* **Analitika Profitabilitas & Kontribusi Kategori Material**: Agregasi performa penjualan per kategori produk (Semen, Cat, Besi, Keramik, dll.) menyajikan omset riil, modal HPP, margin laba kotor %, rasio profitabilitas, dan visualisasi bar kontribusi dalam dual view (Mobile Cards & Desktop Table).
+* **Dokumen Cetak Lembar Resmi A4 Multi-Tab (`DOC-SALES`, `DOC-STK`, `DOC-APAR`, `DOC-EXP`)**: Memperluas preview cetak lembar resmi A4 kop surat toko dengan format formal berstandar akuntansi untuk seluruh tab laporan keuangan toko.
 
 ---
 
@@ -264,6 +270,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.16.0 — Pusat Laporan Finansial Komprehensif: Ekspor Spreadsheet Excel/CSV, Grafik Tren 12 Bulan SVG, Analitika Kategori & Cetak Lembar Resmi A4 Multi-Tab (11 Okt 2026)
+- **Ekspor Spreadsheet Excel / CSV Universal (RFC 4180)**: Menghadirkan tombol dropdown "Ekspor Excel" dengan dukungan ekspor tab aktif maupun 5 varian laporan terperinci (Laporan Penjualan & Transaksi, Laba Rugi P&L, Valuasi Stok Gudang FIFO, Buku Beban Operasional, dan Rekapitulasi Piutang & Utang). Format CSV mematuhi standar RFC 4180 dengan UTF-8 BOM (`\uFEFF`) agar langsung terbaca sempurna dan rapi di Microsoft Excel Windows tanpa masalah karakter corrupt.
+- **Grafik Tren Performa Finansial 12 Bulan (Native Responsive SVG)**: Visualisasi tren omset pendapatan dan laba bersih sepanjang 12 bulan kalender dalam grafik batang SVG native yang responsif dan ringan (zero bundle bloat). Dilengkapi skala Y adaptif, tooltip informasi melayang interaktif saat disentuh/hover, penanda bulan aktif, serta filter bulan 1-klik langsung dari kolom grafik.
+- **Analitika Profitabilitas & Kontribusi Omset Kategori Material**: Melengkapi Tab Penjualan dengan analitika performa per kategori produk konstruksi & material bangunan. Menghitung otomatis kuantitas unit terjual, omset bruto, beban modal HPP, margin laba kotor %, persentase profitabilitas, dan bar visual kontribusi dalam Dual View responsif (Mobile Native Cards di HP & Tabel Analitis di Desktop).
+- **Dokumen Cetak Lembar Resmi A4 Multi-Tab (`DOC-SALES`, `DOC-STK`, `DOC-APAR`, `DOC-EXP`)**: Menyempurnakan cetak dokumen lembar resmi A4 (`.a4-page`) kop toko lengkap dengan nomor dokumen resmi, rujukan audit, rincian perbandingan periode, serta kolom legalitas tanda tangan untuk Tab Penjualan (`DOC-SALES`), Valuasi Persediaan Stok (`DOC-STK`), Utang & Piutang Usaha (`DOC-APAR`), dan Buku Kas Beban Toko (`DOC-EXP`).
+- **Test Suite Laporan & Finansial Baru (`test:reports`)**: Menambahkan test suite otomatis `scripts/test-financial-reports-and-export.mjs` berisi 22 kasus uji mencakup formatting CSV, pembersihan tanda kutip & newline, agregasi kategori, perhitungan tahunan 12 bulan, dan verifikasi integrasi DOM/A4. Seluruh 15 test suite audit sistem (325+ tests) lolos 100%.
+- **Sinkronisasi Multi-Channel v1.16.0**: Android VersionCode `11600`, versionName `1.16.0`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.15.9 — Harmonisasi Tata Letak Responsif Header POS Kasir, Proteksi Anti-Gepeng & Menu Aksi Cepat Universal (11 Okt 2026)
 - **Proteksi Anti-Gepeng Sisi Kiri (Nama Toko & Kasir)**: Menerapkan batas lebar minimum (`min-w-[130px] sm:min-w-[160px] flex-1`) pada wadah nama toko dan kasir aktif di header POS Storefront, menjamin teks identitas kasir tidak akan pernah terhimpit menjadi 0px atau tertabrak oleh tombol toolbar di segala ukuran layar (smartphone 360px, tablet 768px-1024px, laptop, dan monitor desktop).

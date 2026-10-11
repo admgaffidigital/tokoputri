@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-00",
+        "version": "v1.16.0",
+        "date": "2026-10-11",
+        "title": "Ekspor Spreadsheet Excel/CSV, Grafik Tren Finansial 12 Bulan (Native SVG), Analitika Kategori & Cetak A4 Multi-Tab",
+        "category": "feature",
+        "badge": "Enterprise Financial Analytics & Spreadsheet Export v1.16.0",
+        "items": [
+            "Mesin Ekspor Spreadsheet Excel / CSV Terpadu (RFC 4180): Menghadirkan tombol aksi Ekspor Excel dengan menu dropdown cerdas untuk mengunduh berkas .csv ber-UTF-8 BOM (langsung terbuka rapi di Microsoft Excel, Google Sheets, dan LibreOffice tanpa teks berantakan) mencakup Laporan Penjualan Detail, Laporan Laba Rugi (P&L), Valuasi Stok Inventori Gudang, Buku Kas Beban Usaha, dan Rekap Utang Piutang (AP/AR).",
+            "Visualisasi Grafik Tren Kinerja Finansial 12 Bulan (Native Responsive SVG): Menghadirkan grafik batang komparasi performa finansial tahunan (Omzet Penjualan dengan warna tema dinamis toko, Laba Kotor warna emerald, dan Beban Usaha warna amber) dengan skala Y dinamis, label bulan, interaksi klik filter bulan, serta tooltip melayang yang menyajikan data rincian finansial per bulan.",
+            "Analitika Profitabilitas & Kontribusi Omset Per Kategori Material: Menyajikan analitika tingkat lanjut pada Tab Penjualan yang mengelompokkan omset, modal HPP, laba kotor, margin %, dan progress bar persentase kontribusi per kategori material (Bahan Bangunan, Cat, Pipa, dll) dengan tampilan kartu responsif di smartphone dan tabel analitis di desktop.",
+            "Penerbitan Dokumen Lembar Resmi A4 untuk Seluruh Tab Laporan: Mengintegrasikan generator lembar resmi A4 standar Toko Putri (Kop Surat Resmi, logo toko, nomor dokumen resmi, rincian KPI, tanda tangan ganda pelaksana & pemilik toko, dan running footer) untuk Tab Valuasi Stok Gudang (DOC-STK), Analitika Penjualan (DOC-SALES), Rekap Utang Piutang (DOC-APAR), dan Rekapitulasi Beban Toko (DOC-EXP).",
+            "Test Suite Terpadu (test:reports): Menambahkan rangkaian pengujian otomatis 22 skenario pengujian kalkulasi finansial, RFC 4180 CSV, agregasi kategori, dan dokumen A4 (100% Passed).",
+            "Multi-Channel Distribution v1.16.0 (Android versionCode 11600)."
+        ]
+    },
+    {
         "id": "log-1-15-09",
         "version": "v1.15.9",
         "date": "2026-10-11",
@@ -74,21 +90,6 @@ export const DEFAULT_CHANGELOG = [
             "Ergonomi & Optimasi Tombol Esensial Mobile: Tombol status shift dan antrean parkir [⌛] dioptimasi ringkas di ponsel (w-8 h-8 saat 0 antrean dan badge pill saat aktif), membebaskan ruang horizontal maksimal untuk judul etalase toko.",
             "Desktop Parity Terjaga Penuh: Seluruh tombol aksi horizontal di layar laptop/desktop (sm: ke atas) tetap dipertahankan lengkap tanpa gangguan.",
             "Multi-Channel Distribution v1.15.6 (Android versionCode 11506)."
-        ]
-    },
-    {
-        "id": "log-1-15-05",
-        "version": "v1.15.5",
-        "date": "2026-10-11",
-        "title": "Audit Sistem Menyeluruh, Optimasi Code-Splitting Bundle Admin, Harmonisasi Desain Tema Dinamis & Penguatan Guard Input",
-        "category": "feature",
-        "badge": "System Audit & Code-Splitting Optimization v1.15.5",
-        "items": [
-            "Optimasi Kinerja Bundling & Code-Splitting (Vite 5): Melepaskan re-export statis delivery.js pada barrel admin sehingga Surat Jalan DO terisolasi bersih menjadi lazy chunk mandiri (45.89 kB), mengeliminasi warning Vite 100%, memangkas bundle awal module-admin sebesar 46.24 kB, dan mempercepat waktu build kompilasi hingga 49% (10.33 detik).",
-            "Harmonisasi Tema Toko Dinamis (Zero-Hardcode Color): Menyelaraskan seluruh elemen Tab Keramik pada Kalkulator Estimator Bahan Bangunan (material-estimator.js) mengadopsi token tema toko var(--color-primary) dan kartu Bento gradien cyan/slate modern, mengeliminasi warna hardcoded indigo peninggalan lawas.",
-            "Penguatan Guard Input Focus & Multi-Lingkungan: Melengkapi active element guard pada sinkronisasi diskon kasir POS (.pos-disc-val-input) dengan pemeriksaan typeof document === 'undefined' untuk keandalan eksekusi lintas lingkungan (Browser & Node.js test runner).",
-            "Audit Kesehatan Sistem & Verifikasi Test Suite 100% Passed: Seluruh 303 kasus uji unit (UOM, Flash Sale, Member VIP, Retur RMA, Delivery DO, Dual-Location Stock, FIFO, Estimator, Barcode Code 128, Lisensi SaaS, dan 78 Modal Sistem) terverifikasi 100% lulus tanpa kegagalan.",
-            "Multi-Channel Distribution v1.15.5 (Android versionCode 11505)."
         ]
     }
 ];

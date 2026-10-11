@@ -27,7 +27,7 @@ import { getTempoOrderCalculations } from './tempo.js';
 import { 
     fetchTaxPeriodData, getTaxPeriodTotals, getTaxPeriodExpenses, 
     saveMonthlyExpense, saveBalanceField, saveTaxSettingsPanel, 
-    openTaxDocPreview, MONTH_NAMES, getEffHpp 
+    openTaxDocPreview, MONTH_NAMES, getEffHpp, gTaxMonthly 
 } from './finance.js';
 
 // ─── State Modul Laporan Terpadu ──────────────────────────────
@@ -356,6 +356,42 @@ export const renderReportsShell = () => {
                             <span class="hidden sm:inline">Segarkan</span>
                         </button>
 
+                        <!-- Tombol Ekspor Spreadsheet Excel / CSV -->
+                        <div class="relative inline-block text-left" id="report-export-dropdown-container">
+                            <button type="button" onclick="toggleReportExportMenu()" class="h-9 px-3 rounded-xl border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 shadow-2xs" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
+                                <i class="fa-solid fa-file-excel text-xs text-emerald-600 dark:text-emerald-400"></i>
+                                <span class="hidden sm:inline">Ekspor Excel</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5"></i>
+                            </button>
+                            <div id="report-export-dropdown-menu" class="hidden absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                                <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+                                    <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pilih Format Ekspor (.csv / Excel)</p>
+                                </div>
+                                <div class="py-1 space-y-0.5">
+                                    <button type="button" onclick="exportCurrentReportCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-800 dark:text-white hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] transition-all flex items-center justify-between cursor-pointer">
+                                        <span class="flex items-center gap-2"><i class="fa-solid fa-download text-emerald-600"></i> Ekspor Tab Saat Ini</span>
+                                        <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Aktif</span>
+                                    </button>
+                                    <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+                                    <button type="button" onclick="exportPnlReportCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-file-invoice-dollar text-slate-400"></i> Laporan Laba Rugi (P&amp;L)
+                                    </button>
+                                    <button type="button" onclick="exportSalesReportCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-receipt text-slate-400"></i> Laporan Penjualan Detail
+                                    </button>
+                                    <button type="button" onclick="exportStockValuationCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-boxes-stacked text-slate-400"></i> Valuasi Stok Inventori Gudang
+                                    </button>
+                                    <button type="button" onclick="exportExpensesCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-money-bill-transfer text-slate-400"></i> Buku Kas Beban Operasional
+                                    </button>
+                                    <button type="button" onclick="exportDebtsReceivablesCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-scale-balanced text-slate-400"></i> Rekap Utang &amp; Piutang (AP/AR)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Tombol Cetak Dokumen A4 -->
                         <button type="button" onclick="openReportCurrentDocPreview()" class="h-9 px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2 border border-black/10 shadow-2xs" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
                             <i class="fa-solid fa-print text-xs"></i>
@@ -439,6 +475,221 @@ export const renderReportTabContent = () => {
     else if (reportActiveTab === 'expenses') renderExpensesTab();
     else if (reportActiveTab === 'tax') renderTaxComplianceTab();
     else if (reportActiveTab === 'balance') renderBalanceSheetTab();
+};
+
+/**
+ * Menghitung rekapitulasi data performa 12 bulan (Januari - Desember)
+ */
+export const getTwelveMonthPerformanceData = (year) => {
+    const data = [];
+    const monthlyExpenses = appData.taxSettings?.monthlyExpenses || {};
+    const allExpenses = Array.isArray(appData.expenses) ? appData.expenses : [];
+
+    for (let m = 1; m <= 12; m++) {
+        const d = (gTaxMonthly && gTaxMonthly[m]) ? gTaxMonthly[m] : { omset: 0, ppn: 0, hpp: 0, disc: 0, orderCount: 0 };
+        const omset = d.omset || 0;
+        const disc = d.disc || 0;
+        const netSales = Math.max(0, omset - disc);
+        const hpp = d.hpp || 0;
+        const grossProfit = Math.max(0, netSales - hpp);
+
+        // Agregasi beban untuk bulan m
+        let monthExpense = 0;
+        const expKey = `${year}-${m}`;
+        const hasItemizedInMonth = allExpenses.some(e => {
+            if (!e || !e.date) return false;
+            const [y, mon] = e.date.split('-');
+            return parseInt(y, 10) === year && parseInt(mon, 10) === m;
+        });
+
+        if (hasItemizedInMonth) {
+            allExpenses.forEach(e => {
+                if (!e || !e.date) return;
+                const [y, mon] = e.date.split('-');
+                if (parseInt(y, 10) === year && parseInt(mon, 10) === m) {
+                    monthExpense += parseFloat(e.amount) || 0;
+                }
+            });
+        } else {
+            monthExpense = parseFloat(monthlyExpenses[expKey]) || 0;
+        }
+
+        const netProfit = grossProfit - monthExpense;
+
+        data.push({
+            month: m,
+            monthName: MONTH_NAMES[m - 1],
+            omset,
+            netSales,
+            disc,
+            hpp,
+            grossProfit,
+            expenses: monthExpense,
+            netProfit,
+            orderCount: d.orderCount || 0
+        });
+    }
+
+    return data;
+};
+
+/**
+ * Render grafik batang & tren performa 12 bulan (Native Responsive SVG)
+ */
+export const renderTwelveMonthPerformanceSvg = (year) => {
+    const monthlyData = getTwelveMonthPerformanceData(year);
+    
+    // Temukan nilai maksimum untuk batas atas skala Y
+    let maxVal = 0;
+    monthlyData.forEach(d => {
+        if (d.omset > maxVal) maxVal = d.omset;
+        if (d.grossProfit > maxVal) maxVal = d.grossProfit;
+        if (d.expenses > maxVal) maxVal = d.expenses;
+    });
+
+    if (maxVal <= 0) maxVal = 1000000; // default minimum skala 1 Jt
+
+    // Bulatkan ke atas batas skala (ceiling)
+    const magnitude = Math.pow(10, Math.floor(Math.log10(maxVal)));
+    const ceiling = Math.ceil(maxVal / magnitude) * magnitude;
+
+    // Dimensi SVG proporsional
+    const svgW = 760;
+    const svgH = 210;
+    const padL = 60;
+    const padR = 20;
+    const padT = 20;
+    const padB = 35;
+    const chartW = svgW - padL - padR;
+    const chartH = svgH - padT - padB;
+    const slotW = chartW / 12;
+
+    // Gridlines horizontal (4 level: 0%, 33%, 66%, 100%)
+    const gridLevels = [0, 0.333, 0.666, 1];
+    const gridLines = gridLevels.map(lvl => {
+        const val = ceiling * lvl;
+        const y = padT + chartH - (chartH * lvl);
+        let label = 'Rp 0';
+        if (val >= 1e9) label = (val / 1e9).toFixed(1) + 'M';
+        else if (val >= 1e6) label = (val / 1e6).toFixed(0) + ' Jt';
+        else if (val > 0) label = (val / 1e3).toFixed(0) + ' Rb';
+
+        return `
+            <g class="grid-line opacity-50 dark:opacity-30">
+                <line x1="${padL}" y1="${y}" x2="${svgW - padR}" y2="${y}" stroke="currentColor" stroke-dasharray="3,3" stroke-width="0.75" class="text-slate-300 dark:text-slate-700"></line>
+                <text x="${padL - 8}" y="${y + 3}" text-anchor="end" font-size="9" font-family="monospace" font-weight="bold" fill="currentColor" class="text-slate-400 dark:text-slate-500">${label}</text>
+            </g>
+        `;
+    }).join('');
+
+    // Render bars per bulan
+    const barGroups = monthlyData.map((d, idx) => {
+        const slotX = padL + (idx * slotW);
+        const isCurrentMonthSelected = reportMonth === d.month;
+        const isCurrentMonthCalendar = (new Date().getMonth() + 1) === d.month && (new Date().getFullYear()) === year;
+
+        // Ketinggian bar proporsional
+        const hOmset = Math.max(2, (d.omset / ceiling) * chartH);
+        const yOmset = padT + chartH - hOmset;
+
+        const hProfit = Math.max(2, (d.grossProfit / ceiling) * chartH);
+        const yProfit = padT + chartH - hProfit;
+
+        const hExp = Math.max(2, (d.expenses / ceiling) * chartH);
+        const yExp = padT + chartH - hExp;
+
+        const barW = 10;
+        const startX = slotX + (slotW - 34) / 2;
+
+        const activeHighlightBg = isCurrentMonthSelected 
+            ? `<rect x="${slotX + 2}" y="${padT}" width="${slotW - 4}" height="${chartH}" rx="8" fill="rgba(var(--color-primary-rgb), 0.1)" stroke="rgba(var(--color-primary-rgb), 0.3)" stroke-width="1"></rect>` 
+            : '';
+
+        return `
+            <g class="month-col-group group cursor-pointer transition-transform" 
+               onclick="changeReportMonth(${d.month})" 
+               onmouseenter="showChartMonthTooltip(event, ${d.month})" 
+               onmouseleave="hideChartMonthTooltip()">
+                
+                ${activeHighlightBg}
+                <rect x="${slotX}" y="${padT}" width="${slotW}" height="${chartH + padB}" fill="transparent" class="hover:fill-slate-500/5 transition-colors"></rect>
+
+                <!-- Bar Omzet (Warna Tema Utama Toko) -->
+                <rect x="${startX}" y="${yOmset}" width="${barW}" height="${hOmset}" rx="2.5" fill="var(--color-primary)" opacity="${d.omset > 0 ? '0.95' : '0.2'}">
+                    <title>${d.monthName}: Omzet ${fCur(d.omset)}</title>
+                </rect>
+
+                <!-- Bar Laba Kotor (Emerald) -->
+                <rect x="${startX + 12}" y="${yProfit}" width="${barW}" height="${hProfit}" rx="2.5" fill="#10b981" opacity="${d.grossProfit > 0 ? '0.95' : '0.2'}">
+                    <title>${d.monthName}: Laba Kotor ${fCur(d.grossProfit)}</title>
+                </rect>
+
+                <!-- Bar Beban Toko (Amber) -->
+                <rect x="${startX + 24}" y="${yExp}" width="${barW}" height="${hExp}" rx="2.5" fill="#f59e0b" opacity="${d.expenses > 0 ? '0.95' : '0.2'}">
+                    <title>${d.monthName}: Beban Usaha ${fCur(d.expenses)}</title>
+                </rect>
+
+                <!-- Label Bulan -->
+                <text x="${slotX + slotW / 2}" y="${svgH - 12}" text-anchor="middle" font-size="10" font-weight="${isCurrentMonthSelected ? '900' : '600'}" fill="${isCurrentMonthSelected ? 'var(--color-primary)' : 'currentColor'}" class="${isCurrentMonthSelected ? '' : 'text-slate-500 dark:text-slate-400'}">
+                    ${d.monthName}${isCurrentMonthCalendar ? '•' : ''}
+                </text>
+            </g>
+        `;
+    }).join('');
+
+    return `
+        <svg viewBox="0 0 ${svgW} ${svgH}" class="w-full h-auto max-h-56 select-none" style="overflow: visible;">
+            ${gridLines}
+            ${barGroups}
+        </svg>
+    `;
+};
+
+/**
+ * Tampilkan tooltip interaktif saat hover batang grafik bulanan
+ */
+export const showChartMonthTooltip = (e, m) => {
+    const box = el('chart-tooltip-box');
+    if (!box) return;
+    const monthlyData = getTwelveMonthPerformanceData(reportYear);
+    const d = monthlyData.find(x => x.month === m);
+    if (!d) return;
+
+    box.innerHTML = `
+        <div class="space-y-1">
+            <div class="flex items-center justify-between gap-3 border-b border-slate-700 pb-1 text-[11px] font-black">
+                <span class="text-white">${d.monthName} ${reportYear}</span>
+                <span class="text-slate-400 font-normal">${d.orderCount} pesanan</span>
+            </div>
+            <div class="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px]">
+                <span class="text-slate-400">Omset:</span>
+                <span class="text-right font-bold" style="color: var(--color-primary)">${fCur(d.omset)}</span>
+                <span class="text-slate-400">Laba Kotor:</span>
+                <span class="text-right font-bold text-emerald-400">${fCur(d.grossProfit)}</span>
+                <span class="text-slate-400">Beban Toko:</span>
+                <span class="text-right font-bold text-amber-400">${fCur(d.expenses)}</span>
+                <span class="text-slate-400 font-black border-t border-slate-800 pt-0.5">Laba Bersih:</span>
+                <span class="text-right font-black ${d.netProfit >= 0 ? 'text-blue-400' : 'text-rose-400'} border-t border-slate-800 pt-0.5">${fCur(d.netProfit)}</span>
+            </div>
+        </div>
+    `;
+
+    const container = box.parentElement;
+    if (container) {
+        const rect = container.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+        let left = clientX - rect.left - 60;
+        if (left < 10) left = 10;
+        if (left > rect.width - 180) left = rect.width - 180;
+        box.style.left = `${left}px`;
+        box.style.top = `15px`;
+    }
+    box.classList.remove('hidden');
+};
+
+export const hideChartMonthTooltip = () => {
+    const box = el('chart-tooltip-box');
+    if (box) box.classList.add('hidden');
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -565,6 +816,39 @@ export const renderExecutiveSummaryTab = () => {
                 </div>
             </div>
 
+            <!-- GRAFIK TREN KINERJA FINANSIAL 12 BULAN (NATIVE RESPONSIVE SVG) -->
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-2xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-chart-column"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Tren Kinerja Finansial Bulanan — Tahun ${reportYear}</h3>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Perbandingan Omzet Penjualan, Laba Kotor &amp; Beban Usaha (Klik batang untuk filter bulan)</p>
+                        </div>
+                    </div>
+                    <!-- Legend Pills -->
+                    <div class="flex items-center flex-wrap gap-2 text-[10px]">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold">
+                            <span class="w-2.5 h-2.5 rounded-sm" style="background: var(--color-primary);"></span> Omzet
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold">
+                            <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span> Laba Kotor
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold">
+                            <span class="w-2.5 h-2.5 rounded-sm bg-amber-500"></span> Beban Usaha
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Container SVG Chart -->
+                <div class="relative w-full overflow-hidden pt-1">
+                    ${renderTwelveMonthPerformanceSvg(reportYear)}
+                    <div id="chart-tooltip-box" class="hidden absolute pointer-events-none z-20 px-3 py-2 rounded-xl bg-slate-900/95 text-white text-[10px] font-bold shadow-2xl border border-slate-700 transition-all backdrop-blur-sm"></div>
+                </div>
+            </div>
+
             <!-- LEMBAR LAPORAN LABA RUGI RESMI (P&L BREAKDOWN) -->
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
                 <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
@@ -650,6 +934,61 @@ export const renderExecutiveSummaryTab = () => {
             </div>
         </div>
     `);
+};
+
+/**
+ * Agregasi penjualan berdasarkan kategori produk untuk analisis profitabilitas
+ */
+export const getCategorySalesAnalytics = (orders = cachedReportOrders) => {
+    const catMap = {};
+    let totalOmset = 0;
+    let totalProfit = 0;
+    let totalItemsSold = 0;
+
+    (orders || []).forEach(o => {
+        (o.items || []).forEach(it => {
+            const qty = parseFloat(it.qty) || 1;
+            const price = parseFloat(it.price) || 0;
+            const lineOmset = price * qty;
+            const p = (appData.products || []).find(x => x && (String(x.id) === String(it.id) || x.name === it.name)) || {};
+            const cat = it.category || p.category || 'Lainnya';
+            const itHpp = (it.hpp !== undefined && it.hpp !== null) ? parseFloat(it.hpp) : getEffHpp(it);
+            const lineHpp = itHpp * qty;
+            const lineProfit = lineOmset - lineHpp;
+
+            if (!catMap[cat]) {
+                catMap[cat] = {
+                    category: cat,
+                    qty: 0,
+                    omset: 0,
+                    hpp: 0,
+                    profit: 0,
+                    txCount: 0
+                };
+            }
+            catMap[cat].qty += qty;
+            catMap[cat].omset += lineOmset;
+            catMap[cat].hpp += lineHpp;
+            catMap[cat].profit += lineProfit;
+            catMap[cat].txCount++;
+
+            totalOmset += lineOmset;
+            totalProfit += lineProfit;
+            totalItemsSold += qty;
+        });
+    });
+
+    const list = Object.values(catMap).map(c => {
+        const marginPct = c.omset > 0 ? ((c.profit / c.omset) * 100).toFixed(1) : '0.0';
+        const contributionPct = totalOmset > 0 ? ((c.omset / totalOmset) * 100).toFixed(1) : '0.0';
+        return {
+            ...c,
+            marginPct: parseFloat(marginPct),
+            contributionPct: parseFloat(contributionPct)
+        };
+    }).sort((a, b) => b.omset - a.omset);
+
+    return { list, totalOmset, totalProfit, totalItemsSold };
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -899,6 +1238,125 @@ export const renderSalesAnalyticsTab = () => {
                 </div>
             </div>
 
+            <!-- ANALITIKA PROFITABILITAS PER KATEGORI PRODUK -->
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
+                <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-shapes"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Analitika Profitabilitas Per Kategori Produk</h3>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Kontribusi omset penjualan &amp; margin laba kotor tiap kelompok material</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            ${(() => {
+                                const catData = getCategorySalesAnalytics(orders);
+                                return catData.list.length;
+                            })()} Kategori Terjual
+                        </span>
+                    </div>
+                </div>
+
+                ${(() => {
+                    const catData = getCategorySalesAnalytics(orders);
+                    const maxCatOmset = catData.list.length ? Math.max(...catData.list.map(c => c.omset || 1)) : 1;
+
+                    // Mobile Cards (< 640px)
+                    const catCards = catData.list.length ? catData.list.map((c, idx) => {
+                        const catOmsetPct = Math.min(100, Math.max(8, Math.round((c.omset / maxCatOmset) * 100)));
+                        return `
+                            <div class="p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-2.5">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">#${idx + 1}</span>
+                                        <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${esc(c.category)}</p>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-black shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                                        ${c.contributionPct}% Omset
+                                    </span>
+                                </div>
+                                <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-500" style="width: ${catOmsetPct}%; background: var(--color-primary);"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-[10px]">
+                                    <div class="bg-slate-50 dark:bg-slate-800/40 p-1.5 rounded-lg text-center">
+                                        <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Terjual</span>
+                                        <span class="font-bold text-slate-800 dark:text-white">${c.qty} unit</span>
+                                    </div>
+                                    <div class="bg-slate-50 dark:bg-slate-800/40 p-1.5 rounded-lg text-center">
+                                        <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Omset</span>
+                                        <span class="font-bold text-slate-800 dark:text-white">${fCur(c.omset)}</span>
+                                    </div>
+                                    <div class="bg-slate-50 dark:bg-slate-800/40 p-1.5 rounded-lg text-center">
+                                        <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Laba (Margin)</span>
+                                        <span class="font-bold" style="color: var(--color-primary)">${fCur(c.profit)} <span class="text-[8px] font-normal text-slate-400">(${c.marginPct}%)</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') : `
+                        <div class="py-6 text-center text-xs text-slate-400">Belum ada data penjualan kategori pada periode ini</div>
+                    `;
+
+                    // Desktop Rows (>= 640px)
+                    const catRows = catData.list.length ? catData.list.map((c, idx) => {
+                        const catOmsetPct = Math.min(100, Math.max(5, Math.round((c.omset / maxCatOmset) * 100)));
+                        return `
+                            <tr class="border-b border-slate-100 dark:border-slate-800 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
+                                <td class="py-2.5 px-3 text-center text-xs font-black text-slate-400">#${idx + 1}</td>
+                                <td class="py-2.5 px-3">
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white">${esc(c.category)}</p>
+                                    <p class="text-[10px] text-slate-400">${c.txCount} item transaksi</p>
+                                </td>
+                                <td class="py-2.5 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${c.qty} unit</td>
+                                <td class="py-2.5 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${fCur(c.omset)}</td>
+                                <td class="py-2.5 px-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400">${fCur(c.hpp)}</td>
+                                <td class="py-2.5 px-3 text-right text-xs font-bold" style="color: var(--color-primary)">${fCur(c.profit)}</td>
+                                <td class="py-2.5 px-3 text-center">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${c.marginPct >= 20 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'}">
+                                        ${c.marginPct}%
+                                    </span>
+                                </td>
+                                <td class="py-2.5 px-3 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <div class="w-16 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                            <div class="h-full rounded-full" style="width: ${catOmsetPct}%; background: var(--color-primary);"></div>
+                                        </div>
+                                        <span class="text-xs font-black text-slate-700 dark:text-slate-300 w-10 text-right">${c.contributionPct}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('') : `
+                        <tr><td colspan="8" class="py-6 text-center text-xs text-slate-400">Belum ada data penjualan kategori pada periode ini</td></tr>
+                    `;
+
+                    return `
+                        <div class="block sm:hidden p-3.5 space-y-3">${catCards}</div>
+                        <div class="hidden sm:block overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                        <th class="py-2.5 px-3 text-center w-12">No</th>
+                                        <th class="py-2.5 px-3">Kategori Material</th>
+                                        <th class="py-2.5 px-3 text-right">Unit Terjual</th>
+                                        <th class="py-2.5 px-3 text-right">Total Omset</th>
+                                        <th class="py-2.5 px-3 text-right">Modal HPP</th>
+                                        <th class="py-2.5 px-3 text-right">Laba Kotor</th>
+                                        <th class="py-2.5 px-3 text-center">Margin %</th>
+                                        <th class="py-2.5 px-3 text-right w-36">Kontribusi Omset</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${catRows}</tbody>
+                            </table>
+                        </div>
+                    `;
+                })()}
+            </div>
+
             <!-- TOP 10 PRODUK TERLARIS (RESPONSIVE CARD / TABLE HYBRID) -->
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
                 <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
@@ -911,6 +1369,9 @@ export const renderSalesAnalyticsTab = () => {
                             <p class="text-[10px] text-slate-400 mt-0.5">Produk dengan volume penjualan &amp; margin keuntungan tertinggi</p>
                         </div>
                     </div>
+                    <button type="button" onclick="openSalesReportDocPreview()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs">
+                        <i class="fa-solid fa-print text-xs"></i> <span class="hidden sm:inline">Cetak Penjualan A4</span>
+                    </button>
                 </div>
 
                 <!-- Tampilan Mobile (< 640px): Leaderboard Cards -->
@@ -1311,8 +1772,11 @@ export const renderStockValuationTab = () => {
                             </div>
                         </div>
 
-                        <!-- Bar Pencarian, Dropdown Kategori & Tombol Stock Opname -->
+                        <!-- Bar Pencarian, Dropdown Kategori & Tombol Aksi -->
                         <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+                            <button type="button" onclick="openStockValuationDocPreview()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs shrink-0" title="Cetak Lembar Resmi Valuasi Stok A4">
+                                <i class="fa-solid fa-print text-xs"></i> <span>Cetak A4</span>
+                            </button>
                             <button type="button" onclick="openAdminTab('stock_opname')" class="px-3 py-1.5 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Audit fisik stok rak & rekonsiliasi selisih">
                                 <i class="fa-solid fa-clipboard-check text-xs"></i> <span>Stock Opname</span>
                             </button>
@@ -1568,6 +2032,14 @@ export const renderDebtsReceivablesTab = () => {
                 <!-- KOLOM KIRI: PIUTANG PELANGGAN (ACCOUNTS RECEIVABLE) -->
                 <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Piutang Pelanggan (AR)</h3>
+                        </div>
+                        <button type="button" onclick="openDebtsDocPreview()" class="px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs">
+                            <i class="fa-solid fa-print text-[10px]"></i> Cetak AP/AR A4
+                        </button>
+                    </div>
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
@@ -1808,10 +2280,15 @@ export const renderExpensesTab = () => {
                     </h3>
                     <p class="text-[10px] text-slate-400 mt-0.5">Daftar nota pengeluaran operasional yang dicatat di Buku Kas</p>
                 </div>
-                <button type="button" onclick="openAdminTab('expenses')" class="text-xs font-bold flex items-center gap-1 cursor-pointer hover:opacity-80" style="color: var(--color-primary)">
-                    <span>Buka Buku Kas Lengkap</span>
-                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="openExpensesDocPreview()" class="px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs">
+                        <i class="fa-solid fa-print text-[10px]"></i> Cetak Beban A4
+                    </button>
+                    <button type="button" onclick="openAdminTab('expenses')" class="text-xs font-bold flex items-center gap-1 cursor-pointer hover:opacity-80" style="color: var(--color-primary)">
+                        <span>Buka Buku Kas</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Tabel Transaksi Desktop & Mobile Card -->
@@ -2308,12 +2785,953 @@ export const renderBalanceSheetTab = () => {
     `);
 };
 
+// ═══════════════════════════════════════════════════════════════
+// 8. MESIN EKSPOR SPREADSHEET EXCEL / CSV (RFC 4180 COMPLIANT)
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Escapes nilai kolom untuk CSV standar (RFC 4180)
+ */
+export const escapeCsvValue = (val) => {
+    if (val === null || val === undefined) return '""';
+    let str = String(val).replace(/\r\n/g, ' ').replace(/\n/g, ' ');
+    if (str.includes('"') || str.includes(',') || str.includes(';')) {
+        return `"${str.replace(/"/g, '""')}"`;
+    }
+    return `"${str}"`;
+};
+
+/**
+ * Memicu unduhan file CSV dengan UTF-8 BOM (\uFEFF) untuk kompatibilitas penuh Excel & Sheets
+ */
+export const downloadCsvFile = (filename, csvContent) => {
+    if (typeof document === 'undefined') return;
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast(`Laporan berhasil diekspor: ${filename}`);
+};
+
+/**
+ * Buka / tutup menu dropdown opsi ekspor
+ */
+export const toggleReportExportMenu = () => {
+    const menu = el('report-export-dropdown-menu');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    if (isHidden) {
+        menu.classList.remove('hidden');
+        setTimeout(() => {
+            const handleOutside = (e) => {
+                if (!e.target.closest('#report-export-dropdown-container')) {
+                    closeReportExportMenu();
+                    document.removeEventListener('click', handleOutside);
+                }
+            };
+            document.addEventListener('click', handleOutside);
+        }, 10);
+    } else {
+        closeReportExportMenu();
+    }
+};
+
+export const closeReportExportMenu = () => {
+    const menu = el('report-export-dropdown-menu');
+    if (menu) menu.classList.add('hidden');
+};
+
+/**
+ * Ekspor tab laporan aktif secara cerdas
+ */
+export const exportCurrentReportCSV = () => {
+    if (reportActiveTab === 'executive') exportPnlReportCSV();
+    else if (reportActiveTab === 'sales') exportSalesReportCSV();
+    else if (reportActiveTab === 'stock') exportStockValuationCSV();
+    else if (reportActiveTab === 'debts') exportDebtsReceivablesCSV();
+    else if (reportActiveTab === 'expenses') exportExpensesCSV();
+    else if (reportActiveTab === 'tax') exportPnlReportCSV();
+    else if (reportActiveTab === 'balance') exportPnlReportCSV();
+    else exportSalesReportCSV();
+};
+
+/**
+ * 1. Ekspor Laporan Penjualan Detail (.csv)
+ */
+export const exportSalesReportCSV = () => {
+    const orders = cachedReportOrders || [];
+    const periodTag = reportMonth === 0 ? `FY${reportYear}` : `${reportYear}-M${String(reportMonth).padStart(2, '0')}`;
+    const filename = `Laporan-Penjualan-TokoPutri-${periodTag}.csv`;
+
+    const headers = [
+        'No', 'ID Pesanan', 'Tanggal', 'Waktu', 'Kanal', 'Kasir',
+        'Nama Pelanggan', 'No WhatsApp', 'Metode Pembayaran', 'Status Bayar',
+        'Status Pesanan', 'Subtotal (Rp)', 'Diskon (Rp)', 'PPN (Rp)',
+        'Total Akhir (Rp)', 'HPP Modal (Rp)', 'Laba Kotor (Rp)', 'Margin (%)'
+    ];
+
+    let totalSubtotal = 0, totalDisc = 0, totalPpn = 0, totalFinal = 0, totalHpp = 0, totalProfit = 0;
+
+    const rows = orders.map((o, idx) => {
+        const orderDate = parseOrderDate(o);
+        const dateStr = orderDate ? orderDate.toLocaleDateString('id-ID') : '-';
+        const timeStr = orderDate ? orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-';
+
+        const isPos = o.cashierShiftId || o.cashierId || (o.notes && o.notes.includes('POS'));
+        const channel = isPos ? 'Kasir POS' : 'Online Web';
+        const cashierName = o.cashierName || (isPos ? 'Kasir Toko' : 'Sistem Web');
+        const customerName = o.customer?.name || o.shipping?.name || 'Pelanggan Umum';
+        const phone = o.customer?.phone || o.customer?.wa || o.shipping?.phone || '-';
+
+        const subtotal = parseFloat(o.payment?.subtotal) || 0;
+        const disc = parseFloat(o.payment?.productDiscount) || 0;
+        const ppn = parseFloat(o.payment?.ppnAmount) || 0;
+        const finalAmt = (o.payment?.finalAmount !== undefined) ? parseFloat(o.payment.finalAmount) : (subtotal - disc + ppn);
+
+        let orderHpp = 0;
+        (o.items || []).forEach(it => {
+            const qty = parseFloat(it.qty) || 1;
+            const hppIt = (it.hpp !== undefined && it.hpp !== null) ? parseFloat(it.hpp) : getEffHpp(it);
+            orderHpp += (hppIt * qty);
+        });
+
+        const grossProfit = Math.max(0, (subtotal - disc) - orderHpp);
+        const marginPct = (subtotal - disc) > 0 ? ((grossProfit / (subtotal - disc)) * 100).toFixed(1) : '0.0';
+
+        totalSubtotal += subtotal;
+        totalDisc += disc;
+        totalPpn += ppn;
+        totalFinal += finalAmt;
+        totalHpp += orderHpp;
+        totalProfit += grossProfit;
+
+        return [
+            idx + 1,
+            escapeCsvValue(o.orderId || o.id || '-'),
+            escapeCsvValue(dateStr),
+            escapeCsvValue(timeStr),
+            escapeCsvValue(channel),
+            escapeCsvValue(cashierName),
+            escapeCsvValue(customerName),
+            escapeCsvValue(phone),
+            escapeCsvValue(o.payment?.method || 'Tunai'),
+            escapeCsvValue(o.payment?.paymentStatus || 'lunas'),
+            escapeCsvValue(o.status || 'Selesai'),
+            subtotal,
+            disc,
+            ppn,
+            finalAmt,
+            orderHpp,
+            grossProfit,
+            marginPct + '%'
+        ].join(',');
+    });
+
+    // Baris Total Ringkasan
+    const totalMarginPct = (totalSubtotal - totalDisc) > 0 ? ((totalProfit / (totalSubtotal - totalDisc)) * 100).toFixed(1) : '0.0';
+    const summaryRow = [
+        '"TOTAL"', '""', '""', '""', '""', '""', '""', '""', '""', '""',
+        `"${orders.length} Transaksi"`,
+        totalSubtotal, totalDisc, totalPpn, totalFinal, totalHpp, totalProfit,
+        `"${totalMarginPct}%"`
+    ].join(',');
+
+    const csvContent = [headers.join(','), ...rows, summaryRow].join('\r\n');
+    downloadCsvFile(filename, csvContent);
+};
+
+/**
+ * 2. Ekspor Laporan Laba Rugi Komprehensif (.csv)
+ */
+export const exportPnlReportCSV = () => {
+    const totals = getReportFinancialTotals();
+    const periodLabel = reportMonth === 0 ? `FY${reportYear}` : `${reportYear}-M${String(reportMonth).padStart(2, '0')}`;
+    const filename = `Laporan-Laba-Rugi-TokoPutri-${periodLabel}.csv`;
+
+    const grossSales = totals.omset;
+    const totalDiscount = totals.disc;
+    const netSales = grossSales - totalDiscount;
+    const totalHpp = totals.hpp;
+    const grossProfit = netSales - totalHpp;
+    const expSummary = getExpenseBreakdownForPeriod();
+    const totalExpenses = expSummary.total;
+    const operatingProfit = grossProfit - totalExpenses;
+
+    const scheme = appData.taxSettings?.taxScheme || 'umkm_final';
+    let taxAmount = 0;
+    let taxLabel = 'PPh Final UMKM 0,5% (PP 55/2022)';
+    if (scheme === 'umkm_final') {
+        taxAmount = Math.round(grossSales * 0.005);
+    } else if (scheme === 'badan_normal') {
+        taxAmount = operatingProfit > 0 ? Math.round(operatingProfit * 0.22) : 0;
+        taxLabel = 'PPh Badan Normal 22% (UU HPP)';
+    } else {
+        const rate = parseFloat(appData.taxSettings?.customTaxRate) || 0.5;
+        taxAmount = operatingProfit > 0 ? Math.round(operatingProfit * (rate / 100)) : 0;
+        taxLabel = `PPh Custom (${rate}%)`;
+    }
+    const netProfit = operatingProfit - taxAmount;
+
+    const headers = ['Kode Akun', 'Komponen Finansial', 'Nilai (Rp)', 'Catatan / Rasio'];
+    const lines = [
+        ['1.0', 'I. PENDAPATAN USAHA (REVENUE)', '', ''],
+        ['4-100', 'Penjualan Kotor (Gross Sales)', grossSales, `${totals.orderCount} Transaksi`],
+        ['4-200', 'Potongan & Diskon Penjualan', -totalDiscount, 'Potongan Nota'],
+        ['4-000', 'TOTAL PENDAPATAN BERSIH (DPP)', netSales, '100.0% Basis'],
+        ['', '', '', ''],
+        ['2.0', 'II. BEBAN POKOK PENJUALAN (HPP)', '', ''],
+        ['5-100', 'Beban Pokok Penjualan (HPP FIFO Kulakan)', -totalHpp, 'Stok Terjual'],
+        ['5-900', 'LABA KOTOR (GROSS PROFIT)', grossProfit, `${grossSales > 0 ? ((grossProfit / grossSales) * 100).toFixed(1) : 0}% Gross Margin`],
+        ['', '', '', ''],
+        ['3.0', 'III. BEBAN OPERASIONAL USAHA', '', '']
+    ];
+
+    EXPENSE_CATEGORIES.forEach(c => {
+        const amt = expSummary.categories[c.key] || 0;
+        if (amt > 0) {
+            lines.push(['6-' + c.key.slice(0, 3).toUpperCase(), `Beban ${c.label}`, -amt, 'Buku Kas Operasional']);
+        }
+    });
+
+    lines.push(
+        ['6-000', 'Total Beban Operasional', -totalExpenses, `${grossSales > 0 ? ((totalExpenses / grossSales) * 100).toFixed(1) : 0}% Omzet`],
+        ['6-900', 'Laba Operasional Sebelum Pajak (EBIT)', operatingProfit, 'Laba Operasi'],
+        ['', '', '', ''],
+        ['4.0', 'IV. KEPATUHAN PAJAK & LABA BERSIH', '', ''],
+        ['9-100', `Estimasi ${taxLabel}`, -taxAmount, 'Pajak Terutang'],
+        ['9-900', 'LABA BERSIH SETELAH PAJAK (NET INCOME)', netProfit, `${grossSales > 0 ? ((netProfit / grossSales) * 100).toFixed(1) : 0}% Net Margin`]
+    );
+
+    const csvContent = [headers.join(','), ...lines.map(l => l.map(escapeCsvValue).join(','))].join('\r\n');
+    downloadCsvFile(filename, csvContent);
+};
+
+/**
+ * 3. Ekspor Valuasi Stok Inventori Gudang (.csv)
+ */
+export const exportStockValuationCSV = () => {
+    const valuation = getStockValuationData();
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const filename = `Valuasi-Stok-Inventori-TokoPutri-${dateStr}.csv`;
+
+    const headers = [
+        'No', 'ID Produk', 'Nama Barang', 'Kategori', 'Brand',
+        'Stok Fisik', 'Satuan', 'HPP Modal Satuan (Rp)', 'Total Modal HPP (Rp)',
+        'Harga Jual Satuan (Rp)', 'Total Nilai Jual (Rp)', 'Potensi Laba Kotor (Rp)',
+        'Potensi Margin (%)', 'Batas Min Stok', 'Status Stok'
+    ];
+
+    let sumHpp = 0, sumRetail = 0, sumProfit = 0, sumUnits = 0;
+
+    const rows = valuation.stockItems.map((it, idx) => {
+        sumHpp += it.totalHpp;
+        sumRetail += it.totalRetail;
+        sumUnits += it.stock;
+        const profit = it.totalRetail - it.totalHpp;
+        sumProfit += profit;
+        const marginPct = it.totalRetail > 0 ? ((profit / it.totalRetail) * 100).toFixed(1) : '0.0';
+
+        const statusLabel = it.status === 'empty' ? 'HABIS' : it.status === 'low' ? 'MENIPIS' : 'AMAN';
+
+        return [
+            idx + 1,
+            escapeCsvValue(it.id || '-'),
+            escapeCsvValue(it.name),
+            escapeCsvValue(it.category),
+            escapeCsvValue(it.brand),
+            it.stock,
+            escapeCsvValue(it.unit),
+            it.hpp,
+            it.totalHpp,
+            it.price,
+            it.totalRetail,
+            profit,
+            marginPct + '%',
+            it.minStock,
+            escapeCsvValue(statusLabel)
+        ].join(',');
+    });
+
+    const totalMarginPct = sumRetail > 0 ? ((sumProfit / sumRetail) * 100).toFixed(1) : '0.0';
+    const summaryRow = [
+        '"TOTAL"', `"${valuation.stockItems.length} SKU"`, '""', '""', '""',
+        sumUnits, '"unit"', '""', sumHpp, '""', sumRetail, sumProfit,
+        `"${totalMarginPct}%"`, '""', '""'
+    ].join(',');
+
+    const csvContent = [headers.join(','), ...rows, summaryRow].join('\r\n');
+    downloadCsvFile(filename, csvContent);
+};
+
+/**
+ * 4. Ekspor Buku Kas Beban Operasional (.csv)
+ */
+export const exportExpensesCSV = () => {
+    const periodTag = reportMonth === 0 ? `FY${reportYear}` : `${reportYear}-M${String(reportMonth).padStart(2, '0')}`;
+    const filename = `Buku-Kas-Beban-TokoPutri-${periodTag}.csv`;
+    const expData = getExpenseBreakdownForPeriod();
+
+    const headers = [
+        'No', 'Tanggal', 'ID Beban', 'Kategori Beban',
+        'Deskripsi / Keperluan', 'Jumlah Pengeluaran (Rp)', 'Sumber Dana', 'Penerima / Catatan'
+    ];
+
+    let totalAmt = 0;
+    const rows = expData.periodExpenses.map((e, idx) => {
+        const amt = parseFloat(e.amount) || 0;
+        totalAmt += amt;
+        const catObj = EXPENSE_CATEGORIES.find(c => c.key === e.category) || EXPENSE_CATEGORIES[6];
+        const srcLabel = e.source === 'cash' ? 'Kas Toko' : e.source === 'bank' ? 'Transfer Bank' : 'Dana Owner';
+
+        return [
+            idx + 1,
+            escapeCsvValue(e.date || '-'),
+            escapeCsvValue(e.id || '-'),
+            escapeCsvValue(catObj.label),
+            escapeCsvValue(e.desc || '-'),
+            amt,
+            escapeCsvValue(srcLabel),
+            escapeCsvValue(e.recipient || e.notes || '-')
+        ].join(',');
+    });
+
+    const summaryRow = [
+        '"TOTAL"', '""', '""', '""', `"${expData.transactionCount} Transaksi"`,
+        totalAmt, '""', '""'
+    ].join(',');
+
+    const csvContent = [headers.join(','), ...rows, summaryRow].join('\r\n');
+    downloadCsvFile(filename, csvContent);
+};
+
+/**
+ * 5. Ekspor Rekap Utang & Piutang (AP / AR) (.csv)
+ */
+export const exportDebtsReceivablesCSV = () => {
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const filename = `Rekap-Utang-Piutang-TokoPutri-${dateStr}.csv`;
+
+    const headers = [
+        'Jenis Akun', 'No Referensi', 'Nama Pihak (Pelanggan / Supplier)',
+        'Kontak WhatsApp / Telp', 'Jatuh Tempo', 'Total Tagihan (Rp)',
+        'Sudah Bayar (Rp)', 'Sisa Saldo (Rp)', 'Status Keterlambatan'
+    ];
+
+    const lines = [];
+    let sumPiutang = 0, sumUtang = 0;
+
+    // Piutang Pelanggan (AR)
+    (cachedPiutangOrders || []).forEach(o => {
+        const calc = getTempoOrderCalculations(o);
+        const sisa = calc.totalAkhir;
+        sumPiutang += sisa;
+        const statusStr = calc.isLate ? 'TERLAMBAT' : calc.isDueSoon ? 'JATUH TEMPO DEKAT' : 'LANCAR';
+
+        lines.push([
+            'PIUTANG (AR)',
+            o.orderId || o.id || '-',
+            o.customer?.name || 'Pelanggan Umum',
+            o.customer?.phone || o.customer?.wa || '-',
+            calc.dueDateFormatted || '-',
+            calc.totalPlafon || sisa,
+            calc.totalBayar || 0,
+            sisa,
+            statusStr
+        ]);
+    });
+
+    // Utang Supplier (AP)
+    (appData.purchases || []).forEach(po => {
+        if (po.paymentType === 'tempo' && po.paymentStatus !== 'lunas' && po.status !== 'cancelled') {
+            const poTotal = parseFloat(po.total) || 0;
+            const paid = parseFloat(po.amountPaid) || 0;
+            const unpaid = poTotal - paid;
+            if (unpaid > 0) {
+                sumUtang += unpaid;
+                lines.push([
+                    'UTANG (AP)',
+                    po.poNumber || po.id || '-',
+                    po.supplierName || 'Supplier Rekanan',
+                    po.supplierPhone || '-',
+                    po.dueDate || '-',
+                    poTotal,
+                    paid,
+                    unpaid,
+                    'AKTIF'
+                ]);
+            }
+        }
+    });
+
+    const rows = lines.map(l => l.map(escapeCsvValue).join(','));
+    const summaryPiutang = ['"TOTAL PIUTANG PELANGGAN"', '""', '""', '""', '""', '""', '""', sumPiutang, '""'].join(',');
+    const summaryUtang = ['"TOTAL UTANG SUPPLIER"', '""', '""', '""', '""', '""', '""', sumUtang, '""'].join(',');
+    const netWorkingGap = ['"POSISI BERSIH LIKUIDITAS"', '""', '""', '""', '""', '""', '""', (sumPiutang - sumUtang), `"${sumPiutang >= sumUtang ? 'SURPLUS' : 'DEFISIT'}"`].join(',');
+
+    const csvContent = [headers.join(','), ...rows, summaryPiutang, summaryUtang, netWorkingGap].join('\r\n');
+    downloadCsvFile(filename, csvContent);
+};
+
+// ═══════════════════════════════════════════════════════════════
+// 9. DOKUMEN CETAK LEMBAR RESMI A4 (MULTI-TAB PREVIEWS)
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Shell pembungkus lembar resmi A4 Toko Putri yang konsisten & profesional
+ */
+export const renderReportA4DocumentShell = ({
+    title,
+    docCode,
+    periodLabel,
+    innerContentHtml,
+    signatures = null,
+    infoBannerText = ''
+}) => {
+    const ts = appData.taxSettings || {};
+    const today = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
+    const storeName = ts.companyName || appData.store?.name || 'PUTRI UTAMA TEKNIK';
+    const storeAddress = appData.store?.address || 'Jln. Pakem RT005 RW003 Ds. Banyuanyar, Kec. Gurah, Kab. Kediri';
+    const storePhone = appData.store?.wa || appData.store?.phone || '-';
+    const npwpStr = ts.npwp || appData.store?.taxNpwp || '';
+    const docNumber = `DOC-${docCode}-${reportYear}${reportMonth ? String(reportMonth).padStart(2, '0') : 'FY'}-001`;
+
+    let logoHTML = '';
+    if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
+        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-14 h-14 object-contain rounded-xl border border-slate-200">`;
+    } else {
+        logoHTML = `<div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-md shrink-0" style="background: linear-gradient(135deg, var(--color-primary, #b8860b), var(--color-primary-dark, #8b6508));"><i class="fa-solid fa-store"></i></div>`;
+    }
+
+    const kopHtml = `
+    <div class="border-b-2 border-slate-900 pb-3.5 mb-3.5 select-none">
+        <div class="flex justify-between items-start gap-4">
+            <div class="flex items-center gap-3.5">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-black text-lg sm:text-xl tracking-tight text-slate-900 uppercase leading-none">${esc(storeName)}</h1>
+                    <p class="text-[11px] font-semibold text-slate-500 mt-1 max-w-sm leading-tight">${esc(storeAddress)}</p>
+                    <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-600">
+                        ${npwpStr ? `<span class="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">NPWP: ${esc(npwpStr)}</span>` : ''}
+                        <span class="font-bold text-slate-500"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>${esc(storePhone)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right shrink-0">
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-slate-900 text-white mb-1">Executive Statement</span>
+                <h2 class="font-black text-sm sm:text-base tracking-wider text-slate-900 uppercase leading-tight">${title}</h2>
+                <p class="text-xs font-bold text-slate-700 mt-0.5 font-mono">No: <span class="text-blue-700 font-black">${docNumber}</span></p>
+                <p class="text-[10.5px] font-semibold text-slate-500 mt-0.5">Periode: <b class="text-slate-800">${periodLabel}</b> &bull; Dicetak: ${today}</p>
+            </div>
+        </div>
+    </div>
+    <div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-2.5 mb-3.5 text-[10.5px] font-medium text-amber-900 flex items-start gap-2 leading-relaxed select-none">
+        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-xs shrink-0"></i>
+        <span>${infoBannerText || '<b>Dokumen Resmi Manajemen Finansial Internal:</b> Lembar laporan ini dihasilkan secara terpusat oleh sistem Toko Putri berdasarkan pencatatan database transaksi kasir POS, etalase online, stok persediaan, dan buku kas operasional.'}</span>
+    </div>
+    `;
+
+    const defaultSignatures = `
+    <div class="mt-auto pt-4 flex justify-between items-end text-xs text-slate-700 select-none">
+        <div class="text-center w-52">
+            <p class="text-[10px] font-bold text-slate-500">Disusun &amp; Diperiksa Oleh,</p>
+            <div class="h-14 flex items-center justify-center">
+                <span class="text-[9.5px] text-slate-300 italic">[Tanda Tangan Staf]</span>
+            </div>
+            <p class="font-black text-slate-900 border-t border-slate-400 pt-1 text-[11px] uppercase">${esc(appData.store?.staffName || 'Bagian Administrasi')}</p>
+            <p class="text-[9.5px] text-slate-500 font-semibold">Staf Pelaksana &amp; Kasir</p>
+        </div>
+        <div class="text-center w-52">
+            <p class="text-[10px] font-bold text-slate-500">Disetujui &amp; Disahkan Oleh,</p>
+            <div class="h-14 flex items-center justify-center">
+                <span class="text-[9.5px] text-slate-300 italic">[Tanda Tangan &amp; Stempel]</span>
+            </div>
+            <p class="font-black text-slate-900 border-t border-slate-400 pt-1 text-[11px] uppercase">${esc(storeName)}</p>
+            <p class="text-[9.5px] text-slate-500 font-semibold">Pemilik Usaha / Owner</p>
+        </div>
+    </div>
+    `;
+
+    const footerHtml = `
+    <div class="a4-page-footer mt-auto pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-500 font-mono select-none">
+        <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-700 uppercase">${esc(storeName)}</span>
+            <span class="text-slate-300">&bull;</span>
+            <span class="text-slate-500">${esc(title)}</span>
+            <span class="text-slate-300">&bull;</span>
+            <span class="text-slate-400 font-mono">${docNumber}</span>
+        </div>
+        <div class="flex items-center gap-1 font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            <span>Halaman 1 dari 1</span>
+        </div>
+    </div>
+    `;
+
+    const fullPageHtml = `
+    <div class="a4-page" data-page="1" data-total-pages="1">
+        <div class="a4-page-body flex-1 flex flex-col justify-between">
+            <div>
+                ${kopHtml}
+                ${innerContentHtml}
+            </div>
+            ${signatures || defaultSignatures}
+        </div>
+        ${footerHtml}
+    </div>
+    `;
+
+    setIn('doc-modal-title', 'Preview ' + title);
+    setH('doc-paper-content', fullPageHtml);
+    const badge = el('doc-page-count-badge');
+    if (badge) badge.textContent = '1 Halaman A4';
+    const mDoc = el('doc-preview-modal');
+    if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('docPreview');
+    }
+    show('doc-preview-modal');
+    setTimeout(() => {
+        if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
+        if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
+        if (typeof window.fitDocPreview === 'function') window.fitDocPreview();
+    }, 10);
+};
+
+/**
+ * Preview Lembar Resmi Analitika Penjualan A4
+ */
+export const openSalesReportDocPreview = () => {
+    const orders = cachedReportOrders || [];
+    const periodLabel = reportMonth === 0 ? `Tahun ${reportYear} (Setahun Penuh)` : `${MONTH_NAMES[reportMonth - 1]} ${reportYear}`;
+
+    let totalGross = 0, totalDisc = 0, totalItems = 0;
+    const catData = getCategorySalesAnalytics(orders);
+    const productSalesMap = {};
+
+    orders.forEach(o => {
+        const subtotal = parseFloat(o.payment?.subtotal) || 0;
+        const disc = parseFloat(o.payment?.productDiscount) || 0;
+        totalGross += subtotal;
+        totalDisc += disc;
+
+        (o.items || []).forEach(it => {
+            const qty = parseFloat(it.qty) || 1;
+            totalItems += qty;
+            const pId = it.id || it.name;
+            if (!productSalesMap[pId]) {
+                productSalesMap[pId] = { name: it.name || 'Produk', qty: 0, omset: 0, hpp: 0 };
+            }
+            const itHpp = (it.hpp !== undefined && it.hpp !== null) ? parseFloat(it.hpp) : getEffHpp(it);
+            productSalesMap[pId].qty += qty;
+            productSalesMap[pId].omset += (parseFloat(it.price) || 0) * qty;
+            productSalesMap[pId].hpp += itHpp * qty;
+        });
+    });
+
+    const netSales = totalGross - totalDisc;
+    const aov = orders.length > 0 ? Math.round(totalGross / orders.length) : 0;
+    const topProducts = Object.values(productSalesMap).sort((a, b) => b.qty - a.qty).slice(0, 8);
+
+    const innerContentHtml = `
+        <div class="grid grid-cols-4 gap-3 mb-3.5 select-none">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 block">Penjualan Bruto</span>
+                <span class="text-sm font-black text-slate-900 font-mono tabular-nums block mt-0.5">${fCur(totalGross)}</span>
+                <span class="text-[9px] text-slate-400 mt-0.5 block">${orders.length} transaksi</span>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-rose-800 block">Diskon Penjualan</span>
+                <span class="text-sm font-black text-rose-700 font-mono tabular-nums block mt-0.5">${fCur(totalDisc)}</span>
+                <span class="text-[9px] text-rose-500 mt-0.5 block">Potongan Nota</span>
+            </div>
+            <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-blue-900 block">Penjualan Bersih (DPP)</span>
+                <span class="text-sm font-black text-blue-800 font-mono tabular-nums block mt-0.5">${fCur(netSales)}</span>
+                <span class="text-[9px] text-blue-600 mt-0.5 block">Dasar Pajak</span>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-emerald-900 block">Rata-Rata Nota (AOV)</span>
+                <span class="text-sm font-black text-emerald-700 font-mono tabular-nums block mt-0.5">${fCur(aov)}</span>
+                <span class="text-[9px] text-emerald-600 mt-0.5 block">${totalItems} unit terjual</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-3.5">
+            <!-- Top 8 Produk Terlaris -->
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy text-amber-500 text-[10px]"></i> Produk Terlaris (Leaderboard)
+                </p>
+                <table class="w-full text-[10.5px] border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase">
+                            <th class="py-1.5 px-2 text-left">Produk</th>
+                            <th class="py-1.5 px-2 text-right">Terjual</th>
+                            <th class="py-1.5 px-2 text-right">Total Omset</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        ${topProducts.map(p => `
+                            <tr>
+                                <td class="py-1.5 px-2 font-semibold text-slate-800 truncate max-w-[160px]">${esc(p.name)}</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-bold text-slate-700">${p.qty} unit</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-black text-slate-900">${fCur(p.omset)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Kontribusi Kategori Material -->
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-shapes text-blue-500 text-[10px]"></i> Kontribusi Kategori Material
+                </p>
+                <table class="w-full text-[10.5px] border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase">
+                            <th class="py-1.5 px-2 text-left">Kategori</th>
+                            <th class="py-1.5 px-2 text-right">Omset (Rp)</th>
+                            <th class="py-1.5 px-2 text-center">Margin %</th>
+                            <th class="py-1.5 px-2 text-right">Kontribusi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        ${catData.list.slice(0, 8).map(c => `
+                            <tr>
+                                <td class="py-1.5 px-2 font-semibold text-slate-800 truncate max-w-[120px]">${esc(c.category)}</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-bold text-slate-900">${fCur(c.omset)}</td>
+                                <td class="py-1.5 px-2 text-center font-mono font-bold text-emerald-700">${c.marginPct}%</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-bold text-blue-700">${c.contributionPct}%</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    renderReportA4DocumentShell({
+        title: 'LAPORAN ANALITIKA PENJUALAN & OMSET',
+        docCode: 'SALES',
+        periodLabel,
+        innerContentHtml,
+        infoBannerText: '<b>Ringkasan Kinerja Penjualan Toko:</b> Dokumen ini menyajikan rekapitulasi penjualan kotor, diskon promosi, omzet bersih, volume unit terjual, serta daftar produk dan kategori material paling laris.'
+    });
+};
+
+/**
+ * Preview Lembar Resmi Valuasi Stok Gudang A4
+ */
+export const openStockValuationDocPreview = () => {
+    const valuation = getStockValuationData();
+    const periodLabel = `Posisi Per ${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}`;
+
+    const innerContentHtml = `
+        <div class="grid grid-cols-4 gap-3 mb-3.5 select-none">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 block">Total Aset Modal (HPP)</span>
+                <span class="text-sm font-black text-slate-900 font-mono tabular-nums block mt-0.5">${fCur(valuation.totalAssetHpp)}</span>
+                <span class="text-[9px] text-slate-400 mt-0.5 block">${valuation.totalSkuCount} Total SKU</span>
+            </div>
+            <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-blue-900 block">Total Nilai Jual Retail</span>
+                <span class="text-sm font-black text-blue-800 font-mono tabular-nums block mt-0.5">${fCur(valuation.totalAssetRetail)}</span>
+                <span class="text-[9px] text-blue-600 mt-0.5 block">${valuation.totalPhysicalUnits} Unit Fisik</span>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-emerald-900 block">Potensi Laba Kotor</span>
+                <span class="text-sm font-black text-emerald-700 font-mono tabular-nums block mt-0.5">${fCur(valuation.totalAssetRetail - valuation.totalAssetHpp)}</span>
+                <span class="text-[9px] text-emerald-600 mt-0.5 block">${valuation.totalAssetRetail > 0 ? (((valuation.totalAssetRetail - valuation.totalAssetHpp) / valuation.totalAssetRetail) * 100).toFixed(1) : 0}% Margin</span>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-amber-900 block">Status Persediaan</span>
+                <span class="text-xs font-black text-amber-800 block mt-1">${valuation.safeStockCount} Aman &bull; ${valuation.lowStockCount} Menipis</span>
+                <span class="text-[9px] font-bold text-rose-600 mt-0.5 block">${valuation.outOfStockCount} Barang Habis</span>
+            </div>
+        </div>
+
+        <table class="w-full text-[10.5px] border-collapse border border-slate-300 mb-3.5">
+            <thead>
+                <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase tracking-wider">
+                    <th class="py-2 px-2 text-center w-8">No</th>
+                    <th class="py-2 px-3 text-left">Nama Produk &amp; Varian</th>
+                    <th class="py-2 px-3 text-left">Kategori</th>
+                    <th class="py-2 px-3 text-center">Stok</th>
+                    <th class="py-2 px-3 text-right">Modal HPP (Rp)</th>
+                    <th class="py-2 px-3 text-right">Total HPP (Rp)</th>
+                    <th class="py-2 px-3 text-right">Harga Jual (Rp)</th>
+                    <th class="py-2 px-3 text-center w-16">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+                ${valuation.stockItems.slice(0, 15).map((it, idx) => `
+                    <tr>
+                        <td class="py-1.5 px-2 text-center font-bold text-slate-400">${idx + 1}</td>
+                        <td class="py-1.5 px-3 font-bold text-slate-800 truncate max-w-[180px]">${esc(it.name)}</td>
+                        <td class="py-1.5 px-3 text-slate-500">${esc(it.category)}</td>
+                        <td class="py-1.5 px-3 text-center font-mono font-bold text-slate-800">${it.stock} ${it.unit}</td>
+                        <td class="py-1.5 px-3 text-right font-mono text-slate-600">${fCur(it.hpp)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono font-bold text-slate-900">${fCur(it.totalHpp)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono font-bold text-blue-700">${fCur(it.price)}</td>
+                        <td class="py-1.5 px-3 text-center">
+                            <span class="px-1.5 py-0.5 rounded text-[8.5px] font-black uppercase ${it.status === 'empty' ? 'bg-rose-100 text-rose-700' : it.status === 'low' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">
+                                ${it.status}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    renderReportA4DocumentShell({
+        title: 'LAPORAN VALUASI STOK & ASET GUDANG',
+        docCode: 'STK',
+        periodLabel,
+        innerContentHtml,
+        infoBannerText: '<b>Audit & Valuasi Fisik Persediaan:</b> Nilai aset inventori dihitung secara akurat menggunakan sistem modal kulakan (HPP). Mohon rekonsiliasi berkala dengan hasil fisik Stock Opname.'
+    });
+};
+
+/**
+ * Preview Lembar Resmi Posisi Utang & Piutang (AP / AR) A4
+ */
+export const openDebtsDocPreview = () => {
+    const piutangOrders = cachedPiutangOrders || [];
+    let totalPiutang = 0;
+    const debiturMap = {};
+
+    piutangOrders.forEach(o => {
+        const calc = getTempoOrderCalculations(o);
+        const sisa = calc.totalAkhir;
+        totalPiutang += sisa;
+        const cName = o.customer?.name || 'Pelanggan Umum';
+        if (!debiturMap[cName]) debiturMap[cName] = { name: cName, phone: o.customer?.phone || '-', total: 0, count: 0, isLate: false };
+        debiturMap[cName].total += sisa;
+        debiturMap[cName].count++;
+        if (calc.isLate) debiturMap[cName].isLate = true;
+    });
+
+    const purchaseMetrics = computePurchaseMetrics();
+    const totalUtang = purchaseMetrics.totalUnpaidDebt;
+    const netGap = totalPiutang - totalUtang;
+    const isSurplus = netGap >= 0;
+
+    const purchases = appData.purchases || [];
+    const supplierDebtMap = {};
+    purchases.forEach(po => {
+        if (po.paymentType === 'tempo' && po.paymentStatus !== 'lunas' && po.status !== 'cancelled') {
+            const poTotal = parseFloat(po.total) || 0;
+            const paid = parseFloat(po.amountPaid) || 0;
+            const unpaid = poTotal - paid;
+            if (unpaid > 0) {
+                const sName = po.supplierName || 'Supplier';
+                if (!supplierDebtMap[sName]) supplierDebtMap[sName] = { name: sName, total: 0, count: 0 };
+                supplierDebtMap[sName].total += unpaid;
+                supplierDebtMap[sName].count++;
+            }
+        }
+    });
+
+    const topDebitur = Object.values(debiturMap).sort((a, b) => b.total - a.total).slice(0, 8);
+    const topSupplier = Object.values(supplierDebtMap).sort((a, b) => b.total - a.total).slice(0, 8);
+    const periodLabel = `Posisi Per ${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}`;
+
+    const innerContentHtml = `
+        <div class="grid grid-cols-3 gap-3 mb-3.5 select-none">
+            <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-blue-900 block">Total Piutang Pelanggan (AR)</span>
+                <span class="text-sm font-black text-blue-800 font-mono tabular-nums block mt-0.5">${fCur(totalPiutang)}</span>
+                <span class="text-[9px] text-blue-600 mt-0.5 block">Hak tagihan aktif toko</span>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-rose-800 block">Total Utang Supplier (AP)</span>
+                <span class="text-sm font-black text-rose-700 font-mono tabular-nums block mt-0.5">${fCur(totalUtang)}</span>
+                <span class="text-[9px] text-rose-500 mt-0.5 block">Kewajiban PO kulakan</span>
+            </div>
+            <div class="p-3 rounded-xl ${isSurplus ? 'bg-emerald-50/80 border-emerald-200' : 'bg-amber-50/80 border-amber-200'} border">
+                <span class="text-[9px] font-black uppercase tracking-wider ${isSurplus ? 'text-emerald-900' : 'text-amber-900'} block">Posisi Bersih Modal Kerja</span>
+                <span class="text-sm font-black font-mono tabular-nums block mt-0.5 ${isSurplus ? 'text-emerald-700' : 'text-amber-700'}">${isSurplus ? '+' : ''}${fCur(netGap)}</span>
+                <span class="text-[9px] font-bold ${isSurplus ? 'text-emerald-600' : 'text-amber-600'} mt-0.5 block">${isSurplus ? 'Surplus Likuiditas' : 'Defisit Tagihan'}</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-3.5">
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-hand-holding-dollar text-blue-500 text-[10px]"></i> Piutang Pelanggan Terbesar
+                </p>
+                <table class="w-full text-[10.5px] border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase">
+                            <th class="py-1.5 px-2 text-left">Pelanggan</th>
+                            <th class="py-1.5 px-2 text-center">Nota</th>
+                            <th class="py-1.5 px-2 text-right">Sisa Tagihan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        ${topDebitur.length ? topDebitur.map(d => `
+                            <tr>
+                                <td class="py-1.5 px-2 font-semibold text-slate-800 truncate max-w-[140px]">${esc(d.name)}</td>
+                                <td class="py-1.5 px-2 text-center font-mono text-slate-500">${d.count}</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-bold text-slate-900">${fCur(d.total)}</td>
+                            </tr>
+                        `).join('') : `<tr><td colspan="3" class="py-3 text-center text-slate-400">Tidak ada piutang aktif</td></tr>`}
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-truck text-rose-500 text-[10px]"></i> Utang Supplier Kulakan
+                </p>
+                <table class="w-full text-[10.5px] border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase">
+                            <th class="py-1.5 px-2 text-left">Supplier</th>
+                            <th class="py-1.5 px-2 text-center">PO</th>
+                            <th class="py-1.5 px-2 text-right">Sisa Utang</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        ${topSupplier.length ? topSupplier.map(s => `
+                            <tr>
+                                <td class="py-1.5 px-2 font-semibold text-slate-800 truncate max-w-[140px]">${esc(s.name)}</td>
+                                <td class="py-1.5 px-2 text-center font-mono text-slate-500">${s.count}</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-bold text-rose-600">${fCur(s.total)}</td>
+                            </tr>
+                        `).join('') : `<tr><td colspan="3" class="py-3 text-center text-slate-400">Seluruh utang supplier lunas</td></tr>`}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    renderReportA4DocumentShell({
+        title: 'LAPORAN POSISI UTANG & PIUTANG (AP / AR)',
+        docCode: 'APAR',
+        periodLabel,
+        innerContentHtml,
+        infoBannerText: '<b>Pernyataan Likuiditas Usaha:</b> Dokumen ini merangkum perbandingan hak piutang tempo di pelanggan melawan kewajiban utang dagang pengadaan material ke rekanan supplier.'
+    });
+};
+
+/**
+ * Preview Lembar Rekapitulasi Beban Operasional Toko A4
+ */
+export const openExpensesDocPreview = () => {
+    const periodLabel = reportMonth === 0 ? `Tahun ${reportYear} (Setahun Penuh)` : `${MONTH_NAMES[reportMonth - 1]} ${reportYear}`;
+    const expData = getExpenseBreakdownForPeriod();
+
+    const innerContentHtml = `
+        <div class="grid grid-cols-3 gap-3 mb-3.5 select-none">
+            <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-amber-900 block">Total Beban Operasional</span>
+                <span class="text-sm font-black text-amber-800 font-mono tabular-nums block mt-0.5">${fCur(expData.total)}</span>
+                <span class="text-[9px] text-amber-600 mt-0.5 block">${expData.transactionCount} Transaksi Pengeluaran</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-slate-600 block">Rata-Rata Biaya Per Transaksi</span>
+                <span class="text-sm font-black text-slate-900 font-mono tabular-nums block mt-0.5">${fCur(expData.transactionCount > 0 ? Math.round(expData.total / expData.transactionCount) : 0)}</span>
+                <span class="text-[9px] text-slate-400 mt-0.5 block">Efisiensi operasional</span>
+            </div>
+            <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-blue-900 block">Kategori Biaya Terbesar</span>
+                <span class="text-xs font-black text-blue-800 block mt-1">${(() => {
+                    let maxCat = '-';
+                    let maxAmt = 0;
+                    EXPENSE_CATEGORIES.forEach(c => {
+                        const a = expData.categories[c.key] || 0;
+                        if (a > maxAmt) { maxAmt = a; maxCat = c.label; }
+                    });
+                    return maxCat;
+                })()}</span>
+                <span class="text-[9px] text-blue-600 mt-0.5 block">Alokasi primer</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-3.5">
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-pie-chart text-amber-500 text-[10px]"></i> Rincian Per Kategori Beban
+                </p>
+                <table class="w-full text-[10.5px] border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase">
+                            <th class="py-1.5 px-2 text-left">Kategori Beban</th>
+                            <th class="py-1.5 px-2 text-right">Nominal (Rp)</th>
+                            <th class="py-1.5 px-2 text-right">Proporsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        ${EXPENSE_CATEGORIES.map(c => {
+                            const val = expData.categories[c.key] || 0;
+                            const pct = expData.total > 0 ? ((val / expData.total) * 100).toFixed(1) : '0.0';
+                            return `
+                                <tr>
+                                    <td class="py-1.5 px-2 font-semibold text-slate-800">${c.label}</td>
+                                    <td class="py-1.5 px-2 text-right font-mono font-bold text-slate-900">${fCur(val)}</td>
+                                    <td class="py-1.5 px-2 text-right font-mono text-slate-500">${pct}%</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-list-check text-blue-500 text-[10px]"></i> Riwayat Transaksi Buku Kas Terkini
+                </p>
+                <table class="w-full text-[10.5px] border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-900 text-white font-bold text-[9px] uppercase">
+                            <th class="py-1.5 px-2 text-left">Tanggal</th>
+                            <th class="py-1.5 px-2 text-left">Keperluan</th>
+                            <th class="py-1.5 px-2 text-right">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        ${expData.periodExpenses.slice(0, 7).map(e => `
+                            <tr>
+                                <td class="py-1.5 px-2 font-mono text-slate-600">${e.date || '-'}</td>
+                                <td class="py-1.5 px-2 font-semibold text-slate-800 truncate max-w-[130px]">${esc(e.desc || '-')}</td>
+                                <td class="py-1.5 px-2 text-right font-mono font-bold text-amber-700">${fCur(e.amount)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    renderReportA4DocumentShell({
+        title: 'REKAPITULASI BIAYA OPERASIONAL USAHA',
+        docCode: 'EXP',
+        periodLabel,
+        innerContentHtml,
+        infoBannerText: '<b>Buku Kas Beban Operasional:</b> Dokumen ini mencatat seluruh pengeluaran rutin toko seperti gaji karyawan, listrik/air, kemasan, sewa tempat, dan perawatan aset fisik toko.'
+    });
+};
+
 /**
  * Buka preview dokumen cetak A4 sesuai tab aktif
  */
 export const openReportCurrentDocPreview = () => {
-    if (reportActiveTab === 'executive' || reportActiveTab === 'sales') {
+    if (reportActiveTab === 'executive') {
         openTaxDocPreview('income');
+    } else if (reportActiveTab === 'sales') {
+        openSalesReportDocPreview();
+    } else if (reportActiveTab === 'stock') {
+        openStockValuationDocPreview();
+    } else if (reportActiveTab === 'debts') {
+        openDebtsDocPreview();
+    } else if (reportActiveTab === 'expenses') {
+        openExpensesDocPreview();
     } else if (reportActiveTab === 'tax') {
         openTaxDocPreview('summary');
     } else if (reportActiveTab === 'balance') {
@@ -2340,11 +3758,33 @@ window.saveReportExpenseBreakdown = saveReportExpenseBreakdown;
 window.saveReportMonthlyExpense = saveReportMonthlyExpense;
 window.saveReportTaxSettings = saveReportTaxSettings;
 
+// Expose fungsi baru Ekspor & Grafik
+window.toggleReportExportMenu = toggleReportExportMenu;
+window.closeReportExportMenu = closeReportExportMenu;
+window.exportCurrentReportCSV = exportCurrentReportCSV;
+window.exportSalesReportCSV = exportSalesReportCSV;
+window.exportPnlReportCSV = exportPnlReportCSV;
+window.exportStockValuationCSV = exportStockValuationCSV;
+window.exportExpensesCSV = exportExpensesCSV;
+window.exportDebtsReceivablesCSV = exportDebtsReceivablesCSV;
+window.openSalesReportDocPreview = openSalesReportDocPreview;
+window.openStockValuationDocPreview = openStockValuationDocPreview;
+window.openDebtsDocPreview = openDebtsDocPreview;
+window.openExpensesDocPreview = openExpensesDocPreview;
+window.showChartMonthTooltip = showChartMonthTooltip;
+window.hideChartMonthTooltip = hideChartMonthTooltip;
+
 export default {
     renderReportsHubView,
     switchReportTab,
     changeReportYear,
     changeReportMonth,
     refreshReportData,
-    openReportCurrentDocPreview
+    openReportCurrentDocPreview,
+    exportCurrentReportCSV,
+    exportSalesReportCSV,
+    exportPnlReportCSV,
+    exportStockValuationCSV,
+    exportExpensesCSV,
+    exportDebtsReceivablesCSV
 };
