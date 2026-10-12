@@ -2898,8 +2898,64 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
 }
 
 .header-search-capsule:focus-within {
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.45);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(var(--color-primary-rgb), 0.45);
     transform: translateY(-1px);
+}
+
+html.dark .header-search-capsule:focus-within,
+.dark .header-search-capsule:focus-within {
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.45);
+}
+
+/* ─── BENTO PROMO CARD (Adaptif Tema & Dark/Light Mode) ─── */
+.bento-promo-card {
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-light) 100%);
+    box-shadow: 0 14px 35px -8px rgba(var(--color-primary-rgb), 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+html.dark .bento-promo-card,
+.dark .bento-promo-card {
+    background: linear-gradient(135deg, #090e1a 0%, #172133 55%, rgba(var(--color-primary-rgb), 0.28) 100%) !important;
+    box-shadow: 0 14px 35px -8px rgba(0, 0, 0, 0.55) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.4) !important;
+}
+
+/* Tombol CTA Promo Bento Adaptif */
+.bento-promo-card .bento-promo-cta-btn {
+    background-color: #ffffff;
+    color: var(--color-primary-dark);
+    border: 1px solid #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+.bento-promo-card .bento-promo-cta-btn:hover {
+    background-color: #f8fafc;
+}
+
+html.dark .bento-promo-card .bento-promo-cta-btn,
+.dark .bento-promo-card .bento-promo-cta-btn {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+html.dark .bento-promo-card .bento-promo-cta-btn:hover,
+.dark .bento-promo-card .bento-promo-cta-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* Badge Promo Spesial */
+.bento-promo-card .bento-promo-badge {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+html.dark .bento-promo-card .bento-promo-badge,
+.dark .bento-promo-card .bento-promo-badge {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.45) !important;
+    color: #fde68a !important;
 }
 
 #app-container {

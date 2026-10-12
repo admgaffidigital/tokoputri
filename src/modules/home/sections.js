@@ -224,30 +224,30 @@ export const rDyn = () => {
             </div>`;
         }
 
-        // ── BENTO PROMO CARD PREMIUM (Rich Dynamic Palette & 3D Depth) ──
+        // ── BENTO PROMO CARD PREMIUM (Dynamic Theme & Dark/Light Adaptive) ──
         return `
-        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item w-full min-h-[195px] sm:min-h-[230px] md:min-h-[260px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-[rgba(var(--color-primary-rgb),0.4)] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white flex flex-col"
-             style="box-shadow: 0 14px 35px -8px rgba(0, 0, 0, 0.45);">
-            <!-- High-Impact Theme Accent Rings & Concentric Glow -->
-            <div class="absolute -right-12 -bottom-12 w-48 h-48 rounded-full border-[12px] border-[rgba(var(--color-primary-rgb),0.25)] pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
+        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item bento-promo-card w-full min-h-[195px] sm:min-h-[230px] md:min-h-[260px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col select-none">
+            <!-- Sleek Decorative Geometric Rings (100% Solid & Crisp) -->
+            <div class="absolute -right-12 -bottom-12 w-48 h-48 sm:w-56 sm:h-56 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
             <div class="absolute -left-10 -top-10 w-36 h-36 rounded-full border-[6px] border-white/10 pointer-events-none"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-[rgba(var(--color-primary-rgb),0.15)] pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/10 pointer-events-none"></div>
 
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
                 <div class="w-[60%] sm:w-[65%] md:w-[70%] p-4 sm:p-6 md:p-8 flex flex-col justify-center z-20">
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 shadow-sm w-max border border-white/20" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
-                        <i class="fa-solid fa-bolt-lightning text-amber-300"></i> PROMO SPESIAL
+                    <div class="bento-promo-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 shadow-sm w-max">
+                        <i class="fa-solid fa-bolt-lightning text-amber-300"></i>
+                        <span>PROMO SPESIAL</span>
                     </div>
-                    <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight mb-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
-                    <p class="text-[10.5px] sm:text-xs text-slate-200 font-medium leading-relaxed mb-3 line-clamp-2 drop-shadow-sm">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
-                    ${b.link ? `<button class="w-max text-white text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all group-hover:pr-6 cursor-pointer border border-white/20" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
+                    <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
+                    <p class="text-[10.5px] sm:text-xs text-white/95 font-medium leading-relaxed mb-3 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
+                    ${b.link ? `<button class="bento-promo-cta-btn w-max text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg flex items-center gap-2 active:scale-95 transition-all group-hover:pr-6 cursor-pointer">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
                 <div class="w-[38%] sm:w-[35%] md:w-[32%] relative z-10 flex items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
                     ${b.img ? `
                     <div class="relative flex items-center justify-center w-full h-full max-w-[150px] sm:max-w-[180px] md:max-w-[210px] group-hover:scale-105 group-hover:-rotate-1 transition-all duration-300">
                         <img width="240" height="150" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[135px] sm:max-h-[160px] md:max-h-[185px] object-contain drop-shadow-[0_14px_28px_rgba(0,0,0,0.55)] bg-transparent" onerror="this.style.display='none'">
                     </div>` : `
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] border border-white/25 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white drop-shadow-md"></i>
                     </div>`}
                 </div>
@@ -265,11 +265,11 @@ export const rDyn = () => {
                 ${promoBannersHtml}
             </div>
             ${totalBannerSlides > 1 ? `
-            <!-- Navigation Arrows (Desktop) -->
-            <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-950/85 hover:bg-[var(--color-primary)] text-white items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-2xl hover:scale-110 active:scale-95 cursor-pointer">
+            <!-- Navigation Arrows (Desktop - Adaptif Light & Dark Mode) -->
+            <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/95 dark:bg-slate-950/85 hover:bg-[var(--color-primary)] text-slate-800 dark:text-white hover:text-white items-center justify-center border border-black/10 dark:border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl hover:scale-110 active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-chevron-left text-sm"></i>
             </button>
-            <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-950/85 hover:bg-[var(--color-primary)] text-white items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-2xl hover:scale-110 active:scale-95 cursor-pointer">
+            <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/95 dark:bg-slate-950/85 hover:bg-[var(--color-primary)] text-slate-800 dark:text-white hover:text-white items-center justify-center border border-black/10 dark:border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl hover:scale-110 active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-chevron-right text-sm"></i>
             </button>
 

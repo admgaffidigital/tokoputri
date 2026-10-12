@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-08",
+        "version": "v1.16.8",
+        "date": "2026-10-13",
+        "title": "Harmonisasi Kontras Tema Storefront, Kolom Pencarian Header Adaptif & Kartu Promo Bento Multi-Mode (Light & Dark Mode)",
+        "category": "feature",
+        "badge": "Theme Contrast & Multi-Mode Harmony v1.16.8",
+        "items": [
+            "Harmonisasi Kontras Kolom Pencarian Header (Light & Dark Mode Ready): Mengeliminasi balok obsidian hitam pekat yang tidak selaras di mode terang; kini di Light Mode kolom pencarian berlatar belakang putih bersih (bg-white/95) dengan teks slate-800, border halus, ikon kaca pembesar tema toko, dan tombol chiclet SCAN bersih, serta bertransisi mulus ke obsidian gelap elegan di Dark Mode.",
+            "Kartu Promo Bento Adaptif Tema Toko (.bento-promo-card): Mengganti gradien hitam hardcoded (slate-900 to slate-950) pada slide promosi bento dengan gradien dinamis yang mengadopsi warna tema toko (var(--color-primary)) di Light Mode, lengkap dengan tombol CTA putih bersih berkontras tajam (bg-white text-[var(--color-primary-dark)]), dan beralih ke dark luxury obsidian di Dark Mode.",
+            "Tombol Navigasi Slider Adaptif: Memperbarui tombol kontrol panah melayang di desktop agar adaptif di kedua mode (bg-white/95 di Light Mode dan dark:bg-slate-950 di Dark Mode).",
+            "Eliminasi Ketimpangan Estetika (Zero Disparity): Memastikan tidak ada lagi elemen gelap legam yang terisolasi di atas kanvas tema terang toko, menjamin pengalaman visual serasi, profesional, dan nyaman di mata.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.8 (Android versionCode 11608)."
+        ]
+    },
+    {
         "id": "log-1-16-07",
         "version": "v1.16.7",
         "date": "2026-10-13",
@@ -78,23 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Harmonisasi Pengalaman Pengguna (UI/UX) Multi-Device: Memastikan seluruh elemen navigasi, bottom navigation bar mobile, stepper transaksi belanja, dan layout formulir tampil rapi, responsif, dan ergonomis di seluruh jenis perangkat.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.4 (Android versionCode 11604)."
-        ]
-    },
-    {
-        "id": "log-1-16-03",
-        "version": "v1.16.3",
-        "date": "2026-10-12",
-        "title": "Harmonisasi Responsif Kartu Rekomendasi Estimator, Dukungan Multi-Varian Kasir POS, Perluasan Sinonim Material & Proteksi Matematis Input",
-        "category": "feature",
-        "badge": "Estimator Variant Routing & Mobile Ergonomics v1.16.3",
-        "items": [
-            "Harmonisasi Tata Letak Responsif Kartu Rekomendasi (Anti-Gepeng HP): Mengadopsi tata letak adaptif 1-kolom di smartphone dan 2-kolom di tablet/desktop (grid-cols-1 sm:grid-cols-2), memastikan thumbnail, badge varian, judul produk, harga, dan tombol aksi (+) memiliki ruang lega tanpa teks terhimpit di layar sempit.",
-            "Dukungan Multi-Varian & Routing Pintar Kasir POS: Klik pada kartu produk atau tombol (+) produk bervarian dari dalam kalkulator estimator kasir POS otomatis membuka Drawer Varian Cepat (openPOSVariantSheet), memungkinkan kasir memilih ukuran atau warna produk secara presisi sebelum masuk ke keranjang belanja.",
-            "Badge Multi-Varian & Rentang Harga Transparan: Menampilkan badge chip 'Varian' dan rentang harga otomatis (cth: Rp 65.000 - Rp 1.100.000) pada produk dengan beragam ukuran/kemasan sehingga staf dan pelanggan mendapatkan informasi harga yang jelas dan transparan.",
-            "Perluasan Kosakata & Sinonim Material Bangunan Lokal: Memperkaya filter pencarian rekomendasi dengan kata kunci praktis toko material (plamur, cat tembok, bak cat, kuas rol, semen nat, tile grout, perekat keramik, bata merah, semen instan, acian, baut roofing SDS, genteng metal, talang, dll).",
-            "Proteksi Matematis Input Zero-Safe (Anti-NaN): Menerapkan guard zero-safe pada seluruh formula kalkulasi (Cat, Keramik, Bata/Hebel, dan Atap), menjamin input kosong, tanda minus, atau karakter tak terduga tidak pernah menghasilkan nilai NaN atau kartu kalkulasi rusak.",
-            "Peningkatan Test Suite (test:estimator): Menambah pengujian komprehensif pada scripts/test-material-estimator-and-decimal.mjs (59 Passed, 0 Failed) serta memverifikasi seluruh 16 test suite audit sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.3 (Android versionCode 11603)."
         ]
     }
 ];
