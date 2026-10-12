@@ -95,8 +95,6 @@ export const rDyn = () => {
                     <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/75 text-amber-300 text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 border border-amber-400/50 w-max shadow-sm">
                         <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
                         <span>${esc(heroWelcomeTag)}</span>
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                        <span class="text-white text-[8px] sm:text-[8.5px] font-extrabold tracking-normal">OFFICIAL STORE</span>
                     </div>
                     <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">
                         ${esc(heroTitle)}
