@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-04",
+        "version": "v1.16.4",
+        "date": "2026-10-12",
+        "title": "Unifikasi Presisi Grid Kontainer Universal (1440px), Eliminasi Double-Padding Header, Banner Hero Adaptif & Harmonisasi Multi-Device",
+        "category": "feature",
+        "badge": "Universal 1440px Grid Alignment & Layout Precision v1.16.4",
+        "items": [
+            "Unifikasi Standar Grid Universal Seluruh Halaman (max-w-7xl 2xl:max-w-[1440px] px-3 sm:px-6 lg:px-8): Menyeragamkan lebar kontainer secara presisi di seluruh view web dan aplikasi (Katalog Storefront, Keranjang Belanja, Pengiriman, Pembayaran, Riwayat Pesanan, Favorit, Tanya Jawab FAQ, POS Kasir, Admin Backoffice, dan Footer Bento Hub) agar tampilan konsisten, simetris, dan lapang di Desktop, Tablet, dan Mobile.",
+            "Eliminasi Padding Ganda di Seluruh Header (.glass-header): Membuang padding horizontal ganda luar sehingga tombol kembali, logo, dan judul header 100% tegak lurus sejajar satu garis vertikal dengan kartu di bawahnya tanpa offset atau pergeseran.",
+            "Banner Hero Responsif & Proporsional Penuh: Banner hero storefront menggunakan w-full snap-start shrink-0 dengan rasio proporsional bebas terpotong di HP, tablet, maupun monitor desktop lebar.",
+            "Harmonisasi Pengalaman Pengguna (UI/UX) Multi-Device: Memastikan seluruh elemen navigasi, bottom navigation bar mobile, stepper transaksi belanja, dan layout formulir tampil rapi, responsif, dan ergonomis di seluruh jenis perangkat.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.4 (Android versionCode 11604)."
+        ]
+    },
+    {
         "id": "log-1-16-03",
         "version": "v1.16.3",
         "date": "2026-10-12",
@@ -78,22 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Penerbitan Dokumen Lembar Resmi A4 untuk Seluruh Tab Laporan: Mengintegrasikan generator lembar resmi A4 standar Toko Putri (Kop Surat Resmi, logo toko, nomor dokumen resmi, rincian KPI, tanda tangan ganda pelaksana & pemilik toko, dan running footer) untuk Tab Valuasi Stok Gudang (DOC-STK), Analitika Penjualan (DOC-SALES), Rekap Utang Piutang (DOC-APAR), dan Rekapitulasi Beban Toko (DOC-EXP).",
             "Test Suite Terpadu (test:reports): Menambahkan rangkaian pengujian otomatis 22 skenario pengujian kalkulasi finansial, RFC 4180 CSV, agregasi kategori, dan dokumen A4 (100% Passed).",
             "Multi-Channel Distribution v1.16.0 (Android versionCode 11600)."
-        ]
-    },
-    {
-        "id": "log-1-15-09",
-        "version": "v1.15.9",
-        "date": "2026-10-11",
-        "title": "Harmonisasi Tata Letak Responsif Header POS Kasir (Tablet & Mobile), Proteksi Anti-Gepeng & Menu Aksi Cepat Universal",
-        "category": "feature",
-        "badge": "Responsive POS Header & Multi-Device Parity v1.15.9",
-        "items": [
-            "Proteksi Anti-Gepeng Sisi Kiri (Nama Toko & Kasir): Menerapkan batas lebar minimum (min-w-[130px] sm:min-w-[160px] flex-1) pada wadah nama toko dan kasir aktif di header POS Storefront, menjamin teks identitas kasir tidak akan pernah terhimpit menjadi 0px atau tertabrak oleh tombol toolbar di segala ukuran layar (smartphone 360px, tablet 768px-1024px, laptop, dan monitor desktop).",
-            "Harmonisasi Breakpoint Toolbar Sisi Kanan: Mengalihkan tombol aksesoris (Estimator Material F3, Printer Thermal F7, Panduan Kasir, jam detik, dan badge Online) ke breakpoint xl: (1280px ke atas) sehingga layar tablet dan perangkat berskala resolusi 125% tidak lagi mengalami desak-desakan atau tombol Keluar terpotong di tepi kanan.",
-            "Universal Quick Action Menu Popover [⋮]: Memperluas ketersediaan tombol menu opsi cepat titik tiga [⋮] (#pos-mobile-menu-btn) untuk seluruh perangkat berlayar < 1280px (< xl). Semua alat bantu kasir (Estimator, Printer Thermal, Catat Kas Laci F11, Ringkasan Shift X-Report, Panduan, dan Logout) tetap dapat diakses dalam 1 sentuhan cepat.",
-            "Tombol Keluar Kasir & Parkir Antrean Adaptif: Tombol keluar kasir beradaptasi menjadi tombol ikon ringkas pada tablet (md:) dan tombol penuh pada desktop (xl:), sementara tombol antrean parkir (0) mempertahankan ukuran kompak 32px di tablet untuk efisiensi ruang maksimal.",
-            "Rangkaian Pengujian Baru (test:posheader): Menambahkan test suite otomatis scripts/test-pos-header-responsive.mjs dengan 28 kasus uji lolos 100%, serta 13 test suite audit sistem lulus sempurna.",
-            "Multi-Channel Distribution v1.15.9 (Android versionCode 11509)."
         ]
     }
 ];

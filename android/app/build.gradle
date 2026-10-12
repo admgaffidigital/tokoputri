@@ -7,8 +7,8 @@ android {
         applicationId "com.tokoputri.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11603
-        versionName "1.16.3"
+        versionCode 11604
+        versionName "1.16.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
