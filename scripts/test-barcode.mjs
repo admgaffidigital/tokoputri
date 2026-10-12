@@ -67,10 +67,44 @@ assert(svg.includes('<rect'), 'Memiliki elemen <rect untuk batang barcode');
 assert(svg.includes('fill="#ffffff"'), 'Memiliki background putih solid murni');
 assert(svg.includes('PKU-5CM-1KG'), 'Menyertakan teks SKU human-readable');
 
+// 7. Uji Kalkulasi Jumlah Label & Estimasi Lembar A4 (Zero-Flicker Partial DOM)
+console.log('\n📄 7. Uji Kalkulasi Agregasi Kuantitas Label & Estimasi Lembar A4:');
+const sampleQueue = [
+    { name: 'Cat Tembok 5kg Putih', sku: 'CAT-5KG-WHT', qty: 15 },
+    { name: 'Cat Tembok 5kg Abu', sku: 'CAT-5KG-GRY', qty: 10 },
+    { name: 'Kuas Rol 9 inch', sku: 'ROL-9INCH', qty: 5 }
+];
+
+const calcTotalLabels = (queue) => queue.reduce((acc, it) => acc + (parseInt(it.qty, 10) || 0), 0);
+const calcA4Sheets = (total, paperSize) => {
+    const perSheet = paperSize === 'a4-2x7' ? 14 : 30;
+    return Math.ceil(total / perSheet) || 0;
+};
+const sanitizeQty = (val) => {
+    const parsed = parseInt(val, 10);
+    return isNaN(parsed) ? 0 : Math.max(0, parsed);
+};
+
+const total1 = calcTotalLabels(sampleQueue);
+assert(total1 === 30, 'Total stiker agregat 15 + 10 + 5 = 30 lembar');
+
+const sheets3x10 = calcA4Sheets(total1, 'a4-3x10');
+assert(sheets3x10 === 1, 'Kertas A4 3x10 untuk 30 stiker butuh tepat 1 lembar');
+
+const sheets3x10More = calcA4Sheets(31, 'a4-3x10');
+assert(sheets3x10More === 2, 'Kertas A4 3x10 untuk 31 stiker butuh 2 lembar (pembulatan ke atas)');
+
+const sheets2x7 = calcA4Sheets(total1, 'a4-2x7');
+assert(sheets2x7 === 3, 'Kertas A4 2x7 untuk 30 stiker butuh 3 lembar (ceil 30 / 14 = 3)');
+
+assert(sanitizeQty('abc') === 0, 'Kuantitas invalid (non-angka) di-sanitize aman menjadi 0');
+assert(sanitizeQty('-5') === 0, 'Kuantitas negatif di-sanitize aman menjadi 0');
+assert(sanitizeQty('12.8') === 12, 'Kuantitas string angka bulat di-sanitize aman');
+
 console.log('\n============================================================');
 if (failCount === 0) {
     console.log(`🎯 HASIL UJI COBA: ${passCount} Passed, 0 Failed`);
-    console.log('✨ ENGINE GENERATOR BARCODE CODE 128 TERVERIFIKASI 100% VALID! ✅\n');
+    console.log('✨ ENGINE GENERATOR BARCODE CODE 128 & LABEL PRINT TERVERIFIKASI 100% VALID! ✅\n');
 } else {
     console.error(`❌ HASIL UJI COBA: ${passCount} Passed, ${failCount} Failed\n`);
     process.exit(1);

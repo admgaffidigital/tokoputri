@@ -340,7 +340,7 @@ export const renderBarcodeLabelModalContent = () => {
                                             <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, -1)" class="btn-native-icon w-9 h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Kurangi 1">
                                                 <i class="fa-solid fa-minus text-[11px]"></i>
                                             </button>
-                                            <input type="number" min="0" max="999" value="${it.qty}" onchange="window.setBarcodeLabelQtyDirect(${idx}, this.value)" class="w-14 h-9 text-center font-mono font-black text-sm border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
+                                            <input type="number" id="barcode-qty-input-${idx}" min="0" max="999" value="${it.qty}" oninput="window.setBarcodeLabelQtyDirect(${idx}, this.value, true)" onchange="window.setBarcodeLabelQtyDirect(${idx}, this.value, false)" class="w-14 h-9 text-center font-mono font-black text-sm border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                                             <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, 1)" class="btn-native-icon w-9 h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Tambah 1">
                                                 <i class="fa-solid fa-plus text-[11px]"></i>
                                             </button>
@@ -450,13 +450,13 @@ export const renderBarcodeLabelModalContent = () => {
                         <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 space-y-2">
                             <div class="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
                                 <span>Total Stiker Dicetak:</span>
-                                <span class="text-base font-black font-mono" style="color: var(--color-primary);">${totalLabelsCount} Lembar</span>
+                                <span id="barcode-label-total-count" class="text-base font-black font-mono" style="color: var(--color-primary);">${totalLabelsCount} Lembar</span>
                             </div>
 
                             ${labelSettings.paperSize.startsWith('a4') ? `
                                 <div class="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400 pt-1.5 border-t border-slate-200 dark:border-slate-700">
                                     <span>Estimasi Kertas A4:</span>
-                                    <span class="font-black text-slate-800 dark:text-white font-mono">${a4SheetsNeeded} Lembar (${a4PerSheet} label/lembar)</span>
+                                    <span id="barcode-label-a4-estimate" class="font-black text-slate-800 dark:text-white font-mono">${a4SheetsNeeded} Lembar (${a4PerSheet} label/lembar)</span>
                                 </div>
                             ` : `
                                 <div class="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400 pt-1.5 border-t border-slate-200 dark:border-slate-700">
@@ -488,7 +488,7 @@ export const renderBarcodeLabelModalContent = () => {
 
                 <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="btn-native-action flex-1 sm:flex-initial h-11 sm:h-12 px-4 sm:px-6 rounded-xl text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-print text-xs"></i>
-                    <span>Cetak Sekarang (${totalLabelsCount})</span>
+                    <span id="barcode-label-print-btn-text">Cetak Sekarang (${totalLabelsCount})</span>
                 </button>
             </div>
         </div>
@@ -514,30 +514,66 @@ export const selectBarcodePreviewIndex = (idx) => {
     }
 };
 
+/**
+ * Pembaruan parsial indikator total stiker dan estimasi A4 tanpa flicker / merusak fokus input
+ */
+export const updateBarcodeLabelQtySummaryOnly = () => {
+    const totalLabelsCount = labelItemsQueue.reduce((acc, it) => acc + (parseInt(it.qty, 10) || 0), 0);
+    const a4PerSheet = labelSettings.paperSize === 'a4-2x7' ? 14 : 30;
+    const a4SheetsNeeded = Math.ceil(totalLabelsCount / a4PerSheet) || 0;
+
+    const elTotal = el('barcode-label-total-count');
+    if (elTotal) elTotal.textContent = `${totalLabelsCount} Lembar`;
+
+    const elA4 = el('barcode-label-a4-estimate');
+    if (elA4) elA4.textContent = `${a4SheetsNeeded} Lembar (${a4PerSheet} label/lembar)`;
+
+    const elBtnText = el('barcode-label-print-btn-text');
+    if (elBtnText) elBtnText.textContent = `Cetak Sekarang (${totalLabelsCount})`;
+};
+
 export const adjustBarcodeLabelQty = (idx, delta) => {
     if (labelItemsQueue[idx]) {
         const cur = parseInt(labelItemsQueue[idx].qty, 10) || 0;
-        labelItemsQueue[idx].qty = Math.max(0, cur + delta);
-        renderBarcodeLabelModalContent();
+        const next = Math.max(0, cur + delta);
+        labelItemsQueue[idx].qty = next;
+
+        const inp = el(`barcode-qty-input-${idx}`);
+        if (inp) {
+            inp.value = next;
+        }
+        updateBarcodeLabelQtySummaryOnly();
     }
 };
 
-export const setBarcodeLabelQtyDirect = (idx, val) => {
+export const setBarcodeLabelQtyDirect = (idx, val, fromInput = false) => {
     if (labelItemsQueue[idx]) {
-        labelItemsQueue[idx].qty = Math.max(0, parseInt(val, 10) || 0);
-        renderBarcodeLabelModalContent();
+        const parsed = parseInt(val, 10);
+        labelItemsQueue[idx].qty = isNaN(parsed) ? 0 : Math.max(0, parsed);
+
+        if (!fromInput) {
+            const inp = el(`barcode-qty-input-${idx}`);
+            if (inp && (typeof document === 'undefined' || document.activeElement !== inp)) {
+                inp.value = labelItemsQueue[idx].qty;
+            }
+        }
+        updateBarcodeLabelQtySummaryOnly();
     }
 };
 
 export const setAllBarcodeLabelQty = (mode) => {
-    labelItemsQueue.forEach(it => {
+    labelItemsQueue.forEach((it, idx) => {
         if (mode === 'stock') {
             it.qty = Math.max(1, Math.round(parseFloat(it.stock) || 1));
         } else if (typeof mode === 'number') {
             it.qty = Math.max(0, mode);
         }
+        const inp = el(`barcode-qty-input-${idx}`);
+        if (inp) {
+            inp.value = it.qty;
+        }
     });
-    renderBarcodeLabelModalContent();
+    updateBarcodeLabelQtySummaryOnly();
 };
 
 // ─── Engine Cetak ke Browser Print (Web Print / Isolated Iframe) ──────────────
@@ -818,5 +854,6 @@ window.selectBarcodePreviewIndex          = selectBarcodePreviewIndex;
 window.adjustBarcodeLabelQty              = adjustBarcodeLabelQty;
 window.setBarcodeLabelQtyDirect           = setBarcodeLabelQtyDirect;
 window.setAllBarcodeLabelQty              = setAllBarcodeLabelQty;
+window.updateBarcodeLabelQtySummaryOnly   = updateBarcodeLabelQtySummaryOnly;
 window.printBarcodeLabelsBrowser          = printBarcodeLabelsBrowser;
 window.printBarcodeLabelsThermalRawbt     = printBarcodeLabelsThermalRawbt;

@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.16.1**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.16.3**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -415,11 +415,17 @@ Toko ritel teknik dan bangunan sering menghadapi kasus penukaran barang sisa pro
 ### A. Menggunakan Kalkulator Estimator Material Bangunan
 Fitur unggulan untuk memikat kontraktor, tukang, dan pemilik rumah yang ingin menghitung estimasi kebutuhan renovasi:
 1. **Cara Membuka :** Tekan tombol pintas **[F3]** di keyboard kasir POS, atau ketuk tombol **"Estimator"** di header atas toko.
-2. **Tiga Formula Kalkulasi Tersedia:**
+2. **Empat Formula Kalkulasi Presisi Tersedia:**
    - **Kalkulator Cat Tembok & Plafon :** Masukkan panjang $\times$ tinggi ruangan dan jumlah lapisan cat. Sistem menghitung kebutuhan kaleng kecil (2.5 kg), pail besar (20 kg), dan cat dasar alkali sealer.
    - **Kalkulator Keramik & Granit Lantai :** Masukkan luas lantai m² dan ukuran ubin (40x40, 50x50, 60x60). Sistem menghitung jumlah dus keramik (termasuk cadangan potongan sudut 10%), semen perekat instan, dan semen pengisi nat.
    - **Kalkulator Pasangan Dinding Bata/Hebel :** Masukkan luas dinding m² dikurangi luas pintu/jendela. Sistem menghitung kebutuhan pcs bata merah atau hebel ringan, volume m³, dan sak semen mortar perekat.
-3. **Aksi Cerdas 1-Klik :**
+   - **Kalkulator Atap Spandek, Seng Gelombang & Asbes :** Mendukung 3 model geometri atap (Model Pelana 2 Sisi, Kanopi Miring 1 Sisi, dan Luas Langsung m²) memperhitungkan sudut kemiringan lereng atap (cosinus), overlap lembar seng/spandek, end-lap sambungan ujung 20cm, safety margin limbah potong, serta kalkulasi otomatis aksesoris pelengkap: Baut Roofing SDS 12-14x50mm (box isi 100), Paku Payung Seng Galvanis (kg isi ~70 pcs), Paku Asbes Berkaret (pack isi 50), dan Nok Bubungan Puncak.
+3. **Rekomendasi Produk Toko Dinamis & Pemilihan Multi-Varian Langsung :**
+   - Di bawah hasil perhitungan kalkulator, sistem secara otomatis mencocokkan dan menyajikan kartu produk bahan bangunan toko yang tersedia lengkap dengan foto, badge varian, rentang harga, dan stok rak terkini.
+   - **Tata Letak Responsif Anti-Gepeng di Layar HP :** Kartu produk tertata lapang dalam 1 kolom di layar smartphone dan 2 kolom di tablet/desktop tanpa teks harga terpotong.
+   - **Routing Pintar Kasir POS :** Jika estimator dibuka dari kasir POS, mengklik produk bervarian otomatis memunculkan lembar pilihan varian (*variant drawer sheet*) untuk memilih ukuran kemasan (misal 1 kg, 4 kg, 20 kg) atau varian warna dalam 1 sentuhan.
+4. **Proteksi Matematis Zero-Safe (Anti-NaN) :** Seluruh formula kalkulasi dilindungi validasi angka aman sehingga kolom yang kosong, backspace, atau simbol tak terduga tidak pernah menghasilkan galat `NaN`.
+5. **Aksi Cerdas 1-Klik :**
    - Klik **"Tambahkan Semua Bahan ke Keranjang"** untuk langsung memasukkan seluruh paket barang ke kasir POS atau keranjang belanja online.
    - Klik **"Konsultasi WhatsApp"** untuk mengirim rincian kalkulasi rapi ke WhatsApp mandor/pelanggan.
 
