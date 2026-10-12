@@ -2840,7 +2840,7 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
     transition: all 0.3s ease;
 }
 
-/* ─── BANNER SLIDER & BENTO PROMO CARDS ─── */
+/* ─── BANNER SLIDER & BENTO PROMO CARDS (LUXURY SOLID & CRISP) ─── */
 #banner-slider {
     scroll-padding-left: 0;
     scroll-snap-type: x mandatory;
@@ -2850,6 +2850,23 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
     scroll-snap-align: start;
     scroll-snap-stop: always;
 }
+/* Micro Shimmer Sheen Animation for Hero Banner */
+@keyframes heroSheenSweep {
+    0% { transform: translateX(-120%) skewX(-20deg); }
+    20%, 100% { transform: translateX(300%) skewX(-20deg); }
+}
+.hero-banner-sheen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: heroSheenSweep 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 
 #app-container {
     transition: background-color 0.4s ease;

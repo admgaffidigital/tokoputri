@@ -79,39 +79,59 @@ export const rDyn = () => {
     const heroBtnText = appData.store.heroBtnText || 'Member VIP';
 
     const welcomeHeroSlide = showHeroSlide ? `
-        <div id="banner-slide-0" class="banner-slide-item w-full min-h-[190px] sm:min-h-[220px] md:min-h-[250px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-lg flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-             style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35); box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.35);">
-            <!-- Clean Decorative Ring -->
-            <div class="absolute right-24 top-3 w-10 h-10 rounded-full border border-white/20 pointer-events-none"></div>
+        <div id="banner-slide-0" class="banner-slide-item w-full min-h-[195px] sm:min-h-[230px] md:min-h-[260px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
+             style="background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-light) 100%); box-shadow: 0 14px 35px -8px rgba(var(--color-primary-rgb), 0.45);">
+            <!-- Sleek Decorative Geometric Rings & Precision Grid Accents (100% Solid & Crisp) -->
+            <div class="absolute -right-12 -top-12 w-48 h-48 sm:w-56 sm:h-56 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-105 transition-transform duration-700"></div>
+            <div class="absolute -right-4 -top-4 w-32 h-32 sm:w-36 sm:h-36 rounded-full border-2 border-white/25 pointer-events-none"></div>
+            <div class="absolute right-1/3 -bottom-10 w-28 h-28 rounded-full border-[8px] border-black/10 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/10 pointer-events-none"></div>
+            <!-- Living Shimmer Sheen Light Reflection -->
+            <div class="hero-banner-sheen"></div>
 
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
                 <!-- Text & Action (Left Side) -->
                 <div class="w-[60%] sm:w-[65%] md:w-[70%] p-4 sm:p-6 md:p-8 flex flex-col justify-center z-20">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/40 text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-1.5 border border-white/25 w-max shadow-2xs">
-                        <i class="fa-solid fa-sparkles text-amber-300"></i> ${esc(heroWelcomeTag)}
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/75 text-amber-300 text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 border border-amber-400/50 w-max shadow-sm">
+                        <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
+                        <span>${esc(heroWelcomeTag)}</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                        <span class="text-white text-[8px] sm:text-[8.5px] font-extrabold tracking-normal">OFFICIAL STORE</span>
                     </div>
-                    <h2 class="text-[15px] sm:text-lg md:text-xl font-black text-white leading-tight tracking-tight drop-shadow-sm line-clamp-1">
+                    <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">
                         ${esc(heroTitle)}
                     </h2>
-                    <p class="text-[10px] sm:text-xs text-white/90 font-medium leading-relaxed mt-1 line-clamp-2">
+                    <p class="text-[10.5px] sm:text-xs text-white/95 font-medium leading-relaxed mt-1 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                         ${esc(heroSubtitle)}
                     </p>
-                    <div class="mt-2.5 sm:mt-3 flex items-center gap-2">
-                        <button type="button" onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Buka kartu member VIP untuk info poin!');" class="bg-white hover:bg-slate-50 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-1.5 sm:py-2 px-3.5 sm:px-4 rounded-full shadow-md flex items-center gap-1.5 transition-all group-hover:pr-4 cursor-pointer" style="color: var(--color-primary-dark);">
-                            <i class="fa-solid fa-id-card" style="color: var(--color-primary);"></i> ${esc(heroBtnText)} <i class="fa-solid fa-arrow-right text-[8px] transition-transform group-hover:translate-x-1" style="color: var(--color-primary);"></i>
+                    <div class="mt-3 sm:mt-4 flex items-center gap-2.5 flex-wrap">
+                        <button type="button" onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Buka kartu member VIP untuk info poin!');" class="bg-white hover:bg-slate-100 active:scale-95 text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg hover:shadow-xl flex items-center gap-2 transition-all group-hover:pr-6 cursor-pointer border border-white" style="color: var(--color-primary-dark);">
+                            <i class="fa-solid fa-id-card text-amber-500"></i> ${esc(heroBtnText)} <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1" style="color: var(--color-primary-dark);"></i>
                         </button>
+                        <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white/95 bg-black/30 px-3 py-1.5 rounded-full border border-white/20 shadow-xs">
+                            <i class="fa-solid fa-shield-halved text-emerald-300"></i> 100% Produk Asli &amp; Bergaransi
+                        </span>
                     </div>
                 </div>
 
                 <!-- 3D Mascot Avatar (Right Side) -->
                 <div class="w-[40%] sm:w-[35%] md:w-[30%] relative z-10 flex flex-col items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
-                    <div class="relative group/mascot">
-                        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 bg-black/20 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-                            <img width="128" height="128" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain" style="image-rendering: auto;">
+                    <div class="relative group/mascot flex flex-col items-center">
+                        <!-- Floating Top Badge: 100% ORI -->
+                        <div class="absolute -top-2.5 -right-2 z-20 bg-gradient-to-r from-rose-600 to-amber-500 text-white text-[7.5px] sm:text-[8px] font-black px-2 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 border border-white/40">
+                            <i class="fa-solid fa-bolt text-[7px]"></i> 100% ORI
                         </div>
-                        <!-- Status Badge -->
-                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-950 text-[7.5px] sm:text-[8px] font-bold text-white border border-white/20 px-2 py-0.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${esc(heroBadgeText)}
+                        <!-- Stage Pod & Avatar Box -->
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-3 border-white/80 bg-gradient-to-b from-white/25 via-black/20 to-black/40 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                            <img width="128" height="128" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain drop-shadow-md" style="image-rendering: auto;">
+                        </div>
+                        <!-- Live Status Badge with Pulsing Ring -->
+                        <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-20 bg-slate-950 text-[8px] sm:text-[8.5px] font-black text-white border-2 border-emerald-400 px-2.5 py-0.5 rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                            </span>
+                            <span>${esc(heroBadgeText)}</span>
                         </div>
                     </div>
                 </div>
@@ -163,49 +183,70 @@ export const rDyn = () => {
             }
 
             return `
-            <div id="banner-slide-${slideIdx}" class="banner-slide-item w-full aspect-[21/9] sm:aspect-[24/9] max-h-[360px] snap-start shrink-0 rounded-3xl relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
+            <div id="banner-slide-${slideIdx}" class="banner-slide-item w-full aspect-[21/9] sm:aspect-[24/9] max-h-[360px] snap-start shrink-0 rounded-3xl relative overflow-hidden group bg-black shadow-xl border border-white/20 flex flex-col select-none">
                 ${videoMediaHtml}
+                <!-- Top Masking Scrim: Menutup header channel/watermark agar tampilan sinematik & bersih -->
+                <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/90 via-black/40 to-transparent z-10 pointer-events-none"></div>
+                <!-- Top-Left Video Badge -->
+                <div class="absolute top-3 left-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-600 text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider shadow-lg border border-white/20 pointer-events-none">
+                    <i class="fa-solid fa-play text-[7px] text-white animate-pulse"></i> <span>VIDEO PROMO</span>
+                </div>
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
-                <!-- Konten bawah: judul & tombol suara murni transparan tanpa shadow gradient -->
-                <div class="absolute bottom-0 left-0 right-0 z-20 bg-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
+                <!-- Bottom Masking Scrim: Konten bawah dengan kontras sinematik tajam & anti-faded -->
+                <div class="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
                     <div class="flex-1 min-w-0 pointer-events-none">
-                        ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base line-clamp-2">${esc(b.title)}</p>` : ''}
-                        ${b.desc  ? `<p class="text-white/90 text-[11px] sm:text-xs font-medium line-clamp-2 mt-0.5">${esc(b.desc)}</p>` : ''}
+                        ${b.title ? `<p class="text-white font-black text-sm sm:text-base line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">${esc(b.title)}</p>` : ''}
+                        ${b.desc  ? `<p class="text-white/90 text-[11px] sm:text-xs font-medium line-clamp-2 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">${esc(b.desc)}</p>` : ''}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
-                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${slideIdx});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
-                            <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
+                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${slideIdx});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-950/90 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-black rounded-full shadow-xl border border-white/30 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-volume-xmark text-xs text-rose-400"></i> <span>Aktifkan Suara</span>
                         </button>
                     </div>
                 </div>
             </div>`;
         }
 
-        // ── SLIDE GAMBAR (default: Bento Promo Card Premium) ─────────────
+        // ── CEK FULL-BLEED POSTER GAMBAR LEBAR vs BENTO PROMO CARD ──
+        if (b.img && (!b.desc || b.desc.trim() === '')) {
+            // ── FULL-BLEED POSTER BANNER (Poster Promosi Penuh Edge-to-Edge) ──
+            return `
+            <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item w-full aspect-[21/9] sm:aspect-[24/9] max-h-[360px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-slate-200/80 dark:border-slate-800 bg-slate-950 flex flex-col select-none">
+                <img width="1200" height="450" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w1200-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                ${b.title ? `
+                <div class="absolute bottom-0 inset-x-0 z-10 bg-gradient-to-t from-black/95 via-black/50 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
+                    <h3 class="text-white font-black text-sm sm:text-base drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-1">${esc(b.title)}</h3>
+                    ${b.link ? `<span class="text-[10px] font-black uppercase text-amber-300 bg-slate-950/80 px-3 py-1 rounded-full border border-amber-300/40 shadow-md">Beli Sekarang <i class="fa-solid fa-arrow-right ml-1"></i></span>` : ''}
+                </div>` : ''}
+            </div>`;
+        }
+
+        // ── BENTO PROMO CARD PREMIUM (Rich Dynamic Palette & 3D Depth) ──
         return `
-        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item w-full min-h-[190px] sm:min-h-[220px] md:min-h-[250px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-[rgba(var(--color-primary-rgb),0.35)] bg-gradient-to-br from-white via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-800/95 dark:to-slate-900 flex flex-col"
-             style="box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);">
-            <!-- Dynamic Theme Accent Rings -->
-            <div class="absolute -right-8 -bottom-8 w-36 h-36 rounded-full border-[10px] border-[rgba(var(--color-primary-rgb),0.12)] pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
-            <div class="absolute -left-10 -top-10 w-28 h-28 rounded-full bg-[rgba(var(--color-primary-rgb),0.06)] pointer-events-none"></div>
-            
+        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item w-full min-h-[195px] sm:min-h-[230px] md:min-h-[260px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-[rgba(var(--color-primary-rgb),0.4)] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white flex flex-col"
+             style="box-shadow: 0 14px 35px -8px rgba(0, 0, 0, 0.45);">
+            <!-- High-Impact Theme Accent Rings & Concentric Glow -->
+            <div class="absolute -right-12 -bottom-12 w-48 h-48 rounded-full border-[12px] border-[rgba(var(--color-primary-rgb),0.25)] pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
+            <div class="absolute -left-10 -top-10 w-36 h-36 rounded-full border-[6px] border-white/10 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-[rgba(var(--color-primary-rgb),0.15)] pointer-events-none"></div>
+
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
-                <div class="w-[62%] sm:w-[68%] md:w-[72%] p-4 sm:p-6 md:p-8 flex flex-col justify-center z-20">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 shadow-2xs w-max" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
-                        <i class="fa-solid fa-bolt-lightning text-[8px]"></i> PROMO TOKO
+                <div class="w-[60%] sm:w-[65%] md:w-[70%] p-4 sm:p-6 md:p-8 flex flex-col justify-center z-20">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 shadow-sm w-max border border-white/20" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                        <i class="fa-solid fa-bolt-lightning text-amber-300"></i> PROMO SPESIAL
                     </div>
-                    <h2 class="text-[15px] sm:text-lg md:text-xl font-black text-slate-900 dark:text-white leading-tight tracking-tight mb-1 drop-shadow-xs line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
-                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed mb-3 line-clamp-2">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
-                    ${b.link ? `<button class="w-max text-white text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-1.5 sm:py-2 px-3.5 sm:px-4 rounded-full shadow-md flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all group-hover:pr-5 cursor-pointer" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
+                    <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight mb-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
+                    <p class="text-[10.5px] sm:text-xs text-slate-200 font-medium leading-relaxed mb-3 line-clamp-2 drop-shadow-sm">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
+                    ${b.link ? `<button class="w-max text-white text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all group-hover:pr-6 cursor-pointer border border-white/20" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
-                <div class="w-[38%] sm:w-[32%] md:w-[28%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-3 sm:pr-6 md:pr-10 shrink-0">
+                <div class="w-[40%] sm:w-[35%] md:w-[30%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-3 sm:pr-6 md:pr-10 shrink-0">
                     ${b.img ? `
-                    <div class="relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-white/60 dark:bg-slate-800/70 border border-[rgba(var(--color-primary-rgb),0.25)] p-2 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                    <div class="relative flex items-center justify-center w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl bg-white dark:bg-slate-800/90 border-2 border-white/80 dark:border-slate-700 p-2.5 shadow-2xl group-hover:scale-105 group-hover:-rotate-1 transition-all duration-300">
                         <img width="240" height="140" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[120px] sm:max-h-[140px] md:max-h-[160px] object-contain drop-shadow-md" onerror="this.style.display='none'">
                     </div>` : `
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border-2 border-[rgba(var(--color-primary-rgb),0.3)] flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
-                        <i class="fa-solid fa-gift text-3xl sm:text-4xl text-[var(--color-primary)]"></i>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] border-2 border-white/40 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
+                        <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white drop-shadow-md"></i>
                     </div>`}
                 </div>
             </div>
@@ -223,17 +264,17 @@ export const rDyn = () => {
             </div>
             ${totalBannerSlides > 1 ? `
             <!-- Navigation Arrows (Desktop) -->
-            <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+            <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-950/85 hover:bg-[var(--color-primary)] text-white items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-2xl hover:scale-110 active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-chevron-left text-sm"></i>
             </button>
-            <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+            <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-950/85 hover:bg-[var(--color-primary)] text-white items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-2xl hover:scale-110 active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-chevron-right text-sm"></i>
             </button>
 
             <!-- Dots Indicator Navigation -->
-            <div id="banner-dots-container" class="flex items-center justify-center gap-1.5 mt-2">
+            <div id="banner-dots-container" class="flex items-center justify-center gap-2 mt-3">
                 ${Array.from({ length: totalBannerSlides }).map((_, idx) => `
-                    <button onclick="window.scrollToBanner(${idx})" type="button" aria-label="Slide ${idx+1}" class="banner-dot-item ${idx === 0 ? 'h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm' : 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'}" data-index="${idx}"></button>
+                    <button onclick="window.scrollToBanner(${idx})" type="button" aria-label="Slide ${idx+1}" class="banner-dot-item ${idx === 0 ? 'h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-8 shadow-md' : 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'} cursor-pointer" data-index="${idx}"></button>
                 `).join('')}
             </div>
             ` : ''}

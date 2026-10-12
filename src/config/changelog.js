@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-05",
+        "version": "v1.16.5",
+        "date": "2026-10-12",
+        "title": "Elevasi Estetika Banner Beranda (Grand Enterprise Edition), Scrim Video Sinematik, Panggung Maskot 3D & Dukungan Poster Full-Bleed",
+        "category": "feature",
+        "badge": "Hero Banner Grand Aesthetic & Cinematic Video Scrim v1.16.5",
+        "items": [
+            "Elevasi Estetika Banner Hero Utama (Grand Enterprise Edition): Menghadirkan kembali tampilan banner beranda yang kaya visual, kontras tinggi, dan memikat tanpa efek blur/kaca buram. Dilengkapi aksen pencahayaan gradien tajam, cincin geometris ganda, animasi kilau logam dinamis (hero sheen sweep), serta lencana toko resmi bertabur mahkota emas.",
+            "Panggung Maskot 3D & Interaksi Call-to-Action Ganda: Mempercantik maskot/avatar toko di atas panggung 3D dengan cincin aksen berpendar, status aktif live pulsing, serta tombol CTA primer ('Mulai Belanja') dan sekunder ('Konsultasi Ahli') berkontras tajam.",
+            "Resolusi Scrim Sinematik Banner Video: Mengganti overlay transparan polos yang memudarkan teks dengan gradien scrim sinematik ganda (top & bottom) berkontras tinggi, menjamin judul dan tombol audio video promo selalu terbaca tajam dan elegan.",
+            "Dukungan Poster Full-Bleed & Kartu Promo Bento: Menghadirkan billboard foto penuh (Full-Bleed Widescreen) untuk banner promo berbasis poster grafis, serta kartu promo Bento Obsidian dengan panggung produk 3D berestetika premium untuk promo berfitur teks.",
+            "Navigasi Slider Premium & Indikator Kapsul: Memperbarui tombol kontrol panah melayang desktop dengan latar obsidian pekat dan indikator titik kapsul aktif yang responsif.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.5 (Android versionCode 11605)."
+        ]
+    },
+    {
         "id": "log-1-16-04",
         "version": "v1.16.4",
         "date": "2026-10-12",
@@ -78,22 +95,6 @@ export const DEFAULT_CHANGELOG = [
             "Tampilan Edukatif & Modal Spesifikasi Produk: Kartu produk rekomendasi kini interaktif dapat diklik untuk membuka foto rincian dan spesifikasi produk (openProductModal), serta dilengkapi panduan edukatif jika kategori produk belum diinput di inventori toko.",
             "Rangkaian Pengujian Otomatis (test:estimator): Menambahkan Bagian 6 Uji Rekomendasi Produk Dinamis & Tambah ke Keranjang (44 Passed) dan 15 suite pengujian audit sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.1 (Android versionCode 11601)."
-        ]
-    },
-    {
-        "id": "log-1-16-00",
-        "version": "v1.16.0",
-        "date": "2026-10-11",
-        "title": "Ekspor Spreadsheet Excel/CSV, Grafik Tren Finansial 12 Bulan (Native SVG), Analitika Kategori & Cetak A4 Multi-Tab",
-        "category": "feature",
-        "badge": "Enterprise Financial Analytics & Spreadsheet Export v1.16.0",
-        "items": [
-            "Mesin Ekspor Spreadsheet Excel / CSV Terpadu (RFC 4180): Menghadirkan tombol aksi Ekspor Excel dengan menu dropdown cerdas untuk mengunduh berkas .csv ber-UTF-8 BOM (langsung terbuka rapi di Microsoft Excel, Google Sheets, dan LibreOffice tanpa teks berantakan) mencakup Laporan Penjualan Detail, Laporan Laba Rugi (P&L), Valuasi Stok Inventori Gudang, Buku Kas Beban Usaha, dan Rekap Utang Piutang (AP/AR).",
-            "Visualisasi Grafik Tren Kinerja Finansial 12 Bulan (Native Responsive SVG): Menghadirkan grafik batang komparasi performa finansial tahunan (Omzet Penjualan dengan warna tema dinamis toko, Laba Kotor warna emerald, dan Beban Usaha warna amber) dengan skala Y dinamis, label bulan, interaksi klik filter bulan, serta tooltip melayang yang menyajikan data rincian finansial per bulan.",
-            "Analitika Profitabilitas & Kontribusi Omset Per Kategori Material: Menyajikan analitika tingkat lanjut pada Tab Penjualan yang mengelompokkan omset, modal HPP, laba kotor, margin %, dan progress bar persentase kontribusi per kategori material (Bahan Bangunan, Cat, Pipa, dll) dengan tampilan kartu responsif di smartphone dan tabel analitis di desktop.",
-            "Penerbitan Dokumen Lembar Resmi A4 untuk Seluruh Tab Laporan: Mengintegrasikan generator lembar resmi A4 standar Toko Putri (Kop Surat Resmi, logo toko, nomor dokumen resmi, rincian KPI, tanda tangan ganda pelaksana & pemilik toko, dan running footer) untuk Tab Valuasi Stok Gudang (DOC-STK), Analitika Penjualan (DOC-SALES), Rekap Utang Piutang (DOC-APAR), dan Rekapitulasi Beban Toko (DOC-EXP).",
-            "Test Suite Terpadu (test:reports): Menambahkan rangkaian pengujian otomatis 22 skenario pengujian kalkulasi finansial, RFC 4180 CSV, agregasi kategori, dan dokumen A4 (100% Passed).",
-            "Multi-Channel Distribution v1.16.0 (Android versionCode 11600)."
         ]
     }
 ];

@@ -108,9 +108,9 @@ export const updateBannerDots = (activeIdx) => {
     const dots = dotsContainer.querySelectorAll('.banner-dot-item');
     dots.forEach((dot, idx) => {
         if (idx === activeIdx) {
-            dot.className = 'banner-dot-item h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm';
+            dot.className = 'banner-dot-item h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-8 shadow-md cursor-pointer';
         } else {
-            dot.className = 'banner-dot-item w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400';
+            dot.className = 'banner-dot-item w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 cursor-pointer';
         }
     });
 };

@@ -1855,20 +1855,21 @@ export const openHeroBannerModal = () => {
             
             <div class="p-5 overflow-y-auto custom-scrollbar space-y-4 text-xs">
                 <!-- Preview Live Box -->
-                <div class="p-4 rounded-2xl text-white shadow-md relative overflow-hidden flex items-center justify-between"
-                     style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
-                    <div class="w-[62%] pr-2">
-                        <span class="inline-block px-2 py-0.5 rounded-full bg-black/25 text-[8.5px] font-black uppercase tracking-wider mb-1" id="m-preview-tag">
-                            <i class="fa-solid fa-sparkles text-amber-300"></i> ${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}
+                <div class="p-4 sm:p-5 rounded-2xl text-white shadow-xl relative overflow-hidden flex items-center justify-between border border-white/20"
+                     style="background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-light) 100%);">
+                    <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full border-8 border-white/10 pointer-events-none"></div>
+                    <div class="w-[62%] pr-2 z-10">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-950/75 text-amber-300 text-[8.5px] font-black uppercase tracking-wider mb-1.5 border border-amber-400/50 shadow-sm" id="m-preview-tag">
+                            <i class="fa-solid fa-crown text-amber-400 text-[9px]"></i> ${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}
                         </span>
-                        <h4 class="font-black text-sm text-white line-clamp-1" id="m-preview-title">${esc(appData.store.heroTitle || appData.store.name || 'TOKO PUTRI')}</h4>
-                        <p class="text-[9.5px] text-white/90 line-clamp-2 mt-0.5 font-medium" id="m-preview-sub">${esc(appData.store.heroSubtitle || appData.store.slogan || 'Pusat Solusi Bangunan & Cat Terlengkap')}</p>
+                        <h4 class="font-black text-sm text-white line-clamp-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" id="m-preview-title">${esc(appData.store.heroTitle || appData.store.name || 'TOKO PUTRI')}</h4>
+                        <p class="text-[9.5px] text-white/95 line-clamp-2 mt-0.5 font-medium drop-shadow-xs" id="m-preview-sub">${esc(appData.store.heroSubtitle || appData.store.slogan || 'Pusat Solusi Bangunan & Cat Terlengkap')}</p>
                     </div>
-                    <div class="w-[35%] flex flex-col items-center">
-                        <div class="w-18 h-18 rounded-2xl overflow-hidden shadow-lg border-2 border-white/60 bg-black/20 flex items-center justify-center">
+                    <div class="w-[35%] flex flex-col items-center z-10">
+                        <div class="w-18 h-18 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/80 bg-gradient-to-b from-white/25 to-black/40 flex items-center justify-center">
                             <img id="m-preview-img" src="${esc(currentMascot)}" class="w-full h-full object-cover" onerror="this.src='/putri_mascot_3d.jpg';">
                         </div>
-                        <div class="mt-1 bg-slate-950/80 text-[7.5px] font-bold text-white px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/20 whitespace-nowrap">
+                        <div class="mt-1 bg-slate-950 text-[7.5px] font-bold text-white px-2 py-0.5 rounded-full flex items-center gap-1 border-2 border-emerald-400 shadow-lg whitespace-nowrap">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             <span id="m-preview-badge">${esc(appData.store.heroBadgeText || 'Siap Melayani')}</span>
                         </div>
@@ -1920,7 +1921,7 @@ export const openHeroBannerModal = () => {
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Tag Ucapan</label>
-                        <input autocomplete="off" id="quick-set-hero-welcome-tag" value="${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}" class="admin-input !py-2.5 bg-white dark:bg-slate-800 shadow-sm w-full text-xs" placeholder="SELAMAT DATANG" oninput="document.getElementById('m-preview-tag').innerHTML = '<i class=\\'fa-solid fa-sparkles text-amber-300\\'></i> ' + (this.value || 'SELAMAT DATANG');">
+                        <input autocomplete="off" id="quick-set-hero-welcome-tag" value="${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}" class="admin-input !py-2.5 bg-white dark:bg-slate-800 shadow-sm w-full text-xs" placeholder="SELAMAT DATANG" oninput="document.getElementById('m-preview-tag').innerHTML = '<i class=\\'fa-solid fa-crown text-amber-400 text-[9px]\\'></i> ' + (this.value || 'SELAMAT DATANG');">
                     </div>
                 </div>
 
