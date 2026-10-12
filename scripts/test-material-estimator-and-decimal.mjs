@@ -11,9 +11,13 @@ import {
     setEstimatorRoofMode,
     setEstimatorRoofType,
     updateEstimatorRoofField,
+    updateEstimatorPaintField,
+    updateEstimatorTileField,
+    updateEstimatorBrickField,
     findRelatedStoreProducts,
     renderRelatedProductsHtml,
     addStoreProductFromEstimator,
+    handleEstimatorProductCardClick,
     openMaterialEstimatorModal
 } from '../src/modules/catalog/material-estimator.js';
 import { appData } from '../src/core/state.js';
@@ -185,6 +189,106 @@ globalThis.window.posAddToCart = (id) => {
 openMaterialEstimatorModal('pos');
 addStoreProductFromEstimator('prod-roof-1');
 assert(addedToPOSId === 'prod-roof-1', `addStoreProductFromEstimator berhasil memanggil posAddToCart di mode Kasir POS`);
+
+// ─── 7. UJI PRODUK MULTI-VARIAN, RENTANG HARGA & RESPONSIVE LAYOUT ───
+console.log('\n📱 7. Uji Produk Multi-Varian, Rentang Harga & Layout Responsif:');
+
+const prodVariant = {
+    id: 'prod-nodrop-var',
+    name: 'Cat Pelapis No Drop Waterproofing',
+    category: 'Cat & Finishing',
+    price: 65000,
+    hasVariants: true,
+    variants: [
+        { name: '1 kg Abu-abu', price: 65000 },
+        { name: '4 kg Abu-abu', price: 235000 },
+        { name: '20 kg Pail', price: 1100000 }
+    ],
+    isActive: true
+};
+appData.products.push(prodVariant);
+
+const htmlResult = renderRelatedProductsHtml('paint', 'fa-paintbrush', 'Rekomendasi Cat');
+assert(htmlResult.includes('grid-cols-1 sm:grid-cols-2'), `Layout responsif mengadopsi 1-kolom di mobile dan 2-kolom di sm: (grid-cols-1 sm:grid-cols-2)`);
+assert(htmlResult.includes('Varian'), `Badge chip Varian ter-render pada produk multi-varian`);
+assert(htmlResult.includes('Rp 65.000 - Rp 1.100.000'), `Rentang harga min-max ter-render dengan rapi (${htmlResult.includes('Rp 65.000 - Rp 1.100.000') ? 'valid' : 'gagal'})`);
+assert(htmlResult.includes('window.handleEstimatorProductCardClick'), `Kartu produk memanggil handler terpadu handleEstimatorProductCardClick`);
+
+// Uji routing POS untuk produk bervarian
+let openedPOSVariantId = null;
+globalThis.window.openPOSVariantSheet = (id) => {
+    openedPOSVariantId = id;
+};
+
+openMaterialEstimatorModal('pos');
+handleEstimatorProductCardClick('prod-nodrop-var');
+assert(openedPOSVariantId === 'prod-nodrop-var', `Klik kartu produk multi-varian di POS membuka Drawer Varian (openPOSVariantSheet)`);
+
+openedPOSVariantId = null;
+addStoreProductFromEstimator('prod-nodrop-var');
+assert(openedPOSVariantId === 'prod-nodrop-var', `Tombol (+) produk multi-varian di POS membuka Drawer Varian (openPOSVariantSheet)`);
+
+// Uji routing Storefront untuk detail produk
+let openedProductModalId = null;
+globalThis.window.openProductModal = (id) => {
+    openedProductModalId = id;
+};
+openMaterialEstimatorModal('storefront');
+handleEstimatorProductCardClick('prod-nodrop-var');
+assert(openedProductModalId === 'prod-nodrop-var', `Klik kartu produk di Storefront membuka modal detail (openProductModal)`);
+
+// ─── 8. UJI KEAMANAN MATEMATIS & ZERO-SAFE INPUTS (ANTI-NAN) ───
+console.log('\n🛡️ 8. Uji Keamanan Matematis & Proteksi Nilai Negatif/Kosong:');
+
+updateEstimatorPaintField('length', '');
+updateEstimatorPaintField('width', '-5');
+updateEstimatorPaintField('openings', 'abc');
+const safePaint = calculatePaintNeeds();
+assert(!isNaN(safePaint.grandArea) && safePaint.grandArea >= 0, `calculatePaintNeeds aman dari NaN dan negatif saat input kosong/minus`);
+assert(!isNaN(safePaint.totalVolumeLiters), `Kebutuhan volume cat aman dari NaN`);
+
+updateEstimatorTileField('length', '');
+updateEstimatorTileField('wastePercent', '-10');
+const safeTile = calculateTileNeeds();
+assert(!isNaN(safeTile.totalAreaWithWaste) && safeTile.totalAreaWithWaste >= 0, `calculateTileNeeds aman dari NaN saat input kosong/minus`);
+
+updateEstimatorBrickField('length', '');
+updateEstimatorBrickField('openings', '999');
+const safeBrick = calculateBrickNeeds();
+assert(!isNaN(safeBrick.netArea) && safeBrick.netArea >= 0, `calculateBrickNeeds aman dari NaN dan netArea tidak bernilai negatif`);
+
+// Kembalikan nilai default kalkulator
+updateEstimatorPaintField('length', 4);
+updateEstimatorPaintField('width', 3);
+updateEstimatorPaintField('openings', 4);
+updateEstimatorTileField('length', 4);
+updateEstimatorTileField('width', 3);
+updateEstimatorTileField('wastePercent', 10);
+updateEstimatorBrickField('length', 6);
+updateEstimatorBrickField('height', 3);
+updateEstimatorBrickField('openings', 2);
+
+// ─── 9. UJI PERLUASAN SINONIM KOSAKATA MATERIAL LOKAL ─────────
+console.log('\n🔍 9. Uji Perluasan Sinonim Kosakata Material Toko:');
+
+appData.products.push(
+    { id: 'syn-1', name: 'Plamur Tembok RJ London 1kg', category: 'Finishing', price: 25000, isActive: true },
+    { id: 'syn-2', name: 'Semen Tile Grout AM 53 Pengisi Nat', category: 'Perekat', price: 18000, isActive: true },
+    { id: 'syn-3', name: 'Bata Merah Bakar Super Garut', category: 'Bahan Kasar', price: 850, isActive: true },
+    { id: 'syn-4', name: 'Baut Roofing SDS 12x50 Baut Baja Ringan', category: 'Aksesoris Atap', price: 500, isActive: true }
+);
+
+const synPaints = findRelatedStoreProducts('paint');
+assert(synPaints.some(p => p.id === 'syn-1'), `Sinonim 'plamur' berhasil dicocokkan ke kategori cat`);
+
+const synTiles = findRelatedStoreProducts('tile');
+assert(synTiles.some(p => p.id === 'syn-2'), `Sinonim 'tile grout' berhasil dicocokkan ke kategori keramik`);
+
+const synBricks = findRelatedStoreProducts('brick');
+assert(synBricks.some(p => p.id === 'syn-3'), `Sinonim 'bata merah' berhasil dicocokkan ke kategori dinding`);
+
+const synRoofs = findRelatedStoreProducts('roof');
+assert(synRoofs.some(p => p.id === 'syn-4'), `Sinonim 'baut roofing sds' berhasil dicocokkan ke kategori atap`);
 
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passed} Passed, ${failed} Failed`);

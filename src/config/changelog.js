@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-03",
+        "version": "v1.16.3",
+        "date": "2026-10-12",
+        "title": "Harmonisasi Responsif Kartu Rekomendasi Estimator, Dukungan Multi-Varian Kasir POS, Perluasan Sinonim Material & Proteksi Matematis Input",
+        "category": "feature",
+        "badge": "Estimator Variant Routing & Mobile Ergonomics v1.16.3",
+        "items": [
+            "Harmonisasi Tata Letak Responsif Kartu Rekomendasi (Anti-Gepeng HP): Mengadopsi tata letak adaptif 1-kolom di smartphone dan 2-kolom di tablet/desktop (grid-cols-1 sm:grid-cols-2), memastikan thumbnail, badge varian, judul produk, harga, dan tombol aksi (+) memiliki ruang lega tanpa teks terhimpit di layar sempit.",
+            "Dukungan Multi-Varian & Routing Pintar Kasir POS: Klik pada kartu produk atau tombol (+) produk bervarian dari dalam kalkulator estimator kasir POS otomatis membuka Drawer Varian Cepat (openPOSVariantSheet), memungkinkan kasir memilih ukuran atau warna produk secara presisi sebelum masuk ke keranjang belanja.",
+            "Badge Multi-Varian & Rentang Harga Transparan: Menampilkan badge chip 'Varian' dan rentang harga otomatis (cth: Rp 65.000 - Rp 1.100.000) pada produk dengan beragam ukuran/kemasan sehingga staf dan pelanggan mendapatkan informasi harga yang jelas dan transparan.",
+            "Perluasan Kosakata & Sinonim Material Bangunan Lokal: Memperkaya filter pencarian rekomendasi dengan kata kunci praktis toko material (plamur, cat tembok, bak cat, kuas rol, semen nat, tile grout, perekat keramik, bata merah, semen instan, acian, baut roofing SDS, genteng metal, talang, dll).",
+            "Proteksi Matematis Input Zero-Safe (Anti-NaN): Menerapkan guard zero-safe pada seluruh formula kalkulasi (Cat, Keramik, Bata/Hebel, dan Atap), menjamin input kosong, tanda minus, atau karakter tak terduga tidak pernah menghasilkan nilai NaN atau kartu kalkulasi rusak.",
+            "Peningkatan Test Suite (test:estimator): Menambah pengujian komprehensif pada scripts/test-material-estimator-and-decimal.mjs (59 Passed, 0 Failed) serta memverifikasi seluruh 16 test suite audit sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.3 (Android versionCode 11603)."
+        ]
+    },
+    {
         "id": "log-1-16-02",
         "version": "v1.16.2",
         "date": "2026-10-12",
@@ -77,21 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Tombol Keluar Kasir & Parkir Antrean Adaptif: Tombol keluar kasir beradaptasi menjadi tombol ikon ringkas pada tablet (md:) dan tombol penuh pada desktop (xl:), sementara tombol antrean parkir (0) mempertahankan ukuran kompak 32px di tablet untuk efisiensi ruang maksimal.",
             "Rangkaian Pengujian Baru (test:posheader): Menambahkan test suite otomatis scripts/test-pos-header-responsive.mjs dengan 28 kasus uji lolos 100%, serta 13 test suite audit sistem lulus sempurna.",
             "Multi-Channel Distribution v1.15.9 (Android versionCode 11509)."
-        ]
-    },
-    {
-        "id": "log-1-15-08",
-        "version": "v1.15.8",
-        "date": "2026-10-11",
-        "title": "Pelepasan Listener Realtime Terpusat (Anti-Permission Error Saat Logout) & Penguatan Guard Sesi Kasir POS",
-        "category": "feature",
-        "badge": "Centralized Realtime Listener Cleanup & Auth Guard v1.15.8",
-        "items": [
-            "Pelepasan Listener Kolektif Sebelum SignOut (detachAllAdminListenersBeforeSignOut): Memastikan seluruh listener realtime Firestore (pos_shifts, riwayat transaksi POS, data sensitif privat toko cms_private, pesanan admin, pelanggan, dan ulasan) terlepas secara sinkron dan tuntas sebelum Firebase auth.signOut() dieksekusi saat logout admin, kickout sesi ganda, maupun sesi kadaluarsa.",
-            "Resolusi Paripurna Permission-Denied POS Shift: Mengeliminasi error konsol [POS Shift] Snapshot listener cms_data error: FirebaseError: Missing or insufficient permissions pada pos-shift.js dengan proteksi pendeteksian kode permission-denied serta pemutusan listener otomatis tanpa mencemari log konsol browser.",
-            "Guard Otentikasi Sesi Sebelum Attach Listener Cloud: Menjaga fungsi listenActiveShiftCloud, findActiveShiftInCloud, dan syncActiveShiftFromCloud agar tidak memicu query cloud tanpa sesi staf atau kredensial yang valid.",
-            "Test Suite Terpadu (test:authguard): Menambahkan rangkaian pengujian otomatis 17 skenario pada test audit suite (100% Passed).",
-            "Multi-Channel Distribution v1.15.8 (Android versionCode 11508)."
         ]
     }
 ];

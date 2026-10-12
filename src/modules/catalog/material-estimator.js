@@ -143,18 +143,22 @@ export const calculatePaintNeeds = () => {
     let ceilingArea = 0;
 
     if (paintState.mode === 'room') {
-        const perimeter = 2 * (parseFloat(paintState.length) + parseFloat(paintState.width));
-        const rawWall = perimeter * parseFloat(paintState.height);
-        totalWallArea = Math.max(0, rawWall - (parseFloat(paintState.openings) || 0));
+        const len = Math.max(0, parseFloat(paintState.length) || 0);
+        const wid = Math.max(0, parseFloat(paintState.width) || 0);
+        const hei = Math.max(0, parseFloat(paintState.height) || 0);
+        const perimeter = 2 * (len + wid);
+        const rawWall = perimeter * hei;
+        const openings = Math.max(0, parseFloat(paintState.openings) || 0);
+        totalWallArea = Math.max(0, rawWall - openings);
         if (paintState.ceiling) {
-            ceilingArea = parseFloat(paintState.length) * parseFloat(paintState.width);
+            ceilingArea = len * wid;
         }
     } else {
-        totalWallArea = parseFloat(paintState.directArea) || 0;
+        totalWallArea = Math.max(0, parseFloat(paintState.directArea) || 0);
     }
 
     const grandArea = totalWallArea + ceilingArea;
-    const coats = parseInt(paintState.coats) || 2;
+    const coats = Math.max(1, parseInt(paintState.coats, 10) || 2);
 
     // Daya sebar standar cat tembok: ~11 m² / liter atau kg per lapis
     const spreadRate = 11;
@@ -186,12 +190,15 @@ export const calculatePaintNeeds = () => {
  * Kalkulasi Kebutuhan Keramik & Semen Perekat
  */
 export const calculateTileNeeds = () => {
-    const rawArea = parseFloat(tileState.length) * parseFloat(tileState.width);
-    const wasteFactor = 1 + (parseFloat(tileState.wastePercent) / 100);
+    const len = Math.max(0, parseFloat(tileState.length) || 0);
+    const wid = Math.max(0, parseFloat(tileState.width) || 0);
+    const rawArea = len * wid;
+    const wastePercent = Math.max(0, parseFloat(tileState.wastePercent) || 0);
+    const wasteFactor = 1 + (wastePercent / 100);
     const totalAreaWithWaste = parseFloat((rawArea * wasteFactor).toFixed(2));
 
     const spec = TILE_SPECS[tileState.tileSize] || TILE_SPECS['40x40'];
-    const totalBoxes = Math.ceil(totalAreaWithWaste / spec.coveragePerBox);
+    const totalBoxes = spec.coveragePerBox > 0 ? Math.ceil(totalAreaWithWaste / spec.coveragePerBox) : 0;
 
     // Semen Perekat Keramik (Tile Adhesive): 1 sak 40kg untuk ~8 m²
     const adhesiveBags = tileState.includeAdhesive ? Math.ceil(totalAreaWithWaste / 8) : 0;
@@ -201,7 +208,7 @@ export const calculateTileNeeds = () => {
 
     return {
         rawArea: parseFloat(rawArea.toFixed(2)),
-        wastePercent: tileState.wastePercent,
+        wastePercent,
         totalAreaWithWaste,
         spec,
         totalBoxes,
@@ -214,8 +221,12 @@ export const calculateTileNeeds = () => {
  * Kalkulasi Kebutuhan Pasangan Dinding (Bata / Hebel & Mortar)
  */
 export const calculateBrickNeeds = () => {
-    const rawWallArea = parseFloat(brickState.length) * parseFloat(brickState.height) * parseInt(brickState.sides || 1);
-    const netArea = Math.max(0, parseFloat((rawWallArea - (parseFloat(brickState.openings) || 0)).toFixed(2)));
+    const len = Math.max(0, parseFloat(brickState.length) || 0);
+    const hei = Math.max(0, parseFloat(brickState.height) || 0);
+    const sides = Math.max(1, parseInt(brickState.sides, 10) || 1);
+    const rawWallArea = len * hei * sides;
+    const openings = Math.max(0, parseFloat(brickState.openings) || 0);
+    const netArea = Math.max(0, parseFloat((rawWallArea - openings).toFixed(2)));
 
     let brickPcs = 0;
     let brickCubic = 0;
@@ -386,46 +397,53 @@ export const calculateRoofNeeds = () => {
 export const findRelatedStoreProducts = (type) => {
     const prods = Array.isArray(appData.products) ? appData.products : [];
     if (type === 'paint') {
+        const keywords = [
+            'cat', 'mowilex', 'dulux', 'avitex', 'no drop', 'nodrop', 'plamir', 'plamur',
+            'alkali', 'sealer', 'wall sealer', 'kuas', 'rol', 'kuas rol', 'bak cat',
+            'thinner', 'nippon', 'aquaproof', 'danapaint', 'vinilex', 'waterproofing',
+            'cat tembok', 'cat kayu', 'cat besi', 'cat minyak', 'propan', 'jotun', 'amplas'
+        ];
         return prods.filter(p => {
             if (!p || p.isActive === false || p.isActive === 'false') return false;
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
-            return text.includes('cat') || text.includes('mowilex') || text.includes('dulux') || 
-                   text.includes('avitex') || text.includes('no drop') || text.includes('plamir') || 
-                   text.includes('alkali') || text.includes('sealer') || text.includes('kuas') || 
-                   text.includes('rol') || text.includes('thinner') || text.includes('nippon') || 
-                   text.includes('aquaproof') || text.includes('danapaint') || text.includes('vinilex');
+            return keywords.some(k => text.includes(k));
         }).slice(0, 4);
     }
     if (type === 'tile') {
+        const keywords = [
+            'keramik', 'granit', 'tile', 'nat', 'semen nat', 'tile grout', 'perekat',
+            'perekat keramik', 'granite', 'marmer', 'm-400', 'mu-400', 'plint',
+            'stepnosing', 'batu alam', 'spacer', 'tile spacer', 'waterpass', 'sika', 'lem keramik'
+        ];
         return prods.filter(p => {
             if (!p || p.isActive === false || p.isActive === 'false') return false;
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
-            return text.includes('keramik') || text.includes('granit') || text.includes('tile') || 
-                   text.includes('nat') || text.includes('perekat') || text.includes('granite') || 
-                   text.includes('marmer') || text.includes('m-400') || text.includes('mu-400') || 
-                   text.includes('plint') || text.includes('stepnosing');
+            return keywords.some(k => text.includes(k));
         }).slice(0, 4);
     }
     if (type === 'brick') {
+        const keywords = [
+            'hebel', 'bata', 'bata ringan', 'bata merah', 'mortar', 'semen', 'semen instan',
+            'pasir', 'thinbed', 'tiga roda', 'gresik', 'padang', 'semen padang', 'holcim',
+            'dynamix', 'plester', 'acian', 'mu-380', 'perekat hebel', 'besi beton', 'kolom praktis'
+        ];
         return prods.filter(p => {
             if (!p || p.isActive === false || p.isActive === 'false') return false;
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
-            return text.includes('hebel') || text.includes('bata') || text.includes('mortar') || 
-                   text.includes('semen') || text.includes('pasir') || text.includes('bata ringan') || 
-                   text.includes('thinbed') || text.includes('tiga roda') || text.includes('gresik') || 
-                   text.includes('padang') || text.includes('holcim') || text.includes('dynamix');
+            return keywords.some(k => text.includes(k));
         }).slice(0, 4);
     }
     if (type === 'roof') {
+        const keywords = [
+            'spandek', 'spandex', 'seng', 'asbes', 'atap', 'zincalume', 'galvalum',
+            'roofing', 'baut roofing', 'paku payung', 'nok', 'bubungan', 'nok spandek',
+            'baja ringan', 'reng', 'baut', 'sds', 'genteng', 'genteng metal', 'onduline',
+            'alderon', 'polycarbonate', 'talang', 'insulasi', 'alumunium foil', 'drilling'
+        ];
         return prods.filter(p => {
             if (!p || p.isActive === false || p.isActive === 'false') return false;
             const text = `${p.name || ''} ${p.category || ''} ${p.subCategory || ''}`.toLowerCase();
-            return text.includes('spandek') || text.includes('spandex') || text.includes('seng') || 
-                   text.includes('asbes') || text.includes('atap') || text.includes('zincalume') || 
-                   text.includes('galvalum') || text.includes('roofing') || text.includes('paku payung') || 
-                   text.includes('nok') || text.includes('bubungan') || text.includes('baja ringan') || 
-                   text.includes('reng') || text.includes('baut') || text.includes('genteng') || 
-                   text.includes('onduline') || text.includes('alderon') || text.includes('polycarbonate');
+            return keywords.some(k => text.includes(k));
         }).slice(0, 4);
     }
     return [];
@@ -442,21 +460,39 @@ export const renderRelatedProductsHtml = (type, iconClass, labelText, defaultIco
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
                 <i class="${iconClass} text-[var(--color-primary)]"></i> ${labelText}:
             </p>
-            <div class="grid grid-cols-2 gap-2">
-                ${related.map(p => `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                ${related.map(p => {
+                    const hasVars = !!(p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0);
+                    let priceDisplay = fCur(p.price || 0);
+                    if (hasVars) {
+                        const validPrices = p.variants
+                            .map(v => parseFloat(v.price))
+                            .filter(pr => !isNaN(pr) && pr > 0);
+                        if (validPrices.length > 0) {
+                            const minP = Math.min(...validPrices);
+                            const maxP = Math.max(...validPrices);
+                            priceDisplay = minP === maxP ? fCur(minP) : `${fCur(minP)} - ${fCur(maxP)}`;
+                        }
+                    }
+                    const isPos = estimatorSource === 'pos';
+                    return `
                 <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 shadow-2xs hover:border-[var(--color-primary)] transition-all">
-                    <div onclick="window.openProductModal && window.openProductModal('${esc(p.id)}')" class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs cursor-pointer" title="Lihat detail ${esc(p.name)}">
+                    <div onclick="window.handleEstimatorProductCardClick('${esc(p.id)}')" class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs cursor-pointer" title="Lihat detail ${esc(p.name)}">
                         ${p.img ? `<img src="${esc(p.img)}" class="w-full h-full object-cover">` : `<i class="fa-solid ${defaultIcon} text-slate-400"></i>`}
                     </div>
-                    <div onclick="window.openProductModal && window.openProductModal('${esc(p.id)}')" class="min-w-0 flex-1 cursor-pointer" title="Lihat detail ${esc(p.name)}">
-                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate hover:text-[var(--color-primary)]">${esc(p.name)}</p>
-                        <p class="text-[10px] font-extrabold text-[var(--color-primary)]">${fCur(p.price)}</p>
+                    <div onclick="window.handleEstimatorProductCardClick('${esc(p.id)}')" class="min-w-0 flex-1 cursor-pointer" title="Lihat detail ${esc(p.name)}">
+                        <div class="flex items-center gap-1 min-w-0">
+                            ${hasVars ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shrink-0 leading-tight">Varian</span>` : ''}
+                            <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate hover:text-[var(--color-primary)]">${esc(p.name)}</p>
+                        </div>
+                        <p class="text-[10px] font-extrabold text-[var(--color-primary)] truncate mt-0.5">${priceDisplay}</p>
                     </div>
-                    <button type="button" onclick="window.addStoreProductFromEstimator('${esc(p.id)}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ${esc(p.name)} ke Keranjang">
-                        <i class="fa-solid fa-plus text-xs"></i>
+                    <button type="button" onclick="window.addStoreProductFromEstimator('${esc(p.id)}')" class="btn-native-icon w-9 h-9 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs" style="box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Tambah ${esc(p.name)} ke ${isPos ? 'Kasir' : 'Keranjang'}">
+                        <i class="fa-solid ${hasVars && isPos ? 'fa-layer-group' : 'fa-plus'} text-xs"></i>
                     </button>
                 </div>
-                `).join('')}
+                    `;
+                }).join('')}
             </div>
         </div>`;
     }
@@ -1316,6 +1352,13 @@ export const addEstimatorToPOSCart = (name, qty, unit, estPrice = 0) => {
 
 export const addStoreProductFromEstimator = (productId) => {
     if (estimatorSource === 'pos') {
+        const prod = (appData.products || []).find(p => String(p.id) === String(productId));
+        if (prod && prod.hasVariants && Array.isArray(prod.variants) && prod.variants.length > 0) {
+            if (typeof window.openPOSVariantSheet === 'function') {
+                window.openPOSVariantSheet(productId);
+                return;
+            }
+        }
         if (typeof window.posAddToCart === 'function') {
             window.posAddToCart(productId);
             showToast('Produk ditambahkan ke kasir POS!', 'success');
@@ -1329,6 +1372,28 @@ export const addStoreProductFromEstimator = (productId) => {
             window.addToCart(productId);
             showToast('Produk ditambahkan ke keranjang belanja!', 'success');
         } else if (typeof window.openProductModal === 'function') {
+            window.openProductModal(productId);
+        }
+    }
+};
+
+export const handleEstimatorProductCardClick = (productId) => {
+    if (estimatorSource === 'pos') {
+        const prod = (appData.products || []).find(p => String(p.id) === String(productId));
+        if (prod && prod.hasVariants && Array.isArray(prod.variants) && prod.variants.length > 0) {
+            if (typeof window.openPOSVariantSheet === 'function') {
+                window.openPOSVariantSheet(productId);
+                return;
+            }
+        }
+        if (typeof window.posAddToCart === 'function') {
+            window.posAddToCart(productId);
+            showToast('Produk ditambahkan ke kasir POS!', 'success');
+        } else if (typeof window.quickAddOrOpenProduct === 'function') {
+            window.quickAddOrOpenProduct(null, productId);
+        }
+    } else {
+        if (typeof window.openProductModal === 'function') {
             window.openProductModal(productId);
         }
     }
@@ -1406,6 +1471,7 @@ if (typeof window !== 'undefined') {
     window.shareEstimatorToWA             = shareEstimatorToWA;
     window.addEstimatorToPOSCart          = addEstimatorToPOSCart;
     window.addStoreProductFromEstimator   = addStoreProductFromEstimator;
+    window.handleEstimatorProductCardClick= handleEstimatorProductCardClick;
     window.updateEstimatorResultOnly      = updateEstimatorResultOnly;
     window.setEstimatorPaintCoats         = setEstimatorPaintCoats;
     window.setEstimatorTileWaste          = setEstimatorTileWaste;
