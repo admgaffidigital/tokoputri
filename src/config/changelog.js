@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-06",
+        "version": "v1.16.6",
+        "date": "2026-10-13",
+        "title": "Elevasi Kolom Pencarian Header (Obsidian Pill Capsule), Animasi Teks Berganti (Rolling Ticker), Chiclet Scanner & Chip Tren 1-Klik",
+        "category": "feature",
+        "badge": "Header Search Capsule & Rolling Trends v1.16.6",
+        "items": [
+            "Redesain Kapsul Pencarian Obsidian (Elevated Pill Capsule): Mengubah kolom pencarian header dari kotak standar menjadi kapsul obsidian aerodinamis (rounded-full) berkontras tinggi dengan border kristal putih halus, drop shadow lembut, ikon kaca pembesar emas amber, dan tombol clear [X] dinamis.",
+            "Animasi Teks Berganti Otomatis (Dynamic Rolling Placeholder Ticker): Mengganti placeholder statis dengan animasi teks halus yang berganti secara berkala merekomendasikan bahan bangunan populer (Semen Gresik/Tiga Roda, Cat No Drop, Pipa PVC Rucika, Keramik Granit, Mesin Bor, Seng Spandek, dll) yang otomatis jeda saat diketik.",
+            "Tombol Scanner Mini (Chiclet Scanner Pill): Menghadirkan tombol aksi pemindai barcode/QR mini dengan badge 'SCAN' bertulisan tegas dan ikon QR emas, memudahkan pelanggan memindai produk fisik langsung dari ponsel.",
+            "Deretan Chip Tren Pencarian Populer (1-Klik Tanpa Ketik): Menghadirkan barisan tag pil horizontal interaktif di bawah kolom pencarian (Cat Tembok, Semen, Pipa PVC, Alat Teknik, Seng & Baut, Keramik, Besi, Sanitari) yang langsung memfilter katalog secara instan dalam 1 sentuhan.",
+            "Sinkronisasi Pencarian Desktop: Menyelaraskan kolom pencarian desktop dengan tombol scanner chiclet terpadu dan rotasi placeholder cerdas.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.6 (Android versionCode 11606)."
+        ]
+    },
+    {
         "id": "log-1-16-05",
         "version": "v1.16.5",
         "date": "2026-10-12",
@@ -79,22 +96,6 @@ export const DEFAULT_CHANGELOG = [
             "Prioritisasi LIFO Fallback Scan di Router: Memperbarui urutan allKnownModals pada router.js sehingga modal tingkat atas (variantPreview, quickVariant, product) selalu ditutup terlebih dahulu sebelum modal induknya (materialEstimator), menjamin sinkronisasi tombol Back Android 100% mulus.",
             "Rangkaian Pengujian Baru (test:estimatorzindex): Menambahkan unit test otomatis scripts/test-estimator-variant-zindex.mjs (15 Passed, 0 Failed) serta memverifikasi 16 suite pengujian audit sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.2 (Android versionCode 11602)."
-        ]
-    },
-    {
-        "id": "log-1-16-01",
-        "version": "v1.16.1",
-        "date": "2026-10-11",
-        "title": "Integrasi Dinamis Produk Rekomendasi Kalkulator Estimator Bahan Bangunan & Multi-Channel Keranjang",
-        "category": "feature",
-        "badge": "Material Estimator Dynamic Cart & Channel Routing v1.16.1",
-        "items": [
-            "Integrasi Tambah ke Keranjang Universal (Add to Cart): Menghubungkan tombol aksi (+) pada kartu produk rekomendasi Kalkulator Estimator Material secara langsung ke keranjang belanja web (quickAddOrOpenProduct) dan deteksi modal varian produk otomatis.",
-            "Deteksi Kanal Otomatis (Storefront Web vs Kasir POS): Sistem mendeteksi secara cerdas kanal aktif saat estimator dibuka. Tombol (+) langsung memasukkan produk rekomendasi ke kasir POS jika dibuka dari layar kasir, dan ke keranjang belanja web jika dibuka dari etalase pelanggan.",
-            "Pencocokan Kata Kunci Kontekstual Dinamis 100%: Menghubungkan rekomendasi produk ke database inventori toko riil (appData.products) berbasis kata kunci bahan untuk Cat, Keramik, Pasangan Bata/Hebel, dan Atap/Seng.",
-            "Tampilan Edukatif & Modal Spesifikasi Produk: Kartu produk rekomendasi kini interaktif dapat diklik untuk membuka foto rincian dan spesifikasi produk (openProductModal), serta dilengkapi panduan edukatif jika kategori produk belum diinput di inventori toko.",
-            "Rangkaian Pengujian Otomatis (test:estimator): Menambahkan Bagian 6 Uji Rekomendasi Produk Dinamis & Tambah ke Keranjang (44 Passed) dan 15 suite pengujian audit sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.1 (Android versionCode 11601)."
         ]
     }
 ];
