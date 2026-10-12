@@ -1183,7 +1183,7 @@ export const submitSalesReturn = async () => {
         closeSalesReturnModal();
         renderReturnsView();
 
-        showToast(`✅ Retur Penjualan ${returnId} berhasil diproses!`);
+        showToast(`Retur Penjualan ${returnId} berhasil diproses!`);
 
         // Tampilkan opsi cetak
         if (await showConfirm('Cetak Nota Bukti Retur', 'Cetak Nota Bukti Retur Penjualan sekarang?', null, 'Ya, Cetak Nota', false)) {
@@ -1730,7 +1730,7 @@ export const submitVendorReturn = async () => {
         closeVendorReturnModal();
         renderReturnsView();
 
-        showToast(`✅ Retur Supplier ${returnId} berhasil dicatat!`);
+        showToast(`Retur Supplier ${returnId} berhasil dicatat!`);
 
         if (await showConfirm('Cetak Surat Jalan Retur', 'Cetak Surat Pengembalian Barang ke Supplier sekarang?', null, 'Ya, Cetak Surat', false)) {
             printVendorReturnA4(returnId);
@@ -1916,7 +1916,7 @@ export const deleteSalesReturn = async (returnId) => {
 
         hLoad();
         renderReturnsView();
-        showToast(`✅ Riwayat retur penjualan ${returnId} berhasil dihapus!`);
+        showToast(`Riwayat retur penjualan ${returnId} berhasil dihapus!`);
     } catch (e) {
         hLoad();
         console.error('Error hapus sales return:', e);
@@ -1987,7 +1987,7 @@ export const deleteVendorReturn = async asyncReturnId => {
 
         hLoad();
         renderReturnsView();
-        showToast(`✅ Riwayat retur supplier ${returnId} berhasil dihapus!`);
+        showToast(`Riwayat retur supplier ${returnId} berhasil dihapus!`);
     } catch (e) {
         hLoad();
         console.error('Error hapus vendor return:', e);

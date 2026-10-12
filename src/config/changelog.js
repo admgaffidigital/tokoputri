@@ -16,17 +16,32 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-07",
+        "version": "v1.16.7",
+        "date": "2026-10-13",
+        "title": "Dukungan Penuh Banner PNG Transparan (Floating Cutout 3D), Eliminasi Kotak Putih Kaku, Harmonisasi Bento Theme & Zero Emoji Iconography",
+        "category": "feature",
+        "badge": "Transparent PNG Banners & Zero Emoji System v1.16.7",
+        "items": [
+            "Dukungan Penuh Banner PNG Transparan (Floating Cutout 3D): Mengeliminasi total kotak pembungkus kaku berlatar belakang putih/abu-abu (bg-white / dark:bg-slate-800/90) dan border tebal pada gambar banner promosi bento. Kini grafis PNG transparan (seperti medali loyalitas emas Member Toko, kaleng cat, logo resmi, alat teknik) mengapung bebas dengan drop shadow 3D alami yang jatuh langsung di atas permukaan kartu bento obsidian.",
+            "Panggung Maskot 3D Transparan: Memperbarui dudukan avatar maskot hero beranda dengan pedestal elips bercincin aksen tema toko yang transparan dan dinamis, menjamin karakter animasi GIF maupun PNG transparan tampil proporsional tanpa terkurung dalam kotak persegi kaku.",
+            "Zero Emoji Iconography: Membersihkan penggunaan ikon emoji Unicode pada antarmuka aplikasi, menggantikannya secara konsisten dengan ikon vektor standar FontAwesome 6 Solid (<i class=\"fa-solid fa-...\"></i>) dan tipografi industrial berkontras tinggi agar tampilan berwibawa, profesional, dan serasi.",
+            "Harmonisasi Sistem Desain Bento & Dark Mode: Menyelaraskan seluruh elemen antarmuka dengan variabel tema dinamis toko (var(--color-primary) & var(--color-primary-dark)), kartu bento 100% solid bebas blur, serta kontras tajam baik di mode terang maupun mode gelap (dark mode).",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.7 (Android versionCode 11607)."
+        ]
+    },
+    {
         "id": "log-1-16-06",
         "version": "v1.16.6",
         "date": "2026-10-13",
-        "title": "Elevasi Kolom Pencarian Header (Obsidian Pill Capsule), Animasi Teks Berganti (Rolling Ticker), Chiclet Scanner & Chip Tren 1-Klik",
+        "title": "Elevasi Kolom Pencarian Header (Obsidian Pill Capsule), Animasi Teks Berganti (Rolling Ticker) & Chiclet Scanner",
         "category": "feature",
-        "badge": "Header Search Capsule & Rolling Trends v1.16.6",
+        "badge": "Header Search Capsule & Rolling Ticker v1.16.6",
         "items": [
-            "Redesain Kapsul Pencarian Obsidian (Elevated Pill Capsule): Mengubah kolom pencarian header dari kotak standar menjadi kapsul obsidian aerodinamis (rounded-full) berkontras tinggi dengan border kristal putih halus, drop shadow lembut, ikon kaca pembesar emas amber, dan tombol clear [X] dinamis.",
+            "Redesain Kapsul Pencarian Obsidian (Elevated Pill Capsule): Mengubah kolom pencarian header dari kotak standar menjadi kapsul obsidian aerodinamis (rounded-full) berkontras tinggi dengan border kristal putih halus, drop shadow lembut, ikon kaca pembesar emas amber, dan tombol clear [X] dinamis tanpa elemen kategori ganda yang mengganggu.",
             "Animasi Teks Berganti Otomatis (Dynamic Rolling Placeholder Ticker): Mengganti placeholder statis dengan animasi teks halus yang berganti secara berkala merekomendasikan bahan bangunan populer (Semen Gresik/Tiga Roda, Cat No Drop, Pipa PVC Rucika, Keramik Granit, Mesin Bor, Seng Spandek, dll) yang otomatis jeda saat diketik.",
             "Tombol Scanner Mini (Chiclet Scanner Pill): Menghadirkan tombol aksi pemindai barcode/QR mini dengan badge 'SCAN' bertulisan tegas dan ikon QR emas, memudahkan pelanggan memindai produk fisik langsung dari ponsel.",
-            "Deretan Chip Tren Pencarian Populer (1-Klik Tanpa Ketik): Menghadirkan barisan tag pil horizontal interaktif di bawah kolom pencarian (Cat Tembok, Semen, Pipa PVC, Alat Teknik, Seng & Baut, Keramik, Besi, Sanitari) yang langsung memfilter katalog secara instan dalam 1 sentuhan.",
             "Sinkronisasi Pencarian Desktop: Menyelaraskan kolom pencarian desktop dengan tombol scanner chiclet terpadu dan rotasi placeholder cerdas.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.6 (Android versionCode 11606)."
@@ -80,22 +95,6 @@ export const DEFAULT_CHANGELOG = [
             "Proteksi Matematis Input Zero-Safe (Anti-NaN): Menerapkan guard zero-safe pada seluruh formula kalkulasi (Cat, Keramik, Bata/Hebel, dan Atap), menjamin input kosong, tanda minus, atau karakter tak terduga tidak pernah menghasilkan nilai NaN atau kartu kalkulasi rusak.",
             "Peningkatan Test Suite (test:estimator): Menambah pengujian komprehensif pada scripts/test-material-estimator-and-decimal.mjs (59 Passed, 0 Failed) serta memverifikasi seluruh 16 test suite audit sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.3 (Android versionCode 11603)."
-        ]
-    },
-    {
-        "id": "log-1-16-02",
-        "version": "v1.16.2",
-        "date": "2026-10-12",
-        "title": "Resolusi Hierarki Z-Index Modal Estimator, Penayangan Layar Detail Produk & Drawer Varian Cepat On-Top",
-        "category": "feature",
-        "badge": "Estimator Variant Stacking & Modal Z-Index Precision v1.16.2",
-        "items": [
-            "Harmonisasi Z-Index Multi-Layer Modal: Meningkatkan z-index product-modal dari z-[70] menjadi z-[120] dan quick-variant-modal (Drawer Pilih Varian Cepat) dari z-[75] menjadi z-[125], menjamin keduanya selalu tampil di depan (on-top) Kalkulator Estimator Bahan Bangunan (z-[115]) tanpa terjebak di belakang layar estimator.",
-            "Eliminasi Layar Detail Terjebak & Tombol Tertutup: Memperbaiki kendala di mana kartu produk varian (seperti No Drop) dan tombol navigasi panah (< dan >) mengintip di balik kalkulator estimator, kini modal detail produk dan drawer varian muncul secara utuh, bersih, dan interaktif di layar smartphone maupun desktop.",
-            "Pembersihan Sub-Modal Yatim (Orphan Modal Cleanup): Menambahkan proteksi otomatis pada closeMaterialEstimatorModal untuk membersihkan quick-variant-modal jika masih terbuka saat estimator ditutup, mencegah modal yatim menggantung di layar.",
-            "Prioritisasi LIFO Fallback Scan di Router: Memperbarui urutan allKnownModals pada router.js sehingga modal tingkat atas (variantPreview, quickVariant, product) selalu ditutup terlebih dahulu sebelum modal induknya (materialEstimator), menjamin sinkronisasi tombol Back Android 100% mulus.",
-            "Rangkaian Pengujian Baru (test:estimatorzindex): Menambahkan unit test otomatis scripts/test-estimator-variant-zindex.mjs (15 Passed, 0 Failed) serta memverifikasi 16 suite pengujian audit sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.2 (Android versionCode 11602)."
         ]
     }
 ];

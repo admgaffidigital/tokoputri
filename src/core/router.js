@@ -896,7 +896,7 @@ export const confirmExitApp = () => {
     } else if (navigator.app && typeof navigator.app.exitApp === 'function') {
         navigator.app.exitApp();
     } else {
-        if (typeof window.showToast === 'function') window.showToast('Sampai jumpa kembali di Toko Putri! 🙏');
+        if (typeof window.showToast === 'function') window.showToast('Sampai jumpa kembali di Toko Putri!');
         setTimeout(() => {
             try { window.close(); } catch(e) {}
         }, 400);

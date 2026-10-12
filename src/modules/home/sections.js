@@ -115,18 +115,20 @@ export const rDyn = () => {
                 </div>
 
                 <!-- 3D Mascot Avatar (Right Side) -->
-                <div class="w-[40%] sm:w-[35%] md:w-[30%] relative z-10 flex flex-col items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
-                    <div class="relative group/mascot flex flex-col items-center">
+                <div class="w-[38%] sm:w-[35%] md:w-[30%] relative z-10 flex flex-col items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
+                    <div class="relative group/mascot flex flex-col items-center justify-center">
                         <!-- Floating Top Badge: 100% ORI -->
-                        <div class="absolute -top-2.5 -right-2 z-20 bg-gradient-to-r from-rose-600 to-amber-500 text-white text-[7.5px] sm:text-[8px] font-black px-2 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 border border-white/40">
-                            <i class="fa-solid fa-bolt text-[7px]"></i> 100% ORI
+                        <div class="absolute -top-2 -right-1 z-20 bg-gradient-to-r from-rose-600 to-amber-500 text-white text-[7.5px] sm:text-[8px] font-black px-2 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 border border-white/40">
+                            <i class="fa-solid fa-shield-halved text-[7px]"></i> 100% ORI
                         </div>
-                        <!-- Stage Pod & Avatar Box -->
-                        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-3 border-white/80 bg-gradient-to-b from-white/25 via-black/20 to-black/40 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-                            <img width="128" height="128" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain drop-shadow-md" style="image-rendering: auto;">
+                        <!-- Stage Pod & Avatar Graphic (Bebas Kotak Putih Kaku, Dukung PNG Transparan) -->
+                        <div class="relative flex items-center justify-center w-26 h-26 sm:w-30 sm:h-30 md:w-34 md:h-34 group-hover/mascot:scale-105 transition-transform duration-500">
+                            <!-- Pedestal Cincin Aksen Halus -->
+                            <div class="absolute inset-1.5 rounded-full border border-white/20 bg-black/15 pointer-events-none"></div>
+                            <img width="140" height="140" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.5)] relative z-10 bg-transparent" style="image-rendering: auto;">
                         </div>
                         <!-- Live Status Badge with Pulsing Ring -->
-                        <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-20 bg-slate-950 text-[8px] sm:text-[8.5px] font-black text-white border-2 border-emerald-400 px-2.5 py-0.5 rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5">
+                        <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-20 bg-slate-950 text-[8px] sm:text-[8.5px] font-black text-white border border-emerald-400 px-2.5 py-0.5 rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5">
                             <span class="relative flex h-2 w-2">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
@@ -240,12 +242,12 @@ export const rDyn = () => {
                     <p class="text-[10.5px] sm:text-xs text-slate-200 font-medium leading-relaxed mb-3 line-clamp-2 drop-shadow-sm">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
                     ${b.link ? `<button class="w-max text-white text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all group-hover:pr-6 cursor-pointer border border-white/20" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
-                <div class="w-[40%] sm:w-[35%] md:w-[30%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-3 sm:pr-6 md:pr-10 shrink-0">
+                <div class="w-[38%] sm:w-[35%] md:w-[32%] relative z-10 flex items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
                     ${b.img ? `
-                    <div class="relative flex items-center justify-center w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl bg-white dark:bg-slate-800/90 border-2 border-white/80 dark:border-slate-700 p-2.5 shadow-2xl group-hover:scale-105 group-hover:-rotate-1 transition-all duration-300">
-                        <img width="240" height="140" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[120px] sm:max-h-[140px] md:max-h-[160px] object-contain drop-shadow-md" onerror="this.style.display='none'">
+                    <div class="relative flex items-center justify-center w-full h-full max-w-[150px] sm:max-w-[180px] md:max-w-[210px] group-hover:scale-105 group-hover:-rotate-1 transition-all duration-300">
+                        <img width="240" height="150" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[135px] sm:max-h-[160px] md:max-h-[185px] object-contain drop-shadow-[0_14px_28px_rgba(0,0,0,0.55)] bg-transparent" onerror="this.style.display='none'">
                     </div>` : `
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] border-2 border-white/40 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] border border-white/25 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white drop-shadow-md"></i>
                     </div>`}
                 </div>

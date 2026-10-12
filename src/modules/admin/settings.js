@@ -1866,10 +1866,11 @@ export const openHeroBannerModal = () => {
                         <p class="text-[9.5px] text-white/95 line-clamp-2 mt-0.5 font-medium drop-shadow-xs" id="m-preview-sub">${esc(appData.store.heroSubtitle || appData.store.slogan || 'Pusat Solusi Bangunan & Cat Terlengkap')}</p>
                     </div>
                     <div class="w-[35%] flex flex-col items-center z-10">
-                        <div class="w-18 h-18 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/80 bg-gradient-to-b from-white/25 to-black/40 flex items-center justify-center">
-                            <img id="m-preview-img" src="${esc(currentMascot)}" class="w-full h-full object-cover" onerror="this.src='/putri_mascot_3d.jpg';">
+                        <div class="w-18 h-18 rounded-2xl flex items-center justify-center relative">
+                            <div class="absolute inset-1 rounded-full border border-white/20 bg-black/15 pointer-events-none"></div>
+                            <img id="m-preview-img" src="${esc(currentMascot)}" class="w-full h-full object-contain drop-shadow-md relative z-10 bg-transparent" onerror="this.src='/putri_mascot_3d.jpg';">
                         </div>
-                        <div class="mt-1 bg-slate-950 text-[7.5px] font-bold text-white px-2 py-0.5 rounded-full flex items-center gap-1 border-2 border-emerald-400 shadow-lg whitespace-nowrap">
+                        <div class="mt-1 bg-slate-950 text-[7.5px] font-bold text-white px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-400 shadow-lg whitespace-nowrap">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             <span id="m-preview-badge">${esc(appData.store.heroBadgeText || 'Siap Melayani')}</span>
                         </div>

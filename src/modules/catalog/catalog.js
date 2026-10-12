@@ -20,11 +20,6 @@ let searchTmr = null;
 export const rCat = () => {
     const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '' || aSubCat !== 'Semua Jenis');
     
-    const quickTagsBox = el('header-quick-tags-container');
-    if (quickTagsBox && !quickTagsBox.hasChildNodes()) {
-        renderHeaderQuickTags();
-    }
-    
     toggleCls('dynamic-banners-container', 'hidden', isFiltered);
     toggleCls('dynamic-flashsale-container', 'hidden', isFiltered);
     if (!isFiltered && typeof window.renderStorefrontFlashSale === 'function') {
@@ -567,7 +562,7 @@ export const resetSemuaFilter = () => {
     if (typeof window.rDyn === 'function') window.rDyn(); 
 };
 
-// ─── PENCARIAN DINAMIS & QUICK TREND TAGS ─────────────────
+// ─── PENCARIAN DINAMIS & ROLLING PLACEHOLDER TICKER ───────
 export const SEARCH_SUGGESTIONS = [
     'Cari Semen Gresik / Tiga Roda...',
     'Cari Cat Tembok No Drop...',
@@ -579,85 +574,8 @@ export const SEARCH_SUGGESTIONS = [
     'Cari Paku, Kawat & Besi Beton...'
 ];
 
-export const QUICK_SEARCH_TAGS = [
-    { id: 'cat', label: '🎨 Cat Tembok', query: 'Cat' },
-    { id: 'semen', label: '🧱 Semen', query: 'Semen' },
-    { id: 'pipa', label: '🚰 Pipa PVC', query: 'Pipa' },
-    { id: 'alat', label: '⚡ Alat Teknik', query: 'Mesin' },
-    { id: 'atap', label: '🔩 Seng & Baut', query: 'Atap' },
-    { id: 'keramik', label: '🏠 Keramik', query: 'Keramik' },
-    { id: 'besi', label: '⛓️ Besi Beton', query: 'Besi' },
-    { id: 'kran', label: '🚿 Kran Air', query: 'Kran' }
-];
-
-let activeQuickTagId = '';
 let searchSuggestionIndex = 0;
 let searchSuggestionInterval = null;
-
-export const updateActiveQuickTags = (tagId = '') => {
-    activeQuickTagId = tagId;
-    const container = el('header-quick-tags-container');
-    if (!container) return;
-    const buttons = container.querySelectorAll('[data-tag-id]');
-    buttons.forEach(btn => {
-        const id = btn.getAttribute('data-tag-id');
-        const isActive = id === activeQuickTagId;
-        if (isActive) {
-            btn.className = "px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap bg-white text-slate-900 border border-white shadow-xs active:scale-95 transition-all cursor-pointer flex items-center gap-1 shrink-0";
-        } else {
-            btn.className = "px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-black/25 hover:bg-black/40 text-white/95 border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1 shrink-0";
-        }
-    });
-};
-
-export const renderHeaderQuickTags = () => {
-    const container = el('header-quick-tags-container');
-    if (!container) return;
-    container.innerHTML = QUICK_SEARCH_TAGS.map(t => {
-        const isActive = t.id === activeQuickTagId;
-        const cls = isActive
-            ? "px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap bg-white text-slate-900 border border-white shadow-xs active:scale-95 transition-all cursor-pointer flex items-center gap-1 shrink-0"
-            : "px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-black/25 hover:bg-black/40 text-white/95 border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1 shrink-0";
-        return `<button type="button" data-tag-id="${t.id}" onclick="window.quickSearchTag('${esc(t.query)}', '${t.id}')" class="${cls}">
-            <span>${esc(t.label)}</span>
-        </button>`;
-    }).join('');
-};
-
-export const quickSearchTag = (keyword, tagId) => {
-    const mobInput = el('mobile-header-search');
-    const mainInput = el('search-input');
-    const currentVal = (mobInput?.value || mainInput?.value || '').trim();
-    
-    // Jika tag yang sama diklik lagi, batalkan / reset pencarian
-    if (activeQuickTagId === tagId || currentVal.toLowerCase() === keyword.toLowerCase()) {
-        clearMobileHeaderSearch();
-        updateActiveQuickTags('');
-        return;
-    }
-    
-    if (mobInput) mobInput.value = keyword;
-    if (mainInput) mainInput.value = keyword;
-    
-    const rollingEl = el('mobile-search-rolling-tag');
-    if (rollingEl) rollingEl.classList.add('opacity-0');
-    
-    const clearBtn = el('mobile-header-search-clear');
-    if (clearBtn) clearBtn.classList.remove('hidden');
-    
-    updateActiveQuickTags(tagId);
-    handleSearch(keyword);
-    
-    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    
-    // Scroll mulus ke bagian produk
-    const sec = el('dynamic-active-filter') || el('sec-categories') || el('product-container');
-    const sc = document.querySelector('#view-catalog .scroll-content');
-    if (sec && sc) {
-        const topPos = Math.max(0, sec.offsetTop - 75);
-        sc.scrollTo({ top: topPos, behavior: 'smooth' });
-    }
-};
 
 export const startSearchSuggestionTicker = () => {
     if (searchSuggestionInterval) clearInterval(searchSuggestionInterval);
@@ -707,7 +625,6 @@ export const handleSearch = v => {
     if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
     const rollingEl = el('mobile-search-rolling-tag');
     if (rollingEl) rollingEl.classList.toggle('opacity-0', !!v && !!v.trim());
-    if (!v || !v.trim()) updateActiveQuickTags('');
     searchTmr = setTimeout(() => { 
         setSQ(v); 
         setCPage(1); 
@@ -734,7 +651,6 @@ export const clearMobileHeaderSearch = () => {
     if (clearBtn) clearBtn.classList.add('hidden');
     const rollingEl = el('mobile-search-rolling-tag');
     if (rollingEl && document.activeElement !== mobInput) rollingEl.classList.remove('opacity-0');
-    updateActiveQuickTags('');
     handleSearch('');
 };
 
@@ -776,16 +692,14 @@ export const loadMoreProducts = () => {
     rCat(); 
 };
 
-// ─── Inisialisasi Otomatis Quick Tags & Rolling Ticker ────
+// ─── Inisialisasi Otomatis Rolling Ticker ─────────────────
 if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            renderHeaderQuickTags();
             startSearchSuggestionTicker();
         });
     } else {
         setTimeout(() => {
-            renderHeaderQuickTags();
             startSearchSuggestionTicker();
         }, 50);
     }
@@ -802,8 +716,6 @@ window.handleMobileHeaderSearch = handleMobileHeaderSearch;
 window.clearMobileHeaderSearch = clearMobileHeaderSearch;
 window.onMobileSearchFocus = onMobileSearchFocus;
 window.onMobileSearchBlur = onMobileSearchBlur;
-window.quickSearchTag = quickSearchTag;
-window.renderHeaderQuickTags = renderHeaderQuickTags;
 window.startSearchSuggestionTicker = startSearchSuggestionTicker;
 window.handleSort = handleSort;
 window.toggleView = toggleView;

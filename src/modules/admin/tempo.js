@@ -1953,7 +1953,7 @@ window.sendConsolidatedTempoWA = (customerKey) => {
         if (calc.isLate) anyLate = true;
 
         const dueStr = calc.dueDate ? new Date(calc.dueDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : "-";
-        let statusStr = calc.isLate ? `⚠️ TERLAMBAT ${calc.daysLate} HARI` : (calc.isDueSoon ? `⏳ H-${calc.daysLeft}` : '✅ Berjalan');
+        let statusStr = calc.isLate ? `TERLAMBAT ${calc.daysLate} HARI` : (calc.isDueSoon ? `H-${calc.daysLeft}` : 'Berjalan');
 
         let noteLine = `*${idx + 1}. Nota #${o.orderId}* (${statusStr})\n` +
                        `   • Jatuh Tempo: ${dueStr}\n` +

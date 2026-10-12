@@ -98,7 +98,7 @@ export const renderStorefrontFlashSale = () => {
 
             ${remaining <= 3 && !isSoldOut && quota > 0 ? `
             <div class="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-amber-500 px-1.5 py-0.5 text-[9px] font-black text-white shadow-2xs">
-                <span>🔥 Sisa ${remaining}!</span>
+                <span><i class="fa-solid fa-fire text-amber-200 text-[8.5px]"></i> Sisa ${remaining}!</span>
             </div>` : ''}
 
             <!-- Foto Produk -->

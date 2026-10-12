@@ -151,7 +151,7 @@ export const renderFlashSaleAdminView = () => {
                                         <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                                             <span class="text-[11px] text-slate-400 line-through">${fCur(normP)}</span>
                                             <span class="font-black" style="color: var(--color-primary);">${fCur(fsP)} (-${discountPct}%)</span>
-                                            ${isMarginLoss ? `<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-300">⚠️ DI BAWAH HPP (${fCur(hpp)})</span>` : ''}
+                                            ${isMarginLoss ? `<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-300 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8.5px]"></i> DI BAWAH HPP (${fCur(hpp)})</span>` : ''}
                                         </div>
                                     </div>
 
