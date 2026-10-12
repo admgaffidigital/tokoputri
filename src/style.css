@@ -1985,7 +1985,7 @@ html.dark body { background-color: #0b1121; color: #f8fafc; }
 html.dark #app-container { background-color: #0b1121; border-color: #1e293b; }
 html.dark #view-admin, 
 html.dark #view-admin-login { background-color: #0b1121 !important; }
-html.dark .glass-header { background: var(--color-primary) !important; color: #ffffff !important; border-bottom: none !important; box-shadow: none !important; }
+html.dark .glass-header { background: var(--color-primary) !important; color: #ffffff !important; border-bottom: 1px solid rgba(0, 0, 0, 0.25) !important; box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.35) !important; }
 html.dark .glass-nav { background: #0b1121 !important; border-top-color: #1e293b !important; border-top-width: 1.5px !important; box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.06); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
 
 /* Card & Wrapper Backgrounds */
@@ -2835,8 +2835,20 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
 /* ─── BASE HEADER & CONTAINER ─── */
 .glass-header {
     background: var(--color-primary);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
+}
+
+/* ─── BANNER SLIDER & BENTO PROMO CARDS ─── */
+#banner-slider {
+    scroll-padding-left: 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+.banner-slide-item {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
 #app-container {

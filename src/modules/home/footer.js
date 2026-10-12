@@ -28,6 +28,8 @@ export const renderFooter = () => {
     const footerCredit = store.footerCredit || 'Seluruh hak cipta dilindungi undang-undang.';
     const currentYear = new Date().getFullYear();
     const latestVer = getLatestVersion(appData);
+    const rawVer = (latestVer || '1.16.3').replace(/^v/i, '');
+    const displayVer = 'v' + rawVer;
 
     // Format nomor WhatsApp aman (standar internasional 62...)
     let cleanWa = (storeWa || '').replace(/\D/g, '');
@@ -54,7 +56,7 @@ export const renderFooter = () => {
     <footer class="themed-footer relative mt-6 sm:mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(4rem+env(safe-area-inset-bottom))]">
 
       <!-- ================= 1. MOBILE NATIVE END-CAP (KHUSUS SMARTPHONE < 640px: RINGKAS, BERSIH, NATIVE APP FEEL) ================= -->
-      <div class="block sm:hidden w-full px-3.5 mb-2">
+      <div class="block sm:hidden w-full px-3 mb-2">
         <div class="footer-mobile-endcap relative overflow-hidden p-4 rounded-2xl transition-all duration-300">
           
           <!-- Mini Brand & Live Operating Indicator -->
@@ -111,7 +113,7 @@ export const renderFooter = () => {
             <div class="flex items-center gap-2 shrink-0">
               <button type="button" onclick="openShoppingGuideModal()" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">Panduan</button>
               <span>•</span>
-              <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">v${esc(latestVer)}</button>
+              <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">${esc(displayVer)}</button>
               <span>•</span>
               <button type="button" onclick="changeView('view-admin-login')" class="hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer font-bold" title="Akses Admin Toko">
                 <i class="fa-solid fa-lock text-[8px]"></i>
@@ -126,11 +128,11 @@ export const renderFooter = () => {
       <!-- ================= 2. DESKTOP BENTO ISLAND HUB (KHUSUS LAYAR TABLET & DESKTOP >= 640px: LENGKAP & KORPORAT RESMI) ================= -->
       <div class="hidden sm:block">
         <!-- Top Subtle Theme Ambient Horizon -->
-        <div class="themed-footer-glow-bar mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8 mb-5 pointer-events-none">
+        <div class="themed-footer-glow-bar mx-auto w-full px-3 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mb-5 pointer-events-none">
           <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.35)] to-transparent"></div>
         </div>
 
-        <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px]">
+        <div class="relative z-10 mx-auto w-full px-3 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
           <!-- MAIN BENTO ISLAND HUB -->
           <div class="footer-bento-hub relative overflow-hidden rounded-xl sm:rounded-2xl p-6 sm:p-9 transition-all duration-300">
             <!-- Top Subtle Theme Accent Line (Harmonisasi dengan Header Toko) -->
@@ -223,7 +225,7 @@ export const renderFooter = () => {
                       <span class="text-[9px] font-black uppercase tracking-widest text-[var(--color-primary)]">Android App</span>
                     </div>
                     <p class="truncate text-xs font-black text-slate-900 dark:text-white">Unduh Aplikasi Android</p>
-                    <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Versi ${esc(latestVer)} • Siap Pasang</p>
+                    <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Versi ${esc(rawVer)} • Siap Pasang</p>
                   </div>
                   <div class="ml-auto text-[var(--color-primary)] group-hover:translate-x-0.5 transition-transform">
                     <i class="fa-solid fa-download text-xs"></i>
@@ -369,7 +371,7 @@ export const renderFooter = () => {
                 <!-- Changelog Pill -->
                 <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 hover:text-[var(--color-primary)] transition-all active:scale-95 cursor-pointer shadow-2xs">
                   <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
-                  <span>Versi ${esc(latestVer)}</span>
+                  <span>Versi ${esc(rawVer)}</span>
                 </button>
 
                 <span class="text-slate-300 dark:text-slate-700">•</span>
