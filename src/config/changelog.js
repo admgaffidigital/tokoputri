@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-16-09",
+        "version": "v1.16.9",
+        "date": "2026-10-14",
+        "title": "Elevasi Ruang Vertikal Banner Hero Beranda, Harmonisasi Badge Maskot 3D & Proporsionalitas Kartu Promo Bento",
+        "category": "feature",
+        "badge": "Hero Banner Vertical Space & Mascot Badge Elevation v1.16.9",
+        "items": [
+            "Elevasi Ruang Vertikal Banner Hero Storefront (min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px]): Memberikan ruang kanvas vertikal yang lapang dan elegan bagi banner hero utama dan kartu promo bento di desktop, tablet, dan smartphone.",
+            "Harmonisasi Posisi Badge Maskot 3D (Anti-Mepet Frame Atas & Bawah): Memposisikan lencana '100% ORI' dan badge live pulsing 'Siap Melayani' dengan margin bernapas yang aman dan presisi di dalam kanvas kartu banner hero tanpa menabrak garis frame.",
+            "Sinkronisasi Skeleton Loader Beranda: Menyelaraskan dimensi skeleton #dynamic-banners-container dengan tinggi baru guna mengeliminasi loncatan visual (zero cumulative layout shift).",
+            "Desain Responsif & Proporsionalitas Bento: Menyeimbangkan skala tipografi judul, deskripsi, tombol aksi CTA, dan grafis produk pada kartu promosi bento di seluruh ukuran layar.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.16.9 (Android versionCode 11609)."
+        ]
+    },
+    {
         "id": "log-1-16-08",
         "version": "v1.16.8",
         "date": "2026-10-13",
@@ -79,22 +95,6 @@ export const DEFAULT_CHANGELOG = [
             "Navigasi Slider Premium & Indikator Kapsul: Memperbarui tombol kontrol panah melayang desktop dengan latar obsidian pekat dan indikator titik kapsul aktif yang responsif.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.5 (Android versionCode 11605)."
-        ]
-    },
-    {
-        "id": "log-1-16-04",
-        "version": "v1.16.4",
-        "date": "2026-10-12",
-        "title": "Unifikasi Presisi Grid Kontainer Universal (1440px), Eliminasi Double-Padding Header, Banner Hero Adaptif & Harmonisasi Multi-Device",
-        "category": "feature",
-        "badge": "Universal 1440px Grid Alignment & Layout Precision v1.16.4",
-        "items": [
-            "Unifikasi Standar Grid Universal Seluruh Halaman (max-w-7xl 2xl:max-w-[1440px] px-3 sm:px-6 lg:px-8): Menyeragamkan lebar kontainer secara presisi di seluruh view web dan aplikasi (Katalog Storefront, Keranjang Belanja, Pengiriman, Pembayaran, Riwayat Pesanan, Favorit, Tanya Jawab FAQ, POS Kasir, Admin Backoffice, dan Footer Bento Hub) agar tampilan konsisten, simetris, dan lapang di Desktop, Tablet, dan Mobile.",
-            "Eliminasi Padding Ganda di Seluruh Header (.glass-header): Membuang padding horizontal ganda luar sehingga tombol kembali, logo, dan judul header 100% tegak lurus sejajar satu garis vertikal dengan kartu di bawahnya tanpa offset atau pergeseran.",
-            "Banner Hero Responsif & Proporsional Penuh: Banner hero storefront menggunakan w-full snap-start shrink-0 dengan rasio proporsional bebas terpotong di HP, tablet, maupun monitor desktop lebar.",
-            "Harmonisasi Pengalaman Pengguna (UI/UX) Multi-Device: Memastikan seluruh elemen navigasi, bottom navigation bar mobile, stepper transaksi belanja, dan layout formulir tampil rapi, responsif, dan ergonomis di seluruh jenis perangkat.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.4 (Android versionCode 11604)."
         ]
     }
 ];
