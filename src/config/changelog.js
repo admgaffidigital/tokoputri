@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-00",
+        "version": "v1.17.0",
+        "date": "2026-10-14",
+        "title": "Sistem Desain Universal Edge 3D Layar Lengkung, Harmonisasi Multi-Perangkat (Mobile, Tablet & Desktop) & Finalisasi Antarmuka",
+        "category": "feature",
+        "badge": "Universal 3D Curved Edge & Multi-Device Parity v1.17.0",
+        "items": [
+            "Universal 3D Curved Edge Display Overlay (#flagship-edge-screen-overlay): Menghadirkan bingkai layar lengkung 3D (Samsung Galaxy Edge / Flagship AMOLED / Curved Workstation) yang persisten di seluruh web aplikasi (Etalase Katalog, Kasir POS Hardware, Admin Backoffice, Keranjang, Checkout, Riwayat Pesanan, Wishlist, dan FAQ).",
+            "Harmonisasi Bezel Multi-Perangkat (Edge-to-Edge Parity): Skala lebar bezel adaptif otomatis—6px di smartphone, 10px di tablet workstation, 8px di monitor laptop/desktop PC, dan 10px di ultra-wide workstation dengan garis kilau kristal (specular glass sheen highlight) dan pendaran aura tema toko dinamis.",
+            "Harmonisasi Komponen Antarmuka Mikro (Micro-Edge Design System): Menyelaraskan rim tepi atas lembar modal dialog (.modal-bottom-sheet & .drawer-bottom), garis kilau atas bilah navigasi (#bottom-nav-bar), rim pembatas bawah header (.glass-header & .pos-storefront-header), serta garis divider vertikal kasir POS.",
+            "Proteksi Aksesibilitas 100% & Zero Touch Interference: Overlay dilengkapi pointer-events: none !important, select-none, dan akselerasi GPU (transform: translateZ(0)) tanpa lag sentuhan, klik, scroll, ketikan formulir, maupun barcode scanner.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.17.0 (Android versionCode 11700)."
+        ]
+    },
+    {
         "id": "log-1-16-09",
         "version": "v1.16.9",
         "date": "2026-10-14",
@@ -78,23 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Sinkronisasi Pencarian Desktop: Menyelaraskan kolom pencarian desktop dengan tombol scanner chiclet terpadu dan rotasi placeholder cerdas.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.6 (Android versionCode 11606)."
-        ]
-    },
-    {
-        "id": "log-1-16-05",
-        "version": "v1.16.5",
-        "date": "2026-10-12",
-        "title": "Elevasi Estetika Banner Beranda (Grand Enterprise Edition), Scrim Video Sinematik, Panggung Maskot 3D & Dukungan Poster Full-Bleed",
-        "category": "feature",
-        "badge": "Hero Banner Grand Aesthetic & Cinematic Video Scrim v1.16.5",
-        "items": [
-            "Elevasi Estetika Banner Hero Utama (Grand Enterprise Edition): Menghadirkan kembali tampilan banner beranda yang kaya visual, kontras tinggi, dan memikat tanpa efek blur/kaca buram. Dilengkapi aksen pencahayaan gradien tajam, cincin geometris ganda, animasi kilau logam dinamis (hero sheen sweep), serta lencana toko resmi bertabur mahkota emas.",
-            "Panggung Maskot 3D & Interaksi Call-to-Action Ganda: Mempercantik maskot/avatar toko di atas panggung 3D dengan cincin aksen berpendar, status aktif live pulsing, serta tombol CTA primer ('Mulai Belanja') dan sekunder ('Konsultasi Ahli') berkontras tajam.",
-            "Resolusi Scrim Sinematik Banner Video: Mengganti overlay transparan polos yang memudarkan teks dengan gradien scrim sinematik ganda (top & bottom) berkontras tinggi, menjamin judul dan tombol audio video promo selalu terbaca tajam dan elegan.",
-            "Dukungan Poster Full-Bleed & Kartu Promo Bento: Menghadirkan billboard foto penuh (Full-Bleed Widescreen) untuk banner promo berbasis poster grafis, serta kartu promo Bento Obsidian dengan panggung produk 3D berestetika premium untuk promo berfitur teks.",
-            "Navigasi Slider Premium & Indikator Kapsul: Memperbarui tombol kontrol panah melayang desktop dengan latar obsidian pekat dan indikator titik kapsul aktif yang responsif.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.5 (Android versionCode 11605)."
         ]
     }
 ];
