@@ -79,57 +79,57 @@ export const rDyn = () => {
     const heroBtnText = appData.store.heroBtnText || 'Member VIP';
 
     const welcomeHeroSlide = showHeroSlide ? `
-        <div id="banner-slide-0" class="banner-slide-item w-full min-h-[195px] sm:min-h-[230px] md:min-h-[260px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
+        <div id="banner-slide-0" class="banner-slide-item w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
              style="background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-light) 100%); box-shadow: 0 14px 35px -8px rgba(var(--color-primary-rgb), 0.45);">
             <!-- Sleek Decorative Geometric Rings & Precision Grid Accents (100% Solid & Crisp) -->
-            <div class="absolute -right-12 -top-12 w-48 h-48 sm:w-56 sm:h-56 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-105 transition-transform duration-700"></div>
-            <div class="absolute -right-4 -top-4 w-32 h-32 sm:w-36 sm:h-36 rounded-full border-2 border-white/25 pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-28 h-28 rounded-full border-[8px] border-black/10 pointer-events-none"></div>
+            <div class="absolute -right-12 -top-12 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-105 transition-transform duration-700"></div>
+            <div class="absolute -right-4 -top-4 w-32 h-32 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full border-2 border-white/25 pointer-events-none"></div>
+            <div class="absolute right-1/3 -bottom-10 w-28 h-28 md:w-36 md:h-36 rounded-full border-[8px] border-black/10 pointer-events-none"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/10 pointer-events-none"></div>
             <!-- Living Shimmer Sheen Light Reflection -->
             <div class="hero-banner-sheen"></div>
 
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
                 <!-- Text & Action (Left Side) -->
-                <div class="w-[60%] sm:w-[65%] md:w-[70%] p-4 sm:p-6 md:p-8 flex flex-col justify-center z-20">
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/75 text-amber-300 text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 border border-amber-400/50 w-max shadow-sm">
+                <div class="w-[60%] sm:w-[65%] md:w-[68%] lg:w-[70%] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col justify-center z-20">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/75 text-amber-300 text-[8.5px] sm:text-[9.5px] md:text-[10px] font-black uppercase tracking-wider mb-2 sm:mb-2.5 border border-amber-400/50 w-max shadow-sm">
                         <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
                         <span>${esc(heroWelcomeTag)}</span>
                     </div>
-                    <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">
+                    <h2 class="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">
                         ${esc(heroTitle)}
                     </h2>
-                    <p class="text-[10.5px] sm:text-xs text-white/95 font-medium leading-relaxed mt-1 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                    <p class="text-[10.5px] sm:text-xs md:text-sm text-white/95 font-medium leading-relaxed mt-1 sm:mt-1.5 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                         ${esc(heroSubtitle)}
                     </p>
-                    <div class="mt-3 sm:mt-4 flex items-center gap-2.5 flex-wrap">
+                    <div class="mt-3 sm:mt-4 md:mt-5 flex items-center gap-2.5 flex-wrap">
                         <button type="button" onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Buka kartu member VIP untuk info poin!');" class="bg-white hover:bg-slate-100 active:scale-95 text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg hover:shadow-xl flex items-center gap-2 transition-all group-hover:pr-6 cursor-pointer border border-white" style="color: var(--color-primary-dark);">
                             <i class="fa-solid fa-id-card text-amber-500"></i> ${esc(heroBtnText)} <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1" style="color: var(--color-primary-dark);"></i>
                         </button>
-                        <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white/95 bg-black/30 px-3 py-1.5 rounded-full border border-white/20 shadow-xs">
+                        <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] lg:text-[11px] font-bold text-white/95 bg-black/30 px-3.5 py-2 rounded-full border border-white/20 shadow-xs">
                             <i class="fa-solid fa-shield-halved text-emerald-300"></i> 100% Produk Asli &amp; Bergaransi
                         </span>
                     </div>
                 </div>
 
                 <!-- 3D Mascot Avatar (Right Side) -->
-                <div class="w-[38%] sm:w-[35%] md:w-[30%] relative z-10 flex flex-col items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
+                <div class="w-[38%] sm:w-[35%] md:w-[32%] lg:w-[30%] relative z-10 flex flex-col items-center justify-center py-3.5 sm:py-5 md:py-7 pr-3 sm:pr-6 md:pr-10 lg:pr-12 shrink-0">
                     <div class="relative group/mascot flex flex-col items-center justify-center">
-                        <!-- Floating Top Badge: 100% ORI -->
-                        <div class="absolute -top-2 -right-1 z-20 bg-gradient-to-r from-rose-600 to-amber-500 text-white text-[7.5px] sm:text-[8px] font-black px-2 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 border border-white/40">
-                            <i class="fa-solid fa-shield-halved text-[7px]"></i> 100% ORI
+                        <!-- Floating Top Badge: 100% ORI (Ruang Lega, Tidak Mepet Frame Atas) -->
+                        <div class="absolute -top-1 -right-0.5 sm:top-0 sm:right-0 md:top-0.5 md:right-0.5 lg:top-1 lg:right-1 z-20 bg-gradient-to-r from-rose-600 to-amber-500 text-white text-[7.5px] sm:text-[8px] md:text-[9px] font-black px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 sm:gap-1.5 border border-white/40">
+                            <i class="fa-solid fa-shield-halved text-[7px] sm:text-[8px]"></i> 100% ORI
                         </div>
-                        <!-- Stage Pod & Avatar Graphic (Bebas Kotak Putih Kaku, Dukung PNG Transparan) -->
-                        <div class="relative flex items-center justify-center w-26 h-26 sm:w-30 sm:h-30 md:w-34 md:h-34 group-hover/mascot:scale-105 transition-transform duration-500">
+                        <!-- Stage Pod & Avatar Graphic (Bebas Kotak Putih Kaku, Ukuran Proporsional & Lega) -->
+                        <div class="relative flex items-center justify-center w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 group-hover/mascot:scale-105 transition-transform duration-500">
                             <!-- Pedestal Cincin Aksen Halus -->
-                            <div class="absolute inset-1.5 rounded-full border border-white/20 bg-black/15 pointer-events-none"></div>
-                            <img width="140" height="140" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.5)] relative z-10 bg-transparent" style="image-rendering: auto;">
+                            <div class="absolute inset-1.5 sm:inset-2 rounded-full border border-white/20 bg-black/15 pointer-events-none"></div>
+                            <img width="160" height="160" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.5)] relative z-10 bg-transparent" style="image-rendering: auto;">
                         </div>
-                        <!-- Live Status Badge with Pulsing Ring -->
-                        <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-20 bg-slate-950 text-[8px] sm:text-[8.5px] font-black text-white border border-emerald-400 px-2.5 py-0.5 rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5">
-                            <span class="relative flex h-2 w-2">
+                        <!-- Live Status Badge with Pulsing Ring (Ruang Lega, Tidak Mepet Frame Bawah) -->
+                        <div class="absolute -bottom-2 sm:-bottom-2.5 md:-bottom-3 left-1/2 -translate-x-1/2 z-20 bg-slate-950 text-[8px] sm:text-[8.5px] md:text-[9.5px] font-black text-white border border-emerald-400 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5 sm:gap-2">
+                            <span class="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-emerald-400"></span>
                             </span>
                             <span>${esc(heroBadgeText)}</span>
                         </div>
@@ -224,28 +224,28 @@ export const rDyn = () => {
 
         // ── BENTO PROMO CARD PREMIUM (Dynamic Theme & Dark/Light Adaptive) ──
         return `
-        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item bento-promo-card w-full min-h-[195px] sm:min-h-[230px] md:min-h-[260px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col select-none">
+        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item bento-promo-card w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col select-none">
             <!-- Sleek Decorative Geometric Rings (100% Solid & Crisp) -->
-            <div class="absolute -right-12 -bottom-12 w-48 h-48 sm:w-56 sm:h-56 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
-            <div class="absolute -left-10 -top-10 w-36 h-36 rounded-full border-[6px] border-white/10 pointer-events-none"></div>
+            <div class="absolute -right-12 -bottom-12 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
+            <div class="absolute -left-10 -top-10 w-36 h-36 md:w-44 md:h-44 rounded-full border-[6px] border-white/10 pointer-events-none"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/10 pointer-events-none"></div>
 
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
-                <div class="w-[60%] sm:w-[65%] md:w-[70%] p-4 sm:p-6 md:p-8 flex flex-col justify-center z-20">
-                    <div class="bento-promo-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-2 shadow-sm w-max">
+                <div class="w-[60%] sm:w-[65%] md:w-[68%] lg:w-[70%] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col justify-center z-20">
+                    <div class="bento-promo-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[8.5px] sm:text-[9.5px] md:text-[10px] font-black uppercase tracking-wider mb-2 sm:mb-2.5 shadow-sm w-max">
                         <i class="fa-solid fa-bolt-lightning text-amber-300"></i>
                         <span>PROMO SPESIAL</span>
                     </div>
-                    <h2 class="text-base sm:text-xl md:text-2xl font-black text-white leading-tight tracking-tight mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
-                    <p class="text-[10.5px] sm:text-xs text-white/95 font-medium leading-relaxed mb-3 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
+                    <h2 class="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
+                    <p class="text-[10.5px] sm:text-xs md:text-sm text-white/95 font-medium leading-relaxed mb-3 sm:mb-4 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
                     ${b.link ? `<button class="bento-promo-cta-btn w-max text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg flex items-center gap-2 active:scale-95 transition-all group-hover:pr-6 cursor-pointer">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
-                <div class="w-[38%] sm:w-[35%] md:w-[32%] relative z-10 flex items-center justify-center p-2 pr-3 sm:pr-6 md:pr-10 shrink-0">
+                <div class="w-[38%] sm:w-[35%] md:w-[32%] lg:w-[30%] relative z-10 flex items-center justify-center py-3.5 sm:py-5 md:py-7 pr-3 sm:pr-6 md:pr-10 lg:pr-12 shrink-0">
                     ${b.img ? `
-                    <div class="relative flex items-center justify-center w-full h-full max-w-[150px] sm:max-w-[180px] md:max-w-[210px] group-hover:scale-105 group-hover:-rotate-1 transition-all duration-300">
-                        <img width="240" height="150" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[135px] sm:max-h-[160px] md:max-h-[185px] object-contain drop-shadow-[0_14px_28px_rgba(0,0,0,0.55)] bg-transparent" onerror="this.style.display='none'">
+                    <div class="relative flex items-center justify-center w-full h-full max-w-[150px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[240px] group-hover:scale-105 group-hover:-rotate-1 transition-all duration-300">
+                        <img width="240" height="150" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[145px] sm:max-h-[175px] md:max-h-[200px] lg:max-h-[220px] object-contain drop-shadow-[0_14px_28px_rgba(0,0,0,0.55)] bg-transparent" onerror="this.style.display='none'">
                     </div>` : `
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white drop-shadow-md"></i>
                     </div>`}
                 </div>
