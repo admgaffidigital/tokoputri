@@ -4567,19 +4567,22 @@ span[class*="tracking-widest"][class*="rounded-"] {
 }
 
 /* ============================================================
-   FLAGSHIP 3D CURVED EDGE DISPLAY OVERLAY (MOBILE & TABLET EDGE FRAME)
+   FLAGSHIP 3D CURVED EDGE DISPLAY OVERLAY (UNIVERSAL EDGE DESIGN SYSTEM)
    Menghadirkan estetika frame rata tepi (Edge-to-Edge) dipadu ilusi
-   layar kaca lengkung 3D (Samsung Galaxy Edge / Flagship Curved AMOLED)
-   yang imersif, mewah, dan ergonomis khusus pada smartphone dan tablet.
+   layar kaca lengkung 3D (Samsung Galaxy Edge / Flagship AMOLED / Curved Workstation)
+   yang imersif, mewah, dan konsisten di Smartphone, Tablet, Laptop & Desktop PC.
    ============================================================ */
 #flagship-edge-screen-overlay {
     position: fixed;
     inset: 0;
-    pointer-events: none;
-    z-index: 45;
+    pointer-events: none !important;
+    z-index: 60;
     overflow: hidden;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 /* Efek Lengkung Kaca Tepi Kiri (Left 3D Curved Bezel) */
@@ -4590,8 +4593,9 @@ span[class*="tracking-widest"][class*="rounded-"] {
     left: 0;
     width: 6px;
     background: linear-gradient(to right, rgba(0, 0, 0, 0.12) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.08) 35%, transparent 100%);
-    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.4);
-    transition: width 0.3s ease, opacity 0.3s ease;
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.45);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    pointer-events: none;
 }
 
 /* Efek Lengkung Kaca Tepi Kanan (Right 3D Curved Bezel) */
@@ -4602,8 +4606,9 @@ span[class*="tracking-widest"][class*="rounded-"] {
     right: 0;
     width: 6px;
     background: linear-gradient(to left, rgba(0, 0, 0, 0.12) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.08) 35%, transparent 100%);
-    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.4);
-    transition: width 0.3s ease, opacity 0.3s ease;
+    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.45);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    pointer-events: none;
 }
 
 /* Tepi Atas: Garis Kristal Halus di Bawah Status Bar */
@@ -4612,8 +4617,9 @@ span[class*="tracking-widest"][class*="rounded-"] {
     top: 0;
     left: 0;
     right: 0;
-    height: max(1px, env(safe-area-inset-top, 0px));
+    height: max(2px, env(safe-area-inset-top, 0px));
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.08), transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
     pointer-events: none;
 }
 
@@ -4623,8 +4629,9 @@ span[class*="tracking-widest"][class*="rounded-"] {
     bottom: 0;
     left: 0;
     right: 0;
-    height: max(1px, env(safe-area-inset-bottom, 0px));
+    height: max(2px, env(safe-area-inset-bottom, 0px));
     background: linear-gradient(to top, rgba(0, 0, 0, 0.08), transparent);
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.3);
     pointer-events: none;
 }
 
@@ -4632,23 +4639,25 @@ span[class*="tracking-widest"][class*="rounded-"] {
 .dark .edge-bezel-left,
 html.dark .edge-bezel-left {
     background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.2) 40%, transparent 100%);
-    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.16);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.18);
 }
 
 .dark .edge-bezel-right,
 html.dark .edge-bezel-right {
     background: linear-gradient(to left, rgba(0, 0, 0, 0.6) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.2) 40%, transparent 100%);
-    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.16);
+    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.18);
 }
 
 .dark .edge-bezel-top,
 html.dark .edge-bezel-top {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .dark .edge-bezel-bottom,
 html.dark .edge-bezel-bottom {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.45), transparent);
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Khusus Layar Tablet (md: 768px - 1024px) - Efek Workstation Docked Bezel */
@@ -4663,11 +4672,95 @@ html.dark .edge-bezel-bottom {
     }
 }
 
-/* Di Desktop Lebar (> 1024px): Sembunyikan agar layout PC monitor flat tetap bersih standar */
+/* Layar Laptop & Desktop PC (>= 1025px) - Efek Flagship Curved Ultra-Wide Workstation */
 @media (min-width: 1025px) {
     #flagship-edge-screen-overlay {
-        display: none !important;
+        display: block;
+        opacity: 0.95;
     }
+    .edge-bezel-left {
+        width: 8px;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.1) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.05) 30%, transparent 100%);
+        box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.35);
+    }
+    .edge-bezel-right {
+        width: 8px;
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.05) 30%, transparent 100%);
+        box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.35);
+    }
+    .edge-bezel-top {
+        height: 2px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.06), transparent);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .edge-bezel-bottom {
+        height: 2px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.06), transparent);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .dark .edge-bezel-left,
+    html.dark .edge-bezel-left {
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.15) 35%, transparent 100%);
+        box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.14);
+    }
+    .dark .edge-bezel-right,
+    html.dark .edge-bezel-right {
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.5) 0%, rgba(var(--color-primary-rgb, 197, 155, 39), 0.15) 35%, transparent 100%);
+        box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.14);
+    }
+    .dark .edge-bezel-top,
+    html.dark .edge-bezel-top {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .dark .edge-bezel-bottom,
+    html.dark .edge-bezel-bottom {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* Layar Ekstra Lebar Ultra-Wide (>= 1536px / 2xl) */
+@media (min-width: 1536px) {
+    .edge-bezel-left {
+        width: 10px;
+    }
+    .edge-bezel-right {
+        width: 10px;
+    }
+}
+
+/* ─── HARMONISASI GAYA EDGE PADA KOMPONEN WEB APLIKASI ─── */
+/* 1. Modal Bottom Sheets & Drawers Edge Rim */
+.modal-bottom-sheet,
+.drawer-bottom {
+    box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.55), 0 -10px 30px -4px rgba(0, 0, 0, 0.15);
+}
+html.dark .modal-bottom-sheet,
+html.dark .drawer-bottom {
+    box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.14), 0 -12px 35px -4px rgba(0, 0, 0, 0.6);
+}
+
+/* 2. Bottom Navigation Bar Edge Specular Highlight */
+#bottom-nav-bar {
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+html.dark #bottom-nav-bar {
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* 3. Header Edge Bottom Rim Highlight */
+.glass-header,
+.pos-storefront-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* 4. POS Cashier Desktop Split Pane Edge Divider */
+#view-pos-cashier .lg\:border-l {
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.35);
+}
+html.dark #view-pos-cashier .lg\:border-l {
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
 
