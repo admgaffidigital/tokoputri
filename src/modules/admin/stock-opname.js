@@ -583,12 +583,12 @@ const renderReasonSelectorHtml = (item) => {
 
     return `
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 w-full">
-            <select onchange="window.setSoItemReason('${item.key}', this.value)" class="text-[11px] font-bold py-1.5 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] cursor-pointer w-full sm:w-auto sm:max-w-[190px] truncate shadow-2xs">
+            <select onchange="window.setSoItemReason('${item.key}', this.value)" class="text-xs font-bold h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] cursor-pointer w-full sm:w-auto sm:max-w-[200px] truncate shadow-2xs">
                 ${SO_DISCREPANCY_REASONS.map(r => `
                     <option value="${r.key}" ${item.reason === r.key ? 'selected' : ''}>${r.label}</option>
                 `).join('')}
             </select>
-            <input type="text" placeholder="Catatan selisih (opsional)..." value="${esc(item.notes || '')}" oninput="window.setSoItemNotes('${item.key}', this.value)" class="text-[11px] font-medium py-1.5 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] flex-1 min-w-0 shadow-2xs">
+            <input type="text" placeholder="Catatan selisih (opsional)..." value="${esc(item.notes || '')}" oninput="window.setSoItemNotes('${item.key}', this.value)" class="text-xs font-medium h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] flex-1 min-w-0 shadow-2xs">
         </div>
     `;
 };
@@ -781,7 +781,7 @@ export const renderSoActiveView = (categories, brands) => {
                     <!-- Filter Status Selisih -->
                     <div>
                         <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Status Selisih</label>
-                        <select onchange="window.setSoStatusFilter(this.value)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-2.5 font-bold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer shadow-2xs">
+                        <select onchange="window.setSoStatusFilter(this.value)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl h-10 px-3 font-bold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer shadow-2xs text-xs">
                             <option value="all" ${soStatusFilter === 'all' ? 'selected' : ''}>Semua Status</option>
                             <option value="diff" ${soStatusFilter === 'diff' ? 'selected' : ''}>Hanya yang Selisih</option>
                             <option value="loss" ${soStatusFilter === 'loss' ? 'selected' : ''}>Hanya Kurang (Defisit)</option>
@@ -794,7 +794,7 @@ export const renderSoActiveView = (categories, brands) => {
                     <!-- Filter Kategori -->
                     <div>
                         <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Kategori</label>
-                        <select onchange="window.setSoCategoryFilter(this.value)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-2.5 font-bold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer shadow-2xs">
+                        <select onchange="window.setSoCategoryFilter(this.value)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl h-10 px-3 font-bold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer shadow-2xs text-xs">
                             <option value="all">Semua Kategori</option>
                             ${categories.map(c => `<option value="${esc(c)}" ${soCategoryFilter === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}
                         </select>
@@ -803,7 +803,7 @@ export const renderSoActiveView = (categories, brands) => {
                     <!-- Filter Brand -->
                     <div>
                         <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Brand / Merek</label>
-                        <select onchange="window.setSoBrandFilter(this.value)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-2.5 font-bold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer shadow-2xs">
+                        <select onchange="window.setSoBrandFilter(this.value)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl h-10 px-3 font-bold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer shadow-2xs text-xs">
                             <option value="all">Semua Brand</option>
                             ${brands.map(b => `<option value="${esc(b)}" ${soBrandFilter === b ? 'selected' : ''}>${esc(b)}</option>`).join('')}
                         </select>
@@ -917,9 +917,9 @@ export const renderSoActiveItems = () => {
                         <!-- Col 3: Input Fisik Rak Toko & Gudang (Desktop Only) -->
                         <div class="hidden lg:flex lg:col-span-2 items-center justify-center gap-1.5">
                             <div class="flex flex-col items-center gap-1">
-                                <div class="flex items-center gap-1">
-                                    <input type="number" min="0" step="any" placeholder="Toko" value="${item.physicalStoreStock !== null ? item.physicalStoreStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" class="so-phys-store w-16 py-1.5 px-1 text-center font-mono font-bold text-xs bg-slate-50 dark:bg-slate-800 border border-teal-300/80 dark:border-teal-700/80 rounded-xl focus:outline-hidden text-teal-800 dark:text-teal-200 shadow-2xs" title="Hitung Fisik Rak Toko">
-                                    <input type="number" min="0" step="any" placeholder="Gudang" value="${item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" class="so-phys-warehouse w-16 py-1.5 px-1 text-center font-mono font-bold text-xs bg-slate-50 dark:bg-slate-800 border border-amber-300/80 dark:border-amber-700/80 rounded-xl focus:outline-hidden text-amber-800 dark:text-amber-200 shadow-2xs" title="Hitung Fisik Gudang Cadangan">
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" min="0" step="any" placeholder="Toko" value="${item.physicalStoreStock !== null ? item.physicalStoreStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" class="so-phys-store w-20 h-10 px-2 text-center font-mono font-bold text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-teal-300/80 dark:border-teal-700/80 rounded-xl focus:outline-hidden text-teal-800 dark:text-teal-200 shadow-2xs" title="Hitung Fisik Rak Toko">
+                                    <input type="number" min="0" step="any" placeholder="Gudang" value="${item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" class="so-phys-warehouse w-20 h-10 px-2 text-center font-mono font-bold text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-amber-300/80 dark:border-amber-700/80 rounded-xl focus:outline-hidden text-amber-800 dark:text-amber-200 shadow-2xs" title="Hitung Fisik Gudang Cadangan">
                                 </div>
                                 <span class="text-[10px] font-mono text-slate-400">
                                     Fisik: <b class="so-phys-total-display text-slate-800 dark:text-white font-black">${item.physicalStock !== null ? item.physicalStock : '-'}</b>

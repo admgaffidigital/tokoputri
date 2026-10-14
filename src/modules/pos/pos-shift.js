@@ -1424,60 +1424,60 @@ export const openPOSCloseShiftModal = () => {
                     <!-- Panel Kalkulator Denominasi -->
                     <div id="pos-count-panel-denom" class="hidden space-y-2 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/70 dark:border-slate-700/60">
                         <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 100.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-100k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 100.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-100k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 50.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-50k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 50.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-50k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 20.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-20k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 20.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-20k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 10.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-10k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 10.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-10k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 5.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-5k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 5.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-5k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 2.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-2k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 2.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-2k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 1.000</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-1k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 1.000</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">×</span>
+                                    <input type="number" min="0" id="denom-1k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Koin / Receh</span>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <span class="text-[10px] text-slate-400">Rp</span>
-                                    <input type="number" min="0" id="denom-coin" placeholder="0" class="w-14 sm:w-20 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Koin / Receh</span>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="text-xs text-slate-400">Rp</span>
+                                    <input type="number" min="0" id="denom-coin" placeholder="0" class="w-16 sm:w-24 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                         </div>

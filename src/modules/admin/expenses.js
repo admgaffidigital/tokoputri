@@ -138,13 +138,13 @@ export const ensureExpenseModals = () => {
                                 <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                                     <i class="fa-regular fa-calendar mr-0.5" style="color: var(--color-primary)"></i> Tanggal <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <input type="date" id="exp-input-date" required class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                                     <i class="fa-solid fa-tags mr-0.5" style="color: var(--color-primary)"></i> Kategori <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors cursor-pointer">
+                                <select id="exp-input-category" required class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors cursor-pointer">
                                     ${EXPENSE_CATEGORIES.map(c => `<option value="${c.key}">${c.label}</option>`).join('')}
                                 </select>
                             </div>
@@ -159,8 +159,8 @@ export const ensureExpenseModals = () => {
                                 <span class="text-[10px] font-black" style="color: var(--color-primary)" id="exp-nominal-preview">Rp 0</span>
                             </div>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
-                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-9 pr-3 py-2 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-black text-slate-400">Rp</span>
+                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full h-11 pl-10 pr-3.5 text-base font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <!-- Quick Nominal Chips -->
                             <div class="flex flex-wrap items-center gap-1 mt-1.5">
@@ -203,13 +203,13 @@ export const ensureExpenseModals = () => {
                                 <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                                     <i class="fa-solid fa-store mr-0.5" style="color: var(--color-primary)"></i> Vendor <span class="text-[8.5px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-recipient" placeholder="Toko Plastik, PLN, dll" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <input type="text" id="exp-input-recipient" placeholder="Toko Plastik, PLN, dll" class="w-full h-11 text-xs sm:text-sm font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                                     <i class="fa-solid fa-user-pen mr-0.5" style="color: var(--color-primary)"></i> Dicatat <span class="text-[8.5px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir" class="w-full h-11 text-xs sm:text-sm font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                         </div>
 
@@ -236,7 +236,7 @@ export const ensureExpenseModals = () => {
                                         </label>
                                         <span class="text-[9px] text-slate-400 shrink-0">Maks. 5MB</span>
                                     </div>
-                                    <input type="url" id="exp-input-receipt-manual" placeholder="Atau tempel URL gambar..." oninput="window.setExpenseReceiptUrl(this.value)" class="w-full text-[10px] bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-300 focus:outline-hidden">
+                                    <input type="url" id="exp-input-receipt-manual" placeholder="Atau tempel URL gambar..." oninput="window.setExpenseReceiptUrl(this.value)" class="w-full h-9 text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 text-slate-700 dark:text-slate-300 focus:outline-hidden">
                                 </div>
                             </div>
                         </div>
@@ -686,7 +686,7 @@ export const renderExpensesAdminView = () => {
                     <!-- Filter Tahun -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tahun</label>
-                        <select onchange="window.setExpenseFilter('year', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
+                        <select onchange="window.setExpenseFilter('year', this.value)" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden">
                             ${yearOptions.map(y => `<option value="${y}" ${y === expSelectedYear ? 'selected' : ''}>${y}</option>`).join('')}
                         </select>
                     </div>
@@ -694,7 +694,7 @@ export const renderExpensesAdminView = () => {
                     <!-- Filter Bulan -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Bulan</label>
-                        <select onchange="window.setExpenseFilter('month', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
+                        <select onchange="window.setExpenseFilter('month', this.value)" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden">
                             <option value="0" ${expSelectedMonth === 0 ? 'selected' : ''}>Semua Bulan (Setahun)</option>
                             ${MONTH_NAMES.map((m, i) => `<option value="${i + 1}" ${(i + 1) === expSelectedMonth ? 'selected' : ''}>${m}</option>`).join('')}
                         </select>
@@ -703,7 +703,7 @@ export const renderExpensesAdminView = () => {
                     <!-- Filter Kategori -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
-                        <select onchange="window.setExpenseFilter('category', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
+                        <select onchange="window.setExpenseFilter('category', this.value)" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden">
                             <option value="all" ${expSelectedCategory === 'all' ? 'selected' : ''}>Semua Kategori</option>
                             ${EXPENSE_CATEGORIES.map(c => `<option value="${c.key}" ${c.key === expSelectedCategory ? 'selected' : ''}>${c.label}</option>`).join('')}
                         </select>
@@ -712,7 +712,7 @@ export const renderExpensesAdminView = () => {
                     <!-- Filter Sumber Pembayaran -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Sumber Dana</label>
-                        <select onchange="window.setExpenseFilter('source', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
+                        <select onchange="window.setExpenseFilter('source', this.value)" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden">
                             <option value="all" ${expSelectedSource === 'all' ? 'selected' : ''}>Semua Sumber</option>
                             ${EXPENSE_SOURCES.map(s => `<option value="${s.key}" ${s.key === expSelectedSource ? 'selected' : ''}>${s.label}</option>`).join('')}
                         </select>
@@ -721,7 +721,7 @@ export const renderExpensesAdminView = () => {
                     <!-- Filter Urutan / Sort -->
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Urutkan</label>
-                        <select onchange="window.setExpenseFilter('sort', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
+                        <select onchange="window.setExpenseFilter('sort', this.value)" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-slate-800 dark:text-white focus:outline-hidden">
                             <option value="newest" ${expSortBy === 'newest' ? 'selected' : ''}>Tanggal Terbaru</option>
                             <option value="oldest" ${expSortBy === 'oldest' ? 'selected' : ''}>Tanggal Terlama</option>
                             <option value="highest" ${expSortBy === 'highest' ? 'selected' : ''}>Nominal Terbesar</option>
@@ -733,8 +733,8 @@ export const renderExpensesAdminView = () => {
                 <!-- Input Pencarian Bebas (Zero-Flicker) -->
                 <div class="relative">
                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                    <input type="text" id="expense-search-input" value="${esc(expSearchQuery)}" placeholder="Cari keterangan, keperluan, atau nama toko/vendor..." oninput="window.setExpenseFilter('search', this.value)" class="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-hidden">
-                    <button type="button" id="expense-search-clear-btn" onclick="window.setExpenseFilter('search', '')" style="display: ${expSearchQuery ? 'block' : 'none'};" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-xs"></i></button>
+                    <input type="text" id="expense-search-input" value="${esc(expSearchQuery)}" placeholder="Cari keterangan, keperluan, atau nama toko/vendor..." oninput="window.setExpenseFilter('search', this.value)" class="w-full pl-9 pr-8 h-11 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-hidden">
+                    <button type="button" id="expense-search-clear-btn" onclick="window.setExpenseFilter('search', '')" style="display: ${expSearchQuery ? 'block' : 'none'};" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-1"><i class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
             </div>
 

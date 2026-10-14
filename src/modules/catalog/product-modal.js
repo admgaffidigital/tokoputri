@@ -1867,9 +1867,9 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                     } else {
                         const searchHtml = p.variants.length >= 6 ? `
                             <div class="relative">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i>
-                                <input id="quick-variant-search-input" type="text" placeholder="Cari warna atau kode hex..." value="${esc(qvSearch)}" oninput="window.searchQuickPaintColor(this.value)" class="w-full h-8 pl-8 pr-7 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] transition-all">
-                                <button type="button" onclick="window.clearQuickPaintSearch()" class="quick-variant-clear-btn absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" style="${qvSearch ? 'display:block' : 'display:none'}"><i class="fa-solid fa-xmark text-xs"></i></button>
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400"></i>
+                                <input id="quick-variant-search-input" type="text" placeholder="Cari warna atau kode hex..." value="${esc(qvSearch)}" oninput="window.searchQuickPaintColor(this.value)" class="w-full h-11 pl-10 pr-9 text-sm rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                                <button type="button" onclick="window.clearQuickPaintSearch()" class="quick-variant-clear-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1" style="${qvSearch ? 'display:block' : 'display:none'}"><i class="fa-solid fa-xmark text-sm"></i></button>
                             </div>
                         ` : '';
 

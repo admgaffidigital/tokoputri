@@ -4762,3 +4762,61 @@ html.dark #bottom-nav-bar {
 html.dark #view-pos-cashier .lg\:border-l {
     box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08);
 }
+
+/* ============================================================
+   BENTO DESIGN SYSTEM: PROPORTIONAL INPUT & MODULAR CARD STANDARDIZATION
+   Menjamin seluruh elemen input (teks, angka, select, textarea)
+   memiliki ukuran proporsional, ramah jempol (touch target >= 40-44px),
+   font anti-semut/anti-zoom (>= 13.5px), dan kartu Bento konsisten.
+   ============================================================ */
+
+/* 1. Standardisasi Kartu Bento (Modular Island Cards) di Seluruh Toko */
+.bento-island-card {
+    border-radius: 1.25rem !important; /* 20px squircle */
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .bento-island-card {
+        border-radius: 1.5rem !important; /* 24px desktop squircle */
+    }
+}
+
+/* 2. Standar Proporsional Kolom Input Global (Anti-Kerdil & Touch-Friendly) */
+input.admin-input,
+.form-input-bento {
+    min-height: 2.75rem !important; /* 44px standar touch ergonomis */
+    font-size: 0.875rem !important; /* 14px anti auto-zoom di browser mobile */
+    line-height: 1.25rem !important;
+    border-radius: 0.75rem !important; /* 12px squircle */
+    box-sizing: border-box !important;
+}
+
+/* Proteksi Stepper & Input Kompak Kasir (Tidak Terlalu Kecil) */
+.input-compact,
+.stepper-input {
+    min-height: 2.25rem !important; /* Minimal 36px */
+    font-size: 0.8125rem !important; /* Minimal 13px */
+    box-sizing: border-box !important;
+}
+
+/* Standar Input Number agar Spinner Bawaan Tidak Memotong Angka Desimal */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Fokus Outline Aksesibilitas Bertema untuk Seluruh Input Bento */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: none !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 197, 155, 39), 0.18) !important;
+}
+

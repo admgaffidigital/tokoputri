@@ -2150,15 +2150,15 @@ const renderCart = () => {
                     <!-- Smart Item Discount Toggle / Input (Ramping & Bebas Sesak) -->
                     ${isDiscOpen ? `
                         <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
                             <input type="number" min="0" ${itemHpp > 0 ? `max="${maxItemDisc}"` : ''} placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
-                                class="w-16 text-[10px] font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-md px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
-                            ${canViewHpp() && itemHpp > 0 ? `<span class="text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
-                            ${!hasItemDisc ? `<button type="button" onclick="window.togglePOSItemDiscInput('${ckey}')" class="text-[9px] text-slate-400 hover:text-rose-500 ml-0.5 cursor-pointer" title="Tutup input diskon"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                                class="w-20 h-8 text-xs font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                            ${canViewHpp() && itemHpp > 0 ? `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
+                            ${!hasItemDisc ? `<button type="button" onclick="window.togglePOSItemDiscInput('${ckey}')" class="text-xs text-slate-400 hover:text-rose-500 ml-1 cursor-pointer p-1" title="Tutup input diskon"><i class="fa-solid fa-xmark"></i></button>` : ''}
                         </div>` : `
                         <div class="flex items-center gap-2 mt-1">
-                            <button type="button" onclick="window.togglePOSItemDiscInput('${ckey}')" class="pos-item-disc-btn" title="Beri diskon khusus per item">
-                                <i class="fa-solid fa-tag text-[8px]"></i> +Diskon
+                            <button type="button" onclick="window.togglePOSItemDiscInput('${ckey}')" class="pos-item-disc-btn h-7 px-2.5 rounded-lg text-xs" title="Beri diskon khusus per item">
+                                <i class="fa-solid fa-tag text-[9px]"></i> +Diskon
                             </button>
                         </div>`}
                 </div>
@@ -2166,12 +2166,12 @@ const renderCart = () => {
                 <div class="flex flex-col items-end shrink-0">
                     <div class="flex items-center gap-1">
                         <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
-                            <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-6 h-6 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
+                            <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs sm:text-sm flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
                             <input type="number" step="any" min="0.001" value="${formatQty(item.qty)}" onchange="window.posSetQty('${ckey}',this.value)"
-                                class="w-14 text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-0.5" title="Kuantitas (${esc(item.unit || 'pcs')})">
-                            <button onclick="window.posUpdateQty('${ckey}',1)" class="w-6 h-6 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
+                                class="w-14 sm:w-16 text-center text-xs sm:text-sm font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-1" title="Kuantitas (${esc(item.unit || 'pcs')})">
+                            <button onclick="window.posUpdateQty('${ckey}',1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs sm:text-sm flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
                         </div>
-                        <button onclick="window.posRemoveItem('${ckey}')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer active:scale-95 ml-0.5" title="Hapus item">
+                        <button onclick="window.posRemoveItem('${ckey}')" class="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer active:scale-95 ml-0.5" title="Hapus item">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -4596,15 +4596,15 @@ const buildPOSLayout = ({ isStorefront }) => {
                                     </div>
                                     <span>Diskon Transaksi</span>
                                 </span>
-                                <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
-                                    <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
-                                    <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
+                                <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-xl p-0.5 text-xs">
+                                    <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp h-7 px-3 rounded-lg transition-all cursor-pointer font-black text-white shadow-xs text-xs" style="background:var(--color-primary)">Rp</button>
+                                    <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct h-7 px-3 rounded-lg transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-xs">%</button>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex-1 relative">
-                                    <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
-                                    <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
+                                    <span class="pos-disc-prefix absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black" style="color:var(--color-primary)">Rp</span>
+                                    <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 h-10 text-right text-sm font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                                 </div>
                                 <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
                             </div>
@@ -4707,15 +4707,15 @@ const buildPOSLayout = ({ isStorefront }) => {
                                     </div>
                                     <span>Diskon Transaksi</span>
                                 </span>
-                                <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
-                                    <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
-                                    <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
+                                <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-xl p-0.5 text-xs">
+                                    <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp h-7 px-3 rounded-lg transition-all cursor-pointer font-black text-white shadow-xs text-xs" style="background:var(--color-primary)">Rp</button>
+                                    <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct h-7 px-3 rounded-lg transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-xs">%</button>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex-1 relative">
-                                    <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
-                                    <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
+                                    <span class="pos-disc-prefix absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black" style="color:var(--color-primary)">Rp</span>
+                                    <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 h-10 text-right text-sm font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                                 </div>
                                 <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
                             </div>

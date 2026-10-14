@@ -1781,16 +1781,16 @@ export const renderStockValuationTab = () => {
                                 <i class="fa-solid fa-clipboard-check text-xs"></i> <span>Stock Opname</span>
                             </button>
                             <!-- Input Pencarian dengan Clear Button (Zero-Flicker) -->
-                            <div class="relative flex-1 sm:w-56">
-                                <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-slate-400"></i>
-                                <input type="text" id="stock-report-search-input" placeholder="Cari nama barang / SKU..." value="${esc(reportSearchQuery)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
-                                <button type="button" id="stock-report-search-clear-btn" onclick="filterStockReportSearch('')" style="display: ${reportSearchQuery ? 'block' : 'none'};" class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+                            <div class="relative flex-1 sm:w-64">
+                                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400"></i>
+                                <input type="text" id="stock-report-search-input" placeholder="Cari nama barang / SKU..." value="${esc(reportSearchQuery)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-9 pr-8 h-10 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
+                                <button type="button" id="stock-report-search-clear-btn" onclick="filterStockReportSearch('')" style="display: ${reportSearchQuery ? 'block' : 'none'};" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1">
                                     <i class="fa-solid fa-circle-xmark"></i>
                                 </button>
                             </div>
 
                             <!-- Filter Kategori -->
-                            <select onchange="filterStockReportCategory(this.value)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden cursor-pointer max-w-[140px] sm:max-w-none truncate">
+                            <select onchange="filterStockReportCategory(this.value)" class="px-3 h-10 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden cursor-pointer max-w-[140px] sm:max-w-none truncate">
                                 <option value="all" ${reportStockCategory === 'all' ? 'selected' : ''}>Semua Kategori</option>
                                 ${categories.map(c => `<option value="${c.name}" ${reportStockCategory === c.name ? 'selected' : ''}>${c.name}</option>`).join('')}
                             </select>

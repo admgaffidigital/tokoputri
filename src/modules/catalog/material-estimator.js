@@ -533,24 +533,24 @@ export const renderEstimatorFormHtml = (tab) => {
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Ruang (m)</label>
                     <input type="number" id="paint-input-length" step="0.5" min="1" max="100" value="${paintState.length}" oninput="window.updateEstimatorPaintField('length', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Lebar Ruang (m)</label>
                     <input type="number" id="paint-input-width" step="0.5" min="1" max="100" value="${paintState.width}" oninput="window.updateEstimatorPaintField('width', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-2.5">
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Tinggi Dinding (m)</label>
                     <input type="number" id="paint-input-height" step="0.25" min="1" max="20" value="${paintState.height}" oninput="window.updateEstimatorPaintField('height', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase" title="Area pintu dan jendela yang tidak dicat">Pintu/Jendela (m²)</label>
                     <input type="number" id="paint-input-openings" step="0.5" min="0" max="50" value="${paintState.openings}" oninput="window.updateEstimatorPaintField('openings', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
             <div class="flex items-center justify-between pt-1">
@@ -562,7 +562,7 @@ export const renderEstimatorFormHtml = (tab) => {
             <div>
                 <label class="text-[10px] font-bold text-slate-500 uppercase">Total Luas Bidang Cat (m²)</label>
                 <input type="number" id="paint-input-directArea" step="1" min="1" max="10000" value="${paintState.directArea}" oninput="window.updateEstimatorPaintField('directArea', this.value)"
-                    class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
             </div>
             `}
 
@@ -595,19 +595,19 @@ export const renderEstimatorFormHtml = (tab) => {
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Lantai (m)</label>
                     <input type="number" id="tile-input-length" step="0.5" min="1" max="100" value="${tileState.length}" oninput="window.updateEstimatorTileField('length', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Lebar Lantai (m)</label>
                     <input type="number" id="tile-input-width" step="0.5" min="1" max="100" value="${tileState.width}" oninput="window.updateEstimatorTileField('width', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
 
             <div>
                 <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Ukuran Keramik / Granit</label>
                 <select id="tile-input-size" onchange="window.updateEstimatorTileField('tileSize', this.value)"
-                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     <option value="30x30" ${tileState.tileSize === '30x30' ? 'selected' : ''}>30 x 30 cm (1 Dus = 1.00 m² / 11 keping)</option>
                     <option value="40x40" ${tileState.tileSize === '40x40' ? 'selected' : ''}>40 x 40 cm (1 Dus = 0.96 m² / 6 keping)</option>
                     <option value="50x50" ${tileState.tileSize === '50x50' ? 'selected' : ''}>50 x 50 cm (1 Dus = 1.00 m² / 4 keping)</option>
@@ -651,12 +651,12 @@ export const renderEstimatorFormHtml = (tab) => {
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Panjang Dinding (m)</label>
                     <input type="number" id="brick-input-length" step="0.5" min="1" max="200" value="${brickState.length}" oninput="window.updateEstimatorBrickField('length', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Tinggi Dinding (m)</label>
                     <input type="number" id="brick-input-height" step="0.25" min="1" max="20" value="${brickState.height}" oninput="window.updateEstimatorBrickField('height', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
 
@@ -664,19 +664,19 @@ export const renderEstimatorFormHtml = (tab) => {
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Jumlah Sisi Tembok</label>
                     <input type="number" id="brick-input-sides" min="1" max="20" value="${brickState.sides}" oninput="window.updateEstimatorBrickField('sides', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Bukaan Pintu/Jendela (m²)</label>
                     <input type="number" id="brick-input-openings" step="0.5" min="0" max="50" value="${brickState.openings}" oninput="window.updateEstimatorBrickField('openings', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
 
             <div>
                 <label class="text-[10px] font-bold text-slate-500 uppercase mb-1.5 block">Pilihan Material Dinding</label>
                 <select id="brick-input-type" onchange="window.updateEstimatorBrickField('brickType', this.value)"
-                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     <option value="hebel10" ${brickState.brickType === 'hebel10' ? 'selected' : ''}>Bata Ringan / Hebel Tebal 10 cm (60x20x10)</option>
                     <option value="hebel75" ${brickState.brickType === 'hebel75' ? 'selected' : ''}>Bata Ringan / Hebel Tebal 7.5 cm (60x20x7.5)</option>
                     <option value="redbrick" ${brickState.brickType === 'redbrick' ? 'selected' : ''}>Bata Merah Bakar Standar</option>
@@ -727,7 +727,7 @@ export const renderEstimatorFormHtml = (tab) => {
                     <span class="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400" id="roof-effective-width-badge">Lebar Efektif: ${spec.effectiveWidth * 100} cm</span>
                 </div>
                 <select id="roof-input-sheetLength" onchange="window.updateEstimatorRoofField('sheetLength', this.value)"
-                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     ${spec.standardLengths.map(l => `
                         <option value="${l.val}" ${parseFloat(roofState.sheetLength) === l.val ? 'selected' : ''}>${l.label}</option>
                     `).join('')}
@@ -739,12 +739,12 @@ export const renderEstimatorFormHtml = (tab) => {
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">${roofState.mode === 'gable' ? 'P. Bangunan (m)' : 'Lebar Kanopi (m)'}</label>
                     <input type="number" id="roof-input-length" step="0.5" min="1" max="100" value="${roofState.length}" oninput="window.updateEstimatorRoofField('length', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">${roofState.mode === 'gable' ? 'Bentang Lebar (m)' : 'P. Jatuh Air (m)'}</label>
                     <input type="number" id="roof-input-width" step="0.5" min="1" max="100" value="${roofState.width}" oninput="window.updateEstimatorRoofField('width', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
 
@@ -752,12 +752,12 @@ export const renderEstimatorFormHtml = (tab) => {
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase">Sudut Miring (°)</label>
                     <input type="number" id="roof-input-slopeAngle" step="1" min="5" max="60" value="${roofState.slopeAngle}" oninput="window.updateEstimatorRoofField('slopeAngle', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase" title="Lebar cucuran atap keluar dinding">Overstek (m)</label>
                     <input type="number" id="roof-input-overhang" step="0.1" min="0" max="3" value="${roofState.overhang}" oninput="window.updateEstimatorRoofField('overhang', this.value)"
-                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
 
@@ -774,7 +774,7 @@ export const renderEstimatorFormHtml = (tab) => {
             <div>
                 <label class="text-[10px] font-bold text-slate-500 uppercase">Total Luas Bidang Atap (m²)</label>
                 <input type="number" id="roof-input-directArea" step="1" min="1" max="10000" value="${roofState.directArea}" oninput="window.updateEstimatorRoofField('directArea', this.value)"
-                    class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 h-11 text-sm font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
             </div>
             `}
 
