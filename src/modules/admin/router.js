@@ -262,10 +262,22 @@ export const openAdminTab = (t, fH = false) => {
         if (typeof window.attachRewardsRealtime === 'function') window.attachRewardsRealtime();
         if (typeof window.rAdmL === 'function') window.rAdmL('rewards');
     } else if (t === 'pos') {
-        // Lazy load modul POS — hanya dimuat saat kasir dibuka
-        import('../../modules/pos/pos.js').then(m => m.renderPOS()).catch(err => {
-            renderModuleLoadError('Kasir POS', t, err);
-        });
+        // Alihkan langsung ke mode terminal POS Kasir terdedikasi layar penuh
+        if (typeof window.openPOSCashierMode === 'function') {
+            window.openPOSCashierMode();
+        } else {
+            import('../../modules/pos/pos-auth.js').then(m => {
+                if (typeof m.openPOSCashierMode === 'function') m.openPOSCashierMode();
+                else if (typeof window.openPOSCashierMode === 'function') window.openPOSCashierMode();
+            }).catch(() => {
+                import('../../modules/pos/pos.js').then(m => {
+                    if (typeof m.renderPOSStorefront === 'function') m.renderPOSStorefront();
+                    else if (typeof m.renderPOS === 'function') m.renderPOS();
+                }).catch(err => {
+                    renderModuleLoadError('Kasir POS', t, err);
+                });
+            });
+        }
     } else if (t === 'cashiers' || t === 'staff') {
         // Lazy load modul manajemen staf & hak akses
         import('../../modules/pos/pos-cashier-admin.js').then(m => m.renderCashierAccounts()).catch(err => {

@@ -747,7 +747,7 @@ export const renderExecutiveSummaryTab = () => {
                     <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs" style="border-color: rgba(var(--color-primary-rgb), 0.3);">
                         <i class="fa-solid fa-boxes-stacked mr-1" style="color: var(--color-primary)"></i> Cek Valuasi Stok
                     </button>
-                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('pos')" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" style="background: var(--color-primary);">
+                    <button type="button" onclick="if(typeof window.openPOSCashierMode === 'function') window.openPOSCashierMode(); else if(window.openAdminTab) window.openAdminTab('pos');" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cash-register mr-1"></i> Buka Kasir POS
                     </button>
                 </div>
