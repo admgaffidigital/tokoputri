@@ -156,12 +156,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BuuI5oJq.js"></script>
+    <script type="module" crossorigin src="/assets/index-3oBHDFSi.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BnYmtW0H.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-Dt583q3w.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -360,152 +360,136 @@
             </div>
           </button>
 
-          <!-- 2-Column Bento Grid (Screen 4 Reference) -->
+          <!-- 2-Column Bento Grid (Centered Bento Shortcut Tiles) -->
           <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
             <!-- 1. Halaman Utama -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu('view-catalog')">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);">
-                  <i class="fa-solid fa-house"></i>
-                </div>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-catalog')">
+              <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);">
+                <i class="fa-solid fa-house"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Halaman Utama</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Kembali ke beranda</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Halaman Utama</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Kembali ke beranda</p>
               </div>
             </button>
 
             <!-- 2. Keranjang Belanja -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu('view-cart')">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-rose-500 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-bag-shopping"></i>
-                </div>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-cart')">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-rose-500 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-bag-shopping"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Keranjang</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Daftar belanja Anda</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Keranjang</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Daftar belanja Anda</p>
               </div>
             </button>
 
             <!-- 3. Kartu Member VIP -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-amber-300/80 dark:border-amber-700/60 bg-gradient-to-br from-amber-50/80 to-yellow-50/40 dark:from-slate-900 dark:to-amber-950/20 hover:border-amber-400 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(openMemberModal)">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-yellow-600 via-amber-500 to-amber-700 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-id-card"></i>
-                </div>
-                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-amber-500 text-white shadow-2xs">VIP</span>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-amber-300/80 dark:border-amber-700/60 bg-gradient-to-br from-amber-50/80 to-yellow-50/40 dark:from-slate-900 dark:to-amber-950/20 hover:border-amber-400 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(openMemberModal)">
+              <span class="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase bg-amber-500 text-white shadow-xs">VIP</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-600 via-amber-500 to-amber-700 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-id-card"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-amber-950 dark:text-amber-300 line-clamp-1">Member &amp; Poin</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">Kartu digital &amp; hadiah</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-amber-950 dark:text-amber-300 line-clamp-1 text-center w-full">Member &amp; Poin</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 text-center w-full">Kartu digital &amp; hadiah</p>
               </div>
             </button>
 
             <!-- 4. Produk Favorit -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-rose-400 hover:bg-rose-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu('view-wishlist')">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-heart"></i>
-                </div>
-                <span id="wishlist-badge" class="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-900 px-1 text-[8.5px] font-bold text-white scale-0 transition-transform dark:bg-white dark:text-slate-900">0</span>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-rose-400 hover:bg-rose-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-wishlist')">
+              <span id="wishlist-badge" class="absolute top-2.5 right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-900 px-1 text-[8.5px] font-bold text-white scale-0 transition-transform dark:bg-white dark:text-slate-900 shadow-xs">0</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-heart"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Produk Favorit</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Barang yang disukai</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Produk Favorit</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Barang yang disukai</p>
               </div>
             </button>
 
             <!-- 5. Riwayat Pesanan -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu('view-orders')">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-receipt"></i>
-                </div>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-orders')">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-receipt"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Riwayat Pesanan</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Lacak status belanja</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Riwayat Pesanan</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Lacak status belanja</p>
               </div>
             </button>
 
             <!-- 6. Tanya Jawab (Q&A) -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-purple-400 hover:bg-purple-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu('view-faq')">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-circle-question"></i>
-                </div>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-purple-400 hover:bg-purple-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-faq')">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-circle-question"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Tanya Jawab FAQ</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Pusat bantuan toko</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Tanya Jawab FAQ</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Pusat bantuan toko</p>
               </div>
             </button>
 
             <!-- 7. Panduan Toko & SOP -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-teal-400 hover:bg-teal-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(() => openShoppingGuideModal('customer'))">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-book-open-reader"></i>
-                </div>
-                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300">SOP</span>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-teal-400 hover:bg-teal-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(() => openShoppingGuideModal('customer'))">
+              <span class="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300">SOP</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-book-open-reader"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Panduan Toko</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">SOP Belanja, Kasir &amp; Admin</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Panduan Toko</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">SOP Belanja, Kasir &amp; Admin</p>
               </div>
             </button>
 
             <!-- 8. Log Update -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(openChangelogModal)">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-clock-rotate-left"></i>
-                </div>
-                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase primary-bg text-white shadow-2xs">Update</span>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(openChangelogModal)">
+              <span class="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase primary-bg text-white shadow-xs">Update</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-clock-rotate-left"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Log Sistem</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Riwayat rilis fitur baru</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Log Sistem</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Riwayat rilis fitur baru</p>
               </div>
             </button>
 
             <!-- 9. Kalkulator Estimator Bahan Bangunan -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(() => openMaterialEstimatorModal('storefront'))">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-calculator"></i>
-                </div>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(() => openMaterialEstimatorModal('storefront'))">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-calculator"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Kalkulator Material</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Estimasi cat, keramik &amp; bata</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Kalkulator Material</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Estimasi cat, keramik &amp; bata</p>
               </div>
             </button>
 
             <!-- 10. Akses Seller -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(checkAdminAccess)">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                  <i class="fa-solid fa-shield-halved"></i>
-                </div>
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(checkAdminAccess)">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+                <i class="fa-solid fa-shield-halved"></i>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Akses Seller</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Kelola toko &amp; admin</p>
+              <div class="w-full text-center">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1 text-center w-full">Akses Seller</h4>
+                <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5 text-center w-full">Kelola toko &amp; admin</p>
               </div>
             </button>
 
-            <!-- 10. Mode Tampilan -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="if(typeof toggleTheme==='function') toggleTheme();">
-              <div class="flex items-start justify-between w-full mb-2">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 text-purple-200 flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
+            <!-- 11. Mode Tampilan -->
+            <button class="col-span-2 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 flex items-center justify-between px-3.5 sm:px-4 shadow-2xs cursor-pointer group" onclick="if(typeof toggleTheme==='function') toggleTheme();">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 text-purple-200 flex items-center justify-center text-base shadow-sm group-hover:scale-110 transition-transform shrink-0">
                   <i class="fa-solid fa-moon" id="icon-theme"></i>
                 </div>
+                <div class="text-left">
+                  <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Tema Layar</h4>
+                  <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Mode Gelap / Terang</p>
+                </div>
               </div>
-              <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Tema Layar</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Mode Gelap / Terang</p>
+              <div class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60 flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-circle-half-stroke text-[var(--color-primary)]"></i>
+                <span>Ganti Mode</span>
               </div>
             </button>
           </div>
