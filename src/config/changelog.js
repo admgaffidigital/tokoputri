@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-06",
+        "version": "v1.17.6",
+        "date": "2026-10-15",
+        "title": "Resolusi Bug Re-Aktivasi Flash Sale Selesai, Sinkronisasi Realtime Storefront, Auto-Extend Jadwal & Reset Kuota Terjual",
+        "category": "feature",
+        "badge": "Flash Sale Re-Activation & Realtime Storefront Sync v1.17.6",
+        "items": [
+            "Resolusi Bug Re-Aktivasi Sesi Flash Sale Selesai: Mengeliminasi kendala sesi flash sale yang telah selesai tidak muncul di etalase toko saat diaktifkan kembali. Sistem kini secara cerdas mendeteksi sesi kedaluwarsa dan otomatis memperpanjang jadwal mulai/berakhir dari waktu saat ini (+4 jam) serta menyegarkan kuota produk yang telah habis terjual.",
+            "Tombol Aksi Cepat 'Naikkan Lagi' & Reset Kuota Produk di CMS: Menambahkan tombol aksi 1-sentuhan 'Naikkan Lagi' pada kartu sesi berstatus SELESAI di CMS Admin, serta tombol reset kuota keterjualan per-produk dan reset seluruh kuota draft agar produk promo siap langsung dinaikkan kembali ke flash sale.",
+            "Sinkronisasi Realtime Storefront & doSync Storage Engine: Mengintegrasikan sinkronisasi realtime dokumen 'flashSales' pada listener 'attachRealtimeStockSync' (storage.js) sehingga perubahan status flash sale seketika ter-broadcast dan me-render panggung flash sale di seluruh perangkat tanpa perlu refresh manual.",
+            "Proteksi Anti-Kandang Kosong Storefront: Menyempurnakan renderStorefrontFlashSale() dengan parser tanggal aman parseSafeTimestamp() dan validasi cardsHtml sehingga seksi flash sale hanya terbuka jika terdapat produk aktif yang valid dan otomatis tertutup jika sesi/produk telah berakhir.",
+            "Multi-Channel Distribution v1.17.6 (Android versionCode 11706)."
+        ]
+    },
+    {
         "id": "log-1-17-05",
         "version": "v1.17.5",
         "date": "2026-10-15",
@@ -79,43 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Active Element Guard & Autocomplete Standar: Menyelaraskan form login admin dan kasir dengan standar autocomplete='username' dan autocomplete='current-password' serta activeElement guard agar kursor tidak dirampas oleh password manager maupun router view.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.17.2 (Android versionCode 11702)."
-        ]
-    },
-    {
-        "id": "log-1-17-01",
-        "version": "v1.17.1",
-        "date": "2026-10-15",
-        "title": "Sanitasi Murni Kolom Input (Pristine Input Cleanliness), Proteksi Anti-Autofill & Keamanan Kredensial Seluruh Web Aplikasi",
-        "category": "feature",
-        "badge": "Pristine Input Cleanliness & Universal Anti-Autofill v1.17.1",
-        "items": [
-            "Sanitasi Murni Kolom Input (Pristine Input Cleanliness): Menjamin seluruh kolom input di aplikasi terbebas dari residu sampah teks, riwayat kata sandi lama, maupun kode usang saat formulir atau modal dibuka, ditutup, atau diselesaikan.",
-            "Standar Proteksi Anti-Autofill Modern (Chromium & WebKit Compliant): Mengganti atribut autocomplete pada kolom kata sandi login admin, login kasir, dan formulir staf dengan standar autocomplete=\"new-password\" serta autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" sehingga browser tidak lagi menyuntikkan atau meninggalkan kata sandi tersimpan secara otomatis.",
-            "Sanitasi Programmatic Instan Login Kasir & Admin: Mengosongkan nilai username/email dan password secara otomatis dan aman saat pengguna membuka layar login, menutup modal autentikasi, berhasil masuk, maupun saat logout.",
-            "Sanitasi Kolom Pencarian & Barcode Scanner: Menyematkan proteksi anti-autofill dan spellcheck pada kolom pencarian storefront (#search-input, #mobile-header-search), pencarian kasir POS (#pos-search-input), dan pelacak nota retur agar tidak memunculkan popup riwayat yang menghalangi keyboard.",
-            "Sanitasi Modal Kas Laci & Shift Kasir: Seluruh kolom nominal uang tunai, alasan transaksi, penerima dana, serta kalkulator pecahan denominasi selalu dibuka dalam kondisi bersih murni (0 / kosong).",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.17.1 (Android versionCode 11701)."
-        ]
-    },
-    {
-        "id": "log-1-17-00",
-        "version": "v1.17.0",
-        "date": "2026-10-14",
-        "title": "Sistem Desain Universal Edge 3D Layar Lengkung, Harmonisasi Multi-Perangkat (Mobile, Tablet & Desktop) & Finalisasi Antarmuka",
-        "category": "feature",
-        "badge": "Universal 3D Curved Edge & Multi-Device Parity v1.17.0",
-        "items": [
-            "Universal 3D Curved Edge Display Overlay (#flagship-edge-screen-overlay): Menghadirkan bingkai layar lengkung 3D (Samsung Galaxy Edge / Flagship AMOLED / Curved Workstation) yang persisten di seluruh web aplikasi (Etalase Katalog, Kasir POS Hardware, Admin Backoffice, Keranjang, Checkout, Riwayat Pesanan, Wishlist, dan FAQ).",
-            "Harmonisasi Bezel Multi-Perangkat (Edge-to-Edge Parity): Skala lebar bezel adaptif otomatis—6px di smartphone, 10px di tablet workstation, 8px di monitor laptop/desktop PC, dan 10px di ultra-wide workstation dengan garis kilau kristal (specular glass sheen highlight) dan pendaran aura tema toko dinamis.",
-            "Harmonisasi Komponen Antarmuka Mikro (Micro-Edge Design System): Menyelaraskan rim tepi atas lembar modal dialog (.modal-bottom-sheet & .drawer-bottom), garis kilau atas bilah navigasi (#bottom-nav-bar), rim pembatas bawah header (.glass-header & .pos-storefront-header), serta garis divider vertikal kasir POS.",
-            "Proteksi Aksesibilitas 100% & Zero Touch Interference: Overlay dilengkapi pointer-events: none !important, select-none, dan akselerasi GPU (transform: translateZ(0)) tanpa lag sentuhan, klik, scroll, ketikan formulir, maupun barcode scanner.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Perampingan Navigasi CMS & Eliminasi Duplikasi POS Kasir: Menghapus kartu menu duplikat 'Kasir POS' dari dasbor menu CMS agar panel admin lebih ringkas dan fokus backoffice, menyatukan seluruh akses kasir point-of-sale secara presisi melalui icon kasir terdedikasi di header toko (openPOSCashierMode) yang membuka antarmuka terminal layar penuh.",
-            "Standardisasi Bento UI/UX & Elevasi Kartu Modular (.bento-island-card): Menerapkan arsitektur visual Bento Grid secara konsisten di seluruh web aplikasi (Checkout, Pembayaran, Pelacak Pesanan, Panduan FAQ, Login Admin, dan POS Kasir) dengan border radius squircle adaptif (20px mobile / 24px desktop) dan elevasi solid crystal anti-kaca.",
-            "Standardisasi Proporsionalitas Kolom Input (Anti-Kerdil & Touch Ergonomics): Mengeliminasi seluruh input kerdil/sempit di seluruh modul aplikasi. Menstandarkan input teks, angka, tanggal, dan dropdown select ke tinggi proporsional (min-height 40-44px, font 13.5-14px anti auto-zoom), stepper kuantitas keranjang web (w-14 sm:w-16 h-10 sm:h-11), input diskon nota kasir (h-10 text-sm), input denominasi kasir (w-16 sm:w-20 h-9), parameter estimator material bangunan (h-11 text-sm font-bold), input peta koordinat, serta form pengeluaran & stock opname.",
-            "Penyempurnaan & Harmonisasi Simetris Modal Tautan Cepat (Centered Bento Shortcut Tiles): Menata ulang grid modal Tautan Cepat (#quickmenu-modal) menjadi kartu pintas terpusat yang simetris dan seimbang. Seluruh icon menu diperbesar (w-12 h-12 rounded-2xl) dan diletakkan presisi di tengah, judul dan subjudul teks terpusat rata tengah (text-center), badge status (VIP, SOP, Update, Wishlist) diposisikan melayang elegan di sudut kanan atas (absolute top-2.5 right-2.5), serta kartu utilitas Tema Layar diformat membentang 2 kolom penuh (col-span-2) sehingga grid menjadi 100% konsisten, simetris, dan proporsional.",
-            "Multi-Channel Distribution v1.17.0 (Android versionCode 11700)."
         ]
     }
 ];

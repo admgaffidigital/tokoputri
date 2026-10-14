@@ -589,6 +589,7 @@ export const attachRealtimeStockSync = () => {
             if (f.brands) appData.brands = f.brands;
             if (f.banks) appData.banks = f.banks;
             if (f.faqs) appData.faqs = f.faqs;
+            if (f.flashSales !== undefined) appData.flashSales = Array.isArray(f.flashSales) ? f.flashSales : [];
             // CATATAN KEAMANAN: suppliers, purchases, expenses, taxSettings, stockOpnameHistory
             // kini disimpan di cms_private (bukan cms_data). Listener cms_data tidak lagi
             // menangani field-field ini — lihat attachPrivateDataListener() di bawah.
@@ -670,15 +671,18 @@ export const attachRealtimeStockSync = () => {
             // Refresh storefront dan tabel admin untuk perubahan settings
             if (typeof rDyn === 'function') rDyn(); else if (typeof window.rDyn === 'function') window.rDyn();
             if (typeof rCat === 'function') rCat(); else if (typeof window.rCat === 'function') window.rCat();
+            if (typeof window.renderStorefrontFlashSale === 'function') window.renderStorefrontFlashSale();
             sanitizeCart();
             updCart();
 
             // Refresh tabel admin untuk tab settings (bukan products — itu sudah ditangani refreshProdUI dari listener products)
             const isAdminActive = window.isAdm || window.__localIsAdm;
-            if (isAdminActive && typeof window.rAdmItms === 'function') {
+            if (isAdminActive) {
                 const curTab = window.cTab || 'products';
-                if (['categories','vouchers','banners','brands','banks','colors'].includes(curTab)) {
+                if (typeof window.rAdmItms === 'function' && ['categories','vouchers','banners','brands','banks','colors'].includes(curTab)) {
                     window.rAdmItms(curTab);
+                } else if (curTab === 'flash-sale' && typeof window.renderFlashSaleAdminView === 'function') {
+                    window.renderFlashSaleAdminView();
                 }
             }
         } catch (e) {

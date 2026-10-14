@@ -117,6 +117,11 @@ export const renderFlashSaleAdminView = () => {
 
                         <!-- Aksi Tombol -->
                         <div class="flex items-center gap-1.5 shrink-0">
+                            ${status === 'ended' ? `
+                            <button onclick="window.reactivateFlashSaleSession('${esc(sess.id)}', 4)" title="Naikkan kembali ke Flash Sale sekarang (+4 Jam)" class="btn-native-action px-2.5 py-1.5 rounded-xl text-white text-[11px] font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                                <i class="fa-solid fa-bolt text-amber-300"></i>
+                                <span>Naikkan Lagi</span>
+                            </button>` : ''}
                             <button onclick="window.openFlashSaleModal('${esc(sess.id)}')" title="Edit Sesi" class="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
@@ -128,16 +133,23 @@ export const renderFlashSaleAdminView = () => {
 
                     <!-- Item Produk yang Diikutsertakan -->
                     <div class="mt-3.5 space-y-2.5">
-                        <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                            Produk Promo (${items.length} Barang):
-                        </p>
+                        <div class="flex items-center justify-between">
+                            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Produk Promo (${items.length} Barang):
+                            </p>
+                            ${items.some(it => (parseFloat(it.soldCount) || 0) > 0) ? `
+                            <button type="button" onclick="window.resetAllSessionItemsSold('${esc(sess.id)}')" class="text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+                                <i class="fa-solid fa-rotate-left text-[9px]"></i> Reset Semua Kuota
+                            </button>` : ''}
+                        </div>
                         <div class="divide-y divide-slate-100 dark:divide-slate-800/80">
-                            ${items.map(it => {
+                            ${items.map((it, itIdx) => {
                                 const prod = (appData.products || []).find(p => String(p.id) === String(it.productId));
                                 const pName = prod ? prod.name : (it.productName || 'Produk ID: ' + it.productId);
                                 const vName = it.variantName ? ` (${it.variantName})` : '';
                                 const quota = parseFloat(it.quota) || 0;
                                 const sold = parseFloat(it.soldCount) || 0;
+                                const isSoldOut = quota > 0 && sold >= quota;
                                 const normP = parseFloat(it.normalPrice) || 0;
                                 const fsP = parseFloat(it.flashSalePrice) || 0;
                                 const discountPct = normP > 0 ? Math.round(((normP - fsP) / normP) * 100) : (it.discountPercent || 0);
@@ -147,7 +159,10 @@ export const renderFlashSaleAdminView = () => {
                                 return `
                                 <div class="py-2.5 flex items-center justify-between gap-3 text-xs">
                                     <div class="min-w-0 flex-1">
-                                        <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${esc(pName + vName)}</p>
+                                        <div class="flex items-center gap-1.5">
+                                            <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${esc(pName + vName)}</p>
+                                            ${isSoldOut ? `<span class="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">HABIS</span>` : ''}
+                                        </div>
                                         <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                                             <span class="text-[11px] text-slate-400 line-through">${fCur(normP)}</span>
                                             <span class="font-black" style="color: var(--color-primary);">${fCur(fsP)} (-${discountPct}%)</span>
@@ -157,9 +172,15 @@ export const renderFlashSaleAdminView = () => {
 
                                     <!-- Indikator Kuota Terjual Harmonis -->
                                     <div class="text-right shrink-0">
-                                        <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Terjual ${sold} / ${quota || '∞'}</span>
+                                        <div class="flex items-center justify-end gap-1">
+                                            <span class="text-[10px] font-bold ${isSoldOut ? 'text-rose-500' : 'text-slate-500 dark:text-slate-400'}">Terjual ${sold} / ${quota || '∞'}</span>
+                                            ${sold > 0 ? `
+                                            <button onclick="window.resetSessionItemSold('${esc(sess.id)}', ${itIdx})" title="Reset kuota terjual produk ini ke 0" class="text-amber-500 hover:text-amber-600 text-[10px] font-black cursor-pointer ml-1 p-0.5">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                            </button>` : ''}
+                                        </div>
                                         <div class="w-20 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-200/50 dark:border-slate-700/50">
-                                            <div class="h-full rounded-full" style="background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%); width: ${quota > 0 ? Math.min(100, Math.round((sold / quota) * 100)) : 100}%;"></div>
+                                            <div class="h-full rounded-full ${isSoldOut ? 'bg-rose-500' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);'} width: ${quota > 0 ? Math.min(100, Math.round((sold / quota) * 100)) : 100}%;"></div>
                                         </div>
                                     </div>
                                 </div>`;
@@ -168,12 +189,24 @@ export const renderFlashSaleAdminView = () => {
                     </div>
                 </div>
 
-                <!-- Footer Status Toggle -->
-                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span class="text-[11px] font-semibold text-slate-400">Status Saklar:</span>
-                    <button onclick="window.toggleFlashSaleActive('${esc(sess.id)}')" class="px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${sess.isActive !== false ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200'}">
-                        <i class="fa-solid fa-power-off mr-1"></i> ${sess.isActive !== false ? 'Sesi Aktif' : 'Dinonaktifkan'}
-                    </button>
+                <!-- Footer Status Toggle & Fast Re-activation -->
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs gap-2 flex-wrap">
+                    <div>
+                        <span class="text-[11px] font-semibold text-slate-400">Status:</span>
+                        <span class="ml-1 text-[11px] font-bold ${status === 'active' ? 'text-emerald-600 dark:text-emerald-400' : (status === 'upcoming' ? 'text-amber-500' : 'text-slate-500')}">
+                            ${status === 'active' ? 'Tayang di Etalase' : (status === 'upcoming' ? 'Menunggu Jadwal' : (sess.isActive !== false ? 'Waktu Telah Selesai' : 'Dinonaktifkan'))}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        ${status === 'ended' ? `
+                        <button onclick="window.reactivateFlashSaleSession('${esc(sess.id)}', 4)" class="btn-native-action px-3 py-1 rounded-xl text-white text-xs font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                            <i class="fa-solid fa-bolt text-amber-300"></i>
+                            <span>Naikkan Lagi</span>
+                        </button>` : ''}
+                        <button onclick="window.toggleFlashSaleActive('${esc(sess.id)}')" class="px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${sess.isActive !== false && status === 'active' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200'}">
+                            <i class="fa-solid fa-power-off mr-1"></i> ${sess.isActive !== false && status === 'active' ? 'Sesi Aktif' : (sess.isActive !== false ? 'Aktifkan (Perpanjang)' : 'Dinonaktifkan')}
+                        </button>
+                    </div>
                 </div>
             </div>`;
         }).join('');
@@ -256,8 +289,21 @@ export const openFlashSaleModal = (sessionId = null) => {
         ? JSON.parse(JSON.stringify(existing.items))
         : [];
 
-    const defaultStart = existing ? existing.startTime : new Date().toISOString();
-    const defaultEnd = existing ? existing.endTime : new Date(Date.now() + 4 * 3600 * 1000).toISOString(); // Default 4 jam
+    const nowMs = Date.now();
+    const existingEndMs = existing?.endTime ? (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(existing.endTime) : new Date(existing.endTime).getTime()) : 0;
+    const isExistingExpired = existing && (!existingEndMs || existingEndMs <= nowMs);
+
+    let defaultStart = existing ? existing.startTime : new Date(nowMs).toISOString();
+    let defaultEnd = existing ? existing.endTime : new Date(nowMs + 4 * 3600 * 1000).toISOString(); // Default 4 jam
+
+    if (isExistingExpired) {
+        // Sesi lama sudah selesai: otomatis tawarkan waktu mulai sekarang + 4 jam (atau durasi sebelumnya)
+        const prevDuration = (existing.startTime && existing.endTime) 
+            ? Math.max(3600000, (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(existing.endTime) : new Date(existing.endTime).getTime()) - (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(existing.startTime) : new Date(existing.startTime).getTime())) 
+            : (4 * 3600 * 1000);
+        defaultStart = new Date(nowMs).toISOString();
+        defaultEnd = new Date(nowMs + prevDuration).toISOString();
+    }
 
     const existingModal = el('modal-flash-sale-form');
     if (existingModal) existingModal.remove();
@@ -285,6 +331,17 @@ export const openFlashSaleModal = (sessionId = null) => {
 
             <!-- Modal Body Scrollable -->
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
+                ${isExistingExpired ? `
+                <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs text-amber-800 dark:text-amber-200 flex items-center justify-between gap-2.5 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-amber-500 text-base shrink-0"></i>
+                        <span>Sesi ini sebelumnya telah selesai. Waktu promo otomatis disesuaikan ke jam sekarang agar langsung tayang saat disimpan.</span>
+                    </div>
+                    <button type="button" onclick="window.resetAllDraftItemsSold()" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black cursor-pointer shadow-xs">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reset Kuota Terjual
+                    </button>
+                </div>` : ''}
+
                 <!-- Judul Sesi -->
                 <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
@@ -359,10 +416,17 @@ export const openFlashSaleModal = (sessionId = null) => {
                             </h4>
                             <p class="text-[10px] text-slate-400">Tentukan harga diskon, kuota unit, dan proteksi margin modal.</p>
                         </div>
-                        <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action px-3 py-1.5 rounded-xl text-white text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Tambah Produk</span>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            ${sessionItemDrafts.some(it => (parseFloat(it.soldCount) || 0) > 0) ? `
+                            <button type="button" onclick="window.resetAllDraftItemsSold()" title="Reset semua kuota terjual ke 0" class="btn-native-action px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1">
+                                <i class="fa-solid fa-rotate-left text-amber-500"></i>
+                                <span>Reset Kuota</span>
+                            </button>` : ''}
+                            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action px-3 py-1.5 rounded-xl text-white text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah Produk</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Container Baris Produk -->
@@ -506,6 +570,17 @@ export const renderFlashSaleDraftItems = () => {
                 </div>
             </div>
 
+            <!-- Kuota Terjual & Reset Helper -->
+            <div class="flex items-center justify-between text-[10px] bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200/60 dark:border-slate-700/60 flex-wrap gap-2">
+                <span class="font-bold text-slate-500 dark:text-slate-400">
+                    Keterjualan Saat Ini: <b class="${(parseFloat(item.soldCount) || 0) >= (parseFloat(item.quota) || 10) ? 'text-rose-500' : 'text-slate-800 dark:text-slate-200'}">${item.soldCount || 0} Unit Terjual</b>
+                </span>
+                ${(parseFloat(item.soldCount) || 0) > 0 ? `
+                <button type="button" onclick="window.resetDraftItemSold(${idx})" class="text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-black flex items-center gap-1 cursor-pointer">
+                    <i class="fa-solid fa-rotate-left"></i> Reset ke 0 (Naikkan Lagi)
+                </button>` : `<span class="text-[9px] text-slate-400">Kuota promo penuh tersedia</span>`}
+            </div>
+
             <!-- Margin Guard Alert -->
             <div class="flex items-center justify-between text-[10px] flex-wrap gap-2 pt-1">
                 <div class="flex items-center gap-2">
@@ -520,6 +595,28 @@ export const renderFlashSaleDraftItems = () => {
             </div>
         </div>`;
     }).join('');
+};
+
+/**
+ * Reset Kuota Terjual Baris Tertentu di Draft Formulir
+ */
+export const resetDraftItemSold = (idx) => {
+    if (sessionItemDrafts[idx]) {
+        sessionItemDrafts[idx].soldCount = 0;
+        renderFlashSaleDraftItems();
+        showToast('Kuota terjual produk ini berhasil di-reset ke 0!', 'success');
+    }
+};
+
+/**
+ * Reset Seluruh Kuota Terjual di Draft Formulir
+ */
+export const resetAllDraftItemsSold = () => {
+    sessionItemDrafts.forEach(it => {
+        if (it) it.soldCount = 0;
+    });
+    renderFlashSaleDraftItems();
+    showToast('Seluruh kuota terjual berhasil di-reset ke 0! Produk siap dinaikkan kembali.', 'success');
 };
 
 /**
@@ -626,6 +723,12 @@ export const saveFlashSaleSession = async () => {
         return;
     }
 
+    const now = Date.now();
+    if (isActive && endDate.getTime() <= now) {
+        showToast('Waktu berakhir sudah lewat dari waktu saat ini. Gunakan preset jam (+3 Jam / +6 Jam) agar sesi langsung aktif di etalase toko.', 'warning');
+        return;
+    }
+
     const validItems = sessionItemDrafts.filter(it => it.productId && it.flashSalePrice > 0);
     if (validItems.length === 0) {
         showToast('Minimal tentukan 1 produk dengan harga Flash Sale yang valid.', 'warning');
@@ -644,7 +747,7 @@ export const saveFlashSaleSession = async () => {
         endTime: endDate.toISOString(),
         channel,
         isActive,
-        updatedAt: Date.now(),
+        updatedAt: now,
         items: validItems.map(it => ({
             productId: String(it.productId),
             variantName: it.variantName || '',
@@ -670,6 +773,9 @@ export const saveFlashSaleSession = async () => {
         if (typeof window.renderStorefrontFlashSale === 'function') {
             window.renderStorefrontFlashSale();
         }
+        if (typeof window.rCat === 'function') {
+            window.rCat();
+        }
         showToast('Sesi Flash Sale berhasil disimpan dan disinkronkan!', 'success');
     } catch (err) {
         console.error('[FlashSale] Gagal simpan sesi:', err);
@@ -678,23 +784,159 @@ export const saveFlashSaleSession = async () => {
 };
 
 /**
- * Toggle Status Aktif Sesi
+ * Toggle Status Aktif Sesi dengan Auto-Extend Pintar & Kuota Refresh
  */
 export const toggleFlashSaleActive = async (sessionId) => {
     if (!Array.isArray(appData.flashSales)) return;
     const sess = appData.flashSales.find(s => s.id === sessionId);
     if (!sess) return;
 
-    sess.isActive = sess.isActive === false;
+    const willBeActive = sess.isActive === false;
+    sess.isActive = willBeActive;
+
+    const now = Date.now();
+    const endMs = sess.endTime ? (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(sess.endTime) : new Date(sess.endTime).getTime()) : 0;
+    const isExpired = !endMs || endMs <= now;
+
+    let isAutoExtended = false;
+    if (willBeActive && isExpired) {
+        // Sesi ini sebelumnya sudah selesai. Ketika admin mengaktifkan kembali sesi ini dengan maksud menaikkan kembali ke flash sale:
+        // Otomatis perpanjang jadwal mulai sekarang dan segarkan kuota produk yang sudah habis!
+        const prevDuration = (sess.startTime && sess.endTime)
+            ? Math.max(3600000, (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(sess.endTime) : new Date(sess.endTime).getTime()) - (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(sess.startTime) : new Date(sess.startTime).getTime()))
+            : (4 * 3600 * 1000);
+        sess.startTime = new Date(now).toISOString();
+        sess.endTime = new Date(now + prevDuration).toISOString();
+        sess.updatedAt = now;
+        isAutoExtended = true;
+
+        if (Array.isArray(sess.items)) {
+            sess.items.forEach(it => {
+                if (it) it.soldCount = 0;
+            });
+        }
+    } else {
+        sess.updatedAt = now;
+    }
+
     try {
         await saveApp(['flashSales']);
         renderFlashSaleAdminView();
         if (typeof window.renderStorefrontFlashSale === 'function') {
             window.renderStorefrontFlashSale();
         }
-        showToast(`Status sesi "${sess.title}" berhasil diubah!`, 'success');
+        if (typeof window.rCat === 'function') {
+            window.rCat();
+        }
+        if (willBeActive) {
+            showToast(isAutoExtended 
+                ? `Sesi "${sess.title}" berhasil diaktifkan kembali! Waktu diperpanjang dan produk langsung aktif di etalase toko.`
+                : `Sesi "${sess.title}" kini aktif!`, 'success');
+        } else {
+            showToast(`Sesi "${sess.title}" telah dinonaktifkan.`, 'info');
+        }
     } catch (e) {
         showToast('Gagal mengubah status sesi.', 'error');
+    }
+};
+
+/**
+ * Naikkan Kembali Sesi Flash Sale yang Telah Selesai (Re-activate & Refresh Kuota)
+ */
+export const reactivateFlashSaleSession = async (sessionId, durationHours = 4) => {
+    if (!Array.isArray(appData.flashSales)) return;
+    const sess = appData.flashSales.find(s => s.id === sessionId);
+    if (!sess) return;
+
+    const now = Date.now();
+    const durationMs = durationHours * 3600 * 1000;
+
+    sess.startTime = new Date(now).toISOString();
+    sess.endTime = new Date(now + durationMs).toISOString();
+    sess.isActive = true;
+    sess.updatedAt = now;
+
+    // Reset seluruh kuota terjual agar produk bisa langsung dibeli promo kembali
+    if (Array.isArray(sess.items)) {
+        sess.items.forEach(it => {
+            if (it) it.soldCount = 0;
+        });
+    }
+
+    // Posisikan sesi ini ke urutan teratas array agar prioritas utama di storefront
+    const idx = appData.flashSales.findIndex(s => s.id === sessionId);
+    if (idx > 0) {
+        appData.flashSales.splice(idx, 1);
+        appData.flashSales.unshift(sess);
+    }
+
+    try {
+        await saveApp(['flashSales']);
+        renderFlashSaleAdminView();
+        if (typeof window.renderStorefrontFlashSale === 'function') {
+            window.renderStorefrontFlashSale();
+        }
+        if (typeof window.rCat === 'function') {
+            window.rCat();
+        }
+        showToast(`Sesi Flash Sale "${sess.title}" berhasil dinaikkan kembali! Aktif selama ${durationHours} jam dan langsung tayang di etalase toko.`, 'success');
+    } catch (e) {
+        showToast('Gagal menaikkan sesi Flash Sale.', 'error');
+    }
+};
+
+/**
+ * Reset Kuota Terjual Produk Tertentu pada Sesi Flash Sale
+ */
+export const resetSessionItemSold = async (sessionId, itemIdx) => {
+    if (!Array.isArray(appData.flashSales)) return;
+    const sess = appData.flashSales.find(s => s.id === sessionId);
+    if (!sess || !Array.isArray(sess.items) || !sess.items[itemIdx]) return;
+
+    sess.items[itemIdx].soldCount = 0;
+    sess.updatedAt = Date.now();
+
+    try {
+        await saveApp(['flashSales']);
+        renderFlashSaleAdminView();
+        if (typeof window.renderStorefrontFlashSale === 'function') {
+            window.renderStorefrontFlashSale();
+        }
+        if (typeof window.rCat === 'function') {
+            window.rCat();
+        }
+        const pName = sess.items[itemIdx].productName || 'Produk Promo';
+        showToast(`Kuota produk "${pName}" berhasil di-reset ke 0!`, 'success');
+    } catch (e) {
+        showToast('Gagal mereset kuota produk.', 'error');
+    }
+};
+
+/**
+ * Reset Seluruh Kuota Terjual pada Sesi Tertentu
+ */
+export const resetAllSessionItemsSold = async (sessionId) => {
+    if (!Array.isArray(appData.flashSales)) return;
+    const sess = appData.flashSales.find(s => s.id === sessionId);
+    if (!sess || !Array.isArray(sess.items)) return;
+
+    sess.items.forEach(it => {
+        if (it) it.soldCount = 0;
+    });
+    sess.updatedAt = Date.now();
+
+    try {
+        await saveApp(['flashSales']);
+        renderFlashSaleAdminView();
+        if (typeof window.renderStorefrontFlashSale === 'function') {
+            window.renderStorefrontFlashSale();
+        }
+        if (typeof window.rCat === 'function') {
+            window.rCat();
+        }
+        showToast(`Seluruh kuota produk di sesi "${sess.title}" berhasil di-reset ke 0!`, 'success');
+    } catch (e) {
+        showToast('Gagal mereset kuota produk.', 'error');
     }
 };
 
@@ -713,6 +955,9 @@ export const deleteFlashSaleSession = (sessionId) => {
             renderFlashSaleAdminView();
             if (typeof window.renderStorefrontFlashSale === 'function') {
                 window.renderStorefrontFlashSale();
+            }
+            if (typeof window.rCat === 'function') {
+                window.rCat();
             }
             showToast('Sesi Flash Sale berhasil dihapus.', 'success');
         } catch (e) {
@@ -747,3 +992,8 @@ window.setFlashSalePresetDuration = setFlashSalePresetDuration;
 window.saveFlashSaleSession = saveFlashSaleSession;
 window.toggleFlashSaleActive = toggleFlashSaleActive;
 window.deleteFlashSaleSession = deleteFlashSaleSession;
+window.reactivateFlashSaleSession = reactivateFlashSaleSession;
+window.resetSessionItemSold = resetSessionItemSold;
+window.resetAllSessionItemsSold = resetAllSessionItemsSold;
+window.resetDraftItemSold = resetDraftItemSold;
+window.resetAllDraftItemsSold = resetAllDraftItemsSold;

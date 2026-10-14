@@ -11,13 +11,32 @@ import { appData, cart } from './state.js';
 import { setV, showToast } from './utils.js';
 
 /**
+ * Parser timestamp tanggal aman (ISO, string datetime-local, space-separated, dsb)
+ */
+export const parseSafeTimestamp = (dateVal) => {
+    if (!dateVal) return 0;
+    if (typeof dateVal === 'number') return isNaN(dateVal) ? 0 : dateVal;
+    if (dateVal instanceof Date) return isNaN(dateVal.getTime()) ? 0 : dateVal.getTime();
+    if (typeof dateVal === 'string') {
+        const clean = dateVal.trim();
+        let d = new Date(clean);
+        if (!isNaN(d.getTime())) return d.getTime();
+        // Fallback untuk format "YYYY-MM-DD HH:mm:ss" atau "YYYY-MM-DD HH:mm"
+        const isoLike = clean.replace(' ', 'T');
+        d = new Date(isoLike);
+        if (!isNaN(d.getTime())) return d.getTime();
+    }
+    return 0;
+};
+
+/**
  * Status sesi Flash Sale: 'upcoming' | 'active' | 'ended'
  */
 export const checkFlashSaleStatus = (session) => {
     if (!session || session.isActive === false || session.isActive === 'false') return 'ended';
     const now = Date.now();
-    const start = session.startTime ? new Date(session.startTime).getTime() : 0;
-    const end = session.endTime ? new Date(session.endTime).getTime() : 0;
+    const start = parseSafeTimestamp(session.startTime);
+    const end = parseSafeTimestamp(session.endTime);
     
     if (start && now < start) return 'upcoming';
     if (end && now > end) return 'ended';
@@ -29,16 +48,27 @@ export const checkFlashSaleStatus = (session) => {
  */
 export const getActiveFlashSaleSession = (targetChannel = 'all') => {
     const list = Array.isArray(appData.flashSales) ? appData.flashSales : [];
+    const activeSessions = [];
+
     for (const session of list) {
         if (!session || session.isActive === false || session.isActive === 'false') continue;
         const channel = session.channel || 'both';
         if (targetChannel !== 'all' && channel !== 'both' && channel !== targetChannel) continue;
         
         if (checkFlashSaleStatus(session) === 'active') {
-            return session;
+            activeSessions.push(session);
         }
     }
-    return null;
+
+    if (activeSessions.length === 0) return null;
+    if (activeSessions.length === 1) return activeSessions[0];
+
+    // Jika ada lebih dari satu sesi aktif, prioritaskan sesi yang diperbarui paling baru
+    return activeSessions.sort((a, b) => {
+        const timeA = parseSafeTimestamp(a.updatedAt || a.startTime);
+        const timeB = parseSafeTimestamp(b.updatedAt || b.startTime);
+        return timeB - timeA;
+    })[0];
 };
 
 /**
@@ -435,5 +465,6 @@ if (typeof window !== 'undefined') {
     window.getActiveFlashSaleSession = getActiveFlashSaleSession;
     window.getFlashSaleItem = getFlashSaleItem;
     window.recordFlashSaleSale = recordFlashSaleSale;
+    window.parseSafeTimestamp = parseSafeTimestamp;
 }
 

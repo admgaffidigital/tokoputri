@@ -51,7 +51,7 @@ export const renderStorefrontFlashSale = () => {
         return;
     }
 
-    const endTime = session.endTime ? new Date(session.endTime).getTime() : 0;
+    const endTime = session.endTime ? (typeof window.parseSafeTimestamp === 'function' ? window.parseSafeTimestamp(session.endTime) : new Date(session.endTime).getTime()) : 0;
     const now = Date.now();
     const diffMs = Math.max(0, endTime - now);
 
@@ -68,8 +68,6 @@ export const renderStorefrontFlashSale = () => {
         container.classList.add('hidden');
         return;
     }
-
-    container.classList.remove('hidden');
 
     const cardsHtml = validItems.map(item => {
         const prod = (appData.products || []).find(p => String(p.id) === String(item.productId));
@@ -154,6 +152,14 @@ export const renderStorefrontFlashSale = () => {
             </div>
         </div>`;
     }).join('');
+
+    if (!cardsHtml || !cardsHtml.trim()) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.classList.remove('hidden');
 
     container.innerHTML = `
     <div class="bento-island-card relative overflow-hidden rounded-[1.75rem] p-4 sm:p-5 shadow-xs border transition-all duration-300" style="border-color: rgba(var(--color-primary-rgb), 0.22);">
