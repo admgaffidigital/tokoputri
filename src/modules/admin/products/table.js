@@ -15,6 +15,7 @@ import { computeInventoryStats, computeTotalProductStock } from '../../../core/p
 import { customPrompt, showConfirm } from '../../../core/ui.js';
 import { cTab, setCTab, aSq, setASq } from './index.js';
 import { openProductFifoModal } from './fifo-modal.js';
+import { db } from '../../../config/firebase.js';
 
 let adminSortableInstance = null;
 
@@ -742,6 +743,10 @@ window.rAdmItms = (t, skipStats = false) => {
                             <i class="fa-solid fa-id-card text-xs"></i>
                             <span>Kartu Member</span>
                         </button>
+                        <button type="button" class="h-10 px-3 rounded-xl bg-violet-50 hover:bg-violet-500 hover:text-white dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); window.adminResetMemberPin?.('${esc(x.phone||x.id)}', '${esc(x.name)}');" title="Reset PIN Member">
+                            <i class="fa-solid fa-key text-xs"></i>
+                            <span>Reset PIN</span>
+                        </button>
                     ` : ''}
                 </div>
 
@@ -865,5 +870,58 @@ window.syncSubCategoriesFromProducts = async (catId) => {
 };
 
 window.openProductFifoModal = openProductFifoModal;
+
+// ─── Reset PIN Keamanan Member oleh Admin CMS ─────────────────────────────
+export const adminResetMemberPin = async (phone, name) => {
+    if (!phone) return;
+    let clean = String(phone).replace(/\D/g, '');
+    if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+    else if (!clean.startsWith('62')) clean = '62' + clean;
+
+    const memberName = name || 'Pelanggan';
+
+    const performReset = async () => {
+        try {
+            showToast("Mereset PIN member...");
+            if (db && typeof db.collection === 'function') {
+                await db.collection("freshmart").doc("cms_data").collection("customers").doc(clean).set({
+                    pin: null,
+                    pinResetAt: new Date().toISOString()
+                }, { merge: true });
+            }
+
+            // Hapus cache lokal
+            if (typeof window.invalidateMemberCache === 'function') {
+                window.invalidateMemberCache(clean);
+            }
+            if (appData.customers && appData.customers.length) {
+                const cObj = appData.customers.find(c => String(c.id || c.phone).replace(/\D/g, '') === clean);
+                if (cObj) {
+                    cObj.pin = null;
+                }
+            }
+
+            showToast(`PIN Member ${memberName} berhasil di-reset!`);
+            if (typeof window.rAdmItms === 'function') window.rAdmItms('customers', true);
+        } catch(err) {
+            console.error("Gagal reset PIN member:", err);
+            showToast("Gagal mereset PIN member. Silakan coba kembali.");
+        }
+    };
+
+    if (typeof window.showConfirm === 'function') {
+        window.showConfirm(
+            "Reset PIN Member",
+            `Apakah Anda yakin ingin mereset PIN Keamanan untuk member <b>${esc(memberName)}</b> (+${esc(clean)})?<br><br><span class="text-xs text-slate-500">Pelanggan akan diminta membuat 6-digit PIN baru saat login kembali ke panel member.</span>`,
+            performReset,
+            "Ya, Reset PIN",
+            true
+        );
+    } else if (typeof confirm === 'function' && confirm(`Reset PIN Keamanan untuk member ${memberName} (+${clean})?`)) {
+        performReset();
+    }
+};
+
+window.adminResetMemberPin = adminResetMemberPin;
 
 

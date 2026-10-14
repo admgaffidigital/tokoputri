@@ -6,7 +6,14 @@
  * ============================================================
  */
 
-import { getMemberTier, formatMemberCardNumber } from '../src/modules/member/reward.js';
+import { 
+    getMemberTier, 
+    formatMemberCardNumber, 
+    maskMemberCardNumber, 
+    maskPhoneNumber, 
+    formatMaskedCurrency, 
+    hashMemberPin 
+} from '../src/modules/member/reward.js';
 import { generateCode128Svg } from '../src/core/barcode-code128.js';
 
 let passed = 0;
@@ -173,6 +180,40 @@ assert(rew3StockOk === false, 'Mesin Bor terdeteksi stok kosong (stock: 0)');
 // REW-4: 2000 pts, stock 1 -> Gagal karena poin tidak cukup
 const rew4CanClaim = memberPts >= dummyRewards[3].pointsCost && dummyRewards[3].stock > 0;
 assert(rew4CanClaim === false, 'Genset Mini tidak dapat ditukar karena poin kurang (650 < 2000)');
+
+
+// ── 6. UJI PROTEKSI KEAMANAN FINTECH (PIN, PRIVASI & MASKING) ──
+console.log('\n🔒 6. Uji Proteksi Keamanan Fintech (PIN, Privasi & Masking):');
+
+// a. Masking Nomor Telepon
+const maskedPhone1 = maskPhoneNumber('081234567890', true);
+assert(maskedPhone1 === '+62 812-••••-7890', `Masking nomor HP terformat tepat: +62 812-••••-7890 (didapat: ${maskedPhone1})`);
+
+const unmaskedPhone1 = maskPhoneNumber('081234567890', false);
+assert(unmaskedPhone1 === '+62 812-3456-7890', `Unmasked nomor HP terformat rapi: +62 812-3456-7890 (didapat: ${unmaskedPhone1})`);
+
+// b. Masking Nomor Kartu Member VIP
+const maskedCard = maskMemberCardNumber('62812345678901', true);
+assert(maskedCard === 'PUTRI • 8123 • •••• • 8901', `Nomor kartu VIP disamarkan 4 digit tengah: PUTRI • 8123 • •••• • 8901 (didapat: ${maskedCard})`);
+
+const unmaskedCard = maskMemberCardNumber('62812345678901', false);
+assert(unmaskedCard === 'PUTRI • 8123 • 4567 • 8901', `Nomor kartu VIP lengkap saat sensor dibuka: PUTRI • 8123 • 4567 • 8901 (didapat: ${unmaskedCard})`);
+
+// c. Format Mata Uang Tersensor Privasi (Anti Shoulder-Surfing)
+const hiddenCur = formatMaskedCurrency(1750000, true);
+assert(hiddenCur.includes('Rp ••••••'), 'Nominal tersembunyi disensor menjadi Rp ••••••');
+
+const visibleCur = formatMaskedCurrency(1750000, false);
+assert(visibleCur.includes('1.750.000'), `Nominal terlihat terformat mata uang standar: ${visibleCur}`);
+
+// d. Kriptografi Hash PIN 6-Digit (SHA-256 Terenkripsi)
+const pinHash1 = await hashMemberPin('123456');
+const pinHash2 = await hashMemberPin('123456');
+const pinHashDiff = await hashMemberPin('654321');
+
+assert(typeof pinHash1 === 'string' && pinHash1.length >= 16, `Hash PIN menghasilkan string kriptografi valid (panjang: ${pinHash1.length})`);
+assert(pinHash1 === pinHash2, 'PIN yang sama menghasilkan hash identik dan konsisten');
+assert(pinHash1 !== pinHashDiff, 'PIN yang berbeda menghasilkan hash yang berbeda');
 
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passed} Passed, ${failed} Failed`);

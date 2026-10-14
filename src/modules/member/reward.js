@@ -23,6 +23,294 @@ const memberHistoryCache = new Map();
 const MEMBER_HISTORY_CACHE_TTL = 2 * 60 * 1000; // 2 menit cache mutasi poin
 const OFFICIAL_LOGO_URL = 'https://lh3.googleusercontent.com/d/1KHwsV5sK6aAH3-eP_vTJA4tE5MyRukLo';
 
+// ─── STATE KEAMANAN FINTECH & PRIVASI MEMBER ────────────────────────
+export let isMemberPrivacyHidden = true;
+try {
+    const savedPriv = typeof localStorage !== 'undefined' ? localStorage.getItem('freshmart_member_privacy') : null;
+    if (savedPriv !== null) isMemberPrivacyHidden = savedPriv === 'true';
+} catch(e) {}
+
+export const getIsMemberPrivacyHidden = () => isMemberPrivacyHidden;
+export let pendingAuthMember = null;
+export let memberAuthStep = 'idle'; // 'idle' | 'enter_pin' | 'create_pin' | 'confirm_pin'
+export let pinBuffer = '';
+export let pinConfirmBuffer = '';
+export let rememberDeviceOption = true;
+export let pinErrorMessage = '';
+
+/**
+ * Hashing PIN 6-Digit Menggunakan SHA-256 Terenkripsi Salt
+ * Aman: tidak pernah menyimpan PIN plain text di database Firestore!
+ */
+export const hashMemberPin = async (pinStr) => {
+    const raw = `tokoputri_salt_${String(pinStr || '').trim()}`;
+    if (typeof crypto !== 'undefined' && crypto.subtle && typeof crypto.subtle.digest === 'function') {
+        const msgUint8 = new TextEncoder().encode(raw);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    // Fallback hashing andal untuk runtime tanpa Web Crypto API
+    let h1 = 0xdeadbeef, h2 = 0x41c64e6d;
+    for (let i = 0; i < raw.length; i++) {
+        const ch = raw.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16).padStart(16, '0');
+};
+
+/**
+ * Masking Nomor Telepon WhatsApp (+62 812-••••-8901)
+ */
+export const maskPhoneNumber = (phone, hide = true) => {
+    let clean = (phone || '').toString().replace(/\D/g, '');
+    if (!clean) return '••••';
+    if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+    else if (!clean.startsWith('62')) clean = '62' + clean;
+
+    const rest = clean.substring(2);
+    if (rest.length <= 6) return `+62 ${rest.substring(0, 2)}••••`;
+
+    const prefix = rest.substring(0, 3);
+    const suffix = rest.substring(rest.length - 4);
+
+    if (hide) {
+        return `+62 ${prefix}-••••-${suffix}`;
+    }
+
+    const middle = rest.substring(3, rest.length - 4);
+    return `+62 ${prefix}-${middle}-${suffix}`;
+};
+
+/**
+ * Format Angka Mata Uang Tersensor Privasi (Anti Shoulder-Surfing)
+ */
+export const formatMaskedCurrency = (amount, hide = true) => {
+    if (hide) {
+        return `<span class="tracking-widest font-mono text-slate-400 font-bold select-none" title="Nominal dirahasiakan (Klik tombol mata 👁️ untuk melihat)">Rp ••••••</span>`;
+    }
+    return fCur(amount);
+};
+
+/**
+ * Toggle Mode Sensor Privasi Mata (👁️)
+ */
+export const toggleMemberPrivacyMode = () => {
+    isMemberPrivacyHidden = !isMemberPrivacyHidden;
+    try {
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('freshmart_member_privacy', String(isMemberPrivacyHidden));
+        }
+    } catch(e) {}
+    if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+        window.showToast(isMemberPrivacyHidden ? 'Mode Privasi Aktif: Angka Tagihan & Saldo Disensor (Rp ••••••)' : 'Mode Privasi Nonaktif: Angka Ditampilkan');
+    }
+    const btn = typeof document !== 'undefined' ? document.getElementById('member-privacy-toggle-btn') : null;
+    if (btn) {
+        btn.innerHTML = `<i class="fa-solid ${isMemberPrivacyHidden ? 'fa-eye-slash text-amber-500' : 'fa-eye text-slate-500'} text-xs"></i>`;
+        btn.title = isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial';
+    }
+    rMemberModalBody();
+};
+
+/**
+ * Kunci Sesi Cepat Member (Quick Lock)
+ */
+export const lockMemberSession = () => {
+    setCurrentMember(null);
+    pendingAuthMember = null;
+    memberAuthStep = 'idle';
+    pinBuffer = '';
+    pinConfirmBuffer = '';
+    pinErrorMessage = '';
+    try {
+        if (typeof localStorage !== 'undefined') {
+            localStorage.removeItem('freshmart_current_member');
+            localStorage.removeItem('freshmart_member_wa');
+        }
+    } catch(e) {}
+    if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    if (typeof window !== 'undefined' && typeof window.showToast === 'function') window.showToast('Sesi Member Telah Dikunci.');
+    rMemberModalBody();
+};
+
+/**
+ * Pengaturan Opsi Ingat Perangkat Pribadi
+ */
+export const toggleRememberMemberDevice = (isChecked) => {
+    rememberDeviceOption = !!isChecked;
+};
+
+/**
+ * Handler Input Digit Keypad PIN Bento
+ */
+export const handleMemberPinDigit = (digit) => {
+    if (pinBuffer.length >= 6) return;
+    pinBuffer += String(digit);
+    pinErrorMessage = '';
+    if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    if (typeof window !== 'undefined' && typeof window.playNativeSound === 'function') window.playNativeSound('tick');
+    
+    // Perbarui indikator titik PIN langsung
+    const dotsContainer = typeof document !== 'undefined' ? document.getElementById('member-pin-dots-container') : null;
+    if (dotsContainer) {
+        const dots = dotsContainer.children;
+        for (let i = 0; i < dots.length; i++) {
+            if (i < pinBuffer.length) {
+                dots[i].className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center primary-bg border-[var(--color-primary)] scale-110 shadow-xs shadow-[rgba(var(--color-primary-rgb),0.4)]';
+                dots[i].innerHTML = '<div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white"></div>';
+            } else {
+                dots[i].className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800';
+                dots[i].innerHTML = '';
+            }
+        }
+    }
+
+    if (pinBuffer.length === 6) {
+        setTimeout(() => {
+            processMemberPinSubmission();
+        }, 120);
+    }
+};
+
+/**
+ * Handler Hapus Digit (Backspace)
+ */
+export const handleMemberPinBackspace = () => {
+    if (pinBuffer.length <= 0) return;
+    pinBuffer = pinBuffer.slice(0, -1);
+    pinErrorMessage = '';
+    if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    
+    const dotsContainer = typeof document !== 'undefined' ? document.getElementById('member-pin-dots-container') : null;
+    if (dotsContainer) {
+        const dots = dotsContainer.children;
+        for (let i = 0; i < dots.length; i++) {
+            if (i < pinBuffer.length) {
+                dots[i].className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center primary-bg border-[var(--color-primary)] scale-110 shadow-xs shadow-[rgba(var(--color-primary-rgb),0.4)]';
+                dots[i].innerHTML = '<div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white"></div>';
+            } else {
+                dots[i].className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800';
+                dots[i].innerHTML = '';
+            }
+        }
+    }
+};
+
+/**
+ * Batalkan Verifikasi / Pembuatan PIN
+ */
+export const cancelMemberPinAuth = () => {
+    pendingAuthMember = null;
+    memberAuthStep = 'idle';
+    pinBuffer = '';
+    pinConfirmBuffer = '';
+    pinErrorMessage = '';
+    rMemberModalBody();
+};
+
+/**
+ * Proses Eksekusi Verifikasi / Pembuatan PIN 6-Digit
+ */
+export const processMemberPinSubmission = async () => {
+    if (memberAuthStep === 'enter_pin' && pendingAuthMember) {
+        const enteredHash = await hashMemberPin(pinBuffer);
+        if (enteredHash === pendingAuthMember.pin) {
+            const memberToSet = { ...pendingAuthMember };
+            setCurrentMember(memberToSet);
+            
+            if (rememberDeviceOption) {
+                try {
+                    localStorage.setItem('freshmart_current_member', JSON.stringify(memberToSet));
+                    localStorage.setItem('freshmart_member_wa', memberToSet.phone || memberToSet.id);
+                } catch(e) {}
+            } else {
+                try {
+                    localStorage.removeItem('freshmart_current_member');
+                    localStorage.removeItem('freshmart_member_wa');
+                } catch(e) {}
+            }
+            
+            memberAuthStep = 'idle';
+            pinBuffer = '';
+            pinErrorMessage = '';
+            pendingAuthMember = null;
+            
+            if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
+            if (typeof window !== 'undefined' && typeof window.playNativeSound === 'function') window.playNativeSound('success');
+            if (typeof window !== 'undefined' && typeof window.showToast === 'function') window.showToast('PIN Terverifikasi! Akses panel member dibuka.');
+            
+            rMemberModalBody();
+        } else {
+            pinErrorMessage = 'PIN Keamanan salah! Silakan coba kembali.';
+            pinBuffer = '';
+            if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('error');
+            if (typeof window !== 'undefined' && typeof window.playNativeSound === 'function') window.playNativeSound('error');
+            rMemberModalBody();
+        }
+    } else if (memberAuthStep === 'create_pin') {
+        pinConfirmBuffer = pinBuffer;
+        pinBuffer = '';
+        pinErrorMessage = '';
+        memberAuthStep = 'confirm_pin';
+        if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+        rMemberModalBody();
+    } else if (memberAuthStep === 'confirm_pin' && pendingAuthMember) {
+        if (pinBuffer === pinConfirmBuffer) {
+            try {
+                const newHash = await hashMemberPin(pinBuffer);
+                let cleanPhone = (pendingAuthMember.phone || pendingAuthMember.id || '').toString().replace(/\D/g, '');
+                if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1);
+                else if (!cleanPhone.startsWith('62')) cleanPhone = '62' + cleanPhone;
+                
+                await db.collection("freshmart").doc("cms_data").collection("customers").doc(cleanPhone).set({
+                    pin: newHash,
+                    pinSetAt: new Date().toISOString()
+                }, { merge: true });
+
+                pendingAuthMember.pin = newHash;
+                const memberToSet = { ...pendingAuthMember };
+                setCurrentMember(memberToSet);
+
+                if (rememberDeviceOption) {
+                    try {
+                        localStorage.setItem('freshmart_current_member', JSON.stringify(memberToSet));
+                        localStorage.setItem('freshmart_member_wa', cleanPhone);
+                    } catch(e) {}
+                }
+
+                memberAuthStep = 'idle';
+                pinBuffer = '';
+                pinConfirmBuffer = '';
+                pinErrorMessage = '';
+                pendingAuthMember = null;
+
+                if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
+                if (typeof window !== 'undefined' && typeof window.playNativeSound === 'function') window.playNativeSound('success');
+                if (typeof window !== 'undefined' && typeof window.showToast === 'function') window.showToast('PIN Keamanan 6-Digit Berhasil Diaktifkan!');
+
+                rMemberModalBody();
+            } catch(e) {
+                console.error("Gagal simpan PIN ke Firestore:", e);
+                pinErrorMessage = 'Gagal menyimpan PIN. Periksa koneksi internet.';
+                pinBuffer = '';
+                rMemberModalBody();
+            }
+        } else {
+            pinErrorMessage = 'Konfirmasi PIN tidak cocok! Silakan buat ulang PIN.';
+            pinBuffer = '';
+            pinConfirmBuffer = '';
+            memberAuthStep = 'create_pin';
+            if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('error');
+            rMemberModalBody();
+        }
+    }
+};
+
 /**
  * Hapus cache member agar data poin selalu terbaru setelah transaksi
  */
@@ -215,8 +503,9 @@ export const getMemberTier = (pts = 0) => {
 
 /**
  * Format nomor telepon menjadi nomor kartu VIP (Format: PUTRI • 8123 • 4567 • 8901)
+ * Mendukung masking privasi sensor: PUTRI • 8123 • •••• • 8901
  */
-export const formatMemberCardNumber = (phone) => {
+export const formatMemberCardNumber = (phone, hide = false) => {
     let clean = (phone || '').toString().replace(/\D/g, '');
     if (clean.startsWith('62')) clean = clean.substring(2);
     else if (clean.startsWith('0')) clean = clean.substring(1);
@@ -229,8 +518,17 @@ export const formatMemberCardNumber = (phone) => {
     for (let i = 0; i < clean.length && parts.length < 3; i += 4) {
         parts.push(clean.substring(i, i + 4));
     }
+    if (hide && parts.length >= 2) {
+        if (parts.length >= 3) {
+            parts[1] = '••••';
+        } else {
+            parts[parts.length - 1] = '••••';
+        }
+    }
     return `PUTRI • ${parts.join(' • ')}`;
 };
+
+export const maskMemberCardNumber = (phone, hide = true) => formatMemberCardNumber(phone, hide);
 
 /**
  * Generate Barcode SVG Vector untuk kasir fisik (Code128 style)
@@ -290,7 +588,7 @@ export const renderDigitalMemberCard = (mData) => {
     const logoUrl = appData.store?.logo && appData.store.logo !== 'fa-store' ? appData.store.logo : OFFICIAL_LOGO_URL;
     const custName = (mData?.name || 'PELANGGAN SETIA').toUpperCase();
     const rawPhone = (mData?.phone || '81234567890').toString().replace(/\D/g, '');
-    const cardNo = formatMemberCardNumber(rawPhone);
+    const cardNo = maskMemberCardNumber(rawPhone, isMemberPrivacyHidden);
     const csPhone = appData.store?.wa || rawPhone;
 
     return `
@@ -358,7 +656,7 @@ export const renderDigitalMemberCard = (mData) => {
                         </div>
                         ${(currentMember && (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') && (parseFloat(currentMember.paylaterLimit)||0) > 0) ? `
                         <div class="mt-1 flex items-center justify-end gap-1 text-[8px] font-black text-emerald-300 uppercase tracking-wider">
-                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${fCur(Math.max(0, (parseFloat(currentMember.paylaterLimit)||0) - Math.max(0, parseFloat(currentMember.paylaterUsed)||0)))}
+                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${formatMaskedCurrency(Math.max(0, (parseFloat(currentMember.paylaterLimit)||0) - Math.max(0, parseFloat(currentMember.paylaterUsed)||0)), isMemberPrivacyHidden)}
                         </div>` : ''}
                     </div>
                 </div>
@@ -412,7 +710,7 @@ export const renderDigitalMemberCard = (mData) => {
                             <i class="fa-solid fa-barcode text-[var(--color-primary)]"></i> Scan Barcode di Kasir POS Toko:
                         </p>
                         ${generateBarcodeSVG(rawPhone)}
-                        <p class="text-[9px] font-mono font-bold tracking-[0.2em] text-slate-300 mt-1">*${esc(rawPhone)}*</p>
+                        <p class="text-[9px] font-mono font-bold tracking-[0.2em] text-slate-300 mt-1">*${esc(isMemberPrivacyHidden ? maskPhoneNumber(rawPhone, true) : rawPhone)}*</p>
                     </div>
                 </div>
 
@@ -760,9 +1058,22 @@ export const openMemberModal = () => {
                         <p class="text-[10px] font-semibold text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
                     </div>
                 </div>
-                <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <!-- Privacy Eye Shield Toggle -->
+                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
+                        <i class="fa-solid ${isMemberPrivacyHidden ? 'fa-eye-slash text-amber-500' : 'fa-eye text-slate-500'} text-xs"></i>
+                    </button>
+
+                    <!-- Quick Session Lock -->
+                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Kunci Sesi Member (Logout Cepat)">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                    </button>
+
+                    <!-- Close Button -->
+                    <button type="button" onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
             </div>
             <!-- Body Modal (Spacious Scroll Clearance) -->
             <div class="p-5 sm:p-6 pb-20 sm:pb-24 overflow-y-auto flex-1 space-y-6 custom-scrollbar" id="member-modal-body"></div>
@@ -1129,9 +1440,118 @@ export const getMemberPaylaterBillingSummary = (member) => {
 };
 
 /**
- * Render isi modal member (Kartu digital + Progress tier + Katalog Hadiah)
+ * Render isi modal member (Kartu digital + Progress tier + Katalog Hadiah + Keypad PIN)
  */
 export const rMemberModalBody = () => {
+    // Sinkronisasi tombol quick lock di header
+    const lockBtn = typeof document !== 'undefined' ? document.getElementById('member-quick-lock-btn') : null;
+    if (lockBtn) {
+        if (currentMember) lockBtn.classList.remove('hidden');
+        else lockBtn.classList.add('hidden');
+    }
+
+    // ── TAMPILAN KEYPAD PIN BENTO (FINTECH SECURITY AUTH) ─────────────────
+    if (memberAuthStep !== 'idle' && pendingAuthMember) {
+        const isEnter = memberAuthStep === 'enter_pin';
+        const isCreate = memberAuthStep === 'create_pin';
+        const isConfirm = memberAuthStep === 'confirm_pin';
+        
+        const title = isEnter ? 'Masukkan PIN Keamanan Member' 
+                    : (isCreate ? 'Buat 6-Digit PIN Pengaman' : 'Konfirmasi PIN 6-Digit');
+        const desc = isEnter 
+            ? `Akun member <b>${maskPhoneNumber(pendingAuthMember.phone, true)}</b> (${esc(pendingAuthMember.name || 'Member')})`
+            : (isCreate ? 'Lindungi akun kartu VIP, nomor HP, dan limit PayLater Anda.' : 'Ketikkan kembali 6 digit PIN yang baru saja Anda buat.');
+        const icon = isEnter ? 'fa-key' : (isCreate ? 'fa-shield-halved' : 'fa-lock-open');
+
+        // Buat 6-Dots Indikator PIN
+        const dotsHtml = Array.from({ length: 6 }).map((_, idx) => {
+            const isFilled = pinBuffer.length > idx;
+            return `
+            <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                isFilled 
+                    ? 'primary-bg border-[var(--color-primary)] scale-110 shadow-xs shadow-[rgba(var(--color-primary-rgb),0.4)]' 
+                    : 'border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800'
+            }">
+                ${isFilled ? '<div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white"></div>' : ''}
+            </div>`;
+        }).join('');
+
+        const keypadNumbers = [
+            ['1', '2', '3'],
+            ['4', '5', '6'],
+            ['7', '8', '9'],
+            ['cancel', '0', 'backspace']
+        ];
+
+        setH('member-modal-body', `
+            <div class="max-w-[360px] mx-auto py-2 flex flex-col items-center text-center select-none">
+                <!-- Icon Badge -->
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg shadow-md mb-3" style="background: var(--color-primary); box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid ${icon}"></i>
+                </div>
+
+                <h3 class="text-sm sm:text-base font-black text-slate-800 dark:text-white">${title}</h3>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-[280px] leading-relaxed">${desc}</p>
+
+                ${pinErrorMessage ? `
+                    <div class="mt-2.5 px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-[11px] font-bold flex items-center gap-1.5 animate-shake">
+                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                        <span>${esc(pinErrorMessage)}</span>
+                    </div>
+                ` : ''}
+
+                <!-- 6-Dots Indicator Container -->
+                <div id="member-pin-dots-container" class="flex items-center justify-center gap-3 my-5 py-2">
+                    ${dotsHtml}
+                </div>
+
+                <!-- Bento Keypad Grid -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-2.5 w-full max-w-[280px]">
+                    ${keypadNumbers.map(row => row.map(btn => {
+                        if (btn === 'cancel') {
+                            return `
+                            <button type="button" onclick="cancelMemberPinAuth()" class="h-12 sm:h-13 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 font-bold text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer shadow-2xs" title="Batal">
+                                <i class="fa-solid fa-arrow-left text-sm"></i>
+                            </button>`;
+                        }
+                        if (btn === 'backspace') {
+                            return `
+                            <button type="button" onclick="handleMemberPinBackspace()" class="h-12 sm:h-13 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 font-bold text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer shadow-2xs" title="Hapus">
+                                <i class="fa-solid fa-delete-left text-base"></i>
+                            </button>`;
+                        }
+                        return `
+                        <button type="button" onclick="handleMemberPinDigit('${btn}')" class="h-12 sm:h-13 rounded-2xl bg-white hover:bg-slate-50 dark:bg-slate-800/90 dark:hover:bg-slate-700/80 border border-slate-200/90 dark:border-slate-700 text-slate-800 dark:text-white font-black text-lg sm:text-xl flex items-center justify-center active:scale-90 transition-all cursor-pointer shadow-2xs hover:border-[var(--color-primary)]/40">
+                            ${btn}
+                        </button>`;
+                    }).join('')).join('')}
+                </div>
+
+                <!-- Public Device Auto-Lock Warning / Remember Device -->
+                ${isEnter ? `
+                    <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/60 w-full flex flex-col items-center gap-2">
+                        <label class="flex items-center gap-2 text-[11px] font-bold text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+                            <input type="checkbox" id="member-remember-device-check" ${rememberDeviceOption ? 'checked' : ''} onchange="toggleRememberMemberDevice(this.checked)" class="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)] w-4 h-4 cursor-pointer" />
+                            <span>Ingat sesi di perangkat pribadi ini</span>
+                        </label>
+                        <p class="text-[9.5px] text-slate-400 dark:text-slate-500 max-w-[260px] leading-tight">
+                            <i class="fa-solid fa-shield-cat text-amber-500 mr-0.5"></i>
+                            Jika di HP kasir atau komputer publik, hilangkan centang agar akun otomatis terkunci saat ditutup.
+                        </p>
+                    </div>
+
+                    <!-- Lupa PIN Support Link -->
+                    <div class="mt-3">
+                        <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Admin Toko Putri, saya lupa PIN keamanan akun member untuk nomor +${pendingAuthMember.phone||''}. Mohon bantuannya untuk reset PIN member saya. Terima kasih.`)}" target="_blank" class="text-[10.5px] font-bold text-[var(--color-primary)] hover:underline flex items-center justify-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> Lupa PIN? Hubungi Admin Toko
+                        </a>
+                    </div>
+                ` : ''}
+            </div>
+        `);
+        return;
+    }
+
     const activeRewards = (appData.rewards || []).filter(r => r.isActive !== 'false' && r.isActive !== false);
     const pts = currentMember ? (parseFloat(currentMember.points) || 0) : 0;
     const tier = getMemberTier(pts);
@@ -1175,8 +1595,8 @@ export const rMemberModalBody = () => {
                     </button>
                 </div>
                 <div class="text-center mt-2">
-                    <button type="button" onclick="logoutMember()" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
-                        <i class="fa-solid fa-user-pen mr-1"></i>Bukan Anda? Cek nomor WhatsApp lain
+                    <button type="button" onclick="lockMemberSession()" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
+                        <i class="fa-solid fa-lock mr-1"></i>Kunci Sesi / Cek nomor WhatsApp lain
                     </button>
                 </div>
             </div>
@@ -1280,15 +1700,15 @@ export const rMemberModalBody = () => {
                         </div>
                         <div class="text-right">
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Sisa Limit Tersedia</p>
-                            <p class="text-sm font-black text-[var(--color-primary)] font-mono">${fCur(available)}</p>
+                            <p class="text-sm font-black text-[var(--color-primary)] font-mono">${formatMaskedCurrency(available, isMemberPrivacyHidden)}</p>
                         </div>
                     </div>
 
                     <!-- Progress Bar Penggunaan Limit -->
                     <div class="space-y-1.5 pt-0.5">
                         <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                            <span>Terpakai: <b class="font-mono text-slate-800 dark:text-slate-200">${fCur(used)}</b> (${percentUsed}%)</span>
-                            <span>Total Plafon: <b class="font-mono text-slate-800 dark:text-slate-200">${fCur(limit)}</b></span>
+                            <span>Terpakai: <b class="font-mono text-slate-800 dark:text-slate-200">${formatMaskedCurrency(used, isMemberPrivacyHidden)}</b> (${percentUsed}%)</span>
+                            <span>Total Plafon: <b class="font-mono text-slate-800 dark:text-slate-200">${formatMaskedCurrency(limit, isMemberPrivacyHidden)}</b></span>
                         </div>
                         <div class="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden p-0.5">
                             <div class="h-full rounded-full transition-all duration-500" style="background: var(--color-primary); width: ${percentUsed}%;"></div>
@@ -1310,18 +1730,18 @@ export const rMemberModalBody = () => {
                                         <i class="fa-solid fa-file-invoice-dollar text-[var(--color-primary)]"></i> ${hasMultiMonth ? 'Angsuran Bulan Ini (Wajib Bayar)' : 'Tagihan Berjalan (Wajib Bayar)'}
                                     </p>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
-                                        <p class="text-base sm:text-lg font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(nominalBulanIni)}</p>
+                                        <p class="text-base sm:text-lg font-black text-rose-600 dark:text-rose-400 font-mono">${formatMaskedCurrency(nominalBulanIni, isMemberPrivacyHidden)}</p>
                                         ${hasMultiMonth ? `
-                                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">dari total ${fCur(billing.tagihanWajibBayar)}</span>
+                                             <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">dari total ${formatMaskedCurrency(billing.tagihanWajibBayar, isMemberPrivacyHidden)}</span>
                                         ` : ''}
                                     </div>
                                     ${hasMultiMonth ? `
                                         <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-medium">
-                                            Sisa Termin Bulan Depan: <b class="font-mono text-slate-700 dark:text-slate-300">${fCur(billing.tagihanMendatang)}</b>
+                                            Sisa Termin Bulan Depan: <b class="font-mono text-slate-700 dark:text-slate-300">${formatMaskedCurrency(billing.tagihanMendatang, isMemberPrivacyHidden)}</b>
                                         </p>
                                     ` : (billing.totalFee > 0 ? `
                                         <p class="text-[9px] text-slate-400 font-medium mt-0.5">
-                                            Pokok: <span class="font-mono text-slate-600 dark:text-slate-300 font-bold">${fCur(billing.totalPokok)}</span> + Biaya Tenor: <span class="font-mono text-[var(--color-primary)] font-bold">+${fCur(billing.totalFee)}</span>
+                                            Pokok: <span class="font-mono text-slate-600 dark:text-slate-300 font-bold">${formatMaskedCurrency(billing.totalPokok, isMemberPrivacyHidden)}</span> + Biaya Tenor: <span class="font-mono text-[var(--color-primary)] font-bold">+${formatMaskedCurrency(billing.totalFee, isMemberPrivacyHidden)}</span>
                                         </p>
                                     ` : '')}
                                 </div>
@@ -1442,6 +1862,7 @@ export const rMemberModalBody = () => {
                     <li>Otomatis terdaftar menjadi member pada pesanan pertama Anda.</li>
                     <li>Kumpulkan poin di setiap transaksi belanja untuk ditukar hadiah gratis.</li>
                     <li>Mendapatkan kartu digital eksklusif yang bisa disimpan di galeri ponsel.</li>
+                    <li>Dilengkapi PIN Keamanan 6-Digit &amp; Sensor Mata Privasi Finansial.</li>
                 </ul>
             </div>
 
@@ -1456,6 +1877,7 @@ export const rMemberModalBody = () => {
 
 /**
  * Cek poin member secara langsung dari input modal
+ * Menerapkan verifikasi PIN 6-digit fintech sebelum mengekspos data pribadi
  */
 export const lookupMemberPoints = async () => {
     const input = document.getElementById('member-lookup-input');
@@ -1474,7 +1896,7 @@ export const lookupMemberPoints = async () => {
     else if (!rawVal.startsWith('62')) rawVal = '62' + rawVal;
 
     resultDiv.className = 'text-xs font-bold text-[var(--color-primary)] p-2.5 primary-bg-soft rounded-xl';
-    resultDiv.textContent = 'Memuat data kartu member...';
+    resultDiv.textContent = 'Memverifikasi status keanggotaan...';
     resultDiv.classList.remove('hidden');
 
     try {
@@ -1486,15 +1908,20 @@ export const lookupMemberPoints = async () => {
                 if (rec) mData = rec;
             }
             memberCache.set(rawVal, { data: mData, timestamp: Date.now() });
-            setCurrentMember(mData);
-            try {
-                localStorage.setItem('freshmart_current_member', JSON.stringify(mData));
-                localStorage.setItem('freshmart_member_wa', rawVal);
-            } catch(e) {}
-            rMemberModalBody();
-            if (typeof window.showToast === 'function') {
-                window.showToast(`Selamat datang kembali, ${mData.name || 'Pelanggan'}!`);
+
+            // PROTEKSI KEAMANAN: Arahkan ke Keypad PIN 6-Digit sebelum data sensitif dibuka!
+            pendingAuthMember = mData;
+            pinBuffer = '';
+            pinConfirmBuffer = '';
+            pinErrorMessage = '';
+            
+            if (mData.pin) {
+                memberAuthStep = 'enter_pin';
+            } else {
+                memberAuthStep = 'create_pin';
             }
+            rMemberModalBody();
+            return;
         } else {
             resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40 space-y-1.5';
             const adminWa = ((appData.store && appData.store.wa) || '').replace(/\D/g, '');
@@ -1550,6 +1977,23 @@ export const closeMemberModal = (fH = false) => {
     const m = document.getElementById('member-modal');
     if (!m || m.style.display === 'none') return;
     
+    // Auto-Lock Sesi jika pengguna tidak memilih opsi ingat di perangkat ini
+    if (!rememberDeviceOption) {
+        setCurrentMember(null);
+        try {
+            if (typeof localStorage !== 'undefined') {
+                localStorage.removeItem('freshmart_current_member');
+                localStorage.removeItem('freshmart_member_wa');
+            }
+        } catch(e) {}
+    }
+
+    pendingAuthMember = null;
+    memberAuthStep = 'idle';
+    pinBuffer = '';
+    pinConfirmBuffer = '';
+    pinErrorMessage = '';
+
     const doClose = () => {
         m.style.opacity = '0'; 
         m.style.transition = 'opacity 0.25s ease';
@@ -1568,13 +2012,29 @@ export const closeMemberModal = (fH = false) => {
 };
 
 export const logoutMember = () => {
-    setCurrentMember(null);
-    try {
-        localStorage.removeItem('freshmart_current_member');
-        localStorage.removeItem('freshmart_member_wa');
-    } catch(e) {}
-    rMemberModalBody();
+    lockMemberSession();
 };
+
+// ─── Physical Keyboard Listener untuk Input PIN di PC / Laptop ────────
+if (typeof document !== 'undefined') {
+    document.addEventListener('keydown', (e) => {
+        const m = document.getElementById('member-modal');
+        if (!m || m.style.display === 'none') return;
+        if (memberAuthStep === 'idle') return;
+
+        // Tangani pengetikan digit fisik 0-9
+        if (/^[0-9]$/.test(e.key)) {
+            e.preventDefault();
+            handleMemberPinDigit(e.key);
+        } else if (e.key === 'Backspace') {
+            e.preventDefault();
+            handleMemberPinBackspace();
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            cancelMemberPinAuth();
+        }
+    });
+}
 
 // ─── Expose ke window untuk interaksi inline onclick di HTML ──────────
 if (typeof window !== 'undefined') {
@@ -1590,6 +2050,16 @@ if (typeof window !== 'undefined') {
     window.downloadMemberCard = downloadMemberCard;
     window.getMemberTier = getMemberTier;
     window.formatMemberCardNumber = formatMemberCardNumber;
+    window.maskMemberCardNumber = maskMemberCardNumber;
+    window.maskPhoneNumber = maskPhoneNumber;
+    window.formatMaskedCurrency = formatMaskedCurrency;
+    window.toggleMemberPrivacyMode = toggleMemberPrivacyMode;
+    window.lockMemberSession = lockMemberSession;
+    window.toggleRememberMemberDevice = toggleRememberMemberDevice;
+    window.handleMemberPinDigit = handleMemberPinDigit;
+    window.handleMemberPinBackspace = handleMemberPinBackspace;
+    window.cancelMemberPinAuth = cancelMemberPinAuth;
+    window.processMemberPinSubmission = processMemberPinSubmission;
     window.generateBarcodeSVG = generateBarcodeSVG;
     window.setCurrentMember = setCurrentMember;
     window.logoutMember = logoutMember;

@@ -16,6 +16,24 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-03",
+        "version": "v1.17.3",
+        "date": "2026-10-15",
+        "title": "Proteksi Keamanan Fintech Panel Member: Autentikasi PIN 6-Digit, Sensor Mata Privasi Finansial (Anti Shoulder-Surfing), Masking Kartu VIP & Auto-Lock Sesi",
+        "category": "feature",
+        "badge": "Fintech Security Member Panel & Privacy Eye Shield v1.17.3",
+        "items": [
+            "Autentikasi PIN Keamanan 6-Digit Member: Memproteksi akses data sensitif pelanggan (nomor WhatsApp, barcode kartu VIP, sisa limit kredit, dan seluruh riwayat tagihan PayLater) dengan verifikasi 6-digit PIN terenkripsi salt SHA-256 via Web Crypto API (zero plain-text storage).",
+            "Antarmuka Keypad PIN Bento 6-Dots Interaktif: Menghadirkan keypad numerik modular bergaya Bento Grid dengan 6 bulatan indikator responsif, animasi haptic & audio tick native, serta dukungan penuh pengetikan langsung via keyboard fisik PC/laptop (0-9, Backspace, Escape).",
+            "Mode Sensor Privasi Finansial Mata (Privacy Eye Shield 👁️): Seluruh angka saldo PayLater, limit terpakai, total plafon, serta angsuran tagihan berjalan otomatis disensor sebagai 'Rp ••••••' secara default untuk mencegah intipan visual di tempat umum (anti shoulder-surfing), dengan tombol toggle intip cepat di header.",
+            "Masking Kartu Member Digital & Barcode Laser Kasir: Menyamarkan nomor telepon dan nomor kartu VIP (+62 812-••••-7890 dan PUTRI • 8123 • •••• • 8901), dengan tetap mempertahankan integritas barcode Code 128 fisik di kasir agar scanner laser toko tetap membaca data asli 100% cepat dan akurat.",
+            "Kunci Sesi Cepat & Proteksi Perangkat Publik (Anti Sesi Tertinggal): Tombol Kunci Sesi (Quick Lock) persisten di header modal serta opsi centang 'Ingat sesi di perangkat pribadi ini' yang otomatis memusnahkan sesi member seketika saat modal ditutup jika dibuka pada perangkat kasir atau komputer umum.",
+            "Fitur Reset PIN Member oleh Admin CMS: Menyediakan tombol Reset PIN terdedikasi di tabel data pelanggan CMS Admin lengkap dengan dialog konfirmasi aman agar staf admin/owner dapat membantu pelanggan yang lupa PIN.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: 61 unit test member & logika loyalitas lulus 100%, seluruh pengujian otomatis sistem integritas toko lulus tanpa regresi.",
+            "Multi-Channel Distribution v1.17.3 (Android versionCode 11703)."
+        ]
+    },
+    {
         "id": "log-1-17-02",
         "version": "v1.17.2",
         "date": "2026-10-15",
@@ -83,23 +101,6 @@ export const DEFAULT_CHANGELOG = [
             "Desain Responsif & Proporsionalitas Bento: Menyeimbangkan skala tipografi judul, deskripsi, tombol aksi CTA, dan grafis produk pada kartu promosi bento di seluruh ukuran layar.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.9 (Android versionCode 11609)."
-        ]
-    },
-    {
-        "id": "log-1-16-08",
-        "version": "v1.16.8",
-        "date": "2026-10-13",
-        "title": "Harmonisasi Kontras Tema Storefront, Kolom Pencarian Header Adaptif & Kartu Promo Bento Multi-Mode (Light & Dark Mode)",
-        "category": "feature",
-        "badge": "Theme Contrast & Multi-Mode Harmony v1.16.8",
-        "items": [
-            "Harmonisasi Kontras Kolom Pencarian Header (Light & Dark Mode Ready): Mengeliminasi balok obsidian hitam pekat yang tidak selaras di mode terang; kini di Light Mode kolom pencarian berlatar belakang putih bersih (bg-white/95) dengan teks slate-800, border halus, ikon kaca pembesar tema toko, dan tombol chiclet SCAN bersih, serta bertransisi mulus ke obsidian gelap elegan di Dark Mode.",
-            "Kartu Promo Bento Adaptif Tema Toko (.bento-promo-card): Mengganti gradien hitam hardcoded (slate-900 to slate-950) pada slide promosi bento dengan gradien dinamis yang mengadopsi warna tema toko (var(--color-primary)) di Light Mode, lengkap dengan tombol CTA putih bersih berkontras tajam (bg-white text-[var(--color-primary-dark)]), dan beralih ke dark luxury obsidian di Dark Mode.",
-            "Penyederhanaan Badge Banner Hero: Menghilangkan teks 'OFFICIAL STORE' tambahan di samping teks selamat datang pada banner utama beranda sehingga lencana tampil bersih, ringkas, dan fokus murni pada pesan 'SELAMAT DATANG'.",
-            "Tombol Navigasi Slider Adaptif: Memperbarui tombol kontrol panah melayang di desktop agar adaptif di kedua mode (bg-white/95 di Light Mode dan dark:bg-slate-950 di Dark Mode).",
-            "Eliminasi Ketimpangan Estetika (Zero Disparity): Memastikan tidak ada lagi elemen gelap legam yang terisolasi di atas kanvas tema terang toko, menjamin pengalaman visual serasi, profesional, dan nyaman di mata.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.8 (Android versionCode 11608)."
         ]
     }
 ];
