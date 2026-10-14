@@ -16,6 +16,20 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-05",
+        "version": "v1.17.5",
+        "date": "2026-10-15",
+        "title": "Resolusi Forensik Runtime Checkout Tempo, Standarisasi Flag Produk Habis & Guard Perhitungan Pajak",
+        "category": "feature",
+        "badge": "Tempo Checkout Runtime Fix & Inventory Flag v1.17.5",
+        "items": [
+            "Resolusi Bug Impor Pembayaran Tempo (Zero ReferenceError): Menambahkan impor resmi 'vouch' dari state.js serta helper 'getEffP' mandiri pada payment.js sehingga kalkulasi sisa saldo Tempo tidak lagi melempar ReferenceError saat pembeli mengetik nominal DP.",
+            "Proteksi Anti-NaN Kalkulasi Pajak & Poin Member: Menambahkan fallback safe guard pada pemanggilan window.calcTaxDetails di fungsi calculateTempoBalance guna mencegah hasil kalkulasi menjadi 'Rp NaN'.",
+            "Standarisasi Tipe Data Flag Produk Habis (Boolean false): Menyelaraskan status 'isActive' produk induk saat stok habis dari string 'false' menjadi boolean false murni, konsisten dengan seluruh varian produk di database Firestore.",
+            "Multi-Channel Distribution v1.17.5 (Android versionCode 11705)."
+        ]
+    },
+    {
         "id": "log-1-17-04",
         "version": "v1.17.4",
         "date": "2026-10-15",
@@ -102,22 +116,6 @@ export const DEFAULT_CHANGELOG = [
             "Standardisasi Proporsionalitas Kolom Input (Anti-Kerdil & Touch Ergonomics): Mengeliminasi seluruh input kerdil/sempit di seluruh modul aplikasi. Menstandarkan input teks, angka, tanggal, dan dropdown select ke tinggi proporsional (min-height 40-44px, font 13.5-14px anti auto-zoom), stepper kuantitas keranjang web (w-14 sm:w-16 h-10 sm:h-11), input diskon nota kasir (h-10 text-sm), input denominasi kasir (w-16 sm:w-20 h-9), parameter estimator material bangunan (h-11 text-sm font-bold), input peta koordinat, serta form pengeluaran & stock opname.",
             "Penyempurnaan & Harmonisasi Simetris Modal Tautan Cepat (Centered Bento Shortcut Tiles): Menata ulang grid modal Tautan Cepat (#quickmenu-modal) menjadi kartu pintas terpusat yang simetris dan seimbang. Seluruh icon menu diperbesar (w-12 h-12 rounded-2xl) dan diletakkan presisi di tengah, judul dan subjudul teks terpusat rata tengah (text-center), badge status (VIP, SOP, Update, Wishlist) diposisikan melayang elegan di sudut kanan atas (absolute top-2.5 right-2.5), serta kartu utilitas Tema Layar diformat membentang 2 kolom penuh (col-span-2) sehingga grid menjadi 100% konsisten, simetris, dan proporsional.",
             "Multi-Channel Distribution v1.17.0 (Android versionCode 11700)."
-        ]
-    },
-    {
-        "id": "log-1-16-09",
-        "version": "v1.16.9",
-        "date": "2026-10-14",
-        "title": "Elevasi Ruang Vertikal Banner Hero Beranda, Harmonisasi Badge Maskot 3D & Proporsionalitas Kartu Promo Bento",
-        "category": "feature",
-        "badge": "Hero Banner Vertical Space & Mascot Badge Elevation v1.16.9",
-        "items": [
-            "Elevasi Ruang Vertikal Banner Hero Storefront (min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px]): Memberikan ruang kanvas vertikal yang lapang dan elegan bagi banner hero utama dan kartu promo bento di desktop, tablet, dan smartphone.",
-            "Harmonisasi Posisi Badge Maskot 3D (Anti-Mepet Frame Atas & Bawah): Memposisikan lencana '100% ORI' dan badge live pulsing 'Siap Melayani' dengan margin bernapas yang aman dan presisi di dalam kanvas kartu banner hero tanpa menabrak garis frame.",
-            "Sinkronisasi Skeleton Loader Beranda: Menyelaraskan dimensi skeleton #dynamic-banners-container dengan tinggi baru guna mengeliminasi loncatan visual (zero cumulative layout shift).",
-            "Desain Responsif & Proporsionalitas Bento: Menyeimbangkan skala tipografi judul, deskripsi, tombol aksi CTA, dan grafis produk pada kartu promosi bento di seluruh ukuran layar.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.9 (Android versionCode 11609)."
         ]
     }
 ];

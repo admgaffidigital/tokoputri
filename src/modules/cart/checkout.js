@@ -849,8 +849,8 @@ export const processOrder = async () => {
                         if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
                         if (prod.hpp) updatePayload.hpp = prod.hpp;
                         if (prod.stock === 0) {
-                            prod.isActive = 'false';
-                            updatePayload.isActive = 'false';
+                            prod.isActive = false;
+                            updatePayload.isActive = false;
                         }
                         prod.totalSold = (parseFloat(prod.totalSold) || 0) + need.main;
                         updatePayload.totalSold = prod.totalSold;

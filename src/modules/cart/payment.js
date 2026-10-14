@@ -8,10 +8,18 @@
  */
 
 import { db, firebase } from '../../config/firebase.js';
-import { appData, cart, cust, currentMember } from '../../core/state.js';
+import { appData, cart, cust, currentMember, vouch } from '../../core/state.js';
 import { 
     el, show, hide, toggleCls, fCur, esc, showToast, sLoad, hLoad, fixD 
 } from '../../core/utils.js';
+
+// Helper harga efektif produk/grosir aman
+const getEffP = (item) => {
+    if (typeof window !== 'undefined' && typeof window.getEffP === 'function') {
+        return window.getEffP(item, 'web');
+    }
+    return item?.effectivePrice ?? item?.price ?? 0;
+};
 import { toggleDeliveryMethod } from './checkout.js';
 import { calculateAllPaylaterTenors, calculateInstallmentBreakdown, getPaylaterConfig } from '../../core/paylater.js';
 import { GAS_UPLOAD_URL } from '../../services/gas.js';
@@ -533,17 +541,19 @@ window.calculateTempoBalance = () => {
 
     let subAfterDisc = Math.max(0, sub - productDisc);
     let shippingAfterDisc = Math.max(0, sC - shippingDisc);
-    const taxInfo = window.calcTaxDetails(subAfterDisc + shippingAfterDisc);
+    const calcTax = typeof window.calcTaxDetails === 'function' ? window.calcTaxDetails : (() => ({ grandTotalAdd: 0 }));
+    const taxInfo = calcTax(subAfterDisc + shippingAfterDisc) || { grandTotalAdd: 0 };
+    const grandTotalAdd = parseFloat(taxInfo?.grandTotalAdd) || 0;
     let pointsDisc = 0;
     if (window.useMemberPoints && currentMember) {
-        pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd, parseFloat(currentMember.points) || 0);
+        pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + grandTotalAdd, parseFloat(currentMember.points) || 0);
     }
-    let grandTotal = subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd - pointsDisc;
+    let grandTotal = Math.max(0, subAfterDisc + shippingAfterDisc + grandTotalAdd - pointsDisc);
     if (dp > grandTotal) {
         dp = grandTotal;
         if (dpInput) dpInput.value = dp;
     }
-    let balance = grandTotal - dp;
+    let balance = Math.max(0, grandTotal - dp);
     const disp = document.getElementById('tempo-balance-display');
     if (disp) disp.innerText = fCur(balance);
 };
