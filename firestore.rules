@@ -123,9 +123,9 @@ service cloud.firestore {
         allow list: if isStaff();
         allow create: if isStaff();
         allow delete: if isAdmin();
-        // Checkout publik: poin naik terbatas / turun (klaim hadiah), PayLater hanya naik.
+        // Checkout & portal member publik: poin naik terbatas / turun (klaim hadiah), PayLater hanya naik, dan aktivasi PIN baru pertama kali.
         allow update: if isStaff() || (
-          changed().hasOnly(['points', 'lastOrderAt', 'paylaterUsed', 'name']) &&
+          changed().hasOnly(['points', 'lastOrderAt', 'paylaterUsed', 'name', 'pin', 'pinSetAt', 'updatedAt']) &&
           (!('points' in changed()) ||
             (request.resource.data.points is number &&
              request.resource.data.points >= 0 &&
@@ -134,7 +134,15 @@ service cloud.firestore {
             (request.resource.data.paylaterUsed is number &&
              request.resource.data.paylaterUsed >= resource.data.get('paylaterUsed', 0))) &&
           // Nama hanya boleh diisi jika sebelumnya kosong (tidak bisa mengganti nama member).
-          (!('name' in changed()) || !('name' in resource.data) || resource.data.name == '')
+          (!('name' in changed()) || !('name' in resource.data) || resource.data.name == '') &&
+          // PIN hanya boleh dibuat/diaktifkan pertama kali jika sebelumnya belum ada PIN atau telah di-reset oleh admin (anti-overwrite).
+          (!('pin' in changed()) ||
+            (request.resource.data.pin is string &&
+             request.resource.data.pin.size() >= 16 &&
+             request.resource.data.pin.size() <= 64 &&
+             (!('pin' in resource.data) || resource.data.pin == null || resource.data.pin == ''))) &&
+          (!('pinSetAt' in changed()) || request.resource.data.pinSetAt is string) &&
+          (!('updatedAt' in changed()) || request.resource.data.updatedAt is string)
         );
       }
 
