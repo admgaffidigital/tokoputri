@@ -145,6 +145,15 @@ export const openPOSCashierMode = async () => {
 export const openPOSLoginModal = () => {
     const modal = el('pos-login-modal');
     if (!modal) return;
+
+    // Sanitasi instan sebelum membuka modal
+    const emailInput = el('pos-login-email');
+    const passInput = el('pos-login-password');
+    const errEl = el('pos-login-error');
+    if (emailInput) emailInput.value = '';
+    if (passInput) passInput.value = '';
+    if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+
     if (typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('posLogin');
     }
@@ -156,13 +165,24 @@ export const openPOSLoginModal = () => {
     }, 10);
     // Focus ke email input
     setTimeout(() => {
-        const emailInput = el('pos-login-email');
-        if (emailInput) emailInput.focus();
+        if (emailInput) {
+            emailInput.value = '';
+            emailInput.focus();
+        }
+        if (passInput) passInput.value = '';
     }, 300);
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
 export const closePOSLoginModal = (fH = false) => {
+    // Sanitasi instan detik ini juga
+    const emailInput = el('pos-login-email');
+    const passInput = el('pos-login-password');
+    const errEl = el('pos-login-error');
+    if (emailInput) emailInput.value = '';
+    if (passInput) passInput.value = '';
+    if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+
     const doClose = () => {
         const modal = el('pos-login-modal');
         const box = el('pos-login-modal-box');
@@ -171,9 +191,6 @@ export const closePOSLoginModal = (fH = false) => {
         setTimeout(() => {
             if (modal) modal.classList.add('hidden');
             // Reset form
-            const emailInput = el('pos-login-email');
-            const passInput = el('pos-login-password');
-            const errEl = el('pos-login-error');
             if (emailInput) emailInput.value = '';
             if (passInput) passInput.value = '';
             if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
@@ -306,6 +323,11 @@ export const processCashierLogin = async () => {
         // namun admin session di Firestore (admin_session doc) tidak terganggu
 
         closePOSLoginModal();
+        const emInp = el('pos-login-email');
+        const pwInp = el('pos-login-password');
+        if (emInp) emInp.value = '';
+        if (pwInp) pwInp.value = '';
+
         const curSession = getCashierSession();
         showToast(`Selamat datang, ${curSession?.name || 'Kasir'}!`, 'success');
 
@@ -331,6 +353,8 @@ export const processCashierLogin = async () => {
         }
     } finally {
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk Kasir'; }
+        const pwInp = el('pos-login-password');
+        if (pwInp) pwInp.value = '';
     }
 };
 
@@ -409,6 +433,12 @@ export const cashierLogout = async (bypassShiftCheck = false) => {
     } catch (e) {}
 
     clearCashierSession();
+
+    // Reset bersih seluruh kolom input login kasir
+    const emInp = el('pos-login-email');
+    const pwInp = el('pos-login-password');
+    if (emInp) emInp.value = '';
+    if (pwInp) pwInp.value = '';
 
     // Bersihkan kontainer DOM POS Kasir storefront secara tuntas agar tidak ada residu ID di DOM
     const sfView = el('view-pos-cashier');

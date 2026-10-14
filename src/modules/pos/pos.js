@@ -4495,6 +4495,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="relative flex-1 min-w-0">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                             <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode... [F2]" 
+                                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                                 class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)"
                                 onkeydown="window.handlePOSSearchKeydown(event)">

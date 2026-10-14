@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-01",
+        "version": "v1.17.1",
+        "date": "2026-10-15",
+        "title": "Sanitasi Murni Kolom Input (Pristine Input Cleanliness), Proteksi Anti-Autofill & Keamanan Kredensial Seluruh Web Aplikasi",
+        "category": "feature",
+        "badge": "Pristine Input Cleanliness & Universal Anti-Autofill v1.17.1",
+        "items": [
+            "Sanitasi Murni Kolom Input (Pristine Input Cleanliness): Menjamin seluruh kolom input di aplikasi terbebas dari residu sampah teks, riwayat kata sandi lama, maupun kode usang saat formulir atau modal dibuka, ditutup, atau diselesaikan.",
+            "Standar Proteksi Anti-Autofill Modern (Chromium & WebKit Compliant): Mengganti atribut autocomplete pada kolom kata sandi login admin, login kasir, dan formulir staf dengan standar autocomplete=\"new-password\" serta autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" sehingga browser tidak lagi menyuntikkan atau meninggalkan kata sandi tersimpan secara otomatis.",
+            "Sanitasi Programmatic Instan Login Kasir & Admin: Mengosongkan nilai username/email dan password secara otomatis dan aman saat pengguna membuka layar login, menutup modal autentikasi, berhasil masuk, maupun saat logout.",
+            "Sanitasi Kolom Pencarian & Barcode Scanner: Menyematkan proteksi anti-autofill dan spellcheck pada kolom pencarian storefront (#search-input, #mobile-header-search), pencarian kasir POS (#pos-search-input), dan pelacak nota retur agar tidak memunculkan popup riwayat yang menghalangi keyboard.",
+            "Sanitasi Modal Kas Laci & Shift Kasir: Seluruh kolom nominal uang tunai, alasan transaksi, penerima dana, serta kalkulator pecahan denominasi selalu dibuka dalam kondisi bersih murni (0 / kosong).",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.17.1 (Android versionCode 11701)."
+        ]
+    },
+    {
         "id": "log-1-17-00",
         "version": "v1.17.0",
         "date": "2026-10-14",
@@ -82,22 +99,6 @@ export const DEFAULT_CHANGELOG = [
             "Harmonisasi Sistem Desain Bento & Dark Mode: Menyelaraskan seluruh elemen antarmuka dengan variabel tema dinamis toko (var(--color-primary) & var(--color-primary-dark)), kartu bento 100% solid bebas blur, serta kontras tajam baik di mode terang maupun mode gelap (dark mode).",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.7 (Android versionCode 11607)."
-        ]
-    },
-    {
-        "id": "log-1-16-06",
-        "version": "v1.16.6",
-        "date": "2026-10-13",
-        "title": "Elevasi Kolom Pencarian Header (Obsidian Pill Capsule), Animasi Teks Berganti (Rolling Ticker) & Chiclet Scanner",
-        "category": "feature",
-        "badge": "Header Search Capsule & Rolling Ticker v1.16.6",
-        "items": [
-            "Redesain Kapsul Pencarian Obsidian (Elevated Pill Capsule): Mengubah kolom pencarian header dari kotak standar menjadi kapsul obsidian aerodinamis (rounded-full) berkontras tinggi dengan border kristal putih halus, drop shadow lembut, ikon kaca pembesar emas amber, dan tombol clear [X] dinamis tanpa elemen kategori ganda yang mengganggu.",
-            "Animasi Teks Berganti Otomatis (Dynamic Rolling Placeholder Ticker): Mengganti placeholder statis dengan animasi teks halus yang berganti secara berkala merekomendasikan bahan bangunan populer (Semen Gresik/Tiga Roda, Cat No Drop, Pipa PVC Rucika, Keramik Granit, Mesin Bor, Seng Spandek, dll) yang otomatis jeda saat diketik.",
-            "Tombol Scanner Mini (Chiclet Scanner Pill): Menghadirkan tombol aksi pemindai barcode/QR mini dengan badge 'SCAN' bertulisan tegas dan ikon QR emas, memudahkan pelanggan memindai produk fisik langsung dari ponsel.",
-            "Sinkronisasi Pencarian Desktop: Menyelaraskan kolom pencarian desktop dengan tombol scanner chiclet terpadu dan rotasi placeholder cerdas.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.6 (Android versionCode 11606)."
         ]
     }
 ];

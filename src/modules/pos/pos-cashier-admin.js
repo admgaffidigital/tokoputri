@@ -460,11 +460,13 @@ export const openAddStaffModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Lengkap Staf <span class="text-rose-500">*</span></label>
                         <input id="new-staff-name" type="text" placeholder="Contoh: Rina Kasir / Budi Supervisor"
+                            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                             class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login <span class="text-rose-500">*</span></label>
                         <input id="new-staff-email" type="email" placeholder="staf@tokoputri.com"
+                            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                             class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
                     </div>
                 </div>
@@ -473,6 +475,7 @@ export const openAddStaffModal = () => {
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Password Staf (Min. 6 Karakter) <span class="text-rose-500">*</span></label>
                     <div class="relative">
                         <input id="new-staff-pass" type="password" placeholder="Minimal 6 karakter..."
+                            autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
                             class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl pl-4 pr-12 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
                         <button type="button" onclick="window.toggleStaffPassVisibility('new-staff-pass')"
                             class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1">
@@ -560,7 +563,13 @@ export const openAddStaffModal = () => {
 export const closeAddStaffModal = (fH = false) => {
     const doClose = () => {
         const modal = el('add-staff-modal');
-        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+        if (modal) {
+            const nEl = el('new-staff-name'); if (nEl) nEl.value = '';
+            const eEl = el('new-staff-email'); if (eEl) eEl.value = '';
+            const pEl = el('new-staff-pass'); if (pEl) pEl.value = '';
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 200);
+        }
     };
     if (typeof window.requestCloseModal === 'function') {
         window.requestCloseModal('addStaff', fH, doClose);
@@ -661,6 +670,9 @@ export const saveStaffAccount = async () => {
             } catch (_) {}
         }
 
+        const pEl = el('new-staff-pass'); if (pEl) pEl.value = '';
+        const nEl = el('new-staff-name'); if (nEl) nEl.value = '';
+        const eEl = el('new-staff-email'); if (eEl) eEl.value = '';
         closeAddStaffModal();
         showToast(`Akun "${name}" (${finalRole.toUpperCase()}) berhasil didaftarkan!`, 'success');
         await loadStaffList();
@@ -902,6 +914,7 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Staf</label>
                     <input id="edit-staff-name" type="text" value="${esc(currentName)}"
+                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                         class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
                 </div>
                 <div>

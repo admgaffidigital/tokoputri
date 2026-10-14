@@ -418,6 +418,8 @@ export const processAdminLogin = async () => {
             try { attachPrivateDataListener(); } catch (_) {}
             history.replaceState({ view: 'view-admin' }, '', window.location.href);
             if (typeof window.changeView === 'function') window.changeView('view-admin', true);
+            setV('login-username', '');
+            setV('login-password', '');
             openAdminMenu();
             showToast("Selamat datang, Pemilik Toko!", "success");
             return;
@@ -473,6 +475,8 @@ export const processAdminLogin = async () => {
             // Alihkan langsung ke mode POS Kasir!
             history.replaceState({ view: 'view-pos-cashier' }, '', window.location.href);
             if (typeof window.changeView === 'function') window.changeView('view-pos-cashier', true);
+            setV('login-username', '');
+            setV('login-password', '');
             showToast(`Login Berhasil! Selamat bertugas di Kasir, ${staffProfile.name || 'Kasir'}!`, "success");
             return;
         }
@@ -483,6 +487,8 @@ export const processAdminLogin = async () => {
         try { attachPrivateDataListener(); } catch (_) {}
         history.replaceState({ view: 'view-admin' }, '', window.location.href);
         if (typeof window.changeView === 'function') window.changeView('view-admin', true);
+        setV('login-username', '');
+        setV('login-password', '');
         openAdminMenu();
         showToast(`Login Berhasil! Selamat bertugas, ${staffProfile.name || 'Admin'}!`, "success");
 
@@ -502,6 +508,7 @@ export const processAdminLogin = async () => {
     } finally {
         setLoggingIn(false);
         hLoad();
+        setV('login-password', '');
     }
 };
 
@@ -528,6 +535,8 @@ export const logoutAdmin = async () => {
         await auth.signOut();
         window.isAdm = false; 
         window.__localIsAdm = false;
+        setV('login-username', '');
+        setV('login-password', '');
         showToast("Berhasil Logout");
         if (typeof window.changeView === 'function') window.changeView('view-catalog');
     } catch(e) {

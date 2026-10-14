@@ -460,6 +460,7 @@ export const openPOSOpenShiftModal = async () => {
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-400 pointer-events-none">Rp</span>
                         <input id="pos-shift-start-cash-input" type="number" min="0" step="1000" placeholder="0" 
+                            autocomplete="off" autocorrect="off" spellcheck="false"
                             class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black text-base focus:outline-none focus:border-[var(--color-primary)] transition-all text-right"
                             value="100000" oninput="window.posUpdateStartCashChips()">
                     </div>
@@ -479,6 +480,7 @@ export const openPOSOpenShiftModal = async () => {
                         <i class="fa-regular fa-clipboard text-slate-400 mr-1"></i>Catatan Pembukaan (Opsional)
                     </label>
                     <input id="pos-shift-start-notes-input" type="text" placeholder="Contoh: Uang pecahan kecil lengkap, shift pagi"
+                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                         class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
 
@@ -922,6 +924,7 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-400 pointer-events-none">Rp</span>
                         <input id="pos-cshmv-amount-input" type="number" min="500" step="1000" placeholder="0" 
+                            autocomplete="off" autocorrect="off" spellcheck="false"
                             class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black text-base focus:outline-none focus:border-rose-500 transition-all text-right">
                     </div>
                     <!-- Quick Amount Chips -->
@@ -940,6 +943,7 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                         <i class="fa-regular fa-clipboard text-slate-400 mr-1"></i>Keperluan / Alasan Transaksi
                     </label>
                     <input id="pos-cshmv-reason-input" type="text" placeholder="Contoh: Beli kantong kresek / es batu / bensin kurir..."
+                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                         class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-rose-500">
                 </div>
 
@@ -964,6 +968,7 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                         <i class="fa-solid fa-user text-slate-400 mr-1"></i>Penerima Uang (Opsional)
                     </label>
                     <input id="pos-cshmv-recipient-input" type="text" placeholder="Contoh: Toko Plastik Sejahtera / Kasir"
+                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                         class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-rose-500">
                 </div>
 
@@ -1006,11 +1011,19 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
 
     setTimeout(() => {
         const inp = el('pos-cshmv-amount-input');
-        if (inp) { inp.focus(); }
+        if (inp) { inp.value = ''; inp.focus(); }
+        const rsn = el('pos-cshmv-reason-input');
+        if (rsn) rsn.value = '';
+        const rec = el('pos-cshmv-recipient-input');
+        if (rec) rec.value = '';
     }, 250);
 };
 
 export const closePOSCashMovementModal = (fH = false) => {
+    const amtEl = el('pos-cshmv-amount-input'); if (amtEl) amtEl.value = '';
+    const rsnEl = el('pos-cshmv-reason-input'); if (rsnEl) rsnEl.value = '';
+    const recEl = el('pos-cshmv-recipient-input'); if (recEl) recEl.value = '';
+
     const doClose = () => {
         const m = el('pos-cash-movement-modal');
         const box = el('pos-cash-movement-box');
@@ -1416,6 +1429,7 @@ export const openPOSCloseShiftModal = () => {
                         <div class="relative">
                             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-400 pointer-events-none">Rp</span>
                             <input id="pos-shift-actual-cash-input" type="number" min="0" step="1000" placeholder="0" 
+                                autocomplete="off" autocorrect="off" spellcheck="false"
                                 class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black text-base focus:outline-none focus:border-[var(--color-primary)] transition-all text-right"
                                 value="${expectedCash}" oninput="window.updatePOSShiftDiscrepancy()">
                         </div>
@@ -1428,56 +1442,56 @@ export const openPOSCloseShiftModal = () => {
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 100.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-100k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-100k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 50.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-50k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-50k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 20.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-20k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-20k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 10.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-10k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-10k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 5.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-5k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-5k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 2.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-2k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-2k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 1.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-1k" placeholder="0" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-1k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <span class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Koin / Receh</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-400">Rp</span>
-                                    <input type="number" min="0" id="denom-coin" placeholder="0" class="w-16 sm:w-24 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-coin" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-24 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                         </div>

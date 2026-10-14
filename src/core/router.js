@@ -93,6 +93,12 @@ export const changeView = (v, fH = false) => {
         if (adminView) adminView.classList.remove('admin-pos-mode');
         if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     }
+    if (curViewName === 'view-admin-login' && v !== 'view-admin-login') {
+        const u = el('login-username');
+        const p = el('login-password');
+        if (u) u.value = '';
+        if (p) p.value = '';
+    }
     
     const t = el(v);
     if (t) {
@@ -132,6 +138,11 @@ export const changeView = (v, fH = false) => {
             }).catch(e => console.error('[POS] Gagal memuat storefront:', e));
         } else if (v === 'view-admin') {
             if (typeof window.renderSubscriptionNoticeInCMS === 'function') window.renderSubscriptionNoticeInCMS();
+        } else if (v === 'view-admin-login') {
+            const u = el('login-username');
+            const p = el('login-password');
+            if (u) u.value = '';
+            if (p) p.value = '';
         }
         
         const s = t.querySelector('.scroll-content');
