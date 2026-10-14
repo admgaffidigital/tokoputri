@@ -1844,7 +1844,7 @@ export const rMemberModalBody = () => {
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+62</span>
-                        <input type="tel" id="member-lookup-input" class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-3 text-xs font-bold text-slate-800 outline-none focus:border-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="81234567890" inputmode="numeric" />
+                        <input type="tel" id="member-lookup-input" class="w-full form-input-bento rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-3 text-sm sm:text-xs font-bold text-slate-800 outline-none focus:border-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="81234567890" inputmode="numeric" autocomplete="off" />
                     </div>
                     <button type="button" onclick="lookupMemberPoints()" class="primary-bg text-white px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shrink-0 transition-all active:scale-95 shadow-sm cursor-pointer">
                         Cek Kartu

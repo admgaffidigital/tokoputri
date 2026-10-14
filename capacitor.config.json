@@ -15,10 +15,14 @@
   },
   "android": {
     "allowMixedContent": true,
-    "captureInput": true,
+    "captureInput": false,
     "webContentsDebuggingEnabled": false
   },
   "plugins": {
+    "Keyboard": {
+      "resize": "body",
+      "resizeOnFullScreen": true
+    },
     "SplashScreen": {
       "launchShowDuration": 2500,
       "launchAutoHide": true,
