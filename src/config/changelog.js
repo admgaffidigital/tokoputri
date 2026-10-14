@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-02",
+        "version": "v1.17.2",
+        "date": "2026-10-15",
+        "title": "Stabilitas Mutlak Kolom Input (Anti-Input Mental), Proteksi Kursor & Pengalaman Mengetik Mulus Mobile & Desktop",
+        "category": "feature",
+        "badge": "Input Focus & Anti-Flicker Stability v1.17.2",
+        "items": [
+            "Proteksi Anti Auto-Zoom Mobile (Font-Size 16px & Touch-Action Manipulation): Menetapkan standar font-size minimal 16px pada seluruh kolom input, select, textarea, dan form bento di viewport smartphone (<= 768px) untuk mengeliminasi zoom-in otomatis browser iOS Safari & Android Chrome yang merusak scroll dan melepaskan fokus kursor.",
+            "Eliminasi Re-Render Destruktif Form CMS Admin: Menghapus pemanggilan innerHTML rebuild (rWholB & rMultiUnitsB) saat pengguna mengetik harga grosir atau satuan kemasan bertingkat, digantikan dengan sistem update parsial reaktif (updateWholMarginBadge & updateMultiUnitSummary) sehingga keyboard HP tidak pernah tertutup sendiri saat berpindah kolom.",
+            "Proteksi Kursor & Debounce Pencarian Kasir POS & Storefront: Mengoptimasi debounce delay pencarian kasir POS (#pos-search-input) ke 250ms dan memasang pemulihan fokus kursor otomatis (preventScroll & setSelectionRange) agar kursor tetap tenang dan utuh saat kartu katalog diperbarui.",
+            "Eliminasi Scroll Reflow pada Header Search: Menghapus event listener onkeyup ganda dan manipulasi smooth-scroll otomatis pada saat fokus kolom pencarian mobile (#mobile-header-search) yang sebelumnya memicu blur kursor.",
+            "Active Element Guard & Autocomplete Standar: Menyelaraskan form login admin dan kasir dengan standar autocomplete='username' dan autocomplete='current-password' serta activeElement guard agar kursor tidak dirampas oleh password manager maupun router view.",
+            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
+            "Multi-Channel Distribution v1.17.2 (Android versionCode 11702)."
+        ]
+    },
+    {
         "id": "log-1-17-01",
         "version": "v1.17.1",
         "date": "2026-10-15",
@@ -83,22 +100,6 @@ export const DEFAULT_CHANGELOG = [
             "Eliminasi Ketimpangan Estetika (Zero Disparity): Memastikan tidak ada lagi elemen gelap legam yang terisolasi di atas kanvas tema terang toko, menjamin pengalaman visual serasi, profesional, dan nyaman di mata.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.16.8 (Android versionCode 11608)."
-        ]
-    },
-    {
-        "id": "log-1-16-07",
-        "version": "v1.16.7",
-        "date": "2026-10-13",
-        "title": "Dukungan Penuh Banner PNG Transparan (Floating Cutout 3D), Eliminasi Kotak Putih Kaku, Harmonisasi Bento Theme & Zero Emoji Iconography",
-        "category": "feature",
-        "badge": "Transparent PNG Banners & Zero Emoji System v1.16.7",
-        "items": [
-            "Dukungan Penuh Banner PNG Transparan (Floating Cutout 3D): Mengeliminasi total kotak pembungkus kaku berlatar belakang putih/abu-abu (bg-white / dark:bg-slate-800/90) dan border tebal pada gambar banner promosi bento. Kini grafis PNG transparan (seperti medali loyalitas emas Member Toko, kaleng cat, logo resmi, alat teknik) mengapung bebas dengan drop shadow 3D alami yang jatuh langsung di atas permukaan kartu bento obsidian.",
-            "Panggung Maskot 3D Transparan: Memperbarui dudukan avatar maskot hero beranda dengan pedestal elips bercincin aksen tema toko yang transparan dan dinamis, menjamin karakter animasi GIF maupun PNG transparan tampil proporsional tanpa terkurung dalam kotak persegi kaku.",
-            "Zero Emoji Iconography: Membersihkan penggunaan ikon emoji Unicode pada antarmuka aplikasi, menggantikannya secara konsisten dengan ikon vektor standar FontAwesome 6 Solid (<i class=\"fa-solid fa-...\"></i>) dan tipografi industrial berkontras tinggi agar tampilan berwibawa, profesional, dan serasi.",
-            "Harmonisasi Sistem Desain Bento & Dark Mode: Menyelaraskan seluruh elemen antarmuka dengan variabel tema dinamis toko (var(--color-primary) & var(--color-primary-dark)), kartu bento 100% solid bebas blur, serta kontras tajam baik di mode terang maupun mode gelap (dark mode).",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.16.7 (Android versionCode 11607)."
         ]
     }
 ];

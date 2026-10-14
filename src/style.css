@@ -4787,18 +4787,41 @@ html.dark #view-pos-cashier .lg\:border-l {
 input.admin-input,
 .form-input-bento {
     min-height: 2.75rem !important; /* 44px standar touch ergonomis */
-    font-size: 0.875rem !important; /* 14px anti auto-zoom di browser mobile */
+    font-size: 0.875rem !important; /* 14px untuk desktop */
     line-height: 1.25rem !important;
     border-radius: 0.75rem !important; /* 12px squircle */
     box-sizing: border-box !important;
+}
+
+/* Proteksi Universal Anti-Auto-Zoom & Anti-Kursor-Mental Mobile (iOS Safari & Chrome Android) */
+@media screen and (max-width: 768px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    select,
+    textarea,
+    .admin-input,
+    .form-input-bento {
+        font-size: 16px !important; /* Standar emas: dilarang <16px di mobile agar browser tidak auto-zoom dan keyboard tidak menutup */
+    }
+}
+
+/* Cegah delay dan double-tap zoom pada elemen form */
+input, select, textarea {
+    touch-action: manipulation;
 }
 
 /* Proteksi Stepper & Input Kompak Kasir (Tidak Terlalu Kecil) */
 .input-compact,
 .stepper-input {
     min-height: 2.25rem !important; /* Minimal 36px */
-    font-size: 0.8125rem !important; /* Minimal 13px */
+    font-size: 0.8125rem !important; /* Minimal 13px desktop */
     box-sizing: border-box !important;
+}
+
+@media screen and (max-width: 768px) {
+    .input-compact,
+    .stepper-input {
+        font-size: 14px !important;
+    }
 }
 
 /* Standar Input Number agar Spinner Bawaan Tidak Memotong Angka Desimal */
@@ -4819,4 +4842,5 @@ textarea:focus-visible {
     border-color: var(--color-primary) !important;
     box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 197, 155, 39), 0.18) !important;
 }
+
 

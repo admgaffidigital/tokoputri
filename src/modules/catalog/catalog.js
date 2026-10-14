@@ -626,9 +626,23 @@ export const handleSearch = v => {
     const rollingEl = el('mobile-search-rolling-tag');
     if (rollingEl) rollingEl.classList.toggle('opacity-0', !!v && !!v.trim());
     searchTmr = setTimeout(() => { 
+        const activeEl = (typeof document !== 'undefined') ? document.activeElement : null;
+        const isSearchActive = activeEl && (activeEl.id === 'mobile-header-search' || activeEl.id === 'search-input');
+        const selStart = isSearchActive ? activeEl.selectionStart : null;
+        const selEnd = isSearchActive ? activeEl.selectionEnd : null;
+
         setSQ(v); 
         setCPage(1); 
         rCat(); 
+
+        if (isSearchActive && activeEl && typeof document !== 'undefined') {
+            if (document.activeElement !== activeEl) {
+                activeEl.focus({ preventScroll: true });
+            }
+            if (selStart !== null && selEnd !== null && typeof activeEl.setSelectionRange === 'function') {
+                try { activeEl.setSelectionRange(selStart, selEnd); } catch (_) {}
+            }
+        }
     }, 300); 
 };
 
@@ -657,12 +671,6 @@ export const clearMobileHeaderSearch = () => {
 export const onMobileSearchFocus = () => {
     const rollingEl = el('mobile-search-rolling-tag');
     if (rollingEl) rollingEl.classList.add('opacity-0');
-    const sec = el('sec-categories') || el('product-container');
-    const sc = document.querySelector('#view-catalog .scroll-content');
-    if (sec && sc && sc.scrollTop < 60) {
-        const topPos = sec.offsetTop - 70;
-        sc.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
-    }
 };
 
 export const handleSort = v => { 

@@ -171,6 +171,26 @@ window.processQuickPrice = async (id) => {
 
 // ─── Wholesale & Multi-Units Builder (dipanggil dari form.js) ────────────────
 
+window.updateWholMarginBadge = (i) => {
+    const badgeEl = document.getElementById(`whol-margin-badge-${i}`);
+    if (!badgeEl) return;
+    const baseHpp = parseFloat(document.getElementById('af-hpp')?.value) || 0;
+    const w = tWhol[i];
+    if (!w) return;
+    const margin = checkHppMarginStatus(w.price, baseHpp);
+    let marginBadge = '';
+    if (w.price > 0 && baseHpp > 0) {
+        if (margin.isNegative) {
+            marginBadge = `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-rose-500"><i class="fa-solid fa-triangle-exclamation"></i> Margin Negatif (-Rp ${Math.abs(margin.marginRp).toLocaleString('id-ID')})</span>`;
+        } else if (margin.isThin) {
+            marginBadge = `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-500"><i class="fa-solid fa-circle-exclamation"></i> Margin Tipis (${margin.marginPercent}%)</span>`;
+        } else {
+            marginBadge = `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-shield-halved"></i> Margin Sehat (+${margin.marginPercent}%)</span>`;
+        }
+    }
+    badgeEl.innerHTML = marginBadge;
+};
+
 window.rWholB = () => {
     const el_ = document.getElementById('wholesale-builder-container');
     if (!el_) return;
@@ -193,14 +213,14 @@ window.rWholB = () => {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 lg:gap-7">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Minimal Pembelian (Qty)</label>
-                    <input autocomplete='off' type="number" step="0.01" placeholder="Cth: 12" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${w.minQty}" onchange="uWhol(${i},'minQty',this.value)">
+                    <input autocomplete='off' type="number" step="0.01" placeholder="Cth: 12" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${w.minQty}" oninput="uWhol(${i},'minQty',this.value)" onchange="uWhol(${i},'minQty',this.value)">
                 </div>
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Harga Satuan Spesial (Rp)</label>
-                        ${marginBadge}
+                        <div id="whol-margin-badge-${i}">${marginBadge}</div>
                     </div>
-                    <input autocomplete='off' type="number" placeholder="Cth: 15000" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${w.price}" onchange="uWhol(${i},'price',this.value); window.rWholB();">
+                    <input autocomplete='off' type="number" placeholder="Cth: 15000" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${w.price}" oninput="uWhol(${i},'price',this.value)" onchange="uWhol(${i},'price',this.value)">
                 </div>
             </div>
         </div>`;
@@ -211,9 +231,55 @@ window.rWholB = () => {
 
 window.addWhol  = () => { tWhol.push({minQty:2, price:0}); setTWhol(tWhol); window.rWholB(); };
 window.rmWhol   = (i) => { tWhol.splice(i,1); setTWhol(tWhol); window.rWholB(); };
-window.uWhol    = (i,k,v) => { tWhol[i][k] = parseFloat(v) || 0; };
+window.uWhol    = (i,k,v) => { 
+    if (!tWhol[i]) return;
+    tWhol[i][k] = parseFloat(v) || 0; 
+    if (k === 'price') window.updateWholMarginBadge?.(i);
+};
 
 // ─── Multi-Units Builder (Satuan Kemasan Bertingkat) ─────────────────────────
+
+window.updateMultiUnitSummary = (i) => {
+    const u = tMultiUnits[i];
+    if (!u) return;
+    const baseUnit = (document.getElementById('af-unit')?.value || 'pcs').trim() || 'pcs';
+    const baseHpp = parseFloat(document.getElementById('af-hpp')?.value) || 0;
+    const uName = u.name || u.unitName || '';
+    const uMultiplier = parseFloat(u.multiplier != null ? u.multiplier : u.conversionRatio) || 1;
+    const uPrice = parseFloat(u.price) || 0;
+    const calcHpp = (u.hpp != null && parseFloat(u.hpp) > 0) ? parseFloat(u.hpp) : Math.round(baseHpp * uMultiplier);
+    const margin = checkHppMarginStatus(uPrice, calcHpp);
+
+    const badgeEl = document.getElementById(`mu-margin-badge-${i}`);
+    if (badgeEl) {
+        let marginBadge = '';
+        if (uPrice > 0 && calcHpp > 0) {
+            if (margin.isNegative) {
+                marginBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-[10px] font-bold text-rose-600 dark:text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Margin Negatif! Jual di bawah HPP modal (Rugi Rp ${Math.abs(margin.marginRp).toLocaleString('id-ID')})</span>`;
+            } else if (margin.isThin) {
+                marginBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-[10px] font-bold text-amber-600 dark:text-amber-400"><i class="fa-solid fa-circle-exclamation"></i> Margin Tipis (${margin.marginPercent}%)</span>`;
+            } else {
+                marginBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-shield-halved"></i> Margin Sehat (+${margin.marginPercent}% / Untung Rp ${margin.marginRp.toLocaleString('id-ID')})</span>`;
+            }
+        }
+        badgeEl.innerHTML = marginBadge;
+    }
+
+    const titleEl = document.getElementById(`mu-header-title-${i}`);
+    if (titleEl) titleEl.textContent = uName || 'Satuan Kemasan';
+
+    const ratioEl = document.getElementById(`mu-header-ratio-${i}`);
+    if (ratioEl) ratioEl.textContent = `(${uMultiplier} ${baseUnit})`;
+
+    const footerEl = document.getElementById(`mu-footer-info-${i}`);
+    if (footerEl) {
+        const ecerStr = uPrice > 0 ? `<span class="text-slate-500 font-bold">Harga Ecer Ekuivalen: Rp ${(Math.round(uPrice / (uMultiplier || 1))).toLocaleString('id-ID')} / ${esc(baseUnit)}</span>` : '';
+        footerEl.innerHTML = `
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calculator text-[var(--color-primary)]"></i> 1 ${esc(uName || 'Kemasan')} = <b>${uMultiplier} ${esc(baseUnit)}</b> &bull; Modal HPP Ekuivalen: <b>Rp ${calcHpp.toLocaleString('id-ID')}</b></span>
+            ${ecerStr}
+        `;
+    }
+};
 
 window.rMultiUnitsB = () => {
     const el_ = document.getElementById('multi-units-builder-container');
@@ -255,35 +321,35 @@ window.rMultiUnitsB = () => {
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-200/60 dark:border-slate-800">
                     <div class="flex items-center gap-2">
                         <span class="w-6 h-6 rounded-lg bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] font-black text-xs flex items-center justify-center">#${i+1}</span>
-                        <span class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">${esc(uName) || 'Satuan Kemasan'}</span>
-                        <span class="text-[11px] text-slate-500 font-medium">(${uMultiplier} ${esc(baseUnit)})</span>
+                        <span id="mu-header-title-${i}" class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">${esc(uName) || 'Satuan Kemasan'}</span>
+                        <span id="mu-header-ratio-${i}" class="text-[11px] text-slate-500 font-medium">(${uMultiplier} ${esc(baseUnit)})</span>
                     </div>
-                    <div>${marginBadge}</div>
+                    <div id="mu-margin-badge-${i}">${marginBadge}</div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest">Nama Kemasan</label>
-                        <input autocomplete='off' type="text" placeholder="Cth: Roll / Dus / Sak" class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm font-bold" value="${esc(uName)}" onchange="uMultiUnit(${i},'name',this.value)" oninput="uMultiUnit(${i},'name',this.value)">
+                        <input autocomplete='off' type="text" placeholder="Cth: Roll / Dus / Sak" class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm font-bold" value="${esc(uName)}" oninput="uMultiUnit(${i},'name',this.value)" onchange="uMultiUnit(${i},'name',this.value)">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest">Isi (per ${esc(baseUnit)})</label>
-                        <input autocomplete='off' type="number" step="0.01" min="0.01" placeholder="Cth: 100" class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm font-bold" value="${uMultiplier}" onchange="uMultiUnit(${i},'multiplier',this.value); window.rMultiUnitsB();">
+                        <input autocomplete='off' type="number" step="0.01" min="0.01" placeholder="Cth: 100" class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm font-bold" value="${uMultiplier}" oninput="uMultiUnit(${i},'multiplier',this.value)" onchange="uMultiUnit(${i},'multiplier',this.value)">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-[var(--color-primary)] mb-1.5 uppercase tracking-widest">Harga Jual Kemasan (Rp)</label>
-                        <input autocomplete='off' type="number" min="0" placeholder="Cth: 680000" class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm font-bold text-[var(--color-primary)]" value="${uPrice}" onchange="uMultiUnit(${i},'price',this.value); window.rMultiUnitsB();">
+                        <input autocomplete='off' type="number" min="0" placeholder="Cth: 680000" class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm font-bold text-[var(--color-primary)]" value="${uPrice}" oninput="uMultiUnit(${i},'price',this.value)" onchange="uMultiUnit(${i},'price',this.value)">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest">Barcode Kemasan (Opsional)</label>
                         <div class="relative flex items-center">
-                            <input autocomplete='off' type="text" id="mu-barcode-${i}" placeholder="Scan dus..." class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm !pr-10" value="${esc(uBarcode)}" onchange="uMultiUnit(${i},'barcode',this.value)">
+                            <input autocomplete='off' type="text" id="mu-barcode-${i}" placeholder="Scan dus..." class="admin-input !text-xs !py-3 bg-white dark:bg-slate-800 shadow-sm !pr-10" value="${esc(uBarcode)}" oninput="uMultiUnit(${i},'barcode',this.value)" onchange="uMultiUnit(${i},'barcode',this.value)">
                             <button type="button" onclick="openCameraScanner('mu-barcode-${i}')" class="absolute right-1 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] transition-all cursor-pointer" title="Scan Barcode Kemasan"><i class="fa-solid fa-qrcode text-base"></i></button>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-400 font-medium">
+                <div id="mu-footer-info-${i}" class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-400 font-medium">
                     <span class="flex items-center gap-1.5"><i class="fa-solid fa-calculator text-[var(--color-primary)]"></i> 1 ${esc(uName || 'Kemasan')} = <b>${uMultiplier} ${esc(baseUnit)}</b> &bull; Modal HPP Ekuivalen: <b>Rp ${calcHpp.toLocaleString('id-ID')}</b></span>
                     ${uPrice > 0 ? `<span class="text-slate-500 font-bold">Harga Ecer Ekuivalen: Rp ${(Math.round(uPrice / (uMultiplier || 1))).toLocaleString('id-ID')} / ${esc(baseUnit)}</span>` : ''}
                 </div>
@@ -313,4 +379,6 @@ window.uMultiUnit = (i, k, v) => {
     else if (k === 'price') tMultiUnits[i].price = parseFloat(v) || 0;
     else if (k === 'hpp') tMultiUnits[i].hpp = parseFloat(v) || 0;
     else tMultiUnits[i][k] = v;
+
+    window.updateMultiUnitSummary?.(i);
 };

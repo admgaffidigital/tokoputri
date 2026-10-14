@@ -163,14 +163,12 @@ export const openPOSLoginModal = () => {
         const box = el('pos-login-modal-box');
         if (box) box.classList.remove('translate-y-full', 'scale-95');
     }, 10);
-    // Focus ke email input
+    // Berikan fokus ke email input secara aman tanpa merampas jika pengguna sudah aktif mengetik
     setTimeout(() => {
-        if (emailInput) {
-            emailInput.value = '';
-            emailInput.focus();
+        if (emailInput && document.activeElement !== emailInput && document.activeElement !== passInput) {
+            emailInput.focus({ preventScroll: true });
         }
-        if (passInput) passInput.value = '';
-    }, 300);
+    }, 150);
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 

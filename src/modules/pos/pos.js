@@ -4009,6 +4009,11 @@ export const posSearchFn = (v, immediate = false) => {
     const execute = () => {
         posSearch = query;
         posCatalogPage = 1; // Reset pagination
+        const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
+        const isPosSearchActive = activeEl && activeEl.id === 'pos-search-input';
+        const selStart = isPosSearchActive ? activeEl.selectionStart : null;
+        const selEnd = isPosSearchActive ? activeEl.selectionEnd : null;
+
         document.querySelectorAll('#pos-search-input').forEach(inp => {
             if (inp.value !== posSearch && (typeof document === 'undefined' || document.activeElement !== inp)) inp.value = posSearch;
         });
@@ -4022,12 +4027,21 @@ export const posSearchFn = (v, immediate = false) => {
             }
         });
         renderCatalog();
+
+        if (isPosSearchActive && activeEl && typeof document !== 'undefined') {
+            if (document.activeElement !== activeEl) {
+                activeEl.focus({ preventScroll: true });
+            }
+            if (selStart !== null && selEnd !== null && typeof activeEl.setSelectionRange === 'function') {
+                try { activeEl.setSelectionRange(selStart, selEnd); } catch (_) {}
+            }
+        }
     };
 
     if (immediate) {
         execute();
     } else {
-        posSearchDebounceTimer = setTimeout(execute, 130);
+        posSearchDebounceTimer = setTimeout(execute, 250);
     }
 };
 

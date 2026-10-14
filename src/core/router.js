@@ -141,8 +141,8 @@ export const changeView = (v, fH = false) => {
         } else if (v === 'view-admin-login') {
             const u = el('login-username');
             const p = el('login-password');
-            if (u) u.value = '';
-            if (p) p.value = '';
+            if (u && document.activeElement !== u) u.value = '';
+            if (p && document.activeElement !== p) p.value = '';
         }
         
         const s = t.querySelector('.scroll-content');
