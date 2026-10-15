@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.16.3** (Android VersionCode: `11603`)
+* **Versi Rilis**: **v1.17.8** (Android VersionCode: `11708`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.17.8 — Navigasi Deterministik 1-Klik, Sanitasi Peta Modal & Stabilitas Keyboard Native Android (15 Okt 2026)
+- **Navigasi Kembali In-App Deterministik Seketika (1-Klik Pasti Kembali)**: Mengeliminasi tombol kembali yang macet di web dan aplikasi Android dengan mengganti ketergantungan rapuh `window.history.back()` pada tombol in-app header (Keranjang, Checkout, Pembayaran, Pesanan, Favorit, FAQ, dan Admin Login) menjadi navigasi deterministik terstruktur `changeView(targetView, true)` seketika pada sentuhan pertama.
+- **Resolusi Konflik Double-Resize Keyboard Android (Native Window Resizing)**: Mengubah konfigurasi plugin Keyboard Capacitor dari `resize: body` menjadi `resize: native`. Eliminasi JavaScript layout thrashing pada `document.body` menuntaskan 100% masalah virtual keyboard Android (Gboard, Samsung Keyboard, Xiaomi) yang membuka-menutup sendiri (mental) saat pertama kali mengetik.
+- **Sanitasi Peta Modal & Resolusi False-Positive factoryReset**: Membersihkan elemen `modal-factory-reset-box` dari `MODAL_ELEMENT_MAP` agar status modal tertutup tidak lagi salah dilaporkan sebagai terbuka (`isModalOpenInDOM`) yang sebelumnya memblokir tombol kembali di halaman web.
+- **Proteksi Sinkronisasi History URL Produk (Zero Navigation Lock)**: Menghapus eksekusi `history.replaceState` sinkron yang bertabrakan dengan in-flight `history.back()` saat menutup modal produk (`closeProductModal`) di engine Chromium/WebKit.
+- **Multi-Channel Distribution v1.17.8**: Android VersionCode `11708`, versionName `1.17.8`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.16.1 — Integrasi Dinamis Produk Rekomendasi Kalkulator Estimator Bahan Bangunan & Multi-Channel Keranjang (11 Okt 2026)
 - **Integrasi Tambah ke Keranjang Universal (Add to Cart)**: Menghubungkan tombol aksi `(+)` pada kartu produk rekomendasi Kalkulator Estimator Material secara langsung ke keranjang belanja web (`quickAddOrOpenProduct`) dan membuka sheet pilihan varian produk secara otomatis jika produk memiliki opsi warna, motif, atau ukuran.

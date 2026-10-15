@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.10.92';
+    const localVer = getLatestVersion(appData) || 'v1.17.8';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ( Official Store ) ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '08 Okt 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '15 Okt 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '16.3 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,11 +83,11 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.10.92';
+        const fallbackVer = getLatestVersion(appData) || 'v1.17.8';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,
-            publishedAt: '08 Okt 2026',
+            publishedAt: '15 Okt 2026',
             fileSize: '16.3 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
@@ -217,14 +217,14 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.9.49</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.17.8</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
                         <i class="fa-brands fa-android text-emerald-500 text-xs"></i>
                         <span>Kompatibel: Android 7.0 (Nougat) s/d Android 15</span>
                     </span>
-                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 26 Sep 2026</span>
+                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 15 Okt 2026</span>
                 </div>
             </div>
 
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.9.61) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.17.8) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.9.61</span>
+                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.17.8</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,31 +264,31 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Audit Menyeluruh &amp; Stabilitas State:</b> Memperbaiki referensi state member di sinkronisasi hadiah &amp; piutang tempo, mencegah error saat checkout maupun akses member.
+                            <b>Navigasi Kembali 1-Klik Pasti Kembali:</b> Navigasi kembali in-app deterministik seketika di seluruh halaman web &amp; aplikasi Android, mengeliminasi tombol kembali yang macet.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Back Button Android 6 Modal Tambahan:</b> Tombol kembali fisik Android kini menutup modal parkir antrean kasir, scanner POS, dan semua modal piutang tempo secara mulus.
+                            <b>Stabilitas Keyboard Native Android:</b> Menuntaskan masalah keyboard Android yang membuka-menutup sendiri (mental) saat mengetik lewat konfigurasi native resizing yang stabil.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Optimasi Ekstrem Performa Katalog:</b> Mengeliminasi overhead sortir produk di storefront sehingga pencarian dan filter di HP menjadi 5x lebih responsif dan ringan.
+                            <b>Pusat Reset ke Setelan Awal Eksklusif Pemilik:</b> Fitur pembersihan data terpadu aman dengan Triple-Guard Security &amp; cadangan darurat otomatis (JSON).
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Fix Ghost Item Keranjang &amp; PO Restock:</b> Mengeliminasi item berkategori kuantitas 0 saat stok kosong serta deduplikasi batch write produk saat penerimaan barang supplier.
+                            <b>Re-Aktivasi Realtime Flash Sale:</b> Otomatis memperpanjang jadwal sesi selesai &amp; mereset kuota keterjualan produk langsung dari panel CMS Admin.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Badge Stok Anti-Tabrakan &amp; Sisa Aktual:</b> Badge stok diposisikan rapi di sudut bawah dan menampilkan sisa stok aktual kasir setelah dikurangi keranjang.
+                            <b>Unifikasi Kasir POS Layar Penuh:</b> Akses mesin kasir point-of-sales terdedikasi dengan hotkey kasir cepat dan proteksi sesi shift aman.
                         </span>
                     </div>
                 </div>
@@ -448,7 +448,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.9.49';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.17.8';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);
