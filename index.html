@@ -1998,68 +1998,66 @@
           <i id="ptr-icon" class="fa-solid fa-arrows-rotate text-[var(--color-primary)] transition-transform duration-300"></i>
           <span id="ptr-text">Tarik ke bawah untuk refresh</span>
         </div>
-        <!-- HEADER TOKO RESMI (ADAPTIVE BENTO ARCHITECTURE: EDGE-TO-EDGE MOBILE & FLOATING BENTO ISLAND TABLET/DESKTOP) -->
-        <div class="storefront-header-outer sticky top-0 z-30 w-full pt-0 sm:pt-3 pointer-events-none transition-all duration-300">
-          <div class="mx-auto w-full px-0 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] pointer-events-auto">
-            <header class="glass-header header-bento-island w-full flex flex-col shrink-0 items-center justify-center rounded-none sm:rounded-2xl shadow-md transition-all duration-300 pb-2.5 sm:pb-3 pt-2 sm:pt-2.5 px-3 sm:px-5">
-              <div class="flex w-full items-center justify-between gap-2 sm:gap-4">
-                <div class="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
-                  <div class="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white transition-transform active:scale-95 dark:border-slate-700 shadow-xs" ondblclick="checkAdminAccess()" title="Ketuk 2x untuk Login Seller">
-                    <img alt="Logo Toko Putri" width="48" height="48" class="hidden h-full w-full object-cover" id="dyn-store-logo-img" loading="eager" decoding="async" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-                    <i class="fa-solid fa-store text-lg sm:text-xl text-[var(--color-primary)]" id="dyn-store-logo-icon"></i>
-                  </div>
-                  <div class="flex min-w-0 flex-1 flex-col justify-center pr-1.5">
-                    <h1 class="text-xs xs:text-sm sm:text-base font-black leading-tight tracking-tight text-white line-clamp-2 sm:line-clamp-none break-words drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" id="dyn-store-name">TOKO PUTRI</h1>
-                    <p class="mt-0.5 text-[8.5px] xs:text-[9px] sm:text-[10px] font-bold uppercase leading-tight tracking-wider text-white/95 line-clamp-2 sm:line-clamp-none break-words drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]" id="dyn-store-slogan">Solusi Grosir &amp; E-Commerce Resmi</p>
-                  </div>
-                </div>
-                <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
-                  <!-- MATERIAL ESTIMATOR QUICK ACCESS -->
-                  <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('storefront')"
-                    class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
-                    title="Kalkulator Estimasi Bahan Bangunan (Cat, Keramik, Semen, Dinding, Atap & Seng)">
-                    <i class="fa-solid fa-calculator text-xs sm:text-sm"></i>
-                  </button>
-                  <!-- POS KASIR TOGGLE -->
-                  <button id="pos-cashier-header-btn"
-                    onclick="window.openPOSCashierMode && window.openPOSCashierMode()"
-                    class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
-                    title="Mode Kasir POS">
-                    <i class="fa-solid fa-cash-register text-xs sm:text-sm"></i>
-                    <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-white"></span>
-                  </button>
-                  <script>
-                    try {
-                      if (localStorage.getItem('pos_has_cashier') === 'false' && !sessionStorage.getItem('pos_cashier_session')) {
-                        var _pb = document.getElementById('pos-cashier-header-btn');
-                        if (_pb) _pb.classList.add('hidden');
-                      }
-                    } catch(e) {}
-                  </script>
-                  <!-- DESKTOP ADMIN / SELLER SHORTCUT -->
-                  <button onclick="checkAdminAccess()" class="hidden sm:flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" title="Panel Kontrol Admin / Seller">
-                    <i class="fa-solid fa-shield-halved text-xs sm:text-sm"></i>
-                  </button>
-                  <button class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" onclick="openQuickMenuModal()" title="Tautan Cepat">
-                    <i class="fa-solid fa-bars text-xs sm:text-sm"></i>
-                  </button>
-                </div>
+        <!-- HEADER TOKO RESMI (MENYATU PENUH DENGAN STYLE THEME TOKO & CMS) -->
+        <div class="glass-header sticky top-0 z-30 flex flex-col shrink-0 items-center justify-center pb-2.5 sm:pb-3">
+          <div class="mx-auto flex w-full items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
+            <div class="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
+              <div class="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white transition-transform active:scale-95 dark:border-slate-700 shadow-xs" ondblclick="checkAdminAccess()" title="Ketuk 2x untuk Login Seller">
+                <img alt="Logo Toko Putri" width="48" height="48" class="hidden h-full w-full object-cover" id="dyn-store-logo-img" loading="eager" decoding="async" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+                <i class="fa-solid fa-store text-lg sm:text-xl text-[var(--color-primary)]" id="dyn-store-logo-icon"></i>
               </div>
-              <!-- MOBILE HEADER QUICK-SEARCH CAPSULE (LIGHT & DARK MODE READY) -->
-              <div class="mt-2 flex w-full items-center sm:hidden">
-                <div class="header-search-capsule group relative flex w-full items-center h-10 px-3.5 rounded-full bg-white/95 dark:bg-slate-950/90 border border-black/10 dark:border-white/25 text-slate-800 dark:text-white shadow-sm dark:shadow-md dark:shadow-black/25 cursor-text" onclick="if(event.target.id!=='mobile-header-search'&&event.target.tagName!=='INPUT'&&!event.target.closest('#mobile-header-search-clear')&&!event.target.closest('button')) document.getElementById('mobile-header-search')?.focus()">
-                  <i class="fa-solid fa-magnifying-glass text-xs mr-2.5 text-[var(--color-primary-dark)] dark:text-amber-300 drop-shadow-xs shrink-0"></i>
-                  <div class="relative flex-1 h-full flex items-center min-w-0">
-                    <input type="text" id="mobile-header-search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="search-clean-input w-full bg-transparent text-[16px] leading-5 font-semibold placeholder:text-slate-400 dark:placeholder:text-slate-400 outline-none border-none shadow-none text-slate-800 dark:text-white" placeholder="Cari Semen, Cat, Keramik, Alat Teknik..." oninput="if(window.handleMobileHeaderSearch) window.handleMobileHeaderSearch(this.value);" onkeydown="if(event.key === 'Enter') { this.blur(); }">
-                  </div>
-                  <button type="button" id="mobile-header-search-clear" onclick="window.clearMobileHeaderSearch()" class="opacity-0 pointer-events-none w-6 h-6 rounded-full bg-slate-200/90 hover:bg-slate-300 text-slate-700 dark:bg-white/15 dark:hover:bg-white/25 dark:text-white flex items-center justify-center text-[10px] mr-1.5 active:scale-90 transition-opacity shrink-0 cursor-pointer" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
-                  <button type="button" onclick="openCameraScanner('mobile-header-search')" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/20 dark:text-white text-[10px] font-extrabold tracking-wider active:scale-95 transition-all shrink-0 shadow-2xs cursor-pointer" title="Scan Barcode / QR">
-                    <i class="fa-solid fa-qrcode text-[11px] text-[var(--color-primary-dark)] dark:text-amber-300"></i>
-                    <span class="text-[9px] font-black tracking-widest text-slate-800 dark:text-white">SCAN</span>
-                  </button>
-                </div>
+              <div class="flex min-w-0 flex-1 flex-col justify-center pr-1.5">
+                <h1 class="text-xs xs:text-sm sm:text-base font-black leading-tight tracking-tight text-white line-clamp-2 sm:line-clamp-none break-words drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" id="dyn-store-name">TOKO PUTRI</h1>
+                <p class="mt-0.5 text-[8.5px] xs:text-[9px] sm:text-[10px] font-bold uppercase leading-tight tracking-wider text-white/95 line-clamp-2 sm:line-clamp-none break-words drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]" id="dyn-store-slogan">Solusi Grosir &amp; E-Commerce Resmi</p>
               </div>
-            </header>
+            </div>
+            <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <!-- MATERIAL ESTIMATOR QUICK ACCESS -->
+              <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('storefront')"
+                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+                title="Kalkulator Estimasi Bahan Bangunan (Cat, Keramik, Semen, Dinding, Atap & Seng)">
+                <i class="fa-solid fa-calculator text-xs sm:text-sm"></i>
+              </button>
+              <!-- POS KASIR TOGGLE -->
+              <button id="pos-cashier-header-btn"
+                onclick="window.openPOSCashierMode && window.openPOSCashierMode()"
+                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+                title="Mode Kasir POS">
+                <i class="fa-solid fa-cash-register text-xs sm:text-sm"></i>
+                <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-white"></span>
+              </button>
+              <script>
+                try {
+                  if (localStorage.getItem('pos_has_cashier') === 'false' && !sessionStorage.getItem('pos_cashier_session')) {
+                    var _pb = document.getElementById('pos-cashier-header-btn');
+                    if (_pb) _pb.classList.add('hidden');
+                  }
+                } catch(e) {}
+              </script>
+              <!-- DESKTOP ADMIN / SELLER SHORTCUT -->
+              <button onclick="checkAdminAccess()" class="hidden sm:flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" title="Panel Kontrol Admin / Seller">
+                <i class="fa-solid fa-shield-halved text-xs sm:text-sm"></i>
+              </button>
+              <button class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" onclick="openQuickMenuModal()" title="Tautan Cepat">
+                <i class="fa-solid fa-bars text-xs sm:text-sm"></i>
+              </button>
+            </div>
+          </div>
+          <!-- MOBILE HEADER QUICK-SEARCH CAPSULE (LIGHT & DARK MODE READY) -->
+          <div class="mx-auto mt-2 flex w-full items-center px-3 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] sm:hidden">
+            <!-- ADAPTIVE SEARCH PILL CAPSULE -->
+            <div class="header-search-capsule group relative flex w-full items-center h-10 px-3.5 rounded-full bg-white/95 dark:bg-slate-950/90 border border-black/10 dark:border-white/25 text-slate-800 dark:text-white shadow-sm dark:shadow-md dark:shadow-black/25 cursor-text" onclick="if(event.target.id!=='mobile-header-search'&&event.target.tagName!=='INPUT'&&!event.target.closest('#mobile-header-search-clear')&&!event.target.closest('button')) document.getElementById('mobile-header-search')?.focus()">
+              <i class="fa-solid fa-magnifying-glass text-xs mr-2.5 text-[var(--color-primary-dark)] dark:text-amber-300 drop-shadow-xs shrink-0"></i>
+              <div class="relative flex-1 h-full flex items-center min-w-0">
+                <input type="text" id="mobile-header-search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="search-clean-input w-full bg-transparent text-[16px] leading-5 font-semibold placeholder:text-slate-400 dark:placeholder:text-slate-400 outline-none border-none shadow-none text-slate-800 dark:text-white" placeholder="Cari Semen, Cat, Keramik, Alat Teknik..." oninput="if(window.handleMobileHeaderSearch) window.handleMobileHeaderSearch(this.value);" onkeydown="if(event.key === 'Enter') { this.blur(); }">
+              </div>
+              <button type="button" id="mobile-header-search-clear" onclick="window.clearMobileHeaderSearch()" class="opacity-0 pointer-events-none w-6 h-6 rounded-full bg-slate-200/90 hover:bg-slate-300 text-slate-700 dark:bg-white/15 dark:hover:bg-white/25 dark:text-white flex items-center justify-center text-[10px] mr-1.5 active:scale-90 transition-opacity shrink-0 cursor-pointer" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
+              <!-- SCANNER CHICLET PILL BUTTON -->
+              <button type="button" onclick="openCameraScanner('mobile-header-search')" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/20 dark:text-white text-[10px] font-extrabold tracking-wider active:scale-95 transition-all shrink-0 shadow-2xs cursor-pointer" title="Scan Barcode / QR">
+                <i class="fa-solid fa-qrcode text-[11px] text-[var(--color-primary-dark)] dark:text-amber-300"></i>
+                <span class="text-[9px] font-black tracking-widest text-slate-800 dark:text-white">SCAN</span>
+              </button>
+            </div>
           </div>
         </div>
         <div class="scroll-content hide-scrollbar pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-6">
