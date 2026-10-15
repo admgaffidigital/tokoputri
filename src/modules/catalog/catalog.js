@@ -577,6 +577,19 @@ export const SEARCH_SUGGESTIONS = [
 let searchSuggestionIndex = 0;
 let searchSuggestionInterval = null;
 
+const updateClearBtnState = (v) => {
+    const clearBtn = el('mobile-header-search-clear');
+    if (!clearBtn) return;
+    const hasText = Boolean(v && v.trim());
+    if (hasText) {
+        clearBtn.classList.remove('opacity-0', 'pointer-events-none');
+        clearBtn.classList.add('opacity-100', 'pointer-events-auto');
+    } else {
+        clearBtn.classList.remove('opacity-100', 'pointer-events-auto');
+        clearBtn.classList.add('opacity-0', 'pointer-events-none');
+    }
+};
+
 export const startSearchSuggestionTicker = () => {
     if (searchSuggestionInterval) clearInterval(searchSuggestionInterval);
     
@@ -584,12 +597,9 @@ export const startSearchSuggestionTicker = () => {
         searchSuggestionIndex = (searchSuggestionIndex + 1) % SEARCH_SUGGESTIONS.length;
         const text = SEARCH_SUGGESTIONS[searchSuggestionIndex];
         
-        const rollingText = el('mobile-search-rolling-text');
-        if (rollingText) {
-            rollingText.classList.remove('search-rolling-text-animate');
-            void rollingText.offsetWidth; // Force CSS reflow
-            rollingText.textContent = text;
-            rollingText.classList.add('search-rolling-text-animate');
+        const mobInput = el('mobile-header-search');
+        if (mobInput && document.activeElement !== mobInput && !mobInput.value) {
+            mobInput.setAttribute('placeholder', text);
         }
         
         const deskInput = el('search-input');
@@ -606,14 +616,13 @@ export const startSearchSuggestionTicker = () => {
         if (!isMobActive && !isDeskActive) {
             updateTicker();
         }
-    }, 3800);
+    }, 4000);
 };
 
 export const onMobileSearchBlur = () => {
     const mobInput = el('mobile-header-search');
-    const rollingEl = el('mobile-search-rolling-tag');
-    if (rollingEl && (!mobInput || !mobInput.value.trim())) {
-        rollingEl.classList.remove('opacity-0');
+    if (!mobInput || !mobInput.value.trim()) {
+        startSearchSuggestionTicker();
     }
 };
 
@@ -621,10 +630,8 @@ export const handleSearch = v => {
     clearTimeout(searchTmr); 
     const mobInput = el('mobile-header-search');
     if (mobInput && mobInput.value !== v && document.activeElement !== mobInput) mobInput.value = v;
-    const clearBtn = el('mobile-header-search-clear');
-    if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
-    const rollingEl = el('mobile-search-rolling-tag');
-    if (rollingEl) rollingEl.classList.toggle('opacity-0', !!v && !!v.trim());
+    updateClearBtnState(v);
+
     searchTmr = setTimeout(() => { 
         const activeEl = (typeof document !== 'undefined') ? document.activeElement : null;
         const isSearchActive = activeEl && (activeEl.id === 'mobile-header-search' || activeEl.id === 'search-input');
@@ -635,12 +642,13 @@ export const handleSearch = v => {
         setCPage(1); 
         rCat(); 
 
+        // Pulihkan fokus HANYA jika elemen input benar-benar kehilangan fokus selama render
         if (isSearchActive && activeEl && typeof document !== 'undefined') {
             if (document.activeElement !== activeEl) {
                 activeEl.focus({ preventScroll: true });
-            }
-            if (selStart !== null && selEnd !== null && typeof activeEl.setSelectionRange === 'function') {
-                try { activeEl.setSelectionRange(selStart, selEnd); } catch (_) {}
+                if (selStart !== null && selEnd !== null && typeof activeEl.setSelectionRange === 'function') {
+                    try { activeEl.setSelectionRange(selStart, selEnd); } catch (_) {}
+                }
             }
         }
     }, 300); 
@@ -649,28 +657,24 @@ export const handleSearch = v => {
 export const handleMobileHeaderSearch = v => {
     const mainInput = el('search-input');
     if (mainInput && mainInput.value !== v && document.activeElement !== mainInput) mainInput.value = v;
-    const clearBtn = el('mobile-header-search-clear');
-    if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
-    const rollingEl = el('mobile-search-rolling-tag');
-    if (rollingEl) rollingEl.classList.toggle('opacity-0', !!v && !!v.trim());
+    updateClearBtnState(v);
     handleSearch(v);
 };
 
 export const clearMobileHeaderSearch = () => {
     const mobInput = el('mobile-header-search');
-    if (mobInput) mobInput.value = '';
+    if (mobInput) {
+        mobInput.value = '';
+        mobInput.focus({ preventScroll: true });
+    }
     const mainInput = el('search-input');
     if (mainInput) mainInput.value = '';
-    const clearBtn = el('mobile-header-search-clear');
-    if (clearBtn) clearBtn.classList.add('hidden');
-    const rollingEl = el('mobile-search-rolling-tag');
-    if (rollingEl && document.activeElement !== mobInput) rollingEl.classList.remove('opacity-0');
+    updateClearBtnState('');
     handleSearch('');
 };
 
 export const onMobileSearchFocus = () => {
-    const rollingEl = el('mobile-search-rolling-tag');
-    if (rollingEl) rollingEl.classList.add('opacity-0');
+    if (searchSuggestionInterval) clearInterval(searchSuggestionInterval);
 };
 
 export const handleSort = v => { 

@@ -66,6 +66,10 @@ public class MainActivity extends BridgeActivity {
             webView.getSettings().setDatabaseEnabled(true);
             webView.getSettings().setAllowFileAccess(true);
             webView.getSettings().setAllowContentAccess(true);
+            webView.getSettings().setTextZoom(100);
+            webView.getSettings().setSupportZoom(false);
+            webView.getSettings().setBuiltInZoomControls(false);
+            webView.getSettings().setDisplayZoomControls(false);
 
             // Intercept URL loading untuk WhatsApp, telepon, email, dan printer RawBT
             // Mencegah WebView ter-replace saat membuka WhatsApp sehingga saat di-back pengguna tetap di Toko Putri!

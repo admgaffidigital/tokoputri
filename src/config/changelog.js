@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-09",
+        "version": "v1.17.9",
+        "date": "2026-10-15",
+        "title": "Resolusi Paripurna Stabilitas Keyboard Android pada Kolom Pencarian: Zero-Shift Geometric, Native Placeholder & WebView Zoom Lock",
+        "category": "feature",
+        "badge": "Stabilitas Keyboard Kolom Pencarian v1.17.9",
+        "items": [
+            "Resolusi Total Keyboard Menutup Sendiri pada Kolom Pencarian: Mengeliminasi fenomena virtual keyboard Android yang membuka-menutup sendiri (mental) saat menyentuh search bar dengan menerapkan font size standar emas minimal 16px (text-[16px]) guna mematikan fitur auto-zoom/auto-pan agresif Chromium WebView.",
+            "Eliminasi CSS Transform Shift pada Header Search Capsule: Menghapus transformasi transform: translateY(-1px) dan transisi gerakan fisik saat focus-within pada wadah kapsul pencarian sehingga bounding box kursor tetap stabil 100% dan koneksi input IME Android tidak dibatalkan.",
+            "Placeholder Native HTML & Ticker Ringan Zero-Reflow: Mengganti elemen animasi rolling text bertumpuk yang memicu layout thrashing (offsetWidth reflow) menjadi manipulasi atribut placeholder native HTML langsung pada input, menjamin kursor bebas jitter dan thread GPU tenang saat mengetik.",
+            "Lebar Flexbox Input Stabil (Zero Layout Shift): Menghilangkan pergantian class hidden pada tombol clear pencarian dan menggantinya dengan transisi opacity, menjamin lebar input tidak pernah menyusut mendadak saat karakter pertama diketik.",
+            "Lock WebView Zoom 100% pada Android Native Layer: Mengonfigurasi WebView settings (setTextZoom 100% dan setSupportZoom false) pada MainActivity Android guna menjamin tidak ada pergeseran skala viewport saat keyboard terangkat.",
+            "Multi-Channel Distribution v1.17.9 (Android versionCode 11709)."
+        ]
+    },
+    {
         "id": "log-1-17-08",
         "version": "v1.17.8",
         "date": "2026-10-15",
@@ -72,23 +88,6 @@ export const DEFAULT_CHANGELOG = [
             "Proteksi Anti-NaN Kalkulasi Pajak & Poin Member: Menambahkan fallback safe guard pada pemanggilan window.calcTaxDetails di fungsi calculateTempoBalance guna mencegah hasil kalkulasi menjadi 'Rp NaN'.",
             "Standarisasi Tipe Data Flag Produk Habis (Boolean false): Menyelaraskan status 'isActive' produk induk saat stok habis dari string 'false' menjadi boolean false murni, konsisten dengan seluruh varian produk di database Firestore.",
             "Multi-Channel Distribution v1.17.5 (Android versionCode 11705)."
-        ]
-    },
-    {
-        "id": "log-1-17-04",
-        "version": "v1.17.4",
-        "date": "2026-10-15",
-        "title": "Stabilitas Fokus Keyboard Mobile Android: Eliminasi Keyboard Menutup Sendiri, SoftInputMode AdjustResize & Standar Input Anti Auto-Zoom",
-        "category": "feature",
-        "badge": "Android Keyboard Stability & SoftInputMode v1.17.4",
-        "items": [
-            "Eliminasi Konflik Input Android (captureInput: false): Mematikan override BaseInputConnection pada konfigurasi Capacitor Android agar WebView menggunakan koneksi input standar Chromium modern, menuntaskan masalah keyboard Gboard, Samsung Keyboard, dan Xiaomi yang sering menutup sendiri saat mulai mengetik.",
-            "Integrasi windowSoftInputMode='adjustResize' Android: Mengonfigurasi mode penanganan keyboard pada MainActivity di AndroidManifest.xml sehingga layout aplikasi menyesuaikan tinggi viewport secara mulus saat keyboard muncul tanpa memicu reflow agresif atau kehilangan fokus (blur) pada elemen aktif.",
-            "Optimasi Plugin Keyboard Capacitor: Menambahkan konfigurasi resmi resize body dan resizeOnFullScreen pada plugin Keyboard di capacitor.config.json guna menjamin stabilitas area ketik pada layar Android berponi (notch) dan edge-to-edge.",
-            "Standardisasi Font Input Mobile Anti-Auto-Zoom (16px): Memastikan seluruh input, termasuk input-compact, stepper-input, dan member lookup form menggunakan font-size minimal 16px di viewport smartphone (<= 768px) untuk mencegah auto-zoom browser yang menggeser kursor kencang.",
-            "Proteksi User-Select Text pada Form: Memastikan seleksi teks murni aktif pada elemen input, select, dan textarea guna menjamin kursor tetap persisten di kolom yang sedang diketik.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.17.4 (Android versionCode 11704)."
         ]
     }
 ];
@@ -165,7 +164,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.17.8';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.17.9';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     
