@@ -72,6 +72,7 @@ export const defApp = {
     suppliers: [], purchases: [], expenses: [], stockOpnameHistory: [],
     salesReturns: [], vendorReturns: [],
     flashSales: [],
+    custom_master_presets: [],
     taxSettings: {
         companyName: "", npwp: "",
         taxScheme: "umkm_final",  // 'umkm_final' | 'badan_normal' | 'custom'

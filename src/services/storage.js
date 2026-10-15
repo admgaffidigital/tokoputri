@@ -590,6 +590,7 @@ export const attachRealtimeStockSync = () => {
             if (f.banks) appData.banks = f.banks;
             if (f.faqs) appData.faqs = f.faqs;
             if (f.flashSales !== undefined) appData.flashSales = Array.isArray(f.flashSales) ? f.flashSales : [];
+            if (f.custom_master_presets !== undefined) appData.custom_master_presets = Array.isArray(f.custom_master_presets) ? f.custom_master_presets : [];
             // CATATAN KEAMANAN: suppliers, purchases, expenses, taxSettings, stockOpnameHistory
             // kini disimpan di cms_private (bukan cms_data). Listener cms_data tidak lagi
             // menangani field-field ini — lihat attachPrivateDataListener() di bawah.
