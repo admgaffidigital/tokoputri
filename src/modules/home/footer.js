@@ -56,8 +56,8 @@ export const renderFooter = () => {
     <footer class="themed-footer relative mt-6 sm:mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(4rem+env(safe-area-inset-bottom))]">
 
       <!-- ================= 1. MOBILE NATIVE END-CAP (KHUSUS SMARTPHONE < 640px: RINGKAS, BERSIH, NATIVE APP FEEL) ================= -->
-      <div class="block sm:hidden w-full px-3 mb-2">
-        <div class="footer-mobile-endcap bento-island-card relative overflow-hidden p-4 rounded-2xl transition-all duration-300">
+      <div class="block sm:hidden w-full px-2 mb-2">
+        <div class="footer-mobile-endcap bento-island-card relative overflow-hidden p-3 rounded-2xl transition-all duration-300">
           
           <!-- Mini Brand & Live Operating Indicator -->
           <div class="flex items-center justify-between gap-3 mb-2.5">

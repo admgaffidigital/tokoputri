@@ -219,7 +219,7 @@ export const rCat = () => {
     });    const c = el('product-container');
     if (!c) return;
     c.className = cView === 'grid' 
-        ? 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]' 
+        ? 'grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]' 
         : 'flex flex-col gap-2.5 sm:gap-3';
     
     if (!f.length) {
@@ -359,7 +359,7 @@ export const rCat = () => {
                              <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
                           : coverMdHtml}
                 </div>
-                <div class="flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
+                <div class="flex-1 flex flex-col p-2.5 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                     <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
                     <!-- Baris Chips Operasional (2-Baris Terkunci Simetris, Anti-Terpotong) -->

@@ -4596,6 +4596,13 @@ span[class*="tracking-widest"][class*="rounded-"] {
     -webkit-touch-callout: none;
 }
 
+/* Khusus Smartphone HP (< 640px): Nonaktifkan bezel overlay agar layar lega dan edge-to-edge murni */
+@media (max-width: 639px) {
+    #flagship-edge-screen-overlay {
+        display: none !important;
+    }
+}
+
 /* Efek Lengkung Kaca Tepi Kiri (Left 3D Curved Bezel) */
 .edge-bezel-left {
     position: absolute;
