@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.17.6**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.17.7**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -30,7 +30,8 @@ Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), mana
 21. [Panduan Lengkap Cara Menjelaskan Sistem (Untuk Konsumen, Staf & Mitra Bisnis)](#bab-21--panduan-lengkap-cara-menjelaskan-sistem-untuk-konsumen-staf--mitra-bisnis)
 22. [Operasional Flash Sale & Promo Kilat (Storefront, POS & Margin Guard)](#bab-22--operasional-flash-sale--promo-kilat-storefront-pos--margin-guard)
 23. [Keamanan Finansial Member VIP: PIN 6-Digit, Sensor Privasi Mata & Masking Kartu](#bab-23--keamanan-finansial-member-vip-pin-6-digit-sensor-privasi-mata--masking-kartu)
-24. [Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)](#bab-24--tabel-ringkasan-fitur--nilai-langsung-feature-to-value-matrix)
+24. [Reset Pabrik & Pembersihan Data (Factory Reset, Auto-Backup & Opsi Transaksi)](#bab-24--reset-pabrik--pembersihan-data-factory-reset-auto-backup--opsi-transaksi)
+25. [Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)](#bab-25--tabel-ringkasan-fitur--nilai-langsung-feature-to-value-matrix)
 
 ---
 
@@ -632,7 +633,49 @@ Fitur **Keamanan Finansial Member (Fintech Security System)** hadir untuk melind
 
 ---
 
-## BAB 24 — TABEL RINGKASAN FITUR & NILAI LANGSUNG (FEATURE-TO-VALUE MATRIX)
+## BAB 24 — RESET PABRIK & PEMBERSIHAN DATA (FACTORY RESET, AUTO-BACKUP & OPSI TRANSAKSI)
+
+Fitur **Reset Pabrik (*Factory Reset & Data Purge*)** adalah fasilitas tingkat tinggi yang dirancang khusus untuk pemilik usaha (*Owner*) yang ingin membersihkan sistem aplikasi kembali segar seperti baru.
+
+Fitur ini sangat berguna ketika:
+- Anda baru selesai melakukan uji coba / simulasi penjualan awal bersama staf kasir dan ingin membersihkan seluruh data dummy sebelum toko resmi dibuka (*Grand Opening*).
+- Anda ingin memulai pembukuan periode tahunan baru yang 100% bersih tanpa riwayat transaksi lampau.
+- Anda ingin merombak total seluruh lini usaha, katalog produk, dan kategori barang.
+
+### A. Lokasi Fitur & Hak Akses Eksklusif Owner
+1. Fitur ini **HANYA BISA DIAKSES OLEH PEMILIK USAHA (OWNER)**.
+   - Karyawan, staf admin biasa, dan kasir **sama sekali tidak memiliki tombol ini** demi melindungi keamanan bisnis Anda dari sabotase atau kelalaian staf.
+2. Anda dapat menemukan tombol merah **"Pusat Reset Data / Setelan Pabrik"** di 2 tempat:
+   - **Panel Pemilik** -> menu **"Pengaturan Toko"** (kartu merah paling bawah di Zona Bahaya).
+   - **Panel Pemilik** -> menu **"Pusat Data & Cadangan"** (bagian bawah di Zona Bahaya).
+
+### B. Dua Pilihan Mode Pembersihan (Fleksibel & Aman)
+Saat Anda menekan tombol Reset Pabrik, sistem menyajikan 2 mode pembersihan yang dapat Anda pilih sesuai kebutuhan:
+
+1. **Mode 1: Hanya Transaksi & Operasional (Direkomendasikan)**
+   - **Yang Dibersihkan:** Riwayat order penjualan, struk kasir POS, riwayat shift kerja kasir, buku kas operasional, saldo kas laci, kartu piutang tempo, riwayat retur RMA, log pengiriman proyek, dan log stock opname.
+   - **Yang TETAP AMAN:** Seluruh katalog produk, varian barang, harga modal HPP, harga jual, stok fisik barang, foto produk, kategori, data supplier, banner promosi, dan profil toko **TIDAK AKAN HILANG**.
+   - *Sangat cocok dipakai jika master barang Anda sudah lengkap diinput, dan Anda hanya ingin menghapus transaksi uji coba kasir.*
+
+2. **Mode 2: Reset Total Pabrik (Semua Data Bersih Seperti Baru)**
+   - **Yang Dibersihkan:** Seluruh transaksi penjualan + SELURUH produk, varian, kategori, banner promosi, data pelanggan, supplier, dan konfigurasi toko.
+   - **Yang TETAP AMAN:** Lisensi software resmi Anda dan Akun Login Pemilik (Email & Password Anda) **DIJAMIN TETAP AKTIF 100%**. Anda tidak akan pernah terkunci dari sistem!
+
+### C. Sistem Keamanan Tiga Lapis (Triple-Guard Security)
+Untuk menjamin tidak ada data yang terhapus secara tidak sengaja, sistem menerapkan proteksi 3 lapis baja:
+
+1. **Lapisan 1: Unduh Otomatis Cadangan Darurat (*Automatic Safety Backup*)**
+   - Sebelum sistem menghapus 1 data pun, sistem secara otomatis mengekspor dan mengunduh seluruh data Anda ke dalam file cadangan `.json` di memori HP/laptop Anda.
+   - Jika suatu hari Anda berubah pikiran atau salah pencet, file cadangan darurat ini dapat dipulihkan kembali melalui menu *Pulihkan Data*.
+2. **Lapisan 2: Centang Persetujuan Risiko**
+   - Anda wajib mencentang kotak pernyataan bahwa Anda memahami tindakan pembersihan ini bersifat permanen.
+3. **Lapisan 3: Pengetikan Frasa Konfirmasi Rahasia**
+   - Anda diwajibkan mengetikkan kata sandi konfirmasi tepat: `RESET PABRIK`.
+   - Tombol eksekusi berwarna merah akan terkunci dan tidak bisa diklik jika frasa tersebut belum diketik dengan benar.
+
+---
+
+## BAB 25 — TABEL RINGKASAN FITUR & NILAI LANGSUNG (FEATURE-TO-VALUE MATRIX)
 
 | Fitur Utama | Masalah Tradisional yang Diselesaikan | Nilai Nyata Bagi Usaha |
 | :--- | :--- | :--- |
@@ -646,10 +689,12 @@ Fitur **Keamanan Finansial Member (Fintech Security System)** hadir untuk melind
 | **Dua Lokasi Stok (Rak vs Gudang)** | Barang di rak habis padahal di gudang masih menumpuk; kasir menolak pembeli | Prioritas pengurangan stok rak etalase (*floor-first*); notifikasi transfer stok internal gudang. |
 | **Cetak Barcode Label Sendiri** | Biaya cetak stiker mahal atau toko tidak memiliki barcode untuk produk lokal | Cetak stiker label thermal atau kertas A4 mandiri dengan barcode Code 128 tajam terbaca scanner. |
 | **Keamanan Fintech & PIN Member** | Kekhawatiran limit PayLater disalahgunakan orang lain atau saldo diintip di kasir | Member tenang dengan PIN 6-digit Web Crypto, sensor mata privasi nominal & masking nomor kartu. |
+| **Reset Pabrik & Cadangan Otomatis** | Kebingungan menghapus data transaksi coba-coba; takut master barang hilang saat reset | Dua mode pembersihan (Hanya Transaksi vs Total); auto-download file cadangan darurat & proteksi lisensi. |
 
 ---
 
 💡 *Jika Anda membutuhkan bantuan teknis atau ingin berkonsultasi mengenai fitur tambahan, hubungi tim pengembang Anda melalui kontak WhatsApp resmi yang tersedia di panel kontrol toko.*
 
 **Selamat Berjualan & Sukses Selalu untuk Usaha Anda! 🚀**
+
 

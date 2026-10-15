@@ -16,6 +16,8 @@ import { uiPalettes, applyUITheme, applyBackgroundStyle } from '../../core/theme
 import { toggleTaxMenuVisibility } from './auth.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown, calculateAllPaylaterTenors } from '../../core/paylater.js';
 import { getSubscriptionBentoHtml } from '../../core/subscription.js';
+import { isOwnerUser } from '../../core/auth-roles.js';
+import { openFactoryResetModal } from './factory-reset.js';
 
 export { syncAppMeta } from '../../core/theme.js';
 
@@ -136,9 +138,43 @@ export const rAdmSet = () => {
 
         <!-- 9. Bento Status Lisensi & Layanan Terkelola (SaaS Engine) -->
         ${getSubscriptionBentoHtml()}
+
+        <!-- 10. Zona Bahaya: Reset Pabrik & Pembersihan Data (Khusus Owner) -->
+        ${getFactoryResetDangerCardHtml()}
     </div>
     `;
     setH('admin-content', h);
+};
+
+/**
+ * Render kartu zona bahaya reset pabrik (khusus akun Owner)
+ */
+export const getFactoryResetDangerCardHtml = () => {
+    if (!isOwnerUser()) return '';
+    return `
+    <div class="mt-6 rounded-3xl border border-rose-300/80 dark:border-rose-900/60 bg-gradient-to-br from-rose-50/70 via-white to-amber-50/30 dark:from-rose-950/25 dark:via-slate-900 dark:to-slate-900/60 p-5 sm:p-7 shadow-xs">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Zona Bahaya: Reset Pabrik &amp; Pembersihan Data</h4>
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Khusus Owner</span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                        Fitur reset pabrik khusus untuk mengembalikan sistem ke kondisi segar seperti baru. Dilengkapi opsi membersihkan data transaksi dummy uji coba saja atau pembersihan total, dengan perlindungan cadangan darurat otomatis.
+                    </p>
+                </div>
+            </div>
+            <button onclick="window.openFactoryResetModal && window.openFactoryResetModal()" class="w-full sm:w-auto px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md shadow-rose-600/25 active:scale-95 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Reset Data Toko</span>
+            </button>
+        </div>
+    </div>
+    `;
 };
 
 /**
@@ -2055,3 +2091,5 @@ window.detectAdminGPS = detectAdminGPS;
 window.openHeroBannerModal = openHeroBannerModal;
 window.closeHeroBannerModal = closeHeroBannerModal;
 window.saveHeroBannerModal = saveHeroBannerModal;
+window.openFactoryResetModal = openFactoryResetModal;
+window.getFactoryResetDangerCardHtml = getFactoryResetDangerCardHtml;

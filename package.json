@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.17.6",
+  "version": "1.17.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,10 +9,11 @@
     "preview": "vite preview",
     "sync": "node scripts/sync.mjs",
     "release": "node scripts/sync.mjs",
-    "audit": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports",
-    "maintenance": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:license && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run sync",
+    "audit": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset",
+    "maintenance": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:license && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run sync",
     "license:generate": "node scripts/generate-license.mjs",
     "test:license": "node scripts/test-license-guard.mjs",
+    "test:factoryreset": "node scripts/test-factory-reset.mjs",
     "test:member": "node scripts/test-member-loyalty-and-logic.mjs",
     "test:authguard": "node scripts/test-pos-shift-and-auth-guard.mjs",
     "test:posheader": "node scripts/test-pos-header-responsive.mjs",

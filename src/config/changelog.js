@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-07",
+        "version": "v1.17.7",
+        "date": "2026-10-15",
+        "title": "Pusat Reset Pabrik (Factory Reset & Data Purge), Triple-Guard Security, Auto-Backup Darurat & Opsi Pembersihan Transaksi",
+        "category": "security",
+        "badge": "Factory Reset & Triple-Guard Security v1.17.7",
+        "items": [
+            "Fitur Factory Reset Eksklusif Pemilik Toko (Owner-Only): Menghadirkan pusat reset data dan pembersihan aplikasi terpadu di menu Pengaturan Toko dan Pusat Cadangan Data yang hanya dapat diakses oleh akun Pemilik (Owner).",
+            "Dua Opsi Mode Pembersihan Data: Opsi 1 (Hanya Transaksi & Operasional) membersihkan order, transaksi kasir, log shift, kas laci, pengeluaran, piutang tempo, RMA, dan log opname dengan tetap mempertahankan master produk, stok, kategori, dan supplier; Opsi 2 (Reset Total Pabrik) membersihkan seluruh transaksi + katalog produk + varian + banner + data pelanggan menjadi fresh bersih seperti baru.",
+            "Triple-Guard Security Anti-Kecelakaan Data: Proteksi tiga lapis mencakup: Unduh Otomatis Cadangan Darurat (Emergency Safety Backup JSON) sebelum penghapusan, konfirmasi ketik frasa rahasia 'RESET PABRIK', serta persetujuan risiko via checkbox interaktif.",
+            "Proteksi Kedaulatan Lisensi & Kredensial Owner: Menjamin status langganan software (freshmart_licenses) dan akun login Pemilik Toko (ADMIN_UID) 100% aman dan tidak terhapus.",
+            "Multi-Channel Distribution v1.17.7 (Android versionCode 11707)."
+        ]
+    },
+    {
         "id": "log-1-17-06",
         "version": "v1.17.6",
         "date": "2026-10-15",
@@ -77,23 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Fitur Reset PIN Member oleh Admin CMS: Menyediakan tombol Reset PIN terdedikasi di tabel data pelanggan CMS Admin lengkap dengan dialog konfirmasi aman agar staf admin/owner dapat membantu pelanggan yang lupa PIN.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: 61 unit test member & logika loyalitas lulus 100%, seluruh pengujian otomatis sistem integritas toko lulus tanpa regresi.",
             "Multi-Channel Distribution v1.17.3 (Android versionCode 11703)."
-        ]
-    },
-    {
-        "id": "log-1-17-02",
-        "version": "v1.17.2",
-        "date": "2026-10-15",
-        "title": "Stabilitas Mutlak Kolom Input (Anti-Input Mental), Proteksi Kursor & Pengalaman Mengetik Mulus Mobile & Desktop",
-        "category": "feature",
-        "badge": "Input Focus & Anti-Flicker Stability v1.17.2",
-        "items": [
-            "Proteksi Anti Auto-Zoom Mobile (Font-Size 16px & Touch-Action Manipulation): Menetapkan standar font-size minimal 16px pada seluruh kolom input, select, textarea, dan form bento di viewport smartphone (<= 768px) untuk mengeliminasi zoom-in otomatis browser iOS Safari & Android Chrome yang merusak scroll dan melepaskan fokus kursor.",
-            "Eliminasi Re-Render Destruktif Form CMS Admin: Menghapus pemanggilan innerHTML rebuild (rWholB & rMultiUnitsB) saat pengguna mengetik harga grosir atau satuan kemasan bertingkat, digantikan dengan sistem update parsial reaktif (updateWholMarginBadge & updateMultiUnitSummary) sehingga keyboard HP tidak pernah tertutup sendiri saat berpindah kolom.",
-            "Proteksi Kursor & Debounce Pencarian Kasir POS & Storefront: Mengoptimasi debounce delay pencarian kasir POS (#pos-search-input) ke 250ms dan memasang pemulihan fokus kursor otomatis (preventScroll & setSelectionRange) agar kursor tetap tenang dan utuh saat kartu katalog diperbarui.",
-            "Eliminasi Scroll Reflow pada Header Search: Menghapus event listener onkeyup ganda dan manipulasi smooth-scroll otomatis pada saat fokus kolom pencarian mobile (#mobile-header-search) yang sebelumnya memicu blur kursor.",
-            "Active Element Guard & Autocomplete Standar: Menyelaraskan form login admin dan kasir dengan standar autocomplete='username' dan autocomplete='current-password' serta activeElement guard agar kursor tidak dirampas oleh password manager maupun router view.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
-            "Multi-Channel Distribution v1.17.2 (Android versionCode 11702)."
         ]
     }
 ];

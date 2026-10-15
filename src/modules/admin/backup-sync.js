@@ -17,6 +17,8 @@ import { db } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, esc, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
 import { pushModalHistory, requestCloseModal } from '../../core/router.js';
+import { isOwnerUser } from '../../core/auth-roles.js';
+import { openFactoryResetModal } from './factory-reset.js';
 
 // ─── State Modul Sync & Backup ────────────────────────────────
 let lastSyncTimestamp = localStorage.getItem('tokoputri_last_sync') || new Date().toISOString();
@@ -265,7 +267,27 @@ export const renderBackupSyncView = async () => {
                         <span class="font-bold text-[11px] sm:text-xs whitespace-nowrap">Pulihkan</span>
                     </button>
                 </div>
+            <!-- 5. ZONA BAHAYA: RESET PABRIK & PEMBERSIHAN DATA (KHUSUS OWNER) -->
+            ${isOwnerUser() ? `
+            <div class="pt-4 border-t border-rose-200/60 dark:border-rose-900/40 space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs text-rose-600 dark:text-rose-400 font-bold">
+                        <i class="fa-solid fa-triangle-exclamation shrink-0"></i>
+                        <span>Zona Bahaya: Reset Pabrik &amp; Pembersihan Data</span>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800">Khusus Owner</span>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl sm:rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50">
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Bersihkan data transaksi uji coba atau kembalikan seluruh database ke setelan awal pabrik secara aman dengan cadangan darurat otomatis.
+                    </p>
+                    <button onclick="window.openFactoryResetModal && window.openFactoryResetModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-xs shrink-0 active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                        <span>Buka Menu Reset</span>
+                    </button>
+                </div>
             </div>
+            ` : ''}
         </div>
     </div>
     `);
@@ -992,3 +1014,4 @@ window.handleRestoreFileSelect    = handleRestoreFileSelect;
 window.triggerSafetyRollback      = triggerSafetyRollback;
 window.saveQuickDeviceSnapshot    = saveQuickDeviceSnapshot;
 window.restoreQuickDeviceSnapshot = restoreQuickDeviceSnapshot;
+window.openFactoryResetModal      = openFactoryResetModal;
