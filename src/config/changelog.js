@@ -29,6 +29,7 @@ export const DEFAULT_CHANGELOG = [
             "Deteksi Status Cerdas (Smart Badging): Menampilkan status badge '✅ Ada di Toko' jika produk master sudah terimpor ke katalog toko dan '📥 Siap Impor' jika belum, mencegah terjadinya duplikasi barang.",
             "Two-Way Cloud Sharing (Simpan Produk Toko ke Pustaka Master): Tombol 1-klik di tabel produk admin untuk menyimpan produk kustom lokal menjadi master template bersama yang dapat dipakai ulang oleh cabang atau klien lain.",
             "Sub-Tab Database Swatch Warna Cat Terpadu: Mengintegrasikan katalog kode warna HEX cat yang sudah ada ke dalam sub-tab terdedikasi dengan antarmuka Bento Grid modern, menjamin kompatibilitas 100%.",
+            "Harmonisasi Grid Layout Bento Storefront (Header, Banner, Kategori, Produk & Footer 100% Selaras): Mengadopsi arsitektur Adaptive Bento Header di mana di layar tablet/desktop (>= 640px) Header mengambang sebagai Bento Island Card dengan squircle rounded-2xl dan lebar container (max-w-7xl px-6 lg:px-8) yang 100% sejajar dan konsisten dengan Banner Hero, Kategori, Produk, dan Footer Bento Hub, sekaligus mempertahankan display edge-to-edge ergonomis di layar smartphone (< 640px).",
             "Multi-Channel Distribution v1.18.0 (Android versionCode 11800)."
         ]
     },

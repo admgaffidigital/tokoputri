@@ -2507,15 +2507,20 @@ html:not(.dark) .card-modern select {
     transition: all 0.3s ease;
 }
 
-/* Base Footer Bento Hub Card & Mobile End-Cap */
+/* Base Footer Bento Hub Card & Mobile End-Cap (Harmonisasi 100% Bento Island Card) */
 .footer-bento-hub,
 .footer-mobile-endcap {
     background-color: #ffffff !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.16) !important;
-    border-radius: 1rem !important;
+    border-radius: 1.25rem !important;
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03) !important;
     color: #1e293b;
     transition: all 0.3s ease;
+}
+@media (min-width: 640px) {
+    .footer-bento-hub {
+        border-radius: 1.5rem !important;
+    }
 }
 html.dark .footer-bento-hub,
 .dark .footer-bento-hub,
@@ -2530,7 +2535,6 @@ html.dark .footer-mobile-endcap,
 /* 8.1 Footer: Gaya Minimalis */
 [data-bg-style="minimalist"] .footer-bento-hub,
 [data-bg-style="minimalist"] .footer-mobile-endcap {
-    border-radius: 1rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.16) !important;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03) !important;
 }
@@ -2538,7 +2542,6 @@ html.dark .footer-mobile-endcap,
 /* 8.2 Footer: Gaya Hero Arch */
 [data-bg-style="hero_arch"] .footer-bento-hub,
 [data-bg-style="hero_arch"] .footer-mobile-endcap {
-    border-radius: 1.125rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.20) !important;
     border-top: 2px solid rgba(var(--color-primary-rgb), 0.40) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
@@ -2549,7 +2552,6 @@ html.dark .footer-mobile-endcap,
 [data-bg-style="dual_tone"] .footer-bento-hub,
 [data-bg-style="aurora_glow"] .footer-mobile-endcap,
 [data-bg-style="dual_tone"] .footer-mobile-endcap {
-    border-radius: 1.125rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.22) !important;
     border-top: 2px solid rgba(var(--color-primary-rgb), 0.45) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
@@ -2560,7 +2562,6 @@ html.dark .footer-mobile-endcap,
 [data-bg-style="geometric_3d"] .footer-bento-hub,
 [data-bg-style="tech_grid"] .footer-mobile-endcap,
 [data-bg-style="geometric_3d"] .footer-mobile-endcap {
-    border-radius: 0.875rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.22) !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
 }
@@ -2568,7 +2569,6 @@ html.dark .footer-mobile-endcap,
 /* 8.5 Footer: Gaya Industrial */
 [data-bg-style="industrial"] .footer-bento-hub,
 [data-bg-style="industrial"] .footer-mobile-endcap {
-    border-radius: 0.75rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.26) !important;
     border-top: 2.5px solid var(--color-primary) !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
@@ -4891,5 +4891,63 @@ textarea:focus-visible {
     background: transparent !important;
 }
 
+/* ============================================================
+   BENTO HEADER & STOREFRONT GRID HARMONIZATION (100% UNIFIED)
+   Menjamin Header, Banner, Kategori, Produk, dan Footer memiliki
+   lebar, margin, dan sudut bento squircle yang konsisten dan rapi.
+   - Mobile (<640px): Edge-to-edge penuh untuk ruang sentuh maksimal
+   - Desktop (>=640px): Floating Bento Island sejajar 100% dengan
+     grid Banner, Kategori, Produk, dan Footer.
+   ============================================================ */
+.storefront-header-outer {
+    transition: padding 0.3s ease;
+}
 
+#view-catalog .header-bento-island {
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
+@media (max-width: 639px) {
+    #view-catalog .header-bento-island {
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: none !important;
+    }
+}
+
+@media (min-width: 640px) {
+    #view-catalog .header-bento-island {
+        border-radius: 1.25rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.24) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.22), 0 4px 10px -3px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    html.dark #view-catalog .header-bento-island,
+    .dark #view-catalog .header-bento-island {
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    /* Penyelarasan tema background agar tidak memotong 4 sudut membulat di desktop */
+    [data-bg-style="minimalist"] #view-catalog .header-bento-island,
+    [data-bg-style="hero_arch"] #view-catalog .header-bento-island,
+    [data-bg-style="aurora_glow"] #view-catalog .header-bento-island,
+    [data-bg-style="dual_tone"] #view-catalog .header-bento-island,
+    [data-bg-style="tech_grid"] #view-catalog .header-bento-island,
+    [data-bg-style="geometric_3d"] #view-catalog .header-bento-island,
+    [data-bg-style="industrial"] #view-catalog .header-bento-island {
+        border-radius: 1.25rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    #view-catalog .header-bento-island {
+        border-radius: 1.5rem !important;
+    }
+
+    [data-bg-style] #view-catalog .header-bento-island {
+        border-radius: 1.5rem !important;
+    }
+}
