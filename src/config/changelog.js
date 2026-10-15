@@ -16,6 +16,23 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-00",
+        "version": "v1.18.0",
+        "date": "2026-10-15",
+        "title": "Pustaka Database Produk Bersama & Multi-Varian: Impor Selektif Per-Produk, Kustomisasi Harga Modal & Jual Lokal Toko, Bento Grid UI & Pustaka Swatch Warna Cat",
+        "category": "feature",
+        "badge": "Pustaka Database Bersama & Multi-Varian v1.18.0",
+        "items": [
+            "Pustaka Master Produk Bersama (Global Template Library): Menghadirkan pustaka induk berisi 25+ produk material bangunan & alat teknik standar Indonesia (Cat & Pelapis, Semen & Mortar, Pipa PVC, Besi & Baja, Perkakas Listrik, Baut SDS, Sanitari, dan Kelistrikan) lengkap dengan spesifikasi teknis, merek ternama, dan paket multi-varian siap pakai untuk mempercepat klien baru mengisi katalog toko dalam 5 menit tanpa perlu mengetik dari awal.",
+            "Impor Selektif Per-Produk (Anti-Banjir & Anti-Katalog Bercampur): Sistem impor mandiri 1-per-1 (atau per-kategori) yang menyalin master template ke katalog lokal toko (appData.products). Mencegah tercampurnya katalog toko dengan barang kosong dan memastikan toko hanya menjual barang yang benar-benar ada stok fisiknya.",
+            "Drawer Pratinjau & Kustomisasi Varian Interaktif: Modal drawer Bento yang memungkinkan klien mengatur harga jual toko, modal beli (HPP), dan stok awal rak/gudang secara mandiri, serta memilih checklist varian ukuran/warna yang dijual.",
+            "Deteksi Status Cerdas (Smart Badging): Menampilkan status badge '✅ Ada di Toko' jika produk master sudah terimpor ke katalog toko dan '📥 Siap Impor' jika belum, mencegah terjadinya duplikasi barang.",
+            "Two-Way Cloud Sharing (Simpan Produk Toko ke Pustaka Master): Tombol 1-klik di tabel produk admin untuk menyimpan produk kustom lokal menjadi master template bersama yang dapat dipakai ulang oleh cabang atau klien lain.",
+            "Sub-Tab Database Swatch Warna Cat Terpadu: Mengintegrasikan katalog kode warna HEX cat yang sudah ada ke dalam sub-tab terdedikasi dengan antarmuka Bento Grid modern, menjamin kompatibilitas 100%.",
+            "Multi-Channel Distribution v1.18.0 (Android versionCode 11800)."
+        ]
+    },
+    {
         "id": "log-1-17-09",
         "version": "v1.17.9",
         "date": "2026-10-15",
@@ -74,20 +91,6 @@ export const DEFAULT_CHANGELOG = [
             "Sinkronisasi Realtime Storefront & doSync Storage Engine: Mengintegrasikan sinkronisasi realtime dokumen 'flashSales' pada listener 'attachRealtimeStockSync' (storage.js) sehingga perubahan status flash sale seketika ter-broadcast dan me-render panggung flash sale di seluruh perangkat tanpa perlu refresh manual.",
             "Proteksi Anti-Kandang Kosong Storefront: Menyempurnakan renderStorefrontFlashSale() dengan parser tanggal aman parseSafeTimestamp() dan validasi cardsHtml sehingga seksi flash sale hanya terbuka jika terdapat produk aktif yang valid dan otomatis tertutup jika sesi/produk telah berakhir.",
             "Multi-Channel Distribution v1.17.6 (Android versionCode 11706)."
-        ]
-    },
-    {
-        "id": "log-1-17-05",
-        "version": "v1.17.5",
-        "date": "2026-10-15",
-        "title": "Resolusi Forensik Runtime Checkout Tempo, Standarisasi Flag Produk Habis & Guard Perhitungan Pajak",
-        "category": "feature",
-        "badge": "Tempo Checkout Runtime Fix & Inventory Flag v1.17.5",
-        "items": [
-            "Resolusi Bug Impor Pembayaran Tempo (Zero ReferenceError): Menambahkan impor resmi 'vouch' dari state.js serta helper 'getEffP' mandiri pada payment.js sehingga kalkulasi sisa saldo Tempo tidak lagi melempar ReferenceError saat pembeli mengetik nominal DP.",
-            "Proteksi Anti-NaN Kalkulasi Pajak & Poin Member: Menambahkan fallback safe guard pada pemanggilan window.calcTaxDetails di fungsi calculateTempoBalance guna mencegah hasil kalkulasi menjadi 'Rp NaN'.",
-            "Standarisasi Tipe Data Flag Produk Habis (Boolean false): Menyelaraskan status 'isActive' produk induk saat stok habis dari string 'false' menjadi boolean false murni, konsisten dengan seluruh varian produk di database Firestore.",
-            "Multi-Channel Distribution v1.17.5 (Android versionCode 11705)."
         ]
     }
 ];
@@ -164,7 +167,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.17.9';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.0';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

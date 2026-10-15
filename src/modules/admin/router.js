@@ -163,7 +163,7 @@ export const openAdminTab = (t, fH = false) => {
         'returns': 'Retur Barang (RMA)',
         'flash_sale': 'Flash Sale (Promo Kilat)',
         'piutang': 'Piutang Tempo',
-        'colors': 'Database Warna',
+        'colors': 'Database Produk Bersama',
         'changelog': 'Log Pembaruan Sistem',
         'suppliers': 'Supplier & Rekanan',
         'purchases': 'Order Pembelian & Hutang PO',
@@ -288,6 +288,12 @@ export const openAdminTab = (t, fH = false) => {
         import('./backup-sync.js').then(m => m.renderBackupSyncView()).catch(err => {
             renderModuleLoadError('Pusat Data & Sinkronisasi', t, err);
         });
+    } else if (t === 'colors') {
+        if (typeof window.rAdmMasterCatalogView === 'function') {
+            window.rAdmMasterCatalogView();
+        } else if (typeof window.rAdmL === 'function') {
+            window.rAdmL(t);
+        }
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);
     }

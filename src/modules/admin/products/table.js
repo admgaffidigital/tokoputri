@@ -245,6 +245,11 @@ window.rAdmL = t => {
     if (typeof window.setCTab === 'function') window.setCTab(t);
     window.cTab = t;
 
+    if (t === 'colors' && typeof window.rAdmMasterCatalogView === 'function') {
+        window.rAdmMasterCatalogView();
+        return;
+    }
+
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
     const colorActions = t === 'colors' ? `
         <div class="flex gap-2 mb-4 flex-wrap">
@@ -753,6 +758,9 @@ window.rAdmItms = (t, skipStats = false) => {
                 <!-- Aksi Utama: Duplikat, Edit, Hapus -->
                 <div class="flex items-center gap-2 ml-auto">
                     ${isP ? `
+                        <button type="button" class="h-10 w-10 rounded-xl bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); window.confirmExportProductToMaster?.('${x.id}')" title="Simpan ke Database Bersama (Master Template)">
+                            <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+                        </button>
                         <button type="button" class="h-10 w-10 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); duplicateProduct('${x.id}')" title="Duplikat Produk">
                             <i class="fa-regular fa-copy text-xs"></i>
                         </button>

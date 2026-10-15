@@ -33,7 +33,7 @@ export const PERMISSION_DEFINITIONS = [
     // 2. Modul Konten & Etalase
     { key: 'categories', label: 'Kategori Produk', desc: 'Tambah dan susun kategori etalase produk', group: 'konten', icon: 'fa-tags' },
     { key: 'brands', label: 'Merek Produk', desc: 'Kelola daftar brand dagang barang', group: 'konten', icon: 'fa-copyright' },
-    { key: 'colors', label: 'Database Warna', desc: 'Katalog warna produk dan swatch varian', group: 'konten', icon: 'fa-swatchbook' },
+    { key: 'colors', label: 'Database Produk Bersama', desc: 'Pustaka master produk, multi-varian & swatch warna siap impor', group: 'konten', icon: 'fa-boxes-stacked' },
     { key: 'vouchers', label: 'Voucher & Promo', desc: 'Buat kode voucher diskon dan promo belanja', group: 'konten', icon: 'fa-ticket-simple' },
     { key: 'banners', label: 'Banner Promosi', desc: 'Kelola gambar dan video slider beranda toko', group: 'konten', icon: 'fa-images' },
     { key: 'rewards', label: 'Program Hadiah Poin', desc: 'Kelola katalog hadiah penukaran poin member', group: 'konten', icon: 'fa-gift' },

@@ -57,6 +57,8 @@ import './scanner.js';
 import './pricing.js';
 import './fifo-modal.js';
 import './barcode-label-modal.js';
+import './master-presets.js';
 
 export * from './barcode-label-modal.js';
+export * from './master-presets.js';
 
