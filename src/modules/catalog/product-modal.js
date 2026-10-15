@@ -758,34 +758,34 @@ export const rProdMod = () => {
     let bH = ``;
     const fsItemBadge = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(p.id, v?.name, 'web') : null;
     if (fsItemBadge && !fsItemBadge.isSoldOut) {
-        bH += `<span class="bg-gradient-to-r from-rose-600 to-red-600 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm animate-pulse"><i class="fa-solid fa-bolt text-amber-300"></i> Flash Sale ${fsItemBadge.remainingQuota ? `(Sisa ${fsItemBadge.remainingQuota})` : ''}</span>`;
+        bH += `<span class="bg-gradient-to-r from-rose-600 to-red-600 text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm animate-pulse"><i class="fa-solid fa-bolt text-amber-300"></i> Flash Sale ${fsItemBadge.remainingQuota ? `(Sisa ${fsItemBadge.remainingQuota})` : ''}</span>`;
     }
     const activeSku = (hV && cVar !== null && v && v.sku) ? v.sku : (p.sku || '');
-    if (activeSku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(activeSku)}</span>`;
-    if (p.tag) bH += `<span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
+    if (activeSku) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(activeSku)}</span>`;
+    if (p.tag) bH += `<span class="accent-badge px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
     
-    bH += `<span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
+    bH += `<span class="accent-badge px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
     
-    if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
+    if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
     
-    if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
+    if (p.poTime) bH += `<span class="bg-amber-500 text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
 
     const activeStockVal = hV && cVar !== null
         ? ((v?.stock != null && v?.stock !== '') ? parseFloat(v.stock) : ((v?.stok != null && v?.stok !== '') ? parseFloat(v.stok) : null))
         : ((p?.stock != null && p?.stock !== '') ? parseFloat(p.stock) : ((p?.stok != null && p?.stok !== '') ? parseFloat(p.stok) : null));
     if (activeStockVal !== null && !isNaN(activeStockVal)) {
         if (activeStockVal <= 0) {
-            bH += `<span class="bg-rose-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban"></i> Habis</span>`;
+            bH += `<span class="bg-rose-500 text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban"></i> Habis</span>`;
         } else if (activeStockVal <= 5) {
-            bH += `<span class="bg-rose-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire"></i> Sisa ${activeStockVal}</span>`;
+            bH += `<span class="bg-rose-500 text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire"></i> Sisa ${activeStockVal}</span>`;
         } else {
-            bH += `<span class="bg-slate-700 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-box"></i> Stok ${activeStockVal}</span>`;
+            bH += `<span class="bg-slate-700 text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-box"></i> Stok ${activeStockVal}</span>`;
         }
     }
 
     const activePoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(p.poin) || 0);
     if (activePoin > 0 && (!hV || cVar !== null)) {
-        bH += `<span class="bg-[var(--color-primary)] text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
+        bH += `<span class="bg-[var(--color-primary)] text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
     }
 
     const totalSoldAll = (hV && p.variants && p.variants.length)
@@ -796,7 +796,7 @@ export const rProdMod = () => {
         : totalSoldAll;
     const totalSoldDisplay = totalSoldVar > 0 ? totalSoldVar : totalSoldAll;
     if (totalSoldDisplay > 0) {
-        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500"></i> ${totalSoldDisplay} Terjual</span>`;
+        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500"></i> ${totalSoldDisplay} Terjual</span>`;
     }
 
     setH('product-modal-badges', bH);

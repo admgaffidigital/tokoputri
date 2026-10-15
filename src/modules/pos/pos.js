@@ -1846,7 +1846,7 @@ export const renderCatalog = (isLoadMore = false) => {
                 let priceNormalHtml = '';
                 if (p.priceNormal && parseFloat(p.priceNormal) > pPrice) {
                     const pct = Math.round(((parseFloat(p.priceNormal) - pPrice) / parseFloat(p.priceNormal)) * 100);
-                    discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${pct}%</span>`;
+                    discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-black flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-tags text-[8px] sm:text-[8.5px]"></i> -${pct}%</span>`;
                     priceNormalHtml = `<p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate mb-0.5">${fRp(parseFloat(p.priceNormal))}</p>`;
                 } else if (hasVariants && p.variants && p.variants.length) {
                     const varDiscs = p.variants
@@ -1854,12 +1854,12 @@ export const renderCatalog = (isLoadMore = false) => {
                         .map(v => Math.round(((parseFloat(v.priceNormal) - parseFloat(v.price)) / parseFloat(v.priceNormal)) * 100));
                     if (varDiscs.length > 0) {
                         const maxPct = Math.max(...varDiscs);
-                        discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${maxPct}%</span>`;
+                        discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-black flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-tags text-[8px] sm:text-[8.5px]"></i> -${maxPct}%</span>`;
                     }
                 }
 
                 const compactPoStr = p.poTime ? formatCompactPoText(p.poTime) : '';
-                let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7.5px]"></i> PO ${esc(compactPoStr)}</span>` : '';
+                let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-clock text-[8px] sm:text-[8.5px]"></i> PO ${esc(compactPoStr)}</span>` : '';
 
                 // 2. Eyebrow Kategori & Brand Text Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
                 const catBrandText = esc(`${p.subCategory || pCat || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
@@ -1867,39 +1867,39 @@ export const renderCatalog = (isLoadMore = false) => {
                 // 3. Status Stok Fisik & Badges (100% di Luar Gambar)
                 let stockChip = '';
                 if (stockInfo.isOutOfStock) {
-                    stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7.5px]"></i> Habis</span>`;
+                    stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-ban text-[8px] sm:text-[8.5px]"></i> Habis</span>`;
                 } else if (stockInfo.isLowStock) {
-                    stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7.5px]"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`;
+                    stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-fire text-[8px] sm:text-[8.5px]"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`;
                 } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
-                    stockChip = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7.5px]"></i> Stok ${formatQty(stockInfo.totalStock)}</span>`;
+                    stockChip = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-box text-[8px] sm:text-[8.5px]"></i> Stok ${formatQty(stockInfo.totalStock)}</span>`;
                 }
 
                 // 4. Badges Lengkap (Varian, Grosir, Poin Reward, Terjual)
                 const variantBadge = hasVariants
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-layer-group text-[8px] sm:text-[8.5px]"></i> Varian</span>`
                     : '';
 
                 const grosirBadge = hasGrosir
-                    ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7.5px]"></i> Grosir</span>`
+                    ? `<span class="amber-badge px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-tags text-[8px] sm:text-[8.5px]"></i> Grosir</span>`
                     : '';
 
                 const activePoin = (p.variants && p.variants.length)
                     ? Math.max(...p.variants.map(v => parseFloat(v.poin) || 0))
                     : (parseFloat(p.poin) || 0);
                 const poinBadge = activePoin > 0
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> +${activePoin}</span>`
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-star text-[8px] sm:text-[8.5px]"></i> +${activePoin}</span>`
                     : '';
 
                 const totalSoldPos = (p.variants && p.variants.length)
                     ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
                     : (parseFloat(p.totalSold) || 0);
                 const soldBadge = totalSoldPos > 0
-                    ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7.5px]"></i> ${totalSoldPos} Terjual</span>`
+                    ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-fire text-amber-500 text-[8px] sm:text-[8.5px]"></i> ${totalSoldPos} Terjual</span>`
                     : '';
 
                 // Badge Satuan Konsisten & Harmonis (Sky Pastel, Icon Cube)
                 const unitBadge = (p.unit && typeof p.unit === 'string' && p.unit.trim())
-                    ? `<span class="bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-cube text-sky-600 dark:text-sky-400 text-[7.5px]"></i> ${esc(p.unit.trim())}</span>`
+                    ? `<span class="bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/50 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-cube text-sky-600 dark:text-sky-400 text-[8px] sm:text-[8.5px]"></i> ${esc(p.unit.trim())}</span>`
                     : '';
 
                 // 5. HARGA MODAL (HPP) - Khusus Owner (Badge Resmi Amber Pastel di Baris Chips)
@@ -1924,7 +1924,7 @@ export const renderCatalog = (isLoadMore = false) => {
                     }
                     if (hppDisplay || (p.hpp != null && parseFloat(p.hpp) > 0)) {
                         const finalHppText = hppDisplay || fRp(parseFloat(p.hpp));
-                        hppChip = `<span class="bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/90 dark:border-amber-800/60 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider" title="Harga Pokok Penjualan (Modal Toko)"><i class="fa-solid fa-coins text-[7.5px] text-amber-600 dark:text-amber-400"></i> Modal: ${finalHppText}</span>`;
+                        hppChip = `<span class="bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/90 dark:border-amber-800/60 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight" title="Harga Pokok Penjualan (Modal Toko)"><i class="fa-solid fa-coins text-[8px] sm:text-[8.5px] text-amber-600 dark:text-amber-400"></i> Modal: ${finalHppText}</span>`;
                     }
                 }
 
@@ -1933,13 +1933,16 @@ export const renderCatalog = (isLoadMore = false) => {
                 if (discPill) allPosChips.push(discPill);
                 if (stockChip) allPosChips.push(stockChip);
                 if (poPill) allPosChips.push(poPill);
-                if (unitBadge) allPosChips.push(unitBadge);
                 if (variantBadge) allPosChips.push(variantBadge);
                 if (grosirBadge) allPosChips.push(grosirBadge);
-                if (poinBadge) allPosChips.push(poinBadge);
+                if (unitBadge) allPosChips.push(unitBadge);
                 if (soldBadge) allPosChips.push(soldBadge);
+                if (poinBadge) allPosChips.push(poinBadge);
                 if (hppChip) allPosChips.push(hppChip);
-                const chipsHtml = allPosChips.join('');
+
+                // Di mode Grid: Batasi maksimal 3 badge teratas agar kartu rapi (maks. 2 baris rapi, anti-bertumpuk sempit).
+                const displayedPosChips = (posCatalogViewMode === 'list') ? allPosChips : allPosChips.slice(0, 3);
+                const chipsHtml = displayedPosChips.join('');
 
                 const coverSmHtml = renderProductCoverHtml(p, { size: 'sm' });
                 const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });

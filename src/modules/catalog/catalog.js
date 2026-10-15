@@ -239,12 +239,12 @@ export const rCat = () => {
         let stockChip = '';
 
         if (stockInfo.isOutOfStock) {
-            nH = `<div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center rounded-xl"><span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1"><i class="fa-solid fa-ban"></i> HABIS</span></div>`;
-            stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7.5px]"></i> Habis</span>`;
+            nH = `<div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center rounded-xl"><span class="bg-rose-600 text-white text-[9.5px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1"><i class="fa-solid fa-ban"></i> HABIS</span></div>`;
+            stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-ban text-[8px] sm:text-[8.5px]"></i> Habis</span>`;
         } else if (stockInfo.isLowStock) {
-            stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7.5px]"></i> Sisa ${stockInfo.totalStock}</span>`;
+            stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-fire text-[8px] sm:text-[8.5px]"></i> Sisa ${stockInfo.totalStock}</span>`;
         } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
-            stockChip = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7.5px]"></i> Stok ${stockInfo.totalStock}</span>`;
+            stockChip = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-box text-[8px] sm:text-[8.5px]"></i> Stok ${stockInfo.totalStock}</span>`;
         }
         
         const canOpen = !stockInfo.isOutOfStock || stockInfo.isPreorder;
@@ -255,7 +255,7 @@ export const rCat = () => {
         let priceNormalHtml = '';
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${pct}%</span>`;
+            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-black flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-tags text-[8px] sm:text-[8.5px]"></i> -${pct}%</span>`;
             priceNormalHtml = `<p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate mb-0.5">${fCur(p.priceNormal)}</p>`;
         } else if (p.variants && p.variants.length) {
             const varDiscs = p.variants
@@ -263,14 +263,14 @@ export const rCat = () => {
                 .map(v => Math.round(((parseFloat(v.priceNormal) - parseFloat(v.price)) / parseFloat(v.priceNormal)) * 100));
             if (varDiscs.length > 0) {
                 const maxPct = Math.max(...varDiscs);
-                discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${maxPct}%</span>`;
+                discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-black flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-tags text-[8px] sm:text-[8.5px]"></i> -${maxPct}%</span>`;
             }
         }
 
         const compactPoStr = p.poTime
             ? String(p.poTime).replace(/\s*hari\s*kerja/gi, 'hr').replace(/\s*hari/gi, 'hr').replace(/\s*minggu/gi, 'mgg').replace(/\s*bulan/gi, 'bln').trim()
             : '';
-        let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7.5px]"></i> PO ${esc(compactPoStr)}</span>` : '';
+        let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-2xs leading-tight"><i class="fa-solid fa-clock text-[8px] sm:text-[8.5px]"></i> PO ${esc(compactPoStr)}</span>` : '';
 
         // Eyebrow Kategori & Brand Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
         const catBrandText = esc(`${p.subCategory || p.category || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
@@ -281,11 +281,11 @@ export const rCat = () => {
             if (poinVals.length) {
                 const uniq = [...new Set(poinVals)];
                 poinBadge = uniq.length === 1
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> +${uniq[0]}</span>`
-                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> Poin</span>`;
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-star text-[8px] sm:text-[8.5px]"></i> +${uniq[0]}</span>`
+                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-star text-[8px] sm:text-[8.5px]"></i> Poin</span>`;
             }
         } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> +${parseFloat(p.poin)}</span>`;
+            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-star text-[8px] sm:text-[8.5px]"></i> +${parseFloat(p.poin)}</span>`;
         }
 
         const totalSoldCard = p.variants && p.variants.length
@@ -293,33 +293,37 @@ export const rCat = () => {
             : (parseFloat(p.totalSold) || 0);
 
         const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7.5px]"></i> ${totalSoldCard} Terjual</span>`
+            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-fire text-amber-500 text-[8px] sm:text-[8.5px]"></i> ${totalSoldCard} Terjual</span>`
             : '';
 
         const variantBadge = (p.variants && p.variants.length > 0)
-            ? `<span class="px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider border" style="color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
+            ? `<span class="px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider border leading-tight" style="color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-layer-group text-[8px] sm:text-[8.5px]"></i> Varian</span>`
             : '';
 
         const grosirBadge = (p.wholesale?.length && !p.variants?.length)
-            ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7.5px]"></i> Grosir</span>`
+            ? `<span class="amber-badge px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-tags text-[8px] sm:text-[8.5px]"></i> Grosir</span>`
             : '';
 
         // Badge Satuan Konsisten & Harmonis (Sky Pastel, Icon Cube)
         const unitBadge = (p.unit && typeof p.unit === 'string' && p.unit.trim())
-            ? `<span class="bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-cube text-sky-600 dark:text-sky-400 text-[7.5px]"></i> ${esc(p.unit.trim())}</span>`
+            ? `<span class="bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/50 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-cube text-sky-600 dark:text-sky-400 text-[8px] sm:text-[8.5px]"></i> ${esc(p.unit.trim())}</span>`
             : '';
 
-        // ── Badges Lengkap & Bersih (100% di Luar Gambar Produk, Anti-Duplikat): Diskon, Stok, PO, Satuan, Varian, Grosir, Poin & Terjual ──
+        // ── Badges Lengkap & Proporsional (Anti-Bertumpuk & Ruang Lega) ──
         const allProductChips = [];
         if (discPill) allProductChips.push(discPill);
         if (stockChip) allProductChips.push(stockChip);
         if (poPill) allProductChips.push(poPill);
-        if (unitBadge) allProductChips.push(unitBadge);
         if (variantBadge) allProductChips.push(variantBadge);
         if (grosirBadge) allProductChips.push(grosirBadge);
-        if (poinBadge) allProductChips.push(poinBadge);
+        if (unitBadge) allProductChips.push(unitBadge);
         if (soldBadge) allProductChips.push(soldBadge);
-        const chipsHtml = allProductChips.join('');
+        if (poinBadge) allProductChips.push(poinBadge);
+
+        // Di mode Grid: Maksimal 3 badge terpenting agar tampil proporsional maks. 2 baris (tidak bertumpuk sempit).
+        // Di mode List: Menampilkan seluruh badge karena kanvas horizontal sangat lapang.
+        const displayedChips = (cView === 'grid') ? allProductChips.slice(0, 3) : allProductChips;
+        const chipsHtml = displayedChips.join('');
         
         let unt = `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         

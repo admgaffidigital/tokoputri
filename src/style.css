@@ -886,21 +886,29 @@ html.dark #view-admin-login {
     color: var(--color-primary);
 }
 
-/* Container Chip Badges Produk Fleksibel Multi-Baris (Bisa 2, 3, 4+ Baris, Zero-Clipping) */
+/* Container Chip Badges Produk Fleksibel Multi-Baris (Lega, Proporsional & Anti-Bertumpuk) */
 .product-chips-wrap {
     display: flex !important;
     flex-wrap: wrap !important;
     align-items: center !important;
     align-content: flex-start !important;
-    gap: 4px !important;
+    gap: 5px 6px !important;
     box-sizing: border-box !important;
     width: 100% !important;
+}
+
+.product-chips-wrap > span {
+    line-height: 1.2 !important;
+    letter-spacing: 0.02em !important;
+    box-sizing: border-box !important;
 }
 
 .pos-product-card .product-chips-wrap,
 .pos-catalog-grid-mode .product-chips-wrap,
 #product-container.grid .product-chips-wrap {
     min-height: 22px !important;
+    max-height: 52px !important;
+    overflow: hidden !important;
     margin-bottom: 6px !important;
     flex-shrink: 0 !important;
 }
