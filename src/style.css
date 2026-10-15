@@ -4851,13 +4851,45 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
-/* Fokus Outline Aksesibilitas Bertema untuk Seluruh Input Bento */
-input:focus-visible,
+/* Fokus Outline Aksesibilitas Bertema untuk Seluruh Input Bento (Kecuali Kolom Pencarian Bersih) */
+input:not(#mobile-header-search):not(#search-input):not(.search-clean-input):focus-visible,
 select:focus-visible,
 textarea:focus-visible {
     outline: none !important;
     border-color: var(--color-primary) !important;
     box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 197, 155, 39), 0.18) !important;
 }
+
+/* ─── PEMBERSIHAN TOTAL FRAME TEKS PADA KOLOM PENCARIAN (ANTI KOLOM DI DALAM KOLOM) ─── */
+#mobile-header-search,
+#search-input,
+.header-search-capsule input,
+.search-clean-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+#mobile-header-search:focus,
+#mobile-header-search:focus-visible,
+#mobile-header-search:active,
+#search-input:focus,
+#search-input:focus-visible,
+#search-input:active,
+.header-search-capsule input:focus,
+.header-search-capsule input:focus-visible,
+.header-search-capsule input:active,
+.search-clean-input:focus,
+.search-clean-input:focus-visible,
+.search-clean-input:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
 
 
