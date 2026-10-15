@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.16.4**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.17.6**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -23,12 +23,14 @@ Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), mana
 14. [Perpanjangan Masa Aktif Layanan Toko, Masa Tenggang & Keamanan Data](#bab-14--perpanjangan-masa-aktif-layanan-toko-masa-tenggang--keamanan-data)
 15. [Multi-Satuan Bertingkat (UOM) & Harga Grosir Fleksibel (Dus/Roll vs Eceran)](#bab-15--multi-satuan-bertingkat-uom--harga-grosir-fleksibel-dusroll-vs-eceran)
 16. [Logistik Pengiriman Proyek, Surat Jalan (DO) & Tanda Tangan Digital Mandor](#bab-16--logistik-pengiriman-proyek-surat-jalan-do--tanda-tangan-digital-mandor)
-17: [Manajemen Retur Barang Konsumen & Klaim Cacat Supplier (RMA Engine)](#bab-17--manajemen-retur-barang-konsumen--klaim-cacat-supplier-rma-engine)
+17. [Manajemen Retur Barang Konsumen & Klaim Cacat Supplier (RMA Engine)](#bab-17--manajemen-retur-barang-konsumen--klaim-cacat-supplier-rma-engine)
 18. [Kalkulator Estimator Material Bangunan & Penjualan Curah Kiloan Desimal](#bab-18--kalkulator-estimator-material-bangunan--penjualan-curah-kiloan-desimal)
 19. [Sistem Cetak Label Barcode SKU & Harga Universal (Thermal Roll & Kertas A4)](#bab-19--sistem-cetak-label-barcode-sku--harga-universal-thermal-roll--kertas-a4)
 20. [Manajemen Dua Lokasi Stok (Rak Toko vs Gudang Cadangan) & Metode FIFO](#bab-20--manajemen-dua-lokasi-stok-rak-toko-vs-gudang-cadangan--metode-fifo)
 21. [Panduan Lengkap Cara Menjelaskan Sistem (Untuk Konsumen, Staf & Mitra Bisnis)](#bab-21--panduan-lengkap-cara-menjelaskan-sistem-untuk-konsumen-staf--mitra-bisnis)
 22. [Operasional Flash Sale & Promo Kilat (Storefront, POS & Margin Guard)](#bab-22--operasional-flash-sale--promo-kilat-storefront-pos--margin-guard)
+23. [Keamanan Finansial Member VIP: PIN 6-Digit, Sensor Privasi Mata & Masking Kartu](#bab-23--keamanan-finansial-member-vip-pin-6-digit-sensor-privasi-mata--masking-kartu)
+24. [Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)](#bab-24--tabel-ringkasan-fitur--nilai-langsung-feature-to-value-matrix)
 
 ---
 
@@ -591,7 +593,46 @@ Fitur **Flash Sale (Promo Kilat)** dirancang untuk memicu lonjakan omzet penjual
 
 ---
 
-### D. Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)
+## BAB 23 — KEAMANAN FINANSIAL MEMBER VIP: PIN 6-DIGIT, SENSOR PRIVASI MATA & MASKING KARTU
+
+Fitur **Keamanan Finansial Member (Fintech Security System)** hadir untuk melindungi privasi finansial pelanggan setia Anda, khususnya bagi member yang memiliki fasilitas kredit tempo belanja (*Putri PayLater*) dan saldo poin reward.
+
+### A. Autentikasi PIN 6-Digit (Bento Keypad Layar Sentuh)
+1. **Mengapa PIN Penting?**
+   - Menghindari penyalahgunaan limit PayLater atau klaim hadiah poin oleh pihak lain yang meminjam HP atau mengetahui nomor telepon member.
+2. **Aktivasi Mandiri Pertama Kali oleh Member:**
+   - Saat member membuka *Kartu Member VIP* di website toko dan hendak membuka rincian kredit PayLater, sistem menampilkan dialog aktivasi PIN.
+   - Member memasukkan **6 digit angka rahasia** dua kali (konfirmasi) via Bento Keypad interaktif yang nyaman dengan sensasi getar (*haptic feedback*).
+   - PIN langsung dienkripsi menggunakan algoritma standar perbankan (*Web Crypto SHA-256 + Salt*) sebelum disimpan ke database cloud.
+3. **Verifikasi Setiap Membuka Panel Finansial:**
+   - Setiap kali member membuka kartu membernya di browser, member wajib mengetikkan 6 digit PIN untuk membuka rincian limit belanja PayLater.
+
+### B. Sensor Mata Privasi Finansial (Privacy Eye Shield 👁️)
+1. **Proteksi dari Lirikan Orang Lain (*Anti Shoulder-Surfing*):**
+   - Secara default, seluruh angka finansial rahasia (Plafon Limit Kredit, Tagihan Berjalan, Sisa Limit Terpakai) **otomatis disensor menjadi tanda pelindung `Rp ••••••`**.
+   - Ini memberi kenyamanan penuh bagi pelanggan saat membuka kartu member di tempat umum, di meja kasir yang ramai, atau di hadapan rekan kerja.
+2. **Membuka Sensor dengan 1-Sentuhan:**
+   - Member cukup mengetuk ikon **Mata (👁️)** di samping kartu limit untuk menampilkan angka nominal asli dalam hitungan detik.
+
+### C. Masking Nomor Kartu VIP & Nomor HP
+1. **Penyensoran Nomor Kartu:**
+   - Nomor fisik kartu member disamarkan 4 digit tengahnya: `PUTRI • 8123 • •••• • 8901`.
+2. **Penyensoran Nomor Handphone:**
+   - Nomor WhatsApp member disensor bagian tengahnya: `+62 812-••••-7890`.
+3. **Kompatibilitas Scanner Kasir:**
+   - Meskipun nomor disamarkan di layar HP pelanggan, barcode fisik kartu member tetap memuat kode unik asli sehingga scanner kasir toko tetap dapat membaca identitas member secara instan tanpa kendala!
+
+### D. Penanganan Member Lupa PIN (Reset PIN oleh Admin Toko)
+1. Jika ada pelanggan yang melapor lupa 6-digit PIN kartu membernya:
+2. Buka **Panel Pemilik (CMS Admin)** -> menu **"Pelanggan & Member"**.
+3. Cari nama atau nomor HP pelanggan tersebut, lalu buka detail profil member.
+4. Klik tombol **"Reset PIN Member"** (ikon gembok kunci terbuka).
+5. Konfirmasi tindakan reset PIN. Sistem akan menghapus PIN lama yang terlupa secara instan dan aman.
+6. Saat pelanggan membuka kembali kartu membernya di HP, sistem akan memandunya membuat 6-digit PIN baru yang segar.
+
+---
+
+## BAB 24 — TABEL RINGKASAN FITUR & NILAI LANGSUNG (FEATURE-TO-VALUE MATRIX)
 
 | Fitur Utama | Masalah Tradisional yang Diselesaikan | Nilai Nyata Bagi Usaha |
 | :--- | :--- | :--- |
@@ -604,6 +645,7 @@ Fitur **Flash Sale (Promo Kilat)** dirancang untuk memicu lonjakan omzet penjual
 | **Flash Sale Omnichannel & Margin Guard** | Toko sepi pembeli; risiko staf salah ketik harga diskon di bawah modal kulakan | Membakar antusiasme pembeli via countdown timer & kuota terbatas; margin HPP terlindungi 100%. |
 | **Dua Lokasi Stok (Rak vs Gudang)** | Barang di rak habis padahal di gudang masih menumpuk; kasir menolak pembeli | Prioritas pengurangan stok rak etalase (*floor-first*); notifikasi transfer stok internal gudang. |
 | **Cetak Barcode Label Sendiri** | Biaya cetak stiker mahal atau toko tidak memiliki barcode untuk produk lokal | Cetak stiker label thermal atau kertas A4 mandiri dengan barcode Code 128 tajam terbaca scanner. |
+| **Keamanan Fintech & PIN Member** | Kekhawatiran limit PayLater disalahgunakan orang lain atau saldo diintip di kasir | Member tenang dengan PIN 6-digit Web Crypto, sensor mata privasi nominal & masking nomor kartu. |
 
 ---
 
