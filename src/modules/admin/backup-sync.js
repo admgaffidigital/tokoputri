@@ -267,23 +267,23 @@ export const renderBackupSyncView = async () => {
                         <span class="font-bold text-[11px] sm:text-xs whitespace-nowrap">Pulihkan</span>
                     </button>
                 </div>
-            <!-- 5. ZONA BAHAYA: RESET PABRIK & PEMBERSIHAN DATA (KHUSUS OWNER) -->
+            <!-- 5. ZONA BAHAYA: RESET KE SETELAN AWAL & PEMBERSIHAN DATA (KHUSUS OWNER) -->
             ${isOwnerUser() ? `
             <div class="pt-4 border-t border-rose-200/60 dark:border-rose-900/40 space-y-2.5">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs text-rose-600 dark:text-rose-400 font-bold">
                         <i class="fa-solid fa-triangle-exclamation shrink-0"></i>
-                        <span>Zona Bahaya: Reset Pabrik &amp; Pembersihan Data</span>
+                        <span>Zona Bahaya: Reset ke Setelan Awal &amp; Pembersihan Data</span>
                     </div>
                     <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800">Khusus Owner</span>
                 </div>
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl sm:rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50">
                     <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                        Bersihkan data transaksi uji coba atau kembalikan seluruh database ke setelan awal pabrik secara aman dengan cadangan darurat otomatis.
+                        Bersihkan data transaksi uji coba atau kembalikan seluruh database ke setelan awal secara aman dengan cadangan darurat otomatis.
                     </p>
                     <button onclick="window.openFactoryResetModal && window.openFactoryResetModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-xs shrink-0 active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                        <span>Buka Menu Reset</span>
+                        <i class="fa-solid fa-rotate-left text-xs"></i>
+                        <span>Reset ke Setelan Awal</span>
                     </button>
                 </div>
             </div>

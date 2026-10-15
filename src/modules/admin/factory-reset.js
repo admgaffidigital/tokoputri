@@ -1,11 +1,11 @@
 /**
  * ============================================================
- * MODUL PUSAT RESET PABRIK & PEMBERSIHAN DATA TOKO (FACTORY RESET)
- * Toko Putri v1.17.6 — Managed Whitelabel & Single-Tenant SaaS
+ * MODUL PUSAT RESET KE SETELAN AWAL & PEMBERSIHAN DATA TOKO (SYSTEM CLEAN SWEEP)
+ * Toko Putri v1.17.7 — Managed Whitelabel & Single-Tenant SaaS
  *
  * Fitur Eksekutif Khusus Pemilik Toko (Owner) untuk membersihkan
- * data transaksi uji coba atau mereset total seluruh toko ke kondisi
- * pabrik (fresh clean slate) dengan proteksi keamanan berlapis (Triple Guard).
+ * data transaksi uji coba atau mereset total seluruh toko ke setelan
+ * awal (fresh clean slate) dengan proteksi keamanan berlapis (Triple Guard).
  * ============================================================
  */
 
@@ -18,7 +18,7 @@ import { saveApp } from '../../services/storage.js';
 // ─── STATE INTERNAL MODUL RESET ──────────────────────────────
 export const RESET_MODES = {
     TRANSACTIONS: 'transactions', // Reset data transaksi, pesanan, shift & buku kas (Katalog Produk & Profil AMAN)
-    FULL_FACTORY: 'full_factory'  // Reset total pabrik (Semua bersih seperti baru, akun owner & lisensi tetap aktif)
+    FULL_FACTORY: 'full_factory'  // Reset total ke setelan awal (Semua bersih seperti baru, akun owner & lisensi tetap aktif)
 };
 
 let activeResetMode = RESET_MODES.TRANSACTIONS;
@@ -27,7 +27,7 @@ let isBackupDownloaded = false;
 let isRiskUnderstood = false;
 let confirmationPhraseInput = '';
 
-const TARGET_CONFIRM_PHRASE = 'RESET PABRIK';
+export const TARGET_CONFIRM_PHRASE = 'RESET KE SETELAN AWAL';
 
 /**
  * Pastikan elemen modal terpasang di DOM
@@ -49,13 +49,13 @@ export const ensureFactoryResetModalDOM = () => {
 };
 
 /**
- * Buka modal konfigurasi Reset Pabrik
+ * Buka modal konfigurasi Reset ke Setelan Awal
  * @param {'transactions'|'full_factory'} [mode='transactions']
  */
 export const openFactoryResetModal = (mode = RESET_MODES.TRANSACTIONS) => {
     // 1. Guard Keamanan Tertinggi: HANYA OWNER YANG BOLEH
     if (!isOwnerUser()) {
-        showToast('Akses Ditolak: Hanya Pemilik Toko (Owner) yang berwenang melakukan Reset Pabrik.', 'error');
+        showToast('Akses Ditolak: Hanya Pemilik Toko (Owner) yang berwenang melakukan Reset ke Setelan Awal.', 'error');
         return;
     }
 
@@ -80,7 +80,7 @@ export const openFactoryResetModal = (mode = RESET_MODES.TRANSACTIONS) => {
 };
 
 /**
- * Tutup modal Reset Pabrik
+ * Tutup modal Reset ke Setelan Awal
  * @param {boolean} [skipHistory=false]
  */
 export const closeFactoryResetModal = (skipHistory = false) => {
@@ -136,7 +136,8 @@ export const onFactoryResetRiskToggle = (checked) => {
  * Validasi apakah tombol eksekusi boleh aktif
  */
 export const isResetExecutable = () => {
-    const isPhraseValid = confirmationPhraseInput.toUpperCase() === TARGET_CONFIRM_PHRASE;
+    const inputUpper = confirmationPhraseInput.toUpperCase();
+    const isPhraseValid = inputUpper === TARGET_CONFIRM_PHRASE || inputUpper === 'RESET SETELAN AWAL' || inputUpper === 'RESET PABRIK';
     return isPhraseValid && isRiskUnderstood && !isProcessingReset;
 };
 
@@ -154,7 +155,7 @@ const checkResetButtonState = () => {
 };
 
 /**
- * Render antarmuka Bento Modal Reset Pabrik
+ * Render antarmuka Bento Modal Reset ke Setelan Awal
  */
 export const renderFactoryResetModalView = () => {
     const container = el('modal-factory-reset-content');
@@ -172,12 +173,12 @@ export const renderFactoryResetModalView = () => {
                 <div>
                     <div class="flex items-center gap-2">
                         <h3 class="font-black text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
-                            Pusat Reset Pabrik &amp; Pembersihan Toko
+                            Pusat Reset ke Setelan Awal &amp; Pembersihan Toko
                         </h3>
                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-200 dark:bg-rose-900 text-rose-800 dark:text-rose-200">Zona Bahaya</span>
                     </div>
                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
-                        Kembalikan sistem ke kondisi bersih seperti awal dengan perlindungan cadangan darurat.
+                        Kembalikan sistem ke setelan awal yang bersih dan segar dengan perlindungan cadangan darurat.
                     </p>
                 </div>
             </div>
@@ -218,7 +219,7 @@ export const renderFactoryResetModalView = () => {
                         </div>
                     </div>
 
-                    <!-- Opsi B: Reset Total Pabrik (Full Clean Slate) -->
+                    <!-- Opsi B: Reset Total ke Setelan Awal (Full Clean Slate) -->
                     <div onclick="window.setFactoryResetMode('${RESET_MODES.FULL_FACTORY}')"
                         class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${isFull ? 'border-rose-500 bg-rose-50/40 dark:bg-rose-950/20 shadow-sm' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'}">
                         <div>
@@ -227,11 +228,11 @@ export const renderFactoryResetModalView = () => {
                                 <input type="radio" name="reset_mode" ${isFull ? 'checked' : ''} class="w-4 h-4 accent-rose-600 cursor-pointer">
                             </div>
                             <h4 class="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                                <i class="fa-solid fa-trash-can-arrow-up text-rose-600 dark:text-rose-400"></i>
-                                Reset Total Pabrik
+                                <i class="fa-solid fa-rotate-left text-rose-600 dark:text-rose-400"></i>
+                                Reset Total ke Setelan Awal
                             </h4>
                             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                                Mengosongkan SEMUA transaksi + SEMUA produk + kategori + banner. Toko kembali bersih murni 100%.
+                                Mengosongkan SEMUA transaksi + SEMUA produk + kategori + banner. Toko kembali bersih ke setelan awal 100%.
                             </p>
                         </div>
                         <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800 text-[11px] font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
@@ -323,10 +324,10 @@ export const renderFactoryResetModalView = () => {
                 <!-- Kolom Ketik Frasa Rahasia -->
                 <div>
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">
-                        Ketik kata <span class="font-black text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950/60 font-mono">RESET PABRIK</span> di bawah ini untuk membuka kunci:
+                        Ketik kata <span class="font-black text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950/60 font-mono">RESET KE SETELAN AWAL</span> di bawah ini untuk membuka kunci:
                     </label>
                     <input type="text" id="input-reset-phrase" autocomplete="off" spellcheck="false"
-                        placeholder="Ketik RESET PABRIK"
+                        placeholder="Ketik RESET KE SETELAN AWAL"
                         value="${esc(confirmationPhraseInput)}"
                         oninput="window.onFactoryResetPhraseInput(this.value)"
                         class="w-full h-11 px-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-black tracking-wider text-slate-800 dark:text-white uppercase focus:outline-none focus:border-rose-500 placeholder:normal-case placeholder:font-normal placeholder:tracking-normal">
@@ -605,7 +606,7 @@ export const executeFactoryResetAction = async () => {
 
         setProgress(100, 'Pembersihan Selesai!', 'Sistem kini bersih dan segar kembali.');
 
-        showToast('Pembersihan data toko berhasil diselesaikan!', 'success');
+        showToast('Sistem toko berhasil direset ke setelan awal!', 'success');
 
         setTimeout(() => {
             closeFactoryResetModal(true);

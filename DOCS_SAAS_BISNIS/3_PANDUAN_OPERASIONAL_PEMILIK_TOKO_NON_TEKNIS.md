@@ -30,7 +30,7 @@ Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), mana
 21. [Panduan Lengkap Cara Menjelaskan Sistem (Untuk Konsumen, Staf & Mitra Bisnis)](#bab-21--panduan-lengkap-cara-menjelaskan-sistem-untuk-konsumen-staf--mitra-bisnis)
 22. [Operasional Flash Sale & Promo Kilat (Storefront, POS & Margin Guard)](#bab-22--operasional-flash-sale--promo-kilat-storefront-pos--margin-guard)
 23. [Keamanan Finansial Member VIP: PIN 6-Digit, Sensor Privasi Mata & Masking Kartu](#bab-23--keamanan-finansial-member-vip-pin-6-digit-sensor-privasi-mata--masking-kartu)
-24. [Reset Pabrik & Pembersihan Data (Factory Reset, Auto-Backup & Opsi Transaksi)](#bab-24--reset-pabrik--pembersihan-data-factory-reset-auto-backup--opsi-transaksi)
+24. [Reset ke Setelan Awal & Pembersihan Data (Clean Sweep, Auto-Backup & Opsi Transaksi)](#bab-24--reset-ke-setelan-awal--pembersihan-data-clean-sweep-auto-backup--opsi-transaksi)
 25. [Tabel Ringkasan Fitur & Nilai Langsung (Feature-to-Value Matrix)](#bab-25--tabel-ringkasan-fitur--nilai-langsung-feature-to-value-matrix)
 
 ---
@@ -633,9 +633,9 @@ Fitur **Keamanan Finansial Member (Fintech Security System)** hadir untuk melind
 
 ---
 
-## BAB 24 — RESET PABRIK & PEMBERSIHAN DATA (FACTORY RESET, AUTO-BACKUP & OPSI TRANSAKSI)
+## BAB 24 — RESET KE SETELAN AWAL & PEMBERSIHAN DATA (CLEAN SWEEP, AUTO-BACKUP & OPSI TRANSAKSI)
 
-Fitur **Reset Pabrik (*Factory Reset & Data Purge*)** adalah fasilitas tingkat tinggi yang dirancang khusus untuk pemilik usaha (*Owner*) yang ingin membersihkan sistem aplikasi kembali segar seperti baru.
+Fitur **Reset ke Setelan Awal (*Clean Sweep & Data Purge*)** adalah fasilitas tingkat tinggi yang dirancang khusus untuk pemilik usaha (*Owner*) yang ingin membersihkan sistem aplikasi kembali segar seperti baru.
 
 Fitur ini sangat berguna ketika:
 - Anda baru selesai melakukan uji coba / simulasi penjualan awal bersama staf kasir dan ingin membersihkan seluruh data dummy sebelum toko resmi dibuka (*Grand Opening*).
@@ -645,19 +645,19 @@ Fitur ini sangat berguna ketika:
 ### A. Lokasi Fitur & Hak Akses Eksklusif Owner
 1. Fitur ini **HANYA BISA DIAKSES OLEH PEMILIK USAHA (OWNER)**.
    - Karyawan, staf admin biasa, dan kasir **sama sekali tidak memiliki tombol ini** demi melindungi keamanan bisnis Anda dari sabotase atau kelalaian staf.
-2. Anda dapat menemukan tombol merah **"Pusat Reset Data / Setelan Pabrik"** di 2 tempat:
+2. Anda dapat menemukan tombol merah **"Reset ke Setelan Awal"** di 2 tempat:
    - **Panel Pemilik** -> menu **"Pengaturan Toko"** (kartu merah paling bawah di Zona Bahaya).
    - **Panel Pemilik** -> menu **"Pusat Data & Cadangan"** (bagian bawah di Zona Bahaya).
 
 ### B. Dua Pilihan Mode Pembersihan (Fleksibel & Aman)
-Saat Anda menekan tombol Reset Pabrik, sistem menyajikan 2 mode pembersihan yang dapat Anda pilih sesuai kebutuhan:
+Saat Anda menekan tombol Reset ke Setelan Awal, sistem menyajikan 2 mode pembersihan yang dapat Anda pilih sesuai kebutuhan:
 
 1. **Mode 1: Hanya Transaksi & Operasional (Direkomendasikan)**
    - **Yang Dibersihkan:** Riwayat order penjualan, struk kasir POS, riwayat shift kerja kasir, buku kas operasional, saldo kas laci, kartu piutang tempo, riwayat retur RMA, log pengiriman proyek, dan log stock opname.
    - **Yang TETAP AMAN:** Seluruh katalog produk, varian barang, harga modal HPP, harga jual, stok fisik barang, foto produk, kategori, data supplier, banner promosi, dan profil toko **TIDAK AKAN HILANG**.
    - *Sangat cocok dipakai jika master barang Anda sudah lengkap diinput, dan Anda hanya ingin menghapus transaksi uji coba kasir.*
 
-2. **Mode 2: Reset Total Pabrik (Semua Data Bersih Seperti Baru)**
+2. **Mode 2: Reset Total ke Setelan Awal (Semua Data Bersih Seperti Baru)**
    - **Yang Dibersihkan:** Seluruh transaksi penjualan + SELURUH produk, varian, kategori, banner promosi, data pelanggan, supplier, dan konfigurasi toko.
    - **Yang TETAP AMAN:** Lisensi software resmi Anda dan Akun Login Pemilik (Email & Password Anda) **DIJAMIN TETAP AKTIF 100%**. Anda tidak akan pernah terkunci dari sistem!
 
@@ -670,7 +670,7 @@ Untuk menjamin tidak ada data yang terhapus secara tidak sengaja, sistem menerap
 2. **Lapisan 2: Centang Persetujuan Risiko**
    - Anda wajib mencentang kotak pernyataan bahwa Anda memahami tindakan pembersihan ini bersifat permanen.
 3. **Lapisan 3: Pengetikan Frasa Konfirmasi Rahasia**
-   - Anda diwajibkan mengetikkan kata sandi konfirmasi tepat: `RESET PABRIK`.
+   - Anda diwajibkan mengetikkan kata sandi konfirmasi tepat: `RESET KE SETELAN AWAL`.
    - Tombol eksekusi berwarna merah akan terkunci dan tidak bisa diklik jika frasa tersebut belum diketik dengan benar.
 
 ---
@@ -689,7 +689,7 @@ Untuk menjamin tidak ada data yang terhapus secara tidak sengaja, sistem menerap
 | **Dua Lokasi Stok (Rak vs Gudang)** | Barang di rak habis padahal di gudang masih menumpuk; kasir menolak pembeli | Prioritas pengurangan stok rak etalase (*floor-first*); notifikasi transfer stok internal gudang. |
 | **Cetak Barcode Label Sendiri** | Biaya cetak stiker mahal atau toko tidak memiliki barcode untuk produk lokal | Cetak stiker label thermal atau kertas A4 mandiri dengan barcode Code 128 tajam terbaca scanner. |
 | **Keamanan Fintech & PIN Member** | Kekhawatiran limit PayLater disalahgunakan orang lain atau saldo diintip di kasir | Member tenang dengan PIN 6-digit Web Crypto, sensor mata privasi nominal & masking nomor kartu. |
-| **Reset Pabrik & Cadangan Otomatis** | Kebingungan menghapus data transaksi coba-coba; takut master barang hilang saat reset | Dua mode pembersihan (Hanya Transaksi vs Total); auto-download file cadangan darurat & proteksi lisensi. |
+| **Reset ke Setelan Awal & Cadangan Otomatis** | Kebingungan menghapus data transaksi coba-coba; takut master barang hilang saat reset | Dua mode pembersihan (Hanya Transaksi vs Total); auto-download file cadangan darurat & proteksi lisensi. |
 
 ---
 

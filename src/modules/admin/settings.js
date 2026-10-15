@@ -139,7 +139,7 @@ export const rAdmSet = () => {
         <!-- 9. Bento Status Lisensi & Layanan Terkelola (SaaS Engine) -->
         ${getSubscriptionBentoHtml()}
 
-        <!-- 10. Zona Bahaya: Reset Pabrik & Pembersihan Data (Khusus Owner) -->
+        <!-- 10. Zona Bahaya: Reset ke Setelan Awal & Pembersihan Data (Khusus Owner) -->
         ${getFactoryResetDangerCardHtml()}
     </div>
     `;
@@ -147,7 +147,7 @@ export const rAdmSet = () => {
 };
 
 /**
- * Render kartu zona bahaya reset pabrik (khusus akun Owner)
+ * Render kartu zona bahaya reset ke setelan awal (khusus akun Owner)
  */
 export const getFactoryResetDangerCardHtml = () => {
     if (!isOwnerUser()) return '';
@@ -160,17 +160,17 @@ export const getFactoryResetDangerCardHtml = () => {
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Zona Bahaya: Reset Pabrik &amp; Pembersihan Data</h4>
+                        <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Zona Bahaya: Reset ke Setelan Awal &amp; Pembersihan Data</h4>
                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Khusus Owner</span>
                     </div>
                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-                        Fitur reset pabrik khusus untuk mengembalikan sistem ke kondisi segar seperti baru. Dilengkapi opsi membersihkan data transaksi dummy uji coba saja atau pembersihan total, dengan perlindungan cadangan darurat otomatis.
+                        Fitur khusus pemilik toko untuk mengembalikan sistem ke setelan awal yang bersih dan segar. Dilengkapi opsi pembersihan data transaksi uji coba saja atau pembersihan total, dengan perlindungan cadangan darurat otomatis.
                     </p>
                 </div>
             </div>
             <button onclick="window.openFactoryResetModal && window.openFactoryResetModal()" class="w-full sm:w-auto px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md shadow-rose-600/25 active:scale-95 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap">
-                <i class="fa-solid fa-trash-can"></i>
-                <span>Reset Data Toko</span>
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Reset ke Setelan Awal</span>
             </button>
         </div>
     </div>

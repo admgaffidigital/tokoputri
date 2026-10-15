@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * ============================================================
- * UNIT TEST & VALIDASI SISTEM RESET PABRIK (FACTORY RESET GUARD)
+ * UNIT TEST & VALIDASI SISTEM RESET KE SETELAN AWAL (CLEAN SWEEP GUARD)
  * Memverifikasi integritas algoritma keamanan, validasi frasa konfirmasi,
  * proteksi peran Owner, dan pemisahan mode transaksi vs full reset.
  * ============================================================
@@ -31,7 +31,7 @@ function assert(condition, message) {
 }
 
 console.log('\n============================================================');
-console.log('🧪 MENJALANKAN TEST SUITE PUSAT RESET PABRIK (FACTORY RESET)');
+console.log('🧪 MENJALANKAN TEST SUITE PUSAT RESET KE SETELAN AWAL (CLEAN SWEEP)');
 console.log('============================================================\n');
 
 // 1. Uji Registrasi Modal di router.js
@@ -54,19 +54,21 @@ assert(factoryResetContent.includes('openFactoryResetModal'), 'Fungsi openFactor
 assert(factoryResetContent.includes('closeFactoryResetModal'), 'Fungsi closeFactoryResetModal diekspor');
 assert(factoryResetContent.includes('executeFactoryResetAction'), 'Fungsi executeFactoryResetAction diekspor');
 assert(factoryResetContent.includes('exportEmergencySafetyBackup'), 'Fungsi exportEmergencySafetyBackup diekspor');
-assert(factoryResetContent.includes("TARGET_CONFIRM_PHRASE = 'RESET PABRIK'"), 'Frasa konfirmasi tepat: RESET PABRIK');
+assert(factoryResetContent.includes("TARGET_CONFIRM_PHRASE = 'RESET KE SETELAN AWAL'"), 'Frasa konfirmasi tepat: RESET KE SETELAN AWAL');
 
 // 3. Uji Logika Validasi Frasa Konfirmasi & Checkbox Risiko
 console.log('\n🔐 3. Uji Logika Validasi Frasa Konfirmasi:');
 const validatePhrase = (phrase, riskChecked) => {
-    const isPhraseValid = String(phrase || '').trim().toUpperCase() === 'RESET PABRIK';
+    const clean = String(phrase || '').trim().toUpperCase();
+    const isPhraseValid = clean === 'RESET KE SETELAN AWAL' || clean === 'RESET SETELAN AWAL' || clean === 'RESET PABRIK';
     return isPhraseValid && Boolean(riskChecked);
 };
 
-assert(validatePhrase('RESET PABRIK', true) === true, 'Frasa "RESET PABRIK" dengan checkbox aktif disetujui');
-assert(validatePhrase('reset pabrik', true) === true, 'Frasa huruf kecil "reset pabrik" otomatis dinormalisasi');
-assert(validatePhrase('  RESET PABRIK  ', true) === true, 'Frasa dengan spasi di awal/akhir otomatis di-trim');
-assert(validatePhrase('RESET PABRIK', false) === false, 'Frasa benar ditolak jika checkbox risiko belum dicentang');
+assert(validatePhrase('RESET KE SETELAN AWAL', true) === true, 'Frasa "RESET KE SETELAN AWAL" dengan checkbox aktif disetujui');
+assert(validatePhrase('reset ke setelan awal', true) === true, 'Frasa huruf kecil "reset ke setelan awal" otomatis dinormalisasi');
+assert(validatePhrase('  RESET KE SETELAN AWAL  ', true) === true, 'Frasa dengan spasi di awal/akhir otomatis di-trim');
+assert(validatePhrase('RESET SETELAN AWAL', true) === true, 'Frasa alternatif "RESET SETELAN AWAL" juga didukung');
+assert(validatePhrase('RESET KE SETELAN AWAL', false) === false, 'Frasa benar ditolak jika checkbox risiko belum dicentang');
 assert(validatePhrase('RESET', true) === false, 'Kata tidak lengkap "RESET" ditolak');
 assert(validatePhrase('HAPUS DATA', true) === false, 'Kata salah "HAPUS DATA" ditolak');
 assert(validatePhrase('', true) === false, 'Input kosong ditolak');
@@ -80,7 +82,7 @@ assert(settingsContent.includes('openFactoryResetModal'), 'settings.js mengekspo
 
 const backupSyncPath = path.join(rootDir, 'src', 'modules', 'admin', 'backup-sync.js');
 const backupSyncContent = fs.readFileSync(backupSyncPath, 'utf-8');
-assert(backupSyncContent.includes('Zona Bahaya: Reset Pabrik &amp; Pembersihan Data'), 'backup-sync.js menyematkan bagian Zona Bahaya');
+assert(backupSyncContent.includes('Zona Bahaya: Reset ke Setelan Awal &amp; Pembersihan Data'), 'backup-sync.js menyematkan bagian Zona Bahaya');
 assert(backupSyncContent.includes('openFactoryResetModal'), 'backup-sync.js mengekspos openFactoryResetModal ke window');
 
 // 5. Uji Struktur DOM Modal di index.html
@@ -99,9 +101,9 @@ assert(factoryResetContent.includes('isOwnerUser'), 'Pemeriksaan isOwnerUser dit
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passedTests} Passed, ${failedTests} Failed`);
 if (failedTests === 0) {
-    console.log('✨ SISTEM RESET PABRIK 100% AMAN, VALID & MEMENUHI STANDAR FORTRESS! ✅');
+    console.log('✨ SISTEM RESET KE SETELAN AWAL 100% AMAN, VALID & MEMENUHI STANDAR FORTRESS! ✅');
 } else {
-    console.error('❌ Terdapat kegagalan pengujian pada modul Reset Pabrik.');
+    console.error('❌ Terdapat kegagalan pengujian pada modul Reset ke Setelan Awal.');
     process.exit(1);
 }
 console.log('============================================================\n');
