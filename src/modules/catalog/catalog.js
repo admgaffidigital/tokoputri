@@ -568,14 +568,14 @@ export const resetSemuaFilter = () => {
 
 // ─── PENCARIAN DINAMIS & ROLLING PLACEHOLDER TICKER ───────
 export const SEARCH_SUGGESTIONS = [
-    'Cari Semen Gresik / Tiga Roda...',
-    'Cari Cat Tembok No Drop...',
-    'Cari Pipa PVC Rucika 3/4"...',
-    'Cari Keramik Lantai & Granit 60x60...',
-    'Cari Mesin Bor & Gerinda Listrik...',
-    'Cari Seng Spandek & Baut SDS...',
-    'Cari Kloset & Kran Air Stainless...',
-    'Cari Paku, Kawat & Besi Beton...'
+    'Cari Semen Gresik, Tiga Roda...',
+    'Cari Cat Tembok, No Drop...',
+    'Cari Pipa PVC Rucika...',
+    'Cari Keramik Lantai, Granit...',
+    'Cari Mesin Bor & Gerinda...',
+    'Cari Seng Spandek, Baut...',
+    'Cari Kran Air & Sanitari...',
+    'Cari Besi Beton, Kawat...'
 ];
 
 let searchSuggestionIndex = 0;

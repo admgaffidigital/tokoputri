@@ -4950,6 +4950,26 @@ html.dark .search-clean-input {
     color: #ffffff !important;
 }
 
+/* Ukuran Font Proporsional: Elegan, Proporsional dengan Judul Toko & Bebas Raksasa/Jomplang */
+#mobile-header-search {
+    font-size: 15px !important;
+}
+
+#search-input {
+    font-size: 14px !important;
+}
+
+/* Placeholder Kolom Pencarian: Ukuran Rapi (13px), Bebas Terpotong Tombol SCAN & Seimbang dengan Nama Toko */
+#mobile-header-search::placeholder {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+#search-input::placeholder {
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+}
+
 /* Placeholder Kolom Pencarian: Tegas, Mudah Dibaca, Berbobot Archivo, Bebas Jomplang/Pudar */
 #mobile-header-search::placeholder,
 #search-input::placeholder,
@@ -4993,5 +5013,6 @@ html.dark .search-clean-input::placeholder {
     color: #cbd5e1 !important;
     opacity: 1 !important;
 }
+
 
 
