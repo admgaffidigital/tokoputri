@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.17.9** (Android VersionCode: `11709`)
+* **Versi Rilis**: **v1.18.0** (Android VersionCode: `11800`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,17 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.18.0 — Pustaka Database Produk Bersama & Multi-Varian, Impor Selektif Per-Produk, Kustomisasi Harga Modal & Jual Toko, Two-Way Cloud Presets & Bento UI (15 Okt 2026)
+- **Pustaka Master Produk Bersama (Global Template Library)**: Menghadirkan pustaka induk berisi 27+ produk material bangunan & alat teknik standar Indonesia (Cat & Pelapis, Semen & Mortar, Pipa PVC, Besi & Baja, Perkakas Listrik, Baut SDS, Sanitari, dan Kelistrikan) lengkap dengan spesifikasi teknis, merek ternama, dan paket multi-varian siap pakai untuk mempercepat klien baru mengisi katalog toko dalam 5 menit tanpa perlu mengetik dari awal.
+- **Impor Selektif Per-Produk (Anti-Banjir & Anti-Katalog Bercampur)**: Sistem impor mandiri 1-per-1 yang menyalin master template ke katalog lokal toko (`appData.products`). Mencegah tercampurnya katalog toko dengan barang kosong dan memastikan toko hanya menjual barang yang benar-benar ada stok fisiknya.
+- **Drawer Pratinjau & Kustomisasi Varian Interaktif**: Modal drawer Bento yang memungkinkan klien mengatur harga jual toko, modal beli (HPP), dan stok awal rak/gudang secara mandiri, serta memilih checklist varian ukuran/warna yang dijual.
+- **Deteksi Status Cerdas (Smart Badging)**: Menampilkan status badge '✅ Ada di Toko' jika produk master sudah terimpor ke katalog toko dan '📥 Siap Impor' jika belum, mencegah terjadinya duplikasi barang.
+- **Two-Way Cloud Sharing (Simpan Produk Toko ke Pustaka Master)**: Tombol 1-klik di tabel produk admin untuk menyimpan produk kustom lokal menjadi master template bersama yang dapat dipakai ulang oleh cabang atau klien lain.
+- **Sub-Tab Database Swatch Warna Cat Terpadu**: Mengintegrasikan katalog kode warna HEX cat yang sudah ada ke dalam sub-tab terdedikasi dengan antarmuka Bento Grid modern, menjamin kompatibilitas 100%.
+- **Multi-Channel Distribution v1.18.0**: Android VersionCode `11800`, versionName `1.18.0`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.17.8 — Navigasi Deterministik 1-Klik, Sanitasi Peta Modal & Stabilitas Keyboard Native Android (15 Okt 2026)
 - **Navigasi Kembali In-App Deterministik Seketika (1-Klik Pasti Kembali)**: Mengeliminasi tombol kembali yang macet di web dan aplikasi Android dengan mengganti ketergantungan rapuh `window.history.back()` pada tombol in-app header (Keranjang, Checkout, Pembayaran, Pesanan, Favorit, FAQ, dan Admin Login) menjadi navigasi deterministik terstruktur `changeView(targetView, true)` seketika pada sentuhan pertama.

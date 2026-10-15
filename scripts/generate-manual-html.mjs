@@ -227,7 +227,7 @@ const fullHtml = `<!DOCTYPE html>
         <div>
           <h1 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight flex items-center gap-2">
             Panduan Operasional Toko & Kasir
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">v1.17.6</span>
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">v1.18.0</span>
           </h1>
           <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">100% Non-Teknis &bull; Untuk Pemilik Usaha, Manajer & Staf Kasir</p>
         </div>
