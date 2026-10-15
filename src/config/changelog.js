@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-17-08",
+        "version": "v1.17.8",
+        "date": "2026-10-15",
+        "title": "Resolusi Komprehensif Tombol Kembali & Tutup Modal, Navigasi Deterministik Seketika & Stabilitas Keyboard Native Android",
+        "category": "feature",
+        "badge": "Navigasi Deterministik & Keyboard Native v1.17.8",
+        "items": [
+            "Navigasi Kembali In-App Deterministik Seketika (1-Klik Pasti Kembali): Mengeliminasi tombol kembali yang macet di web dan aplikasi Android dengan mengganti ketergantungan rapuh window.history.back() pada tombol in-app header (Keranjang, Checkout, Pembayaran, Pesanan, Favorit, FAQ, dan Admin Login) menjadi navigasi deterministik terstruktur changeView(targetView, true) seketika pada sentuhan pertama.",
+            "Resolusi Konflik Double-Resize Keyboard Android (Native Window Resizing): Mengubah konfigurasi plugin Keyboard Capacitor dari 'resize: body' menjadi 'resize: native'. Eliminasi JavaScript layout thrashing pada document.body menuntaskan 100% masalah virtual keyboard Android (Gboard, Samsung Keyboard, Xiaomi) yang membuka-menutup sendiri (mental) saat pertama kali mengetik.",
+            "Sanitasi Peta Modal & Resolusi False-Positive factoryReset: Membersihkan elemen modal-factory-reset-box dari MODAL_ELEMENT_MAP agar status modal tertutup tidak lagi salah dilaporkan sebagai terbuka (isModalOpenInDOM) yang sebelumnya memblokir tombol kembali di halaman web.",
+            "Proteksi Sinkronisasi History URL Produk (Zero Navigation Lock): Menghapus eksekusi history.replaceState sinkron yang bertabrakan dengan in-flight history.back() saat menutup modal produk (closeProductModal) di engine Chromium/WebKit.",
+            "Multi-Channel Distribution v1.17.8 (Android versionCode 11708)."
+        ]
+    },
+    {
         "id": "log-1-17-07",
         "version": "v1.17.7",
         "date": "2026-10-15",
@@ -74,24 +89,6 @@ export const DEFAULT_CHANGELOG = [
             "Proteksi User-Select Text pada Form: Memastikan seleksi teks murni aktif pada elemen input, select, dan textarea guna menjamin kursor tetap persisten di kolom yang sedang diketik.",
             "Verifikasi 16 Test Suite Sistem Lolos 100%: Menjaga seluruh pengujian otomatis integritas RMA, Member VIP, Barcode Code 128, POS Header, Laporan Keuangan CSV & SVG, Estimator Material, Auth Guard, dan 78 dialog modal sistem lulus 100%.",
             "Multi-Channel Distribution v1.17.4 (Android versionCode 11704)."
-        ]
-    },
-    {
-        "id": "log-1-17-03",
-        "version": "v1.17.3",
-        "date": "2026-10-15",
-        "title": "Proteksi Keamanan Fintech Panel Member: Autentikasi PIN 6-Digit, Sensor Mata Privasi Finansial (Anti Shoulder-Surfing), Masking Kartu VIP & Auto-Lock Sesi",
-        "category": "feature",
-        "badge": "Fintech Security Member Panel & Privacy Eye Shield v1.17.3",
-        "items": [
-            "Autentikasi PIN Keamanan 6-Digit Member: Memproteksi akses data sensitif pelanggan (nomor WhatsApp, barcode kartu VIP, sisa limit kredit, dan seluruh riwayat tagihan PayLater) dengan verifikasi 6-digit PIN terenkripsi salt SHA-256 via Web Crypto API (zero plain-text storage).",
-            "Antarmuka Keypad PIN Bento 6-Dots Interaktif: Menghadirkan keypad numerik modular bergaya Bento Grid dengan 6 bulatan indikator responsif, animasi haptic & audio tick native, serta dukungan penuh pengetikan langsung via keyboard fisik PC/laptop (0-9, Backspace, Escape).",
-            "Mode Sensor Privasi Finansial Mata (Privacy Eye Shield 👁️): Seluruh angka saldo PayLater, limit terpakai, total plafon, serta angsuran tagihan berjalan otomatis disensor sebagai 'Rp ••••••' secara default untuk mencegah intipan visual di tempat umum (anti shoulder-surfing), dengan tombol toggle intip cepat di header.",
-            "Masking Kartu Member Digital & Barcode Laser Kasir: Menyamarkan nomor telepon dan nomor kartu VIP (+62 812-••••-7890 dan PUTRI • 8123 • •••• • 8901), dengan tetap mempertahankan integritas barcode Code 128 fisik di kasir agar scanner laser toko tetap membaca data asli 100% cepat dan akurat.",
-            "Kunci Sesi Cepat & Proteksi Perangkat Publik (Anti Sesi Tertinggal): Tombol Kunci Sesi (Quick Lock) persisten di header modal serta opsi centang 'Ingat sesi di perangkat pribadi ini' yang otomatis memusnahkan sesi member seketika saat modal ditutup jika dibuka pada perangkat kasir atau komputer umum.",
-            "Fitur Reset PIN Member oleh Admin CMS: Menyediakan tombol Reset PIN terdedikasi di tabel data pelanggan CMS Admin lengkap dengan dialog konfirmasi aman agar staf admin/owner dapat membantu pelanggan yang lupa PIN.",
-            "Verifikasi 16 Test Suite Sistem Lolos 100%: 61 unit test member & logika loyalitas lulus 100%, seluruh pengujian otomatis sistem integritas toko lulus tanpa regresi.",
-            "Multi-Channel Distribution v1.17.3 (Android versionCode 11703)."
         ]
     }
 ];

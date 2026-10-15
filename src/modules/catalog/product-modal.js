@@ -232,17 +232,21 @@ export const closeProductModal = (fH = false) => {
 
         // Restore URL, Meta Tags, & JSON-LD
         const urlParams = new URLSearchParams(window.location.search);
+        const hasPParam = urlParams.has('p');
         urlParams.delete('p');
         let newUrl = window.location.pathname;
         if (urlParams.toString()) newUrl += '?' + urlParams.toString();
         
-        // Pertahankan history state aktif agar tidak merusak state view
-        const curState = (window.history.state && typeof window.history.state === 'object') ? { ...window.history.state } : {};
-        delete curState.modal;
-        if (!curState.view) curState.view = curViewName || 'view-catalog';
-        try {
-            window.history.replaceState(curState, "Toko Putri", newUrl);
-        } catch(e) {}
+        // Hanya sinkronkan URL via replaceState jika ada query param ?p= atau saat popstate (fH=true)
+        // Menghindari race-condition di Chromium yang membatalkan history.back() saat replaceState dipanggil bersamaan
+        if (fH || hasPParam) {
+            const curState = (window.history.state && typeof window.history.state === 'object') ? { ...window.history.state } : {};
+            delete curState.modal;
+            if (!curState.view) curState.view = curViewName || 'view-catalog';
+            try {
+                window.history.replaceState(curState, "Toko Putri", newUrl);
+            } catch(e) {}
+        }
         
         if (typeof window.updateSEO === 'function') {
             window.updateSEO(

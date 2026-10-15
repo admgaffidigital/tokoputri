@@ -393,7 +393,7 @@ export const MODAL_ELEMENT_MAP = {
     deliveryOrder: ['modal-delivery-order', 'delivery-order-modal'],
     deliverySignature: ['modal-delivery-signature', 'delivery-signature-modal'],
     flashSaleForm: ['modal-flash-sale-form', 'flash-sale-form-modal'],
-    factoryReset: ['modal-factory-reset', 'modal-factory-reset-box']
+    factoryReset: ['modal-factory-reset', 'factory-reset-modal']
 };
 
 /**
@@ -995,37 +995,33 @@ export const handleAppBackButton = () => {
 
     // 3. Jika sedang di view selain view-catalog (beranda), kembali berurutan secara terstruktur
     if (curViewName !== 'view-catalog') {
-        // Navigasi mundur berurutan: Payment -> Checkout -> Cart -> Catalog
+        let targetView = 'view-catalog';
         if (curViewName === 'view-payment') {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                changeView('view-checkout', true);
+            targetView = 'view-checkout';
+        } else if (curViewName === 'view-checkout') {
+            targetView = 'view-cart';
+        } else if (curViewName === 'view-cart') {
+            targetView = 'view-catalog';
+        } else if (curViewName === 'view-orders' || curViewName === 'view-wishlist' || curViewName === 'view-faq' || curViewName === 'view-admin-login') {
+            targetView = 'view-catalog';
+        } else if (Array.isArray(viewHistoryStack) && viewHistoryStack.length > 1) {
+            const prevInStack = viewHistoryStack[viewHistoryStack.length - 2];
+            if (prevInStack && prevInStack !== curViewName) {
+                targetView = prevInStack;
             }
-            return;
         }
-        if (curViewName === 'view-checkout') {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                changeView('view-cart', true);
+
+        // Transisi tampilan deterministik seketika (100% responsif pada sentuhan pertama)
+        changeView(targetView, true);
+
+        // Selaraskan riwayat browser secara aman
+        try {
+            if (typeof history !== 'undefined') {
+                if (window.history.length > 1 && window.history.state && window.history.state.view) {
+                    window.history.replaceState({ view: targetView }, '', window.location.href);
+                }
             }
-            return;
-        }
-        if (curViewName === 'view-cart') {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                changeView('view-catalog', true);
-            }
-            return;
-        }
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            // Fallback jika riwayat browser tidak tersedia: kembali ke beranda
-            changeView('view-catalog', true);
-        }
+        } catch(e) {}
         return;
     }
 
@@ -1053,11 +1049,11 @@ export const setupHistoryRouter = () => {
     } catch(e) {}
 
     window.addEventListener('popstate', e => {
-        // Jika penutupan modal dipicu secara terprogram (klik tombol X/backdrop), lewati event popstate
+        // Jika penutupan modal dipicu secara terprogram (klik tombol X/backdrop), lewati event popstate kecuali membawa navigasi view
         if (isProgrammaticModalClose) {
             isProgrammaticModalClose = false;
             if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
-            return;
+            if (!e.state || !e.state.view) return;
         }
 
         // 1. Jika ada modal yang terbuka, tutup modal teratas (LIFO)

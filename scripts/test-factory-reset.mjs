@@ -39,7 +39,7 @@ console.log('📐 1. Uji Registrasi Modal di router.js:');
 const routerPath = path.join(rootDir, 'src', 'core', 'router.js');
 const routerContent = fs.readFileSync(routerPath, 'utf-8');
 
-assert(routerContent.includes("factoryReset: ['modal-factory-reset', 'modal-factory-reset-box']"), 'factoryReset terdaftar di MODAL_ELEMENT_MAP');
+assert(routerContent.includes("factoryReset: ['modal-factory-reset', 'factory-reset-modal']"), 'factoryReset terdaftar di MODAL_ELEMENT_MAP');
 assert(routerContent.includes("case 'factoryReset':"), 'factoryReset memiliki case di closeModalByName');
 assert(routerContent.includes("'factoryReset'"), 'factoryReset terdaftar di allKnownModals');
 
