@@ -4908,3 +4908,90 @@ textarea:focus-visible {
     background: transparent !important;
 }
 
+/* ─── HARMONISASI TIPOGRAFI & TEKS KOLOM PENCARIAN BERTEMA (TEGAS, KONTRASTING & SENADA THEME) ─── */
+#mobile-header-search,
+#search-input,
+#pos-search-input,
+#admin-search-input,
+#master-search-input,
+#so-quick-search-input,
+#tempo-search-input,
+#supplier-search-input,
+#purchase-search-input,
+#returns-search-input,
+#expense-search-input,
+#stock-report-search-input,
+#faq-search-input,
+#quick-variant-search-input,
+.header-search-capsule input,
+.search-clean-input {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    font-family: 'Archivo', 'Barlow', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: -0.015em !important;
+}
+
+html.dark #mobile-header-search,
+html.dark #search-input,
+html.dark #pos-search-input,
+html.dark #admin-search-input,
+html.dark #master-search-input,
+html.dark #so-quick-search-input,
+html.dark #tempo-search-input,
+html.dark #supplier-search-input,
+html.dark #purchase-search-input,
+html.dark #returns-search-input,
+html.dark #expense-search-input,
+html.dark #stock-report-search-input,
+html.dark #faq-search-input,
+html.dark #quick-variant-search-input,
+html.dark .header-search-capsule input,
+html.dark .search-clean-input {
+    color: #ffffff !important;
+}
+
+/* Placeholder Kolom Pencarian: Tegas, Mudah Dibaca, Berbobot Archivo, Bebas Jomplang/Pudar */
+#mobile-header-search::placeholder,
+#search-input::placeholder,
+#pos-search-input::placeholder,
+#admin-search-input::placeholder,
+#master-search-input::placeholder,
+#so-quick-search-input::placeholder,
+#tempo-search-input::placeholder,
+#supplier-search-input::placeholder,
+#purchase-search-input::placeholder,
+#returns-search-input::placeholder,
+#expense-search-input::placeholder,
+#stock-report-search-input::placeholder,
+#faq-search-input::placeholder,
+#quick-variant-search-input::placeholder,
+.header-search-capsule input::placeholder,
+.search-clean-input::placeholder {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    font-family: 'Archivo', 'Barlow', system-ui, -apple-system, sans-serif !important;
+    opacity: 1 !important;
+    letter-spacing: -0.01em !important;
+}
+
+html.dark #mobile-header-search::placeholder,
+html.dark #search-input::placeholder,
+html.dark #pos-search-input::placeholder,
+html.dark #admin-search-input::placeholder,
+html.dark #master-search-input::placeholder,
+html.dark #so-quick-search-input::placeholder,
+html.dark #tempo-search-input::placeholder,
+html.dark #supplier-search-input::placeholder,
+html.dark #purchase-search-input::placeholder,
+html.dark #returns-search-input::placeholder,
+html.dark #expense-search-input::placeholder,
+html.dark #stock-report-search-input::placeholder,
+html.dark #faq-search-input::placeholder,
+html.dark #quick-variant-search-input::placeholder,
+html.dark .header-search-capsule input::placeholder,
+html.dark .search-clean-input::placeholder {
+    color: #cbd5e1 !important;
+    opacity: 1 !important;
+}
+
+
