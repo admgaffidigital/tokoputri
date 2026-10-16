@@ -99,7 +99,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || '\${top5[0]?.version || 'v1.18.1'}';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || '\${top5[0]?.version || 'v1.18.2'}';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

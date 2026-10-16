@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.18.1** (Android VersionCode: `11801`)
+* **Versi Rilis**: **v1.18.2** (Android VersionCode: `11802`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,23 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.18.2 — Pengelolaan Master Preset (Hapus & Pulihkan), Native Pull-to-Refresh CMS Admin & Standarisasi Universal Form Input & Tombol (17 Okt 2026)
+- **Fitur Hapus & Pulihkan Master Preset (Database Produk Bersama)**: Menghadirkan kapabilitas hapus dan pulihkan template produk bersama (custom maupun bawaan) dengan proteksi konfirmasi aman, penanda status terhapus, panel filter pemulihan, dan auto-sinkronisasi counter realtime di CMS Admin.
+- **Native Pull-to-Refresh & Tombol Segarkan 1-Klik CMS Admin**: Pengalaman navigasi smartphone tarik ke bawah untuk memuat ulang data etalase dan CMS Admin secara instan dengan indikator putar visual dan getaran haptic feedback, didukung tombol 'Segarkan' 1-klik di header admin desktop & mobile.
+- **Universal Button & Form Input Consistency Harmony Engine**: Standardisasi konsistensi 100% pada seluruh tombol (squircle radius 1rem tombol utama & 0.875rem tombol aksi, min-height 44px touch target, active:scale-[0.96] tactile press), seluruh kolom input/select/textarea (tinggi seragam 44px, radius 0.875rem, font 16px mobile anti auto-zoom/mental, focus ring bertema `var(--color-primary)`, dan placeholder kontras tinggi). Textarea min-height 5.5rem (88px).
+- **Multi-Channel Distribution v1.18.2**: Android VersionCode `11802`, versionName `1.18.2`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
+
+### v1.18.1 — Harmonisasi Presisi UI/UX Native App: Redesain Kartu Reward Bersih, Touch Target Ergonomis Pesanan & Wishlist, Margin Bento Simetris & Live Zero-404 (16 Okt 2026)
+- **Redesain Kartu Produk, Flash Sale & Reward Presisi Full Frame**: Menghilangkan badge hadiah gratis pada kartu reward agar kanvas murni bersih, menyempurnakan foto produk pada katalog, flash sale, dan reward menjadi presisi 1:1 full frame edge-to-edge tanpa padding menjorok, serta menyelaraskan tema dark mode (slate-900 / slate-950) monolitik yang mewah dan konsisten.
+- **Standardisasi Touch Target Ergonomis Pesanan & Wishlist**: Meningkatkan ukuran tombol aksi interaktif 'Detail' & 'Status' pada riwayat pesanan serta tombol 'Beli' & 'Hapus' pada daftar keinginan (wishlist) menjadi min-height 38-40px dengan padding lapang dan font tebal yang nyaman untuk navigasi jempol di smartphone.
+- **Harmonisasi Margin Bento Storefront Universal**: Menyelaraskan seluruh ritme vertikal antar seksi etalase toko (Header, Banner Hero, Flash Sale, Kategori, Rekomendasi Produk, dan Footer Bento Hub) dengan jarak simetris mt-4 sm:mt-5 yang konsisten dan bebas tumpang-tindih.
+- **Resolusi Zero-404 Aset Live CDN & Stabilitas Modul**: Memverifikasi integritas seluruh dynamic chunk modules (module-member, module-print, module-admin, dll.) pada live CDN Vercel agar selalu merespons 200 OK tanpa kendala modul terputus saat navigasi.
+- **Multi-Channel Distribution v1.18.1**: Android VersionCode `11801`, versionName `1.18.1`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.18.0 — Pustaka Database Produk Bersama & Multi-Varian, Impor Selektif Per-Produk, Kustomisasi Harga Modal & Jual Toko, Two-Way Cloud Presets & Bento UI (15 Okt 2026)
 - **Pustaka Master Produk Bersama (Global Template Library)**: Menghadirkan pustaka induk berisi 27+ produk material bangunan & alat teknik standar Indonesia (Cat & Pelapis, Semen & Mortar, Pipa PVC, Besi & Baja, Perkakas Listrik, Baut SDS, Sanitari, dan Kelistrikan) lengkap dengan spesifikasi teknis, merek ternama, dan paket multi-varian siap pakai untuk mempercepat klien baru mengisi katalog toko dalam 5 menit tanpa perlu mengetik dari awal.

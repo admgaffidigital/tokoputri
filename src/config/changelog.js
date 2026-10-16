@@ -16,6 +16,20 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-02",
+        "version": "v1.18.2",
+        "date": "2026-10-17",
+        "title": "Pengelolaan Master Preset (Hapus & Pulihkan), Native Pull-to-Refresh CMS Admin & Standarisasi Universal Form Input & Tombol",
+        "category": "feature",
+        "badge": "Master Preset, Pull-to-Refresh & UI Harmony v1.18.2",
+        "items": [
+            "Fitur Hapus & Pulihkan Master Preset (Database Produk Bersama): Menghadirkan kapabilitas hapus dan pulihkan template produk bersama (custom maupun bawaan) dengan proteksi konfirmasi aman, penanda status terhapus, panel filter pemulihan, dan auto-sinkronisasi counter realtime di CMS Admin.",
+            "Native Pull-to-Refresh & Tombol Segarkan 1-Klik CMS Admin: Pengalaman navigasi smartphone tarik ke bawah untuk memuat ulang data etalase dan CMS Admin secara instan dengan indikator putar visual dan getaran haptic feedback, didukung tombol 'Segarkan' 1-klik di header admin desktop & mobile.",
+            "Universal Button & Form Input Consistency Harmony Engine: Standardisasi konsistensi 100% pada seluruh tombol (squircle radius 1rem tombol utama & 0.875rem tombol aksi, min-height 44px touch target, active:scale-[0.96] tactile press), seluruh kolom input/select/textarea (tinggi seragam 44px, radius 0.875rem, font 16px mobile anti auto-zoom/mental, focus ring bertema var(--color-primary), dan placeholder kontras tinggi).",
+            "Multi-Channel Distribution v1.18.2 (Android versionCode 11802)."
+        ]
+    },
+    {
         "id": "log-1-18-01",
         "version": "v1.18.1",
         "date": "2026-10-16",
@@ -79,21 +93,6 @@ export const DEFAULT_CHANGELOG = [
             "Sanitasi Peta Modal & Resolusi False-Positive factoryReset: Membersihkan elemen modal-factory-reset-box dari MODAL_ELEMENT_MAP agar status modal tertutup tidak lagi salah dilaporkan sebagai terbuka (isModalOpenInDOM) yang sebelumnya memblokir tombol kembali di halaman web.",
             "Proteksi Sinkronisasi History URL Produk (Zero Navigation Lock): Menghapus eksekusi history.replaceState sinkron yang bertabrakan dengan in-flight history.back() saat menutup modal produk (closeProductModal) di engine Chromium/WebKit.",
             "Multi-Channel Distribution v1.17.8 (Android versionCode 11708)."
-        ]
-    },
-    {
-        "id": "log-1-17-07",
-        "version": "v1.17.7",
-        "date": "2026-10-15",
-        "title": "Pusat Reset ke Setelan Awal (Clean Sweep & Data Purge), Triple-Guard Security, Auto-Backup Darurat & Opsi Pembersihan Transaksi",
-        "category": "security",
-        "badge": "Setelan Awal & Triple-Guard Security v1.17.7",
-        "items": [
-            "Fitur Reset ke Setelan Awal Eksklusif Pemilik Toko (Owner-Only): Menghadirkan pusat reset data dan pembersihan aplikasi terpadu di menu Pengaturan Toko dan Pusat Cadangan Data yang hanya dapat diakses oleh akun Pemilik (Owner).",
-            "Dua Opsi Mode Pembersihan Data: Opsi 1 (Hanya Transaksi & Operasional) membersihkan order, transaksi kasir, log shift, kas laci, pengeluaran, piutang tempo, RMA, dan log opname dengan tetap mempertahankan master produk, stok, kategori, dan supplier; Opsi 2 (Reset Total ke Setelan Awal) membersihkan seluruh transaksi + katalog produk + varian + banner + data pelanggan menjadi fresh bersih seperti baru.",
-            "Triple-Guard Security Anti-Kecelakaan Data: Proteksi tiga lapis mencakup: Unduh Otomatis Cadangan Darurat (Emergency Safety Backup JSON) sebelum penghapusan, konfirmasi ketik frasa rahasia 'RESET KE SETELAN AWAL', serta persetujuan risiko via checkbox interaktif.",
-            "Proteksi Kedaulatan Lisensi & Kredensial Owner: Menjamin status langganan software (freshmart_licenses) dan akun login Pemilik Toko (ADMIN_UID) 100% aman dan tidak terhapus.",
-            "Multi-Channel Distribution v1.17.7 (Android versionCode 11707)."
         ]
     }
 ];
@@ -170,7 +169,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.1';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.2';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

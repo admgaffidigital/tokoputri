@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.18.1';
+    const localVer = getLatestVersion(appData) || 'v1.18.2';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ( Official Store ) ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '16 Okt 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '17 Okt 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '16.3 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,11 +83,11 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.18.1';
+        const fallbackVer = getLatestVersion(appData) || 'v1.18.2';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,
-            publishedAt: '16 Okt 2026',
+            publishedAt: '17 Okt 2026',
             fileSize: '16.3 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
@@ -217,14 +217,14 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.18.0</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.18.2</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
                         <i class="fa-brands fa-android text-emerald-500 text-xs"></i>
                         <span>Kompatibel: Android 7.0 (Nougat) s/d Android 15</span>
                     </span>
-                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 15 Okt 2026</span>
+                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 17 Okt 2026</span>
                 </div>
             </div>
 
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.18.0) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.18.2) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.18.0</span>
+                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.18.2</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,25 +264,25 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
+                            <b>Pengelolaan Master Preset (Hapus &amp; Pulihkan):</b> Hapus dan pulihkan template produk bersama dengan konfirmasi aman, status terhapus, dan panel pemulihan 1-klik di CMS Admin.
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
+                        <span class="font-medium text-[11px] leading-relaxed">
+                            <b>Native Pull-to-Refresh &amp; Tombol Segarkan 1-Klik:</b> Tarik ke bawah untuk refresh real-time di smartphone serta tombol Segarkan di header admin desktop/mobile.
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
+                        <span class="font-medium text-[11px] leading-relaxed">
+                            <b>Universal Button &amp; Form Consistency:</b> Standardisasi tombol squircle 1rem/0.875rem, touch-target minimal 44px, dan form input 16px anti auto-zoom/mental di seluruh web aplikasi.
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
+                        <span class="font-medium text-[11px] leading-relaxed">
                             <b>Pustaka Master Produk &amp; Multi-Varian:</b> Akses 27+ template produk bahan bangunan &amp; perkakas terstandar lengkap dengan multi-varian dan impor selektif per-produk.
-                        </span>
-                    </div>
-                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
-                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
-                        <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Kustomisasi Harga Toko Mandiri:</b> Sesuaikan harga jual toko, harga modal (HPP), dan stok awal rak/gudang secara mandiri saat mengimpor master produk.
-                        </span>
-                    </div>
-                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
-                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
-                        <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Stabilitas Penuh Kolom Pencarian:</b> Menuntaskan masalah keyboard Android yang membuka-menutup sendiri di search bar melalui standardisasi font 16px, zero-shift CSS, dan native placeholder.
-                        </span>
-                    </div>
-                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
-                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
-                        <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Pusat Reset ke Setelan Awal Eksklusif Pemilik:</b> Fitur pembersihan data terpadu aman dengan Triple-Guard Security &amp; cadangan darurat otomatis (JSON).
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
@@ -460,7 +460,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.18.0';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.18.2';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);
