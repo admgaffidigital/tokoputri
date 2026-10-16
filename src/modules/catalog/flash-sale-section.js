@@ -87,7 +87,7 @@ export const renderStorefrontFlashSale = () => {
         const variantSuffix = item.variantName ? ` (${item.variantName})` : '';
 
         return `
-        <div class="group relative flex w-[172px] sm:w-[205px] md:w-[220px] shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start" style="transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;">
+        <div class="group relative flex w-[180px] sm:w-[215px] md:w-[228px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start" style="transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;">
             <!-- Badge Diskon Petir Harmonis Tema -->
             <div class="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
                 <i class="fa-solid fa-bolt text-amber-300 text-[10px]"></i>
@@ -110,9 +110,9 @@ export const renderStorefrontFlashSale = () => {
             </div>
 
             <!-- Detail & Harga -->
-            <div class="flex flex-1 flex-col justify-between p-3">
+            <div class="flex flex-1 flex-col justify-between p-3.5">
                 <div>
-                    <h4 class="line-clamp-2 text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors" title="${esc(prodName + variantSuffix)}">
+                    <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug" title="${esc(prodName + variantSuffix)}">
                         ${esc(prodName + variantSuffix)}
                     </h4>
                     
@@ -121,7 +121,7 @@ export const renderStorefrontFlashSale = () => {
                         <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-through leading-tight">
                             ${fCur(normalPrice)}
                         </span>
-                        <span class="text-sm sm:text-base font-black truncate leading-tight" style="color: var(--color-primary);">
+                        <span class="text-sm sm:text-base font-black truncate leading-tight mt-0.5" style="color: var(--color-primary);">
                             ${fCur(flashPrice)}
                         </span>
                     </div>
@@ -133,7 +133,7 @@ export const renderStorefrontFlashSale = () => {
                         <span>${isSoldOut ? 'Terjual Habis' : `Terjual ${sold}/${quota || '∞'}`}</span>
                         <span>${quota > 0 ? percentSold + '%' : 'Terbatas'}</span>
                     </div>
-                    <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
+                    <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
                         <div class="h-full rounded-full transition-all duration-500 ${isSoldOut ? 'bg-slate-400' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);'} width: ${isSoldOut ? 100 : Math.max(8, percentSold)}%;"></div>
                     </div>
 
@@ -186,11 +186,11 @@ export const renderStorefrontFlashSale = () => {
             <div class="flex items-center gap-2 self-start sm:self-auto rounded-2xl bg-white dark:bg-slate-800 border px-3 py-1.5 shadow-2xs" style="border-color: rgba(var(--color-primary-rgb), 0.25);">
                 <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline">Berakhir:</span>
                 <div class="flex items-center gap-1 font-mono font-black" style="color: var(--color-primary);">
-                    <span id="fs-cd-h" class="min-w-[24px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.h}</span>
+                    <span id="fs-cd-h" class="min-w-[28px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.h}</span>
                     <span>:</span>
-                    <span id="fs-cd-m" class="min-w-[24px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.m}</span>
+                    <span id="fs-cd-m" class="min-w-[28px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.m}</span>
                     <span>:</span>
-                    <span id="fs-cd-s" class="min-w-[24px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.s}</span>
+                    <span id="fs-cd-s" class="min-w-[28px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.s}</span>
                 </div>
             </div>
         </div>

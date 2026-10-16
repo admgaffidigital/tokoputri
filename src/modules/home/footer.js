@@ -128,11 +128,11 @@ export const renderFooter = () => {
       <!-- ================= 2. DESKTOP BENTO ISLAND HUB (KHUSUS LAYAR TABLET & DESKTOP >= 640px: LENGKAP & KORPORAT RESMI) ================= -->
       <div class="hidden sm:block">
         <!-- Top Subtle Theme Ambient Horizon -->
-        <div class="themed-footer-glow-bar mx-auto w-full px-3 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mb-5 pointer-events-none">
+        <div class="themed-footer-glow-bar mx-auto w-full px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mb-5 pointer-events-none">
           <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.35)] to-transparent"></div>
         </div>
 
-        <div class="relative z-10 mx-auto w-full px-3 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
+        <div class="relative z-10 mx-auto w-full px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
           <!-- MAIN BENTO ISLAND HUB -->
           <div class="footer-bento-hub bento-island-card relative overflow-hidden rounded-xl sm:rounded-2xl p-6 sm:p-9 transition-all duration-300">
             <!-- Top Subtle Theme Accent Line (Harmonisasi dengan Header Toko) -->

@@ -300,7 +300,7 @@ export const rDyn = () => {
     if (activeVouchers.length > 0 && vC) {
         vC.classList.remove('hidden');
         let vHTML = `
-        <div class="bento-island-card rounded-2xl p-3.5 sm:p-4 md:p-4.5 shadow-xs transition-all duration-300 hover:shadow-sm">
+        <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-4 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
             <div class="mb-3 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-2.5 dark:border-slate-700/50">
                 <div class="flex items-center gap-2.5">
                     <div class="flex h-7 w-7 items-center justify-center rounded-lg text-white shadow-2xs"
