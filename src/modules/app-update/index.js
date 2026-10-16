@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.18.0';
+    const localVer = getLatestVersion(appData) || 'v1.18.1';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ( Official Store ) ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '15 Okt 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '16 Okt 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '16.3 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,11 +83,11 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.18.0';
+        const fallbackVer = getLatestVersion(appData) || 'v1.18.1';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,
-            publishedAt: '15 Okt 2026',
+            publishedAt: '16 Okt 2026',
             fileSize: '16.3 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
