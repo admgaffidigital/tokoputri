@@ -847,30 +847,44 @@ export const renderRewardCatalog = () => {
             ${activeRewards.map((r) => {
                 const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
                 return `
-                <div class="w-[168px] sm:w-[195px] md:w-[215px] shrink-0 snap-start md:shrink md:flex-1 md:min-w-[170px] md:max-w-[260px] relative group cursor-pointer active:scale-[0.98] transition-all duration-200" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
-                    <div class="w-full h-full bg-white dark:bg-slate-800/90 rounded-2xl sm:rounded-3xl shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden border border-slate-200/90 dark:border-slate-700/80 p-3 sm:p-3.5 text-slate-800 dark:text-slate-100">
-                        <!-- Badges Row: Anti-Tumpuk, Sejajar Horizontal & Mewah -->
-                        <div class="flex items-center justify-between gap-1.5 mb-2.5 w-full">
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/30 dark:border-emerald-500/40 shadow-2xs whitespace-nowrap shrink-0">
-                                <i class="fa-solid fa-gift text-[8.5px] text-emerald-500"></i>
-                                <span>GRATIS</span>
-                            </span>
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[9.5px] sm:text-[10.5px] font-black text-amber-800 dark:text-amber-200 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-400/40 dark:border-amber-500/40 shadow-2xs whitespace-nowrap shrink-0">
-                                <i class="fa-solid fa-coins text-amber-500 text-[9px]"></i>
-                                <span class="font-mono font-black">${ptsCost}</span>
-                                <span class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-tight">Poin</span>
-                            </span>
+                <div class="group relative flex w-[180px] sm:w-[215px] md:w-[228px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start cursor-pointer select-none" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                    
+                    <!-- Single Floating Badge Kiri: HADIAH GRATIS (Lapang, Bersih & Bebas Sesak) -->
+                    <div class="absolute left-2.5 top-2.5 z-10">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-sm shadow-emerald-950/20 whitespace-nowrap" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                            <i class="fa-solid fa-gift text-[8.5px]"></i>
+                            <span>HADIAH GRATIS</span>
+                        </span>
+                    </div>
+
+                    <!-- Canvas Gambar Produk 1:1 Lapang & Bersih (Tanpa Frame Ganda) -->
+                    <div class="relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-800/40 p-3 sm:p-4 flex items-center justify-center border-b border-slate-100 dark:border-slate-800">
+                        <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-108" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
+                    </div>
+
+                    <!-- Detail & Aksi dengan Padding Lapang & Jarak Bernapas Proporsional -->
+                    <div class="flex flex-1 flex-col justify-between p-3.5 sm:p-4">
+                        <div>
+                            <div class="flex items-center justify-between gap-1 mb-1">
+                                <span class="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">REWARD POIN</span>
+                                <span class="text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 uppercase tracking-tight">100% Free</span>
+                            </div>
+                            <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] uppercase" title="${esc(r.name)}">
+                                ${esc(r.name)}
+                            </h4>
+
+                            <!-- Price Tag Biaya Poin (Elegan, Berkelas & Bebas Mepet) -->
+                            <div class="mt-2.5 flex items-center gap-1.5 py-1 px-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 w-fit">
+                                <i class="fa-solid fa-coins text-amber-500 text-xs"></i>
+                                <span class="text-sm sm:text-base font-black font-mono text-amber-950 dark:text-amber-300 leading-none">${ptsCost}</span>
+                                <span class="text-[9px] sm:text-[10px] font-extrabold uppercase text-amber-700 dark:text-amber-400 leading-none">POIN</span>
+                            </div>
                         </div>
-                        <!-- Reward Image: Rasio 1:1 Bersih & Lapang -->
-                        <div class="w-full aspect-square rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-900/60 flex items-center justify-center overflow-hidden relative border border-slate-100 dark:border-slate-700/60 p-2.5 group-hover:border-[var(--color-primary)]/30 transition-all">
-                            <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-108" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
-                        </div>
-                        <!-- Details & Action: Teks Proporsional & Tombol Lega -->
-                        <div class="mt-2.5 flex-1 flex flex-col justify-between">
-                            <h4 class="text-xs sm:text-[13px] font-black text-slate-800 dark:text-white leading-snug line-clamp-2 min-h-[2.2rem] sm:min-h-[2.4rem] uppercase tracking-tight text-center group-hover:text-[var(--color-primary)] transition-colors">${esc(r.name)}</h4>
-                            <div class="mt-2.5 w-full py-2 px-3 rounded-xl text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-center shadow-xs transition-all flex items-center justify-center gap-1.5 group-hover:shadow-sm"
-                                 style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
-                                <i class="fa-solid fa-hand-holding-dollar text-[10.5px]"></i>
+
+                        <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
+                            <div class="btn-native-action w-full py-2.5 px-3 rounded-xl text-white font-black text-[11px] sm:text-xs uppercase tracking-wider text-center shadow-xs transition-all flex items-center justify-center gap-1.5 active:scale-95 group-hover:brightness-105 cursor-pointer"
+                                 style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.25);">
+                                <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                                 <span>Tukar Hadiah</span>
                             </div>
                         </div>
