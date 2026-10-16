@@ -4348,6 +4348,9 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <div id="pos-held-btn-storefront" class="flex items-center shrink-0"></div>
 
                 <!-- Tombol Desktop Lengkap (xl:flex / xl:inline-flex) -->
+                <button onclick="if(typeof window.toggleTheme==='function') window.toggleTheme();" class="hidden xl:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Ubah Mode Gelap / Terang">
+                    <i class="fa-solid fa-moon text-amber-300" id="pos-theme-icon"></i>
+                </button>
                 <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="hidden xl:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
                     <i class="fa-solid fa-calculator"></i>
                 </button>
@@ -4380,6 +4383,17 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </button>
                 </div>
                 <div class="p-1 space-y-0.5">
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.toggleTheme==='function') window.toggleTheme();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-800/60">
+                            <i class="fa-solid fa-circle-half-stroke text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight">
+                                <span>Ubah Mode Layar</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Gelap / Terang sesuai selera</div>
+                        </div>
+                    </button>
                     <button onclick="window.closePOSMobileMenu(); window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos');" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
                         <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-800/60">
                             <i class="fa-solid fa-calculator text-xs"></i>
@@ -4479,6 +4493,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
+                <button onclick="if(typeof window.toggleTheme==='function') window.toggleTheme();" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Ubah Mode Gelap / Terang">
+                    <i class="fa-solid fa-moon text-xs text-amber-400 pos-theme-icon"></i>
+                    <span class="hidden xl:inline">Tema</span>
+                </button>
                 <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
                     <i class="fa-solid fa-calculator text-xs text-amber-500"></i>
                     <span class="hidden xl:inline">Estimator</span>

@@ -251,15 +251,52 @@ export const initDarkMode = () => {
 };
 
 /**
+ * Sinkronkan seluruh ikon dan label toggle tema di Storefront, CMS Admin, dan POS Kasir.
+ * @param {boolean} isDark - Status mode gelap aktif
+ */
+export const syncAllThemeIcons = (isDark = document.documentElement.classList.contains('dark')) => {
+    // 1. Ikon etalase (#icon-theme, #theme-toggle-icon, .theme-toggle-icon)
+    const storefrontIcons = document.querySelectorAll('#icon-theme, #theme-toggle-icon, .theme-toggle-icon');
+    storefrontIcons.forEach(icon => {
+        icon.className = isDark
+            ? 'fa-solid fa-sun text-sm text-amber-400'
+            : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
+    });
+
+    // 2. Ikon CMS Admin & Header Admin (#admin-theme-icon, .admin-theme-icon)
+    const adminIcons = document.querySelectorAll('#admin-theme-icon, .admin-theme-icon');
+    adminIcons.forEach(icon => {
+        icon.className = isDark
+            ? 'fa-solid fa-sun text-xs text-amber-300'
+            : 'fa-solid fa-moon text-xs text-amber-300';
+    });
+    const adminTexts = document.querySelectorAll('#admin-theme-text');
+    adminTexts.forEach(el => {
+        el.textContent = isDark ? 'Terang' : 'Gelap';
+    });
+
+    // 3. Ikon POS Kasir (#pos-theme-icon, .pos-theme-icon)
+    const posIcons = document.querySelectorAll('#pos-theme-icon, .pos-theme-icon');
+    posIcons.forEach(icon => {
+        icon.className = isDark
+            ? 'fa-solid fa-sun text-xs text-amber-300'
+            : 'fa-solid fa-moon text-xs text-amber-300';
+    });
+};
+
+/**
  * Toggle dark/light mode dan simpan preferensi ke localStorage.
  */
 export const toggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('freshmart_theme', isDark ? 'dark' : 'light');
-    const icon = document.getElementById('icon-theme') || document.getElementById('theme-toggle-icon');
-    if (icon) icon.className = isDark
-        ? 'fa-solid fa-sun text-sm text-amber-400'
-        : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
+    syncAllThemeIcons(isDark);
+    if (typeof window.showToast === 'function') {
+        window.showToast(isDark ? 'Mode Gelap Aktif 🌙' : 'Mode Terang Aktif ☀️', 'info', 2000);
+    }
+    if (typeof window.triggerHaptic === 'function') {
+        try { window.triggerHaptic('light'); } catch (_) {}
+    }
 };
 
 /**
@@ -267,10 +304,7 @@ export const toggleTheme = () => {
  */
 export const initThemeIcon = () => {
     const isDark = document.documentElement.classList.contains('dark');
-    const icon = document.getElementById('icon-theme') || document.getElementById('theme-toggle-icon');
-    if (icon) icon.className = isDark
-        ? 'fa-solid fa-sun text-sm text-amber-400'
-        : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
+    syncAllThemeIcons(isDark);
 };
 
 // ─── Background Style Engine ─────────────────────────────────
@@ -400,5 +434,8 @@ export const syncAppMeta = () => {
 
 if (typeof window !== 'undefined') {
     window.syncAppMeta = syncAppMeta;
+    window.syncAllThemeIcons = syncAllThemeIcons;
+    window.toggleTheme = toggleTheme;
+    window.initThemeIcon = initThemeIcon;
 }
 

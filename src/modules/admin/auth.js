@@ -106,7 +106,7 @@ export const applyStaffMenuPermissions = () => {
             roleBadgeEl.innerHTML = '<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-amber-300 drop-shadow-xs"><i class="fa-solid fa-crown text-[8px]"></i> Owner</span>';
         }
         if (headerTitleEl) headerTitleEl.textContent = 'CMS OWNER';
-        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Pemilik Toko! <i class="fa-solid fa-crown text-amber-400 text-lg"></i>';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Pemilik Toko! <i class="fa-solid fa-crown text-amber-500 dark:text-amber-400 text-lg drop-shadow-xs"></i>';
         if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol Owner';
         if (welcomeDescEl) welcomeDescEl.textContent = 'Akses penuh seluruh operasional, keuangan, dan pengaturan Toko Putri.';
     } else if (staff?.role === ROLES.ADMIN) {
@@ -115,7 +115,7 @@ export const applyStaffMenuPermissions = () => {
             roleBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-blue-200 drop-shadow-xs"><i class="fa-solid fa-shield-halved text-[8px]"></i> Admin (${staffName})</span>`;
         }
         if (headerTitleEl) headerTitleEl.textContent = 'CMS ADMIN';
-        if (welcomeTitleEl) welcomeTitleEl.innerHTML = `Selamat Datang, ${staffName}! <i class="fa-solid fa-shield-halved text-blue-400 text-lg"></i>`;
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = `Selamat Datang, ${staffName}! <i class="fa-solid fa-shield-halved text-blue-500 dark:text-blue-400 text-lg drop-shadow-xs"></i>`;
         if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Operasional Admin';
         if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola pesanan, katalog produk, dan aktivitas harian toko.';
     } else {
