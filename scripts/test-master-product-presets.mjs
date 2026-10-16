@@ -47,6 +47,9 @@ assert(presetsCode.includes('renderMasterCatalogView'), 'renderMasterCatalogView
 assert(presetsCode.includes('openMasterProductImportModal'), 'openMasterProductImportModal didefinisikan');
 assert(presetsCode.includes('confirmExecuteMasterProductImport'), 'confirmExecuteMasterProductImport didefinisikan');
 assert(presetsCode.includes('confirmExportProductToMaster'), 'confirmExportProductToMaster didefinisikan');
+assert(presetsCode.includes('confirmDeleteMasterPreset'), 'confirmDeleteMasterPreset didefinisikan');
+assert(presetsCode.includes('executeDeleteMasterPreset'), 'executeDeleteMasterPreset didefinisikan');
+assert(presetsCode.includes('restoreDeletedMasterPresets'), 'restoreDeletedMasterPresets didefinisikan');
 
 // 2. Uji Kelengkapan Kategori & Variansi Data Bawaan
 console.log('\n📋 2. Uji Kelengkapan Kategori & Preset Produk Bangunan:');
@@ -108,6 +111,15 @@ const tablePath = path.join(rootDir, 'src', 'modules', 'admin', 'products', 'tab
 const tableCode = fs.readFileSync(tablePath, 'utf-8');
 assert(tableCode.includes('confirmExportProductToMaster'), 'table.js menyematkan tombol confirmExportProductToMaster');
 assert(tableCode.includes('rAdmMasterCatalogView'), 'table.js mendelegasikan rAdmL colors ke rAdmMasterCatalogView');
+
+// 8. Uji Fitur Hapus & Pulihkan Master Preset
+console.log('\n🗑️ 8. Uji Fitur Hapus & Pulihkan Master Preset:');
+assert(presetsCode.includes('confirmDeleteMasterPreset'), 'Tersedia handler confirmDeleteMasterPreset');
+assert(presetsCode.includes('executeDeleteMasterPreset'), 'Tersedia engine executeDeleteMasterPreset');
+assert(presetsCode.includes('restoreDeletedMasterPresets'), 'Tersedia engine restoreDeletedMasterPresets');
+assert(presetsCode.includes('fa-trash-can'), 'Tombol hapus menggunakan ikon fa-trash-can');
+assert(presetsCode.includes('Pulihkan Template'), 'Tombol pulihkan template disematkan saat ada preset terhapus');
+assert(presetsCode.includes('deleted_master_preset_ids'), 'Menyaring dan menyimpan status ID preset bawaan yang dihapus');
 
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passedTests} Passed, ${failedTests} Failed`);

@@ -17,7 +17,7 @@
 
 import { appData } from '../../../core/state.js';
 import { saveApp } from '../../../services/storage.js';
-import { setH, esc, sLoad, hLoad, showToast, el, fCur } from '../../../core/utils.js';
+import { setH, esc, sLoad, hLoad, showToast, showConfirm, el, fCur } from '../../../core/utils.js';
 import { setCTab } from './index.js';
 
 // ─── Filter & View State ───────────────────────────────────────────────────────
@@ -593,10 +593,13 @@ export const BUILTIN_MASTER_PRESETS = [
 
 /**
  * Gabungkan preset bawaan sistem dengan custom master preset yang disimpan user
+ * (Menyaring preset yang telah dihapus oleh pengguna agar katalog mudah dikelola)
  */
 export const getAllMasterPresets = () => {
-    const custom = appData.custom_master_presets || [];
-    return [...BUILTIN_MASTER_PRESETS, ...custom];
+    const deletedIds = new Set(appData.deleted_master_preset_ids || []);
+    const custom = (appData.custom_master_presets || []).filter(p => !deletedIds.has(p.id));
+    const builtin = BUILTIN_MASTER_PRESETS.filter(p => !deletedIds.has(p.id));
+    return [...builtin, ...custom];
 };
 
 /**
@@ -628,6 +631,7 @@ export const renderMasterCatalogView = () => {
         if (checkPresetStoreStatus(p).isImported) importedCount++;
     });
     const readyToImportCount = allPresets.length - importedCount;
+    const deletedCount = (appData.deleted_master_preset_ids || []).length;
     const categories = ['ALL', ...new Set(allPresets.map(p => p.category).filter(Boolean))];
 
     // Filter data sesuai kategori aktif dan kata kunci pencarian
@@ -729,10 +733,18 @@ export const renderMasterCatalogView = () => {
                             <input autocomplete="off" id="master-search-input" value="${esc(masterSearchQuery)}" placeholder="Cari produk master, merek, varian, pipa, semen, cat..." oninput="window.handleMasterSearch(this.value)" class="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl pl-11 pr-11 text-[16px] sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all">
                             <button type="button" id="master-search-clear-btn" onclick="window.clearMasterSearch()" class="${masterSearchQuery ? '' : 'hidden'} absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-xl transition-all cursor-pointer active:scale-90"><i class="fa-solid fa-circle-xmark text-sm"></i></button>
                         </div>
-                        <button type="button" onclick="window.openExportStoreProductPicker()" class="h-12 min-h-[44px] px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0">
-                            <i class="fa-solid fa-cloud-arrow-up text-[var(--color-primary)]"></i>
-                            <span>Simpan Produk Toko ke Pustaka</span>
-                        </button>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            ${deletedCount > 0 ? `
+                                <button type="button" onclick="window.restoreDeletedMasterPresets()" class="h-12 min-h-[44px] px-3.5 sm:px-4 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" title="Pulihkan semua template master bawaan yang pernah dihapus">
+                                    <i class="fa-solid fa-clock-rotate-left text-amber-600 dark:text-amber-400"></i>
+                                    <span>Pulihkan Template (${deletedCount})</span>
+                                </button>
+                            ` : ''}
+                            <button type="button" onclick="window.openExportStoreProductPicker()" class="h-12 min-h-[44px] px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0">
+                                <i class="fa-solid fa-cloud-arrow-up text-[var(--color-primary)]"></i>
+                                <span>Simpan Produk Toko ke Pustaka</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- CHICLET KATEGORI -->
@@ -782,15 +794,20 @@ export const renderMasterCatalogView = () => {
                                             ` : ''}
                                         </div>
 
-                                        ${isImported ? `
-                                            <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1 shrink-0">
-                                                <i class="fa-solid fa-circle-check text-emerald-500"></i> Ada di Toko
-                                            </span>
-                                        ` : `
-                                            <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-300 dark:border-blue-700 flex items-center gap-1 shrink-0">
-                                                <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> Siap Impor
-                                            </span>
-                                        `}
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            ${isImported ? `
+                                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1 shrink-0">
+                                                    <i class="fa-solid fa-circle-check text-emerald-500"></i> Ada di Toko
+                                                </span>
+                                            ` : `
+                                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-300 dark:border-blue-700 flex items-center gap-1 shrink-0">
+                                                    <i class="fa-solid fa-cloud-arrow-down text-blue-500"></i> Siap Impor
+                                                </span>
+                                            `}
+                                            <button type="button" onclick="window.confirmDeleteMasterPreset('${esc(preset.id)}')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 hover:bg-rose-50 dark:bg-slate-700/70 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer active:scale-90 shrink-0" title="Hapus template dari pustaka">
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <!-- FOTO & NAMA PRODUK -->
@@ -864,18 +881,26 @@ export const renderMasterCatalogView = () => {
                                 <!-- TOMBOL AKSI NATIVE (TOUCH TARGET >= 40-44px) -->
                                 <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
                                     ${!isImported ? `
-                                        <button type="button" onclick="window.openMasterProductImportModal('${esc(preset.id)}')" class="w-full h-12 min-h-[44px] rounded-2xl primary-bg text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-95 cursor-pointer transition-all">
-                                            <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
-                                            <span>Salin &amp; Impor ke Toko Saya</span>
-                                        </button>
+                                        <div class="flex items-center gap-2">
+                                            <button type="button" onclick="window.openMasterProductImportModal('${esc(preset.id)}')" class="flex-1 h-12 min-h-[44px] rounded-2xl primary-bg text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-95 cursor-pointer transition-all">
+                                                <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                                                <span>Salin &amp; Impor ke Toko</span>
+                                            </button>
+                                            <button type="button" onclick="window.confirmDeleteMasterPreset('${esc(preset.id)}')" class="w-12 h-12 min-h-[44px] rounded-2xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 font-bold flex items-center justify-center transition-all cursor-pointer shrink-0 active:scale-95" title="Hapus template dari pustaka">
+                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            </button>
+                                        </div>
                                     ` : `
                                         <div class="flex items-center gap-2">
                                             <button type="button" onclick="openAdminTab('products'); setTimeout(() => window.handleAdminSearch?.('${esc(preset.name)}', 'products'), 100);" class="flex-1 h-12 min-h-[44px] rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95">
                                                 <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                                                <span>Buka di Katalog Toko</span>
+                                                <span>Buka di Toko</span>
                                             </button>
                                             <button type="button" onclick="window.openMasterProductImportModal('${esc(preset.id)}', true)" class="w-12 h-12 min-h-[44px] rounded-2xl primary-bg-soft border primary-border text-[var(--color-primary)] font-bold text-xs flex items-center justify-center gap-1.5 hover:primary-bg hover:text-white transition-all cursor-pointer shrink-0 active:scale-95" title="Perbarui varian / Impor ulang">
                                                 <i class="fa-solid fa-rotate text-xs"></i>
+                                            </button>
+                                            <button type="button" onclick="window.confirmDeleteMasterPreset('${esc(preset.id)}')" class="w-12 h-12 min-h-[44px] rounded-2xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 font-bold flex items-center justify-center transition-all cursor-pointer shrink-0 active:scale-95" title="Hapus template dari pustaka">
+                                                <i class="fa-solid fa-trash-can text-sm"></i>
                                             </button>
                                         </div>
                                     `}
@@ -1373,6 +1398,104 @@ window.deleteColorFromDB = async (idx) => {
     }
 };
 
+// ─── Fitur Hapus & Pulihkan Master Preset (Database Bersama) ────────────────
+/**
+ * Konfirmasi dan Hapus Template Master Produk dari Database Bersama
+ */
+export const confirmDeleteMasterPreset = async (presetId) => {
+    if (!presetId) return;
+    const allPresets = [...BUILTIN_MASTER_PRESETS, ...(appData.custom_master_presets || [])];
+    const preset = allPresets.find(p => p.id === presetId);
+    const presetName = preset ? preset.name : 'Template Produk';
+
+    const confirmed = await showConfirm(
+        'Hapus Template Master?',
+        `Apakah Anda yakin ingin menghapus template "${presetName}" dari Database Produk Bersama? Template ini tidak akan lagi muncul di daftar pustaka.${preset && !presetId.startsWith('custom-') ? ' Anda dapat memulihkannya kembali sewaktu-waktu melalui tombol Pulihkan Template.' : ''}`,
+        null,
+        'Ya, Hapus Template',
+        true
+    );
+
+    if (confirmed) {
+        await executeDeleteMasterPreset(presetId);
+    }
+};
+
+/**
+ * Eksekusi Penghapusan Preset Master
+ */
+export const executeDeleteMasterPreset = async (presetId) => {
+    if (!presetId) return;
+    sLoad('Menghapus template master...');
+
+    try {
+        let presetName = 'Template Produk';
+        // Jika preset kustom dari toko
+        if (appData.custom_master_presets && appData.custom_master_presets.some(p => p.id === presetId)) {
+            const idx = appData.custom_master_presets.findIndex(p => p.id === presetId);
+            if (idx > -1) {
+                presetName = appData.custom_master_presets[idx].name || presetName;
+                appData.custom_master_presets.splice(idx, 1);
+                await saveApp(['custom_master_presets']);
+            }
+        } else {
+            // Jika preset bawaan sistem
+            if (!appData.deleted_master_preset_ids) appData.deleted_master_preset_ids = [];
+            if (!appData.deleted_master_preset_ids.includes(presetId)) {
+                appData.deleted_master_preset_ids.push(presetId);
+                await saveApp(['deleted_master_preset_ids']);
+            }
+            const builtin = BUILTIN_MASTER_PRESETS.find(p => p.id === presetId);
+            if (builtin) presetName = builtin.name;
+        }
+
+        showToast(`Template "${presetName}" berhasil dihapus dari pustaka.`);
+        renderMasterCatalogView();
+    } catch (err) {
+        console.error('[MasterPresets] Error deleting preset:', err);
+        showToast('Gagal menghapus template master produk!');
+    } finally {
+        hLoad();
+    }
+};
+
+/**
+ * Pulihkan Semua Template Master Bawaan yang Pernah Dihapus
+ */
+export const restoreDeletedMasterPresets = async () => {
+    const deletedCount = (appData.deleted_master_preset_ids || []).length;
+    if (deletedCount === 0) {
+        showToast('Tidak ada template bawaan yang dihapus.');
+        return;
+    }
+
+    const confirmed = await showConfirm(
+        'Pulihkan Template Bawaan?',
+        `Kembalikan ${deletedCount} template produk master bawaan sistem yang pernah dihapus ke Database Produk Bersama?`,
+        null,
+        'Ya, Pulihkan Semua',
+        false
+    );
+
+    if (!confirmed) return;
+
+    sLoad('Memulihkan template bawaan...');
+    try {
+        appData.deleted_master_preset_ids = [];
+        await saveApp(['deleted_master_preset_ids']);
+        showToast('Semua template master bawaan berhasil dipulihkan!');
+        renderMasterCatalogView();
+    } catch (err) {
+        console.error('[MasterPresets] Error restoring presets:', err);
+        showToast('Gagal memulihkan template bawaan!');
+    } finally {
+        hLoad();
+    }
+};
+
 // ─── Expose Global Handler untuk Router & Inline Scripts ──────────────────────
 window.rAdmMasterCatalogView = renderMasterCatalogView;
 window.renderMasterCatalogView = renderMasterCatalogView;
+window.confirmDeleteMasterPreset = confirmDeleteMasterPreset;
+window.executeDeleteMasterPreset = executeDeleteMasterPreset;
+window.restoreDeletedMasterPresets = restoreDeletedMasterPresets;
