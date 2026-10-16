@@ -156,7 +156,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-DlAlHruX.js"></script>
+    <script type="module" crossorigin src="/assets/index-DJKHbwME.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-DqNA57iZ.js">
@@ -1998,12 +1998,12 @@
       </div>
       <!-- DEKORASI BACKGROUND (BERSIH, SOLID & BEBAS CORAK YANG MENGGANGGU) -->
       <div id="dynamic-bg-container" class="pointer-events-none fixed inset-0 z-0 overflow-hidden"></div>
+      <!-- PULL-TO-REFRESH NATIVE MOBILE & UNIVERSAL CAPSULE -->
+      <div id="pull-to-refresh-indicator" class="pointer-events-none fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 shadow-xl text-xs font-bold transition-all">
+        <i id="ptr-icon" class="fa-solid fa-arrows-rotate text-[var(--color-primary)] transition-transform duration-300"></i>
+        <span id="ptr-text">Tarik ke bawah untuk refresh</span>
+      </div>
       <div class="view-section fade-in flex flex-col z-10" id="view-catalog">
-        <!-- PULL-TO-REFRESH NATIVE MOBILE CAPSULE -->
-        <div id="pull-to-refresh-indicator" class="pointer-events-none fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 shadow-xl text-xs font-bold transition-all">
-          <i id="ptr-icon" class="fa-solid fa-arrows-rotate text-[var(--color-primary)] transition-transform duration-300"></i>
-          <span id="ptr-text">Tarik ke bawah untuk refresh</span>
-        </div>
         <!-- HEADER TOKO RESMI (MENYATU PENUH DENGAN STYLE THEME TOKO & CMS) -->
         <div class="glass-header sticky top-0 z-30 flex flex-col shrink-0 items-center justify-center pb-2.5 sm:pb-3">
           <div class="mx-auto flex w-full items-center justify-between gap-2 sm:gap-4 px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
@@ -2954,6 +2954,7 @@
               </div>
             </div>
             <div class="flex items-center gap-1.5">
+              <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-white/20 px-0 sm:px-3 text-[11px] font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 cursor-pointer" onclick="triggerAdminPullToRefresh()" title="Segarkan Data CMS (Tarik ke Bawah atau Klik)" id="btn-admin-refresh"><i class="fa-solid fa-arrows-rotate text-xs text-white" id="admin-refresh-icon"></i><span class="hidden sm:inline">Segarkan</span></button>
               <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-white/20 px-0 sm:px-3 text-[11px] font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 cursor-pointer" onclick="toggleTheme()" title="Ubah Mode Gelap / Terang" id="btn-admin-theme-toggle"><i class="fa-solid fa-moon text-xs text-amber-300" id="admin-theme-icon"></i><span class="hidden sm:inline" id="admin-theme-text">Mode</span></button>
               <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-white/20 px-0 sm:px-3 text-[11px] font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 cursor-pointer" onclick="openShoppingGuideModal('admin')" title="Panduan & SOP Sistem"><i class="fa-solid fa-book-open text-xs text-white"></i><span class="hidden sm:inline">Panduan</span></button>
               <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-white/20 px-0 sm:px-3 text-[11px] font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 cursor-pointer" onclick="changeView('view-catalog')"><i class="fa-solid fa-eye text-xs text-white"></i><span class="hidden sm:inline">Preview</span></button>

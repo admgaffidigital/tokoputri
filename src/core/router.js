@@ -138,6 +138,7 @@ export const changeView = (v, fH = false) => {
             }).catch(e => console.error('[POS] Gagal memuat storefront:', e));
         } else if (v === 'view-admin') {
             if (typeof window.renderSubscriptionNoticeInCMS === 'function') window.renderSubscriptionNoticeInCMS();
+            if (typeof initPullToRefresh === 'function') initPullToRefresh();
         } else if (v === 'view-admin-login') {
             const u = el('login-username');
             const p = el('login-password');
@@ -223,91 +224,166 @@ export const onBottomNavClick = (tab) => {
 };
 
 /**
- * Inisialisasi Native Pull-to-Refresh untuk layar mobile
+ * Inisialisasi Native Pull-to-Refresh untuk layar mobile & CMS Admin
+ * Mendukung Storefront (#view-catalog), CMS Admin (#view-admin), dan Riwayat Pesanan (#view-orders)
  */
 export const initPullToRefresh = () => {
-    const sc = document.querySelector('#view-catalog .scroll-content');
     const indicator = el('pull-to-refresh-indicator');
     const icon = el('ptr-icon');
     const text = el('ptr-text');
-    if (!sc || !indicator) return;
+    if (!indicator) return;
 
-    let startY = 0;
-    let currentY = 0;
-    let isPulling = false;
     let isRefreshing = false;
     const threshold = 65;
 
-    sc.addEventListener('touchstart', e => {
-        if (sc.scrollTop <= 5 && !isRefreshing) {
-            startY = e.touches[0].pageY;
-            isPulling = true;
+    // Fungsi eksekusi sinkronisasi terpadu
+    const executeRefresh = async (type = 'catalog') => {
+        if (isRefreshing) return;
+        isRefreshing = true;
+
+        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
+        indicator.classList.add('visible');
+
+        if (icon) {
+            icon.className = 'fa-solid fa-arrows-rotate fa-spin text-[var(--color-primary)]';
+            icon.style.transform = '';
         }
-    }, { passive: true });
 
-    sc.addEventListener('touchmove', e => {
-        if (!isPulling || isRefreshing) return;
-        currentY = e.touches[0].pageY;
-        const diff = currentY - startY;
+        const adminRefreshBtnIcon = document.getElementById('admin-refresh-icon');
+        if (adminRefreshBtnIcon) adminRefreshBtnIcon.classList.add('fa-spin');
 
-        if (diff > 15 && sc.scrollTop <= 5) {
-            indicator.classList.add('visible');
-            const progress = Math.min(diff / threshold, 1.5);
-            if (icon) icon.style.transform = `rotate(${progress * 240}deg)`;
-            if (text) {
-                text.innerText = diff >= threshold ? 'Lepaskan untuk segarkan' : 'Tarik ke bawah untuk refresh';
-            }
-        } else {
-            indicator.classList.remove('visible');
+        if (text) {
+            text.innerText = type === 'admin' 
+                ? 'Menyinkronkan data CMS...' 
+                : (type === 'orders' ? 'Menyinkronkan riwayat pesanan...' : 'Menyinkronkan katalog...');
         }
-    }, { passive: true });
 
-    sc.addEventListener('touchend', async () => {
-        if (!isPulling || isRefreshing) return;
-        isPulling = false;
-        const diff = currentY - startY;
-
-        if (diff >= threshold && sc.scrollTop <= 5) {
-            isRefreshing = true;
-            if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
-            if (icon) {
-                icon.className = 'fa-solid fa-arrows-rotate fa-spin text-[var(--color-primary)]';
-                icon.style.transform = '';
+        try {
+            // 1. Sinkronisasi metadata toko / cloud data
+            if (typeof window.syncAppMeta === 'function') {
+                await window.syncAppMeta();
+            } else if (typeof window.loadAppData === 'function') {
+                await window.loadAppData();
             }
-            if (text) text.innerText = 'Menyinkronkan katalog...';
 
-            try {
-                if (typeof window.syncAppMeta === 'function') {
-                    await window.syncAppMeta();
-                } else if (typeof window.loadAppData === 'function') {
-                    await window.loadAppData();
+            if (type === 'admin') {
+                // Refresh modul / tab CMS yang aktif
+                const adminContent = el('admin-content-view');
+                const isContentActive = adminContent && !adminContent.classList.contains('hidden');
+                const curTab = window.cTab;
+
+                if (isContentActive && curTab) {
+                    if (typeof window.openAdminTab === 'function') {
+                        window.openAdminTab(curTab, true);
+                    }
+                } else {
+                    if (typeof window.renderSubscriptionNoticeInCMS === 'function') {
+                        window.renderSubscriptionNoticeInCMS();
+                    }
+                    if (typeof window.openAdminMenu === 'function') {
+                        window.openAdminMenu();
+                    }
                 }
+                if (typeof window.rDyn === 'function') window.rDyn();
+
+                if (text) text.innerText = 'Data CMS Berhasil Disinkron!';
+            } else if (type === 'orders') {
+                if (typeof window.renderMyOrders === 'function') window.renderMyOrders();
+                if (text) text.innerText = 'Riwayat Pesanan Diperbarui!';
+            } else {
                 if (typeof window.rCat === 'function') window.rCat();
                 if (typeof window.rDyn === 'function') window.rDyn();
-                
                 if (text) text.innerText = 'Katalog Terkini Disinkron!';
-                if (icon) icon.className = 'fa-solid fa-circle-check text-emerald-500';
-                if (typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
-            } catch(e) {
-                if (text) text.innerText = 'Gagal sinkron data';
             }
 
-            setTimeout(() => {
-                indicator.classList.remove('visible');
-                setTimeout(() => {
-                    isRefreshing = false;
-                    if (icon) {
-                        icon.className = 'fa-solid fa-arrows-rotate text-[var(--color-primary)] transition-transform duration-300';
-                        icon.style.transform = '';
-                    }
-                    if (text) text.innerText = 'Tarik ke bawah untuk refresh';
-                }, 300);
-            }, 600);
-        } else {
-            indicator.classList.remove('visible');
-            if (icon) icon.style.transform = '';
+            if (icon) icon.className = 'fa-solid fa-circle-check text-emerald-500';
+            if (typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
+        } catch (e) {
+            console.error('[PullToRefresh] Error refreshing data:', e);
+            if (text) text.innerText = 'Gagal sinkron data';
+            if (icon) icon.className = 'fa-solid fa-circle-exclamation text-rose-500';
+        } finally {
+            if (adminRefreshBtnIcon) adminRefreshBtnIcon.classList.remove('fa-spin');
         }
-    });
+
+        setTimeout(() => {
+            indicator.classList.remove('visible');
+            setTimeout(() => {
+                isRefreshing = false;
+                if (icon) {
+                    icon.className = 'fa-solid fa-arrows-rotate text-[var(--color-primary)] transition-transform duration-300';
+                    icon.style.transform = '';
+                }
+                if (text) text.innerText = 'Tarik ke bawah untuk refresh';
+            }, 300);
+        }, 600);
+    };
+
+    // Helper untuk memasang event pull gesture ke kontainer scroll
+    const attachPullEvents = (sc, type) => {
+        if (!sc || sc.__hasPtrAttached) return;
+        sc.__hasPtrAttached = true;
+
+        let startY = 0;
+        let currentY = 0;
+        let isPulling = false;
+
+        sc.addEventListener('touchstart', e => {
+            // Jika ada modal aktif yang terbuka di stack, jangan aktifkan pull-to-refresh latar belakang
+            if (oMods && oMods.length > 0) return;
+            if (sc.scrollTop <= 5 && !isRefreshing) {
+                startY = e.touches[0].pageY;
+                isPulling = true;
+            }
+        }, { passive: true });
+
+        sc.addEventListener('touchmove', e => {
+            if (!isPulling || isRefreshing) return;
+            currentY = e.touches[0].pageY;
+            const diff = currentY - startY;
+
+            if (diff > 15 && sc.scrollTop <= 5) {
+                indicator.classList.add('visible');
+                const progress = Math.min(diff / threshold, 1.5);
+                if (icon) icon.style.transform = `rotate(${progress * 240}deg)`;
+                if (text) {
+                    text.innerText = diff >= threshold 
+                        ? 'Lepaskan untuk segarkan' 
+                        : (type === 'admin' ? 'Tarik ke bawah untuk refresh CMS' : 'Tarik ke bawah untuk refresh');
+                }
+            } else if (diff <= 15) {
+                indicator.classList.remove('visible');
+            }
+        }, { passive: true });
+
+        sc.addEventListener('touchend', async () => {
+            if (!isPulling || isRefreshing) return;
+            isPulling = false;
+            const diff = currentY - startY;
+
+            if (diff >= threshold && sc.scrollTop <= 5) {
+                await executeRefresh(type);
+            } else {
+                indicator.classList.remove('visible');
+                if (icon) icon.style.transform = '';
+            }
+        });
+    };
+
+    // Pasang pada Storefront, CMS Admin, dan Riwayat Pesanan
+    const catalogSc = document.querySelector('#view-catalog .scroll-content');
+    if (catalogSc) attachPullEvents(catalogSc, 'catalog');
+
+    const adminSc = document.querySelector('#view-admin .scroll-content');
+    if (adminSc) attachPullEvents(adminSc, 'admin');
+
+    const ordersSc = document.querySelector('#view-orders .scroll-content');
+    if (ordersSc) attachPullEvents(ordersSc, 'orders');
+
+    // Ekspos method pemanggilan programatis
+    window.triggerAdminPullToRefresh = () => executeRefresh('admin');
+    window.triggerStorefrontPullToRefresh = () => executeRefresh('catalog');
+    window.executePullToRefresh = executeRefresh;
 };
 
 /**
@@ -1117,6 +1193,9 @@ if (typeof window !== 'undefined') {
     window.onBottomNavClick = onBottomNavClick;
     window.updateBottomNav = updateBottomNav;
     window.initPullToRefresh = initPullToRefresh;
+    window.triggerAdminPullToRefresh = window.triggerAdminPullToRefresh;
+    window.triggerStorefrontPullToRefresh = window.triggerStorefrontPullToRefresh;
+    window.executePullToRefresh = window.executePullToRefresh;
     window.handleAppBackButton = handleAppBackButton;
     window.closeTopmostOpenModal = closeTopmostOpenModal;
     window.isModalOpenInDOM = isModalOpenInDOM;
