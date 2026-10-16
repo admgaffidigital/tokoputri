@@ -577,18 +577,28 @@ const renderDiffBadgeHtml = (item) => {
  * Render Dropdown Alasan Selisih
  */
 const renderReasonSelectorHtml = (item) => {
-    if (!item.isCounted || item.diff === 0) {
-        return `<span class="text-[10px] text-slate-400 italic">Tidak ada selisih stok</span>`;
+    if (!item.isCounted || item.physicalStock === null) {
+        return '';
+    }
+
+    if (item.diff === 0) {
+        return `
+            <div class="flex items-center justify-start lg:justify-end mt-0.5">
+                <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 italic flex items-center gap-1">
+                    <i class="fa-solid fa-circle-check text-[9px]"></i> Stok sesuai sistem (0 selisih)
+                </span>
+            </div>
+        `;
     }
 
     return `
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 w-full">
-            <select onchange="window.setSoItemReason('${item.key}', this.value)" class="text-xs font-bold h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] cursor-pointer w-full sm:w-auto sm:max-w-[200px] truncate shadow-2xs">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-1.5 w-full mt-1">
+            <select onchange="window.setSoItemReason('${item.key}', this.value)" class="text-xs font-bold h-9 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] cursor-pointer w-full sm:w-auto sm:max-w-[170px] truncate shadow-2xs">
                 ${SO_DISCREPANCY_REASONS.map(r => `
                     <option value="${r.key}" ${item.reason === r.key ? 'selected' : ''}>${r.label}</option>
                 `).join('')}
             </select>
-            <input type="text" placeholder="Catatan selisih (opsional)..." value="${esc(item.notes || '')}" oninput="window.setSoItemNotes('${item.key}', this.value)" class="text-xs font-medium h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] flex-1 min-w-0 shadow-2xs">
+            <input type="text" placeholder="Catatan selisih (opsional)..." value="${esc(item.notes || '')}" oninput="window.setSoItemNotes('${item.key}', this.value)" class="text-xs font-medium h-9 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] flex-1 min-w-0 shadow-2xs">
         </div>
     `;
 };
@@ -870,9 +880,9 @@ export const renderSoActiveItems = () => {
         <div class="space-y-2.5">
             <!-- Header Kolom (Desktop Only) -->
             <div class="hidden lg:grid grid-cols-12 gap-3 px-5 py-2.5 text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-100/70 dark:bg-slate-800/50 rounded-2xl">
-                <div class="col-span-5">Informasi Produk &amp; Varian</div>
+                <div class="col-span-4">Informasi Produk &amp; Varian</div>
                 <div class="col-span-2 text-center">Stok Sistem (Toko/Gudang)</div>
-                <div class="col-span-2 text-center">Input Fisik (Toko/Gudang)</div>
+                <div class="col-span-3 text-center">Input Fisik (Toko/Gudang)</div>
                 <div class="col-span-3 text-right">Selisih &amp; Keterangan</div>
             </div>
 
@@ -880,8 +890,8 @@ export const renderSoActiveItems = () => {
             ${items.map(item => `
                 <div id="so-row-${item.key}" class="card-native p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all shadow-2xs space-y-3 lg:space-y-0">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
-                        <!-- Col 1: Informasi Produk (Desktop: 5 cols) -->
-                        <div class="lg:col-span-5 flex items-center gap-3 min-w-0">
+                        <!-- Col 1: Informasi Produk (Desktop: 4 cols) -->
+                        <div class="lg:col-span-4 flex items-center gap-3 min-w-0">
                             <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-center justify-center">
                                 ${item.img 
                                     ? `<img src="${esc(item.img)}" alt="${esc(item.productName)}" class="w-full h-full object-cover">`
@@ -904,8 +914,8 @@ export const renderSoActiveItems = () => {
                             </div>
                         </div>
 
-                        <!-- Col 2: Stok Sistem (Desktop Only) -->
-                        <div class="hidden lg:flex lg:col-span-2 flex-col items-center justify-center text-center">
+                        <!-- Col 2: Stok Sistem (Desktop: 2 cols) -->
+                        <div class="hidden lg:flex lg:col-span-2 flex-col items-center justify-center text-center p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <div class="flex items-center gap-1.5 text-[11px] font-mono">
                                 <span class="text-teal-600 dark:text-teal-400 font-bold" title="Stok Rak Toko"><i class="fa-solid fa-store text-[9px] mr-1"></i>${item.systemStoreStock}</span>
                                 <span class="text-slate-300 dark:text-slate-600">•</span>
@@ -914,20 +924,30 @@ export const renderSoActiveItems = () => {
                             <span class="text-[11px] font-black text-slate-700 dark:text-slate-200 font-mono mt-0.5">Total: ${item.systemStock} ${esc(item.unit)}</span>
                         </div>
 
-                        <!-- Col 3: Input Fisik Rak Toko & Gudang (Desktop Only) -->
-                        <div class="hidden lg:flex lg:col-span-2 items-center justify-center gap-1.5">
-                            <div class="flex flex-col items-center gap-1">
-                                <div class="flex items-center gap-1.5">
-                                    <input type="number" min="0" step="any" placeholder="Toko" value="${item.physicalStoreStock !== null ? item.physicalStoreStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" class="so-phys-store w-20 h-10 px-2 text-center font-mono font-bold text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-teal-300/80 dark:border-teal-700/80 rounded-xl focus:outline-hidden text-teal-800 dark:text-teal-200 shadow-2xs" title="Hitung Fisik Rak Toko">
-                                    <input type="number" min="0" step="any" placeholder="Gudang" value="${item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" class="so-phys-warehouse w-20 h-10 px-2 text-center font-mono font-bold text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-amber-300/80 dark:border-amber-700/80 rounded-xl focus:outline-hidden text-amber-800 dark:text-amber-200 shadow-2xs" title="Hitung Fisik Gudang Cadangan">
+                        <!-- Col 3: Input Fisik Rak Toko & Gudang (Desktop: 3 cols) -->
+                        <div class="hidden lg:flex lg:col-span-3 flex-col items-center justify-center gap-1">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <div class="flex flex-col items-center gap-0.5">
+                                    <span class="text-[8.5px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-store text-[8px]"></i> Toko
+                                    </span>
+                                    <input type="number" min="0" step="any" placeholder="0" value="${item.physicalStoreStock !== null ? item.physicalStoreStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" class="so-phys-store w-16 h-8 px-1.5 text-center font-mono font-bold text-xs bg-white dark:bg-slate-900 border border-teal-300/80 dark:border-teal-700/80 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-teal-500 text-teal-800 dark:text-teal-200 shadow-2xs" title="Hitung Fisik Rak Toko">
                                 </div>
-                                <span class="text-[10px] font-mono text-slate-400">
-                                    Fisik: <b class="so-phys-total-display text-slate-800 dark:text-white font-black">${item.physicalStock !== null ? item.physicalStock : '-'}</b>
-                                </span>
+                                <div class="flex flex-col items-center gap-0.5">
+                                    <span class="text-[8.5px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-warehouse text-[8px]"></i> Gudang
+                                    </span>
+                                    <input type="number" min="0" step="any" placeholder="0" value="${item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" class="so-phys-warehouse w-16 h-8 px-1.5 text-center font-mono font-bold text-xs bg-white dark:bg-slate-900 border border-amber-300/80 dark:border-amber-700/80 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-amber-500 text-amber-800 dark:text-amber-200 shadow-2xs" title="Hitung Fisik Gudang Cadangan">
+                                </div>
+                                <div class="flex flex-col items-center gap-0.5 pt-3">
+                                    <button type="button" onclick="window.matchSoItem('${item.key}')" class="btn-native-action w-8 h-8 rounded-lg border font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary);" title="Samakan fisik toko &amp; gudang dengan sistem">
+                                        =
+                                    </button>
+                                </div>
                             </div>
-                            <button type="button" onclick="window.matchSoItem('${item.key}')" class="btn-native-action h-9 px-3 rounded-xl border font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary);" title="Samakan fisik toko &amp; gudang dengan sistem">
-                                =
-                            </button>
+                            <span class="text-[10px] font-mono text-slate-400">
+                                Total Fisik: <b class="so-phys-total-display text-slate-800 dark:text-white font-black">${item.physicalStock !== null ? item.physicalStock : '-'}</b>
+                            </span>
                         </div>
 
                         <!-- MOBILE ONLY: Compact Bar Sistem vs Fisik (Touch-Friendly) -->
@@ -955,7 +975,7 @@ export const renderSoActiveItems = () => {
                         </div>
 
                         <!-- Col 4: Selisih & Alasan (Desktop: 3 cols) -->
-                        <div class="lg:col-span-3 flex flex-col items-start lg:items-end gap-2 border-t lg:border-t-0 pt-2 lg:pt-0 border-slate-100 dark:border-slate-800">
+                        <div class="lg:col-span-3 flex flex-col items-start lg:items-end justify-center gap-1 border-t lg:border-t-0 pt-2 lg:pt-0 border-slate-100 dark:border-slate-800 min-w-0">
                             <div class="so-diff-badge w-full flex justify-between lg:justify-end items-center">
                                 <span class="lg:hidden text-[11px] font-bold text-slate-400">Selisih:</span>
                                 ${renderDiffBadgeHtml(item)}
