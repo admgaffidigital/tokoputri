@@ -124,7 +124,7 @@ export const renderWish = () => {
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
-                <button onclick="rmWish(${x})" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10"><i class="fa-solid fa-xmark text-sm"></i></button>
+                <button onclick="rmWish(${x})" class="absolute top-0 right-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10 cursor-pointer" title="Hapus dari Favorit"><i class="fa-solid fa-xmark text-sm"></i></button>
                 
                 <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
@@ -132,7 +132,7 @@ export const renderWish = () => {
                 
                 <div class="flex justify-between items-end mt-auto pt-1">
                     <p class="text-[var(--color-primary)] font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(i.price)}</p>
-                    <button onclick="moveWish(${x})" class="h-9 px-5 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white border border-[var(--color-primary)] text-xs font-bold transition-colors active:scale-95 shadow-glow flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Beli</button>
+                    <button onclick="moveWish(${x})" class="min-h-[38px] sm:min-h-[40px] px-4 sm:px-5 py-2 rounded-xl text-white font-black text-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-cart-plus"></i> Beli</button>
                 </div>
             </div>
         </div>`;
