@@ -23,7 +23,7 @@ export const DEFAULT_CHANGELOG = [
         "category": "feature",
         "badge": "Presisi UI/UX Native App & Live Stability v1.18.1",
         "items": [
-            "Redesain Kartu Reward Poin Native App (Zero Double Frame): Menghilangkan bingkai dalam ganda yang sempit pada kartu katalog reward member, menghadirkan kanvas foto produk tunggal 1:1 yang lapang, single floating badge '🎁 HADIAH GRATIS' yang elegan di pojok kiri atas, serta price tag kapsul koin emas proporsional di body kartu.",
+            "Redesain Kartu Produk, Flash Sale & Reward Presisi Full Frame: Menghilangkan badge hadiah gratis pada kartu reward agar kanvas murni bersih, menyempurnakan foto produk pada katalog, flash sale, dan reward menjadi presisi 1:1 full frame edge-to-edge tanpa padding menjorok, serta menyelaraskan tema dark mode (slate-900 / slate-950) monolitik yang mewah dan konsisten.",
             "Standardisasi Touch Target Ergonomis Pesanan & Wishlist: Meningkatkan ukuran tombol aksi interaktif 'Detail' & 'Status' pada riwayat pesanan serta tombol 'Beli' & 'Hapus' pada daftar keinginan (wishlist) menjadi min-height 38-40px dengan padding lapang dan font tebal yang nyaman untuk navigasi jempol di smartphone.",
             "Harmonisasi Margin Bento Storefront Universal: Menyelaraskan seluruh ritme vertikal antar seksi etalase toko (Header, Banner Hero, Flash Sale, Kategori, Rekomendasi Produk, dan Footer Bento Hub) dengan jarak simetris mt-4 sm:mt-5 yang konsisten dan bebas tumpang-tindih.",
             "Resolusi Zero-404 Aset Live CDN & Stabilitas Modul: Memverifikasi integritas seluruh dynamic chunk modules (module-member, module-print, module-admin, dll.) pada live CDN Vercel agar selalu merespons 200 OK tanpa kendala modul terputus saat navigasi.",

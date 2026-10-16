@@ -354,16 +354,16 @@ export const rCat = () => {
 
         if (cView === 'grid') {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl shadow-xs hover:shadow-md ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <!-- Kotak Gambar Rasio 1:1 Bersih Murni (Tanpa Badge Menutupi Gambar) -->
-                <div class="relative aspect-square w-full bg-slate-50 dark:bg-slate-900/80 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <!-- Kotak Gambar Rasio 1:1 Presisi Full Frame (Tanpa Frame Ganda, Monolitik Dark Mode) -->
+                <div class="relative aspect-square w-full bg-white dark:bg-slate-950 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-800/80 overflow-hidden">
                       ${hasImg 
                           ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                              <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
                           : coverMdHtml}
                 </div>
-                <div class="flex-1 flex flex-col p-2.5 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
+                <div class="flex-1 flex flex-col p-2.5 sm:p-3.5 min-w-0 bg-white dark:bg-slate-900 relative z-10">
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                     <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
                     <!-- Baris Chips Operasional (2-Baris Terkunci Simetris, Anti-Terpotong) -->
@@ -371,7 +371,7 @@ export const rCat = () => {
                         ${chipsHtml}
                     </div>
                     <!-- Footer Harga & Tombol Aksi Belanja / Varian (Anti-Gepeng, Touch Target Ergonomis) -->
-                    <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50 gap-2">
+                    <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-800/80 gap-2">
                         <div class="min-w-0 pr-1 flex-1">
                             <div class="h-3.5 flex items-center">
                                 ${hasVariants ? variantBadgeLabelHtml : priceNormalHtml}
@@ -397,10 +397,10 @@ export const rCat = () => {
             </a>`;
         } else {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs ${cardCursorClsList} transition-all duration-300 flex items-center p-2.5 sm:p-3.5 gap-2.5 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl shadow-xs hover:shadow-md ${cardCursorClsList} transition-all duration-300 flex items-center p-2.5 sm:p-3.5 gap-2.5 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <!-- Thumbnail Kiri Bersih Murni (Tanpa Badge Menutupi Gambar) -->
-                <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <!-- Thumbnail Kiri Presisi Full Frame -->
+                <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-800/80 overflow-hidden">
                     ${hasImg
                         ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`

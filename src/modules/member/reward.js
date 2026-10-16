@@ -849,17 +849,9 @@ export const renderRewardCatalog = () => {
                 return `
                 <div class="group relative flex w-[180px] sm:w-[215px] md:w-[228px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start cursor-pointer select-none" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                     
-                    <!-- Single Floating Badge Kiri: HADIAH GRATIS (Lapang, Bersih & Bebas Sesak) -->
-                    <div class="absolute left-2.5 top-2.5 z-10">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-sm shadow-emerald-950/20 whitespace-nowrap" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
-                            <i class="fa-solid fa-gift text-[8.5px]"></i>
-                            <span>HADIAH GRATIS</span>
-                        </span>
-                    </div>
-
-                    <!-- Canvas Gambar Produk 1:1 Lapang & Bersih (Tanpa Frame Ganda) -->
-                    <div class="relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-800/40 p-3 sm:p-4 flex items-center justify-center border-b border-slate-100 dark:border-slate-800">
-                        <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-108" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
+                    <!-- Canvas Gambar Produk 1:1 Presisi Full Frame Bersih Murni (Tanpa Badge & Tanpa Padding Menjorok) -->
+                    <div class="relative aspect-square w-full overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+                        <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
                     </div>
 
                     <!-- Detail & Aksi dengan Padding Lapang & Jarak Bernapas Proporsional -->

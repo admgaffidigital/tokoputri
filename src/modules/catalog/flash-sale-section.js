@@ -99,9 +99,9 @@ export const renderStorefrontFlashSale = () => {
                 <span><i class="fa-solid fa-fire text-amber-200 text-[8.5px]"></i> Sisa ${remaining}!</span>
             </div>` : ''}
 
-            <!-- Foto Produk -->
-            <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-slate-50 dark:bg-slate-800/50 p-2.5 flex items-center justify-center border-b border-slate-100 dark:border-slate-800" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}')">
-                <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-108" onerror="this.src='/favicon.png'">
+            <!-- Foto Produk: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
+            <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80 shrink-0" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}')">
+                <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='/favicon.png'">
                 ${isSoldOut ? `
                 <div class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-2 text-center text-white">
                     <span class="rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest shadow-md text-white" style="background: var(--color-primary-dark);">HABIS TERJUAL</span>

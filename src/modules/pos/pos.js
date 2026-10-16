@@ -1950,9 +1950,9 @@ export const renderCatalog = (isLoadMore = false) => {
                 if (posCatalogViewMode === 'list') {
                     // ── LIST MODE: Layout Sleek Native App 1:1 Harmonis dengan Storefront ──
                     return `
-                    <div class="pos-list-item w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs transition-all duration-300 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left shrink-0${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
+                    <div class="pos-list-item w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl shadow-xs transition-all duration-300 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left shrink-0${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                         <!-- Thumbnail Kiri (Ukuran Presisi 80px/96px Bersih Murni Anti-Gepeng) -->
-                        <div class="pos-list-thumb relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                        <div class="pos-list-thumb relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-800/80 overflow-hidden">
                             ${stockInfo.isOutOfStock ? `
                                 <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center">
                                     <span class="bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow uppercase tracking-wider flex items-center gap-0.5">
@@ -1994,9 +1994,9 @@ export const renderCatalog = (isLoadMore = false) => {
 
                 // ── GRID MODE (Default): Bento Native App 1:1 Harmonis dengan Storefront ──
                 return `
-                <div class="pos-product-card w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs transition-all duration-300 flex flex-col group relative overflow-hidden text-left${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
+                <div class="pos-product-card w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl shadow-xs transition-all duration-300 flex flex-col group relative overflow-hidden text-left${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                     <!-- Kotak Gambar Rasio 1:1 Flush Cover Bersih Murni (Tanpa Badge Menutupi Gambar) -->
-                    <div class="pos-img-box relative aspect-square w-full bg-slate-50 dark:bg-slate-900/80 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                    <div class="pos-img-box relative aspect-square w-full bg-white dark:bg-slate-950 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-800/80 overflow-hidden">
                         ${stockInfo.isOutOfStock ? `
                             <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center">
                                 <span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1">
@@ -2012,7 +2012,7 @@ export const renderCatalog = (isLoadMore = false) => {
                             : coverMdHtml}
                     </div>
                     <!-- Info Produk Rapi & Lega -->
-                    <div class="pos-card-info flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
+                    <div class="pos-card-info flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-900 relative z-10">
                         <p class="pos-card-cat text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                         <h4 class="pos-card-name text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
                         <!-- Baris Chip Operasional Lengkap (Bisa 2, 3, 4+ Baris Mengalir, Anti-Terpotong) -->
@@ -2020,7 +2020,7 @@ export const renderCatalog = (isLoadMore = false) => {
                             ${chipsHtml}
                         </div>
                         <!-- Footer Harga & Tombol Aksi POS (Anti-Potong) -->
-                        <div class="pos-card-footer flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50 shrink-0 gap-2">
+                        <div class="pos-card-footer flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-800/80 shrink-0 gap-2">
                             <div class="min-w-0 pr-1 flex-1">
                                 <div class="h-3.5 flex items-center mb-0.5">
                                     ${priceNormalHtml}
