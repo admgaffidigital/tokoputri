@@ -826,46 +826,52 @@ export const renderRewardCatalog = () => {
     
     rcC.classList.remove('hidden');
     let rHTML = `
-    <div class="bento-island-card rounded-2xl p-3.5 sm:p-4 md:p-4.5 shadow-xs transition-all duration-300 hover:shadow-sm">
-        <div class="mb-3 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-2.5 dark:border-slate-700/50">
+    <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
+        <div class="mb-3.5 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-3 dark:border-slate-700/50">
             <div class="flex items-center gap-2.5">
-                <div class="flex h-7 w-7 items-center justify-center rounded-lg text-white shadow-2xs"
+                <div class="flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-2xs"
                      style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
-                    <i class="fa-solid fa-gift text-xs"></i>
+                    <i class="fa-solid fa-gift text-sm"></i>
                 </div>
-                <h3 class="text-xs font-extrabold uppercase tracking-tight text-slate-800 dark:text-white sm:text-sm">KATALOG REWARD POIN</h3>
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-tight text-slate-800 dark:text-white leading-tight">KATALOG REWARD POIN</h3>
+                    <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Tukar poin transaksi Anda dengan hadiah fisik gratis</p>
+                </div>
             </div>
             <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" 
-                    class="rounded-lg border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.08)] px-2.5 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 flex items-center gap-1 cursor-pointer">
-                Lihat Kartu VIP <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                    class="rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0">
+                <span>Lihat Kartu VIP</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
             </button>
         </div>
-        <div class="flex gap-2.5 sm:gap-3.5 overflow-x-auto hide-scrollbar snap-x pb-1 pt-1 md:flex-wrap md:overflow-visible">
+        <div class="flex gap-3 sm:gap-4 overflow-x-auto hide-scrollbar snap-x pb-2 pt-1 md:flex-wrap md:overflow-visible">
             ${activeRewards.map((r) => {
                 const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
                 return `
-                <div class="w-[130px] sm:w-[145px] shrink-0 snap-start md:shrink md:flex-1 md:min-w-[150px] md:max-w-[260px] relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
-                    <div class="w-full h-full bg-slate-50/80 dark:bg-slate-900/60 rounded-2xl shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden border border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700/80 p-2 sm:p-2.5 text-slate-800 dark:text-slate-100">
-                        <!-- Badges Row -->
-                        <div class="flex items-center justify-between gap-1 mb-1.5">
-                            <span class="text-white text-[7.5px] sm:text-[8px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider shadow-2xs flex items-center gap-1"
-                                  style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
-                                <i class="fa-solid fa-gift text-[7px]"></i> Gratis
+                <div class="w-[168px] sm:w-[195px] md:w-[215px] shrink-0 snap-start md:shrink md:flex-1 md:min-w-[170px] md:max-w-[260px] relative group cursor-pointer active:scale-[0.98] transition-all duration-200" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                    <div class="w-full h-full bg-white dark:bg-slate-800/90 rounded-2xl sm:rounded-3xl shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden border border-slate-200/90 dark:border-slate-700/80 p-3 sm:p-3.5 text-slate-800 dark:text-slate-100">
+                        <!-- Badges Row: Anti-Tumpuk, Sejajar Horizontal & Mewah -->
+                        <div class="flex items-center justify-between gap-1.5 mb-2.5 w-full">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/30 dark:border-emerald-500/40 shadow-2xs whitespace-nowrap shrink-0">
+                                <i class="fa-solid fa-gift text-[8.5px] text-emerald-500"></i>
+                                <span>GRATIS</span>
                             </span>
-                            <span class="bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300/40 dark:border-amber-700/50 text-[7.5px] sm:text-[8px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
-                                <i class="fa-solid fa-coins text-amber-500 text-[7px]"></i> ${ptsCost} Poin
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[9.5px] sm:text-[10.5px] font-black text-amber-800 dark:text-amber-200 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-400/40 dark:border-amber-500/40 shadow-2xs whitespace-nowrap shrink-0">
+                                <i class="fa-solid fa-coins text-amber-500 text-[9px]"></i>
+                                <span class="font-mono font-black">${ptsCost}</span>
+                                <span class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-tight">Poin</span>
                             </span>
                         </div>
-                        <!-- Reward Image -->
-                        <div class="w-full aspect-square rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center overflow-hidden relative border border-slate-100 dark:border-slate-700/60 p-2 group-hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-colors">
+                        <!-- Reward Image: Rasio 1:1 Bersih & Lapang -->
+                        <div class="w-full aspect-square rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-900/60 flex items-center justify-center overflow-hidden relative border border-slate-100 dark:border-slate-700/60 p-2.5 group-hover:border-[var(--color-primary)]/30 transition-all">
                             <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-108" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
                         </div>
-                        <!-- Details & Action -->
-                        <div class="mt-2 flex-1 flex flex-col justify-between">
-                            <h4 class="text-[9.5px] sm:text-[10px] font-black text-slate-800 dark:text-white leading-snug line-clamp-2 uppercase tracking-tight text-center drop-shadow-2xs">${esc(r.name)}</h4>
-                            <div class="mt-2 w-full py-1.5 rounded-xl text-white text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-center shadow-2xs transition-all flex items-center justify-center gap-1 group-hover:shadow-xs"
+                        <!-- Details & Action: Teks Proporsional & Tombol Lega -->
+                        <div class="mt-2.5 flex-1 flex flex-col justify-between">
+                            <h4 class="text-xs sm:text-[13px] font-black text-slate-800 dark:text-white leading-snug line-clamp-2 min-h-[2.2rem] sm:min-h-[2.4rem] uppercase tracking-tight text-center group-hover:text-[var(--color-primary)] transition-colors">${esc(r.name)}</h4>
+                            <div class="mt-2.5 w-full py-2 px-3 rounded-xl text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-center shadow-xs transition-all flex items-center justify-center gap-1.5 group-hover:shadow-sm"
                                  style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
-                                <i class="fa-solid fa-hand-holding-dollar text-[8px]"></i> Tukar Poin
+                                <i class="fa-solid fa-hand-holding-dollar text-[10.5px]"></i>
+                                <span>Tukar Hadiah</span>
                             </div>
                         </div>
                     </div>
