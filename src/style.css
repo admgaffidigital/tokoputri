@@ -4811,55 +4811,163 @@ html.dark #view-pos-cashier .lg\:border-l {
     }
 }
 
-/* 2. Standar Proporsional Kolom Input Global (Anti-Kerdil & Touch-Friendly) */
+/* ============================================================
+   UNIVERSAL BUTTON & FORM INPUT CONSISTENCY HARMONY ENGINE — v1.18.2
+   Menjamin 100% konsistensi seluruh tombol, kolom input, select,
+   dan textarea di seluruh web aplikasi (Storefront, Kasir POS,
+   Admin Backoffice, Dialog, Modal, Drawer, Bottom Sheet).
+   ============================================================ */
+
+/* ─── 1. STANDARDISASI UNIVERSAL SELURUH TOMBOL (BUTTONS) ─── */
+button,
+[role="button"],
+.btn-primary,
+.btn-solid,
+.btn-native-action {
+    box-sizing: border-box !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    font-family: inherit;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), 
+                background-color 0.15s ease, 
+                border-color 0.15s ease, 
+                box-shadow 0.15s ease, 
+                opacity 0.15s ease !important;
+}
+
+/* Feedback Sentuhan Konsisten Saat Ditekan (Tactile Press Feedback) */
+button:active:not(:disabled):not(.btn-disabled),
+[role="button"]:active:not(:disabled):not(.btn-disabled),
+.btn-primary:active,
+.btn-solid:active,
+.btn-native-action:active {
+    transform: scale(0.96) !important;
+}
+
+/* Proteksi Status Dinonaktifkan (Disabled Buttons) */
+button:disabled,
+button.btn-disabled,
+[role="button"]:disabled,
+.btn-disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    filter: grayscale(0.6) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Standar Tombol Utama / Bertema Toko (Primary & Solid Buttons) */
+.btn-primary,
+.btn-solid,
+button.primary-bg,
+.btn-theme-primary {
+    min-height: 2.75rem !important; /* 44px standar touch target ergonomis */
+    border-radius: 1rem !important; /* 16px modern squircle */
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb, 197, 155, 39), 0.28) !important;
+}
+
+/* Standar Tombol Tindakan Native & Aksi Form (btn-native-action) */
+.btn-native-action {
+    min-height: 2.75rem !important; /* 44px */
+    border-radius: 0.875rem !important; /* 14px squircle */
+    font-weight: 700 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    cursor: pointer !important;
+}
+
+/* Standar Tombol Modal & Dialog Aksi (Batal & Simpan) */
+.modal-bottom-sheet button.primary-bg,
+.modal-bottom-sheet button[type="submit"],
+#admin-modal button.btn-primary,
+#modal-so-finalize button.primary-bg {
+    min-height: 2.75rem !important;
+    border-radius: 0.875rem !important;
+    font-weight: 700 !important;
+}
+
+/* Standar Tombol Sekunder / Netral (Batal / Tutup / Reset) */
+button.border-slate-300,
+button.border-slate-200,
+button.border-slate-700,
+.btn-secondary-neutral {
+    min-height: 2.625rem;
+    border-radius: 0.875rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+/* ─── 2. STANDARDISASI UNIVERSAL SELURUH KOLOM INPUT (INPUTS & SELECTS) ─── */
+
+/* Ukuran Proporsional & Radius Squircle Seragam untuk Seluruh Formulir Input */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not(#mobile-header-search):not(#search-input):not(.search-clean-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.stepper-input):not([class*="w-10"]):not([class*="w-12"]):not([class*="w-16"]),
+select:not([class*="h-7"]):not([class*="h-8"]),
 .admin-input,
-select.admin-input,
-textarea.admin-input,
 .form-input-bento {
-    min-height: 2.75rem !important; /* 44px standar touch ergonomis */
-    font-size: 0.875rem !important; /* 14px untuk desktop */
-    line-height: 1.25rem !important;
+    min-height: 2.75rem !important; /* 44px golden standard touch target */
     border-radius: 0.875rem !important; /* 14px modern squircle */
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
+    box-sizing: border-box !important;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease !important;
+}
+
+/* Standardisasi Textarea Multiline */
+textarea,
+textarea.admin-input {
+    min-height: 5.5rem !important; /* 88px ruang lega untuk catatan/alamat */
+    border-radius: 0.875rem !important;
+    padding: 0.75rem 0.875rem !important;
     box-sizing: border-box !important;
 }
 
-textarea.admin-input {
-    min-height: 5.5rem !important; /* 88px lega untuk multi-line textarea */
+/* Standardisasi Input Kompak / Stepper / Kolom Hitung Tabel Kasir & Opname */
+.input-compact,
+.stepper-input,
+.so-phys-store,
+.so-phys-warehouse {
+    min-height: 2.125rem !important; /* 34px */
+    border-radius: 0.625rem !important; /* 10px squircle */
+    box-sizing: border-box !important;
+    font-family: 'JetBrains Mono', monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas;
 }
 
-/* Proteksi Universal Anti-Auto-Zoom & Anti-Kursor-Mental Mobile (iOS Safari & Chrome Android) */
+/* Proteksi Universal Anti-Auto-Zoom & Anti-Mental di Seluruh Layar HP (<= 768px) */
 @media screen and (max-width: 768px) {
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
     select,
     textarea,
     .admin-input,
     .form-input-bento {
-        font-size: 16px !important; /* Standar emas: dilarang <16px di mobile agar browser tidak auto-zoom dan keyboard tidak menutup */
+        font-size: 16px !important; /* Wajib minimal 16px di mobile anti auto-zoom browser */
+    }
+}
+
+/* Tampilan Proporsional Desktop Font (>= 769px) */
+@media screen and (min-width: 769px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+    select,
+    .admin-input,
+    .form-input-bento {
+        font-size: 0.875rem !important; /* 14px proporsional desktop */
+        line-height: 1.25rem !important;
     }
 }
 
 /* Cegah delay dan double-tap zoom pada elemen form */
 input, select, textarea {
     touch-action: manipulation;
-}
-
-/* Proteksi Stepper & Input Kompak Kasir (Tidak Terlalu Kecil) */
-.input-compact,
-.stepper-input {
-    min-height: 2.25rem !important; /* Minimal 36px */
-    font-size: 0.8125rem !important; /* Minimal 13px desktop */
-    box-sizing: border-box !important;
-}
-
-@media screen and (max-width: 768px) {
-    .input-compact,
-    .stepper-input {
-        font-size: 16px !important; /* Minimal 16px di mobile anti auto-zoom */
-    }
-}
-
-/* Proteksi Tambahan Fokus Keyboard Mobile: Mencegah Hilang Fokus Saat Keyboard Muncul */
-input, select, textarea {
     -webkit-user-select: text;
     user-select: text;
 }
@@ -4874,13 +4982,33 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
-/* Fokus Outline Aksesibilitas Bertema untuk Seluruh Input Bento (Kecuali Kolom Pencarian Bersih) */
-input:not(#mobile-header-search):not(#search-input):not(.search-clean-input):focus-visible,
+/* Fokus Outline Aksesibilitas Bertema Seragam untuk Seluruh Input */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not(#mobile-header-search):not(#search-input):not(.search-clean-input):focus,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not(#mobile-header-search):not(#search-input):not(.search-clean-input):focus-visible,
+select:focus,
 select:focus-visible,
+textarea:focus,
 textarea:focus-visible {
     outline: none !important;
     border-color: var(--color-primary) !important;
-    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 197, 155, 39), 0.18) !important;
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 197, 155, 39), 0.2) !important;
+}
+
+/* Placeholder Universal Tegas & Anti-Kusam */
+input::placeholder,
+textarea::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
 }
 
 /* ─── PEMBERSIHAN TOTAL FRAME TEKS PADA KOLOM PENCARIAN (ANTI KOLOM DI DALAM KOLOM) ─── */
