@@ -156,12 +156,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BKzF4lyP.js"></script>
+    <script type="module" crossorigin src="/assets/index-Jz465Bi8.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-DQxpUjeW.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-wkwDwZ7h.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1429,22 +1429,22 @@
       </div>
     </div>
     <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="product-modal" onclick="if (event.target === this) closeProductModal();">
-      <div class="modal-bottom-sheet custom-scrollbar relative flex max-h-[92dvh] w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-y-auto border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] rounded-t-3xl sm:translate-y-10 sm:rounded-3xl sm:border" id="product-modal-content">
+      <div class="modal-bottom-sheet custom-scrollbar relative flex max-h-[92dvh] w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-y-auto border-t border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 rounded-t-3xl sm:translate-y-10 sm:rounded-3xl sm:border" id="product-modal-content">
         <div class="absolute left-1/2 top-2.5 z-30 h-1 w-10 -translate-x-1/2 rounded-full bg-slate-300/80 dark:bg-slate-600 sm:hidden"></div>
         <div class="absolute right-3 top-3 z-20 flex gap-1.5">
-          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
-          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-rose-500 hover:bg-rose-500 hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="closeProductModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
+          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/90 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white active:scale-90 cursor-pointer" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
+          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/90 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:border-rose-500 hover:bg-rose-500 hover:text-white active:scale-90 cursor-pointer" onclick="closeProductModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
-        <div class="group relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 bg-white p-8 dark:border-slate-800/60 sm:rounded-t-2xl sm:p-10">
+        <div class="group relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-950 sm:rounded-t-3xl">
           <img alt="Product" class="h-full w-full cursor-zoom-in object-cover transition-transform duration-500 hover:scale-105" id="product-modal-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="previewProductImage()" onerror="this.style.display='none'; const cp = document.getElementById('product-modal-cover-placeholder'); if(cp) cp.classList.remove('hidden');" />
           <div id="product-modal-cover-placeholder" class="absolute inset-0 hidden w-full h-full flex items-center justify-center"></div>
           <div class="pointer-events-none absolute bottom-3 right-3 z-10 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-[9px] font-bold text-white opacity-70 shadow-sm transition-opacity group-hover:opacity-100 dark:bg-slate-900/80 sm:opacity-0" id="zoom-indicator"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</div>
           <div id="product-modal-video-container" class="absolute inset-0 flex hidden items-center justify-center bg-black"></div>
-          <button id="slide-prev" class="absolute left-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white text-slate-600 shadow transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800 dark:text-slate-200" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-          <button id="slide-next" class="absolute right-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white text-slate-600 shadow transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800 dark:text-slate-200" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+          <button id="slide-prev" class="absolute left-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/90 text-slate-600 shadow transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800/90 dark:text-slate-200" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+          <button id="slide-next" class="absolute right-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/90 text-slate-600 shadow transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800/90 dark:text-slate-200" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
           <div id="slide-dots" class="absolute bottom-3 left-1/2 z-10 flex hidden -translate-x-1/2 transform gap-1.5"></div>
         </div>
-        <div class="flex-1 bg-white p-6 dark:bg-[#0f172a] sm:p-7">
+        <div class="flex-1 bg-white p-6 dark:bg-slate-900 sm:p-7">
           <div class="mb-3.5 flex flex-wrap gap-2 items-center" id="product-modal-badges"></div>
           <h3 class="mb-2 break-words text-lg font-bold uppercase leading-tight text-slate-900 dark:text-white sm:text-xl" id="product-modal-title">Nama Produk</h3>
           <div class="mb-6 flex flex-wrap items-center gap-2.5 border-b border-slate-100 pb-5 dark:border-slate-800/60">
@@ -2291,7 +2291,7 @@
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 2 (PENGIRIMAN) -->
-        <div class="checkout-stepper-bar bg-white dark:bg-slate-800 py-3 px-4">
+        <div class="checkout-stepper-bar bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800/80 py-3 px-4">
           <div class="mx-auto flex max-w-md items-center justify-between gap-2">
             <div class="step-item completed">
               <span class="step-num"><i class="fa-solid fa-check text-[10px]"></i></span>
@@ -2311,7 +2311,7 @@
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(8rem+env(safe-area-inset-bottom))] pt-4">
           <div class="mx-auto w-full max-w-full space-y-5 px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
-            <div class="bento-island-card rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+            <div class="bento-island-card rounded-[1.5rem] border border-slate-200/90 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-slate-900 sm:p-6">
               <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-truck-fast primary-text"></i> Metode Pengambilan / Pengiriman Material</h3>
               <p class="mb-4 hidden rounded-xl border border-rose-100 bg-rose-50 p-3 text-[11px] font-bold text-rose-500 dark:border-rose-800 dark:bg-rose-900/20" id="no-delivery-warning">Mohon maaf, toko sedang tidak melayani pemesanan online.</p>
               <div class="grid grid-cols-2 gap-3.5" id="delivery-methods-grid">
@@ -2331,7 +2331,7 @@
                 </label>
               </div>
             </div>
-            <div class="bento-island-card rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+            <div class="bento-island-card rounded-[1.5rem] border border-slate-200/90 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-slate-900 sm:p-6">
               <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-address-card primary-text"></i> Data Pemesan &amp; Kontak WhatsApp</h3>
               <div class="space-y-4">
                 <div>
@@ -2353,7 +2353,7 @@
                 </div>
               </div>
             </div>
-            <div class="bento-island-card rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm transition-all dark:border-slate-700 dark:bg-slate-800 sm:p-6" id="address-container">
+            <div class="bento-island-card rounded-[1.5rem] border border-slate-200/90 bg-white p-4 shadow-sm transition-all dark:border-slate-800/80 dark:bg-slate-900 sm:p-6" id="address-container">
               <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-map-location-dot text-amber-500"></i> Alamat Pengiriman Material</h3>
               <div class="space-y-5">
                 <div>
@@ -2471,7 +2471,7 @@
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 3 (PEMBAYARAN) -->
-        <div class="checkout-stepper-bar bg-white dark:bg-slate-800 py-3 px-4">
+        <div class="checkout-stepper-bar bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800/80 py-3 px-4">
           <div class="mx-auto flex max-w-md items-center justify-between gap-2">
             <div class="step-item completed">
               <span class="step-num"><i class="fa-solid fa-check text-[10px]"></i></span>
@@ -2491,8 +2491,8 @@
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(11rem+env(safe-area-inset-bottom))] pt-4">
           <div class="mx-auto w-full max-w-full space-y-5 px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
-            <div class="bento-island-card rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-wallet primary-text"></i> Metode Pembayaran Resmi</h3>
+            <div class="bento-island-card rounded-[1.5rem] border border-slate-200/90 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-slate-900 sm:p-6">
+              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-800/80 dark:text-white"><i class="fa-solid fa-wallet primary-text"></i> Metode Pembayaran Resmi</h3>
               <div class="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
                 <label class="relative block cursor-pointer">
                   <input checked="checked" class="custom-radio peer sr-only" name="payment" onchange="togglePaymentDetails()" type="radio" value="transfer" />
@@ -2627,7 +2627,7 @@
                     </div>
                   </div>
 
-                  <div class="mt-2.5 rounded-xl bg-white/70 dark:bg-slate-800/70 p-2.5 border border-slate-100 dark:border-slate-800">
+                  <div class="mt-2.5 rounded-xl bg-white/70 dark:bg-slate-950/70 p-2.5 border border-slate-100 dark:border-slate-800/80">
                     <p class="text-[9px] font-bold leading-relaxed text-slate-500 dark:text-slate-400 flex items-start gap-1.5">
                       <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0"></i>
                       <span>Seluruh rincian biaya dihitung otomatis transparan tanpa biaya tersembunyi. Limit terpakai akan otomatis pulih seiring pembayaran cicilan.</span>
@@ -2636,17 +2636,17 @@
                 </div>
               </div>
             </div>
-            <div class="bento-island-card rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-clipboard-list primary-text"></i> Konfirmasi Pengiriman</h3>
+            <div class="bento-island-card rounded-[1.5rem] border border-slate-200/90 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-slate-900 sm:p-6">
+              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-800/80 dark:text-white"><i class="fa-solid fa-clipboard-list primary-text"></i> Konfirmasi Pengiriman</h3>
               <div class="space-y-3 text-sm">
                 <div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Pemesan</span><span class="font-bold text-slate-800 dark:text-slate-200" id="payment-cust-name">-</span></div>
                 <div class="flex items-center justify-between">
                   <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp mr-1 text-[#25D366]"></i>WhatsApp</span><span class="font-bold text-slate-800 dark:text-slate-200" id="payment-cust-wa">-</span>
                 </div>
                 <div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Metode</span><span class="font-bold uppercase text-slate-800 dark:text-slate-200" id="payment-cust-method">-</span></div>
-                <div class="mt-4 border-t border-dashed border-slate-200 pt-4 dark:border-slate-700">
+                <div class="mt-4 border-t border-dashed border-slate-200 pt-4 dark:border-slate-800/80">
                   <span class="mb-2 block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Alamat Lengkap Pemesan</span>
-                  <p class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 font-bold leading-relaxed text-slate-800 shadow-inner dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200" id="payment-cust-address">-</p>
+                  <p class="rounded-xl border border-slate-200/90 bg-slate-50 p-3.5 font-bold leading-relaxed text-slate-800 shadow-inner dark:border-slate-800/80 dark:bg-slate-950 dark:text-slate-200" id="payment-cust-address">-</p>
                 </div>
                 <!-- DROPPOINT INFO (tampil jika kirim ke lokasi berbeda) -->
                 <div class="mt-3 hidden rounded-[1rem] border-2 border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.05)] p-4 dark:border-[var(--color-primary)]/20 dark:bg-[rgba(var(--color-primary-rgb),0.1)]" id="payment-droppoint-info">
@@ -2662,7 +2662,7 @@
                     </div>
                     <div class="mt-2 border-t border-[var(--color-primary)]/15 pt-2">
                       <span class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Alamat Titik Bongkar Muat</span>
-                      <p class="rounded-xl border border-[var(--color-primary)]/20 bg-white p-3 font-bold leading-relaxed text-slate-800 shadow-inner dark:border-[var(--color-primary)]/30 dark:bg-slate-800 dark:text-slate-200" id="payment-dp-address">-</p>
+                      <p class="rounded-xl border border-[var(--color-primary)]/20 bg-white p-3 font-bold leading-relaxed text-slate-800 shadow-inner dark:border-[var(--color-primary)]/30 dark:bg-slate-950 dark:text-slate-200" id="payment-dp-address">-</p>
                     </div>
                   </div>
                 </div>
@@ -2674,7 +2674,7 @@
               </div>
             </div>
             <div class="space-y-3" id="payment-items-preview"></div>
-            <div class="bento-island-card rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6" id="bukti-payment-section">
+            <div class="bento-island-card rounded-[1.5rem] border border-slate-200/90 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-slate-900 sm:p-6" id="bukti-payment-section">
               <h3 class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white"><i class="fa-solid fa-image primary-text"></i> Lampiran Bukti Pembayaran</h3>
               <p class="mb-4 text-[10px] font-medium text-slate-400">Lampirkan tangkapan layar (screenshot) atau foto struk bukti transaksi. <span class="font-bold text-rose-500">Wajib</span> untuk verifikasi instan pesanan.</p>
               <label class="relative flex h-36 w-full cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 transition-all hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.06)] dark:border-slate-600 dark:hover:bg-[rgba(var(--color-primary-rgb),0.12)]" id="bukti-upload-label">
@@ -2712,7 +2712,7 @@
             <div class="bento-island-card primary-bg-soft primary-border relative overflow-hidden rounded-[1.5rem] border p-4 sm:p-5 shadow-sm">
               <h3 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest primary-text"><i class="fa-solid fa-ticket primary-text"></i> Voucher Potongan Ongkir</h3>
               <div class="relative z-10 flex gap-3">
-                <input autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" class="admin-input flex-1 primary-border bg-white !py-3.5 text-sm font-bold uppercase shadow-inner dark:bg-slate-900" id="voucher-input" placeholder="Masukkan Kode Promo..." type="text" />
+                <input autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" class="admin-input flex-1 primary-border bg-white !py-3.5 text-sm font-bold uppercase shadow-inner dark:bg-slate-950" id="voucher-input" placeholder="Masukkan Kode Promo..." type="text" />
                 <button class="primary-bg rounded-xl px-6 text-sm font-bold text-white shadow-md transition-all active:scale-95" onclick="applyVoucher()">Terapkan</button>
               </div>
               <div class="mt-3 hidden" id="voucher-msg-container"><p class="text-[11px] font-bold uppercase tracking-widest" id="voucher-msg" /></div>
@@ -2734,7 +2734,7 @@
               </div>
             </div>
             <!-- TRUST CARD: Keamanan Data & Standarisasi ISO di Checkout -->
-            <div class="flex items-center justify-center gap-2 rounded-2xl border border-slate-200/90 bg-white p-3.5 text-center text-[10px] font-bold text-slate-600 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300">
+            <div class="flex items-center justify-center gap-2 rounded-2xl border border-slate-200/90 bg-white p-3.5 text-center text-[10px] font-bold text-slate-600 shadow-2xs dark:border-slate-800/80 dark:bg-slate-900/80 dark:text-slate-300">
               <i class="fa-solid fa-shield-check text-sm primary-text"></i>
               <span>Jaminan Transaksi Resmi • Kualitas Terjamin • Layanan Pengiriman Cepat &amp; Amanah</span>
             </div>
@@ -2742,9 +2742,9 @@
         </div>
         <div class="glass-nav absolute bottom-0 left-0 z-30 w-full pt-3 pb-3">
           <div class="mx-auto flex w-full flex-col gap-2.5 px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
-            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/80">
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200/90 bg-slate-50 p-3 dark:border-slate-800/80 dark:bg-slate-900/80">
               <input class="peer sr-only" id="tnc-checkbox" onchange="toggleOrderButton()" type="checkbox" />
-              <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-xl border-2 border-slate-300 bg-white transition-all peer-checked:border-[var(--color-primary)] peer-checked:bg-[var(--color-primary)] dark:border-slate-600 dark:bg-slate-900"><i class="fa-solid fa-check text-[10px] text-white opacity-0 transition-opacity peer-checked:opacity-100"></i></div>
+              <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-xl border-2 border-slate-300 bg-white transition-all peer-checked:border-[var(--color-primary)] peer-checked:bg-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-950"><i class="fa-solid fa-check text-[10px] text-white opacity-0 transition-opacity peer-checked:opacity-100"></i></div>
               <span class="text-[11px] font-bold leading-snug text-slate-600 dark:text-slate-400">Saya telah memeriksa rincian pesanan dan menyetujui seluruh ketentuan layanan Toko Putri.</span>
             </label>
             <button class="btn-primary btn-disabled flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-bold uppercase tracking-wider shadow-glow active:scale-[0.98]" id="btn-process-order" onclick="processOrder()"><i class="fa-solid fa-paper-plane"></i> <span>Konfirmasi &amp; Kirim Pesanan</span> <span id="btn-total-preview" class="ml-1.5 font-extrabold bg-white/20 px-2.5 py-1 rounded-xl text-xs tracking-tight">Rp 0</span></button>
@@ -2763,12 +2763,12 @@
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-4">
           <!-- Input Lacak Pesanan Manual -->
           <div class="mx-auto w-full max-w-full px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mb-4">
-            <div class="bento-island-card bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+            <div class="bento-island-card bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800/80 shadow-xs">
               <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-magnifying-glass text-[var(--color-primary)]"></i> Lacak Status Pesanan
               </label>
               <div class="flex gap-2">
-                <input type="text" id="order-tracking-input" placeholder="Masukkan ID Pesanan (misal: ORD-...)" class="w-full h-11 px-4 text-sm font-semibold rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:outline-none transition-colors" onkeydown="if(event.key==='Enter') trackOrderManual()" />
+                <input type="text" id="order-tracking-input" placeholder="Masukkan ID Pesanan (misal: ORD-...)" class="w-full h-11 px-4 text-sm font-semibold rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 text-slate-800 dark:text-white placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:outline-none transition-colors" onkeydown="if(event.key==='Enter') trackOrderManual()" />
                 <button type="button" onclick="trackOrderManual()" class="h-11 px-5 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white text-sm font-bold transition-all active:scale-95 shrink-0 flex items-center gap-2 shadow-xs cursor-pointer">
                   <i class="fa-solid fa-location-crosshairs"></i> <span>Lacak</span>
                 </button>
@@ -2864,7 +2864,7 @@
             <div class="flex flex-col sm:flex-row items-center gap-3">
               <div class="relative w-full flex-1">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
-                <input type="text" id="faq-search-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="filterStorefrontFAQ()" placeholder="Cari pertanyaan umum, pengiriman material, pembayaran, retur..." class="w-full h-12 rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-800 shadow-sm focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                <input type="text" id="faq-search-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="filterStorefrontFAQ()" placeholder="Cari pertanyaan umum, pengiriman material, pembayaran, retur..." class="w-full h-12 rounded-2xl border border-slate-200/90 bg-white pl-11 pr-4 text-sm font-semibold text-slate-800 shadow-sm focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-800/80 dark:bg-slate-950 dark:text-white" />
               </div>
               <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 hide-scrollbar shrink-0" id="faq-category-pills">
                 <!-- Pills kategori diisi JS -->

@@ -1573,8 +1573,8 @@ export const rMemberModalBody = () => {
         const canClaim = currentMember && pts >= (parseFloat(r.pointsCost) || 0) && stockOk;
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
-        <div class="flex items-center gap-3 p-3.5 rounded-2xl border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] shadow-xs' : 'border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40'} transition-all">
-            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-contain bg-white p-1 border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy">` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
+        <div class="flex items-center gap-3 p-3.5 rounded-2xl border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] shadow-xs' : 'border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900'} transition-all">
+            ${r.img ? `<div class="w-14 h-14 rounded-xl overflow-hidden bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 shrink-0 flex items-center justify-center"><img src="${esc(r.img)}" class="w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy"></div>` : `<div class="w-14 h-14 rounded-xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 flex items-center justify-center text-slate-300 dark:text-slate-600 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
                 <p class="text-[11px] font-black text-[var(--color-primary)] mt-0.5 flex items-center gap-1">

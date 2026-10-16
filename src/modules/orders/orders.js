@@ -152,8 +152,8 @@ export const renderMyOrders = async () => {
         }
 
         return `
-        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group min-w-0 transition-all hover:border-[var(--color-primary)]/40">
-            <div class="flex justify-between items-start mb-3 border-b border-slate-100 dark:border-slate-700/60 pb-3">
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800/80 shadow-sm relative overflow-hidden group min-w-0 transition-all hover:border-[var(--color-primary)]/40 hover:shadow-md">
+            <div class="flex justify-between items-start mb-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
                 <div>
                     <span class="font-bold text-sm text-slate-800 dark:text-white tracking-tight">#${o.orderId.split('-').pop()}</span>
                     <p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5"><i class="fa-regular fa-calendar-days mr-1"></i>${dStr}</p>
@@ -162,9 +162,9 @@ export const renderMyOrders = async () => {
             </div>
             ${(o.pointsEarned > 0 || o.claimedReward) ? `
             <div class="flex flex-wrap gap-1.5 mb-3">
-                ${o.pointsEarned > 0 ? `<span class="text-[9px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
+                ${o.pointsEarned > 0 ? `<span class="text-[9px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/90 dark:bg-amber-900/20 dark:border-amber-800/60 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
                 ${o.claimedReward ? `<span class="text-[9px] font-bold px-2 py-1 rounded-lg bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)]/40 dark:text-[var(--color-primary)]"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
-                ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa: ${o.finalMemberPoints} Poin</span>` : ''}
+                ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-500 border border-slate-200/90 dark:bg-slate-800 dark:border-slate-700/80 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa: ${o.finalMemberPoints} Poin</span>` : ''}
             </div>` : ''}
             <div class="flex justify-between items-end mt-2 pt-1">
                 <div>
@@ -173,7 +173,7 @@ export const renderMyOrders = async () => {
                 </div>
                 <div class="flex gap-2">
                     <button onclick="openCustomerOrderDetail('${o.orderId}')" class="min-h-[38px] sm:min-h-[40px] px-3.5 sm:px-4 py-2 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-[rgba(var(--color-primary-rgb),0.35)] text-xs font-bold transition-all active:scale-95 shadow-xs flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-file-invoice"></i> Detail</button>
-                    <button onclick="checkOrderStatus('${o.orderId}', ${x})" class="min-h-[38px] sm:min-h-[40px] px-3.5 sm:px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold transition-all active:scale-95 shadow-xs flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-rotate"></i> Status</button>
+                    <button onclick="checkOrderStatus('${o.orderId}', ${x})" class="min-h-[38px] sm:min-h-[40px] px-3.5 sm:px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800/80 text-xs font-bold transition-all active:scale-95 shadow-xs flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-rotate"></i> Status</button>
                 </div>
             </div>
         </div>`;
@@ -408,13 +408,13 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
             const canReview = d.status === 'Selesai' && !reviewedKeys.includes(reviewKey) && i.id !== undefined && i.id !== null;
 
             return `
-            <div class="flex gap-3 items-center border-b border-slate-100 dark:border-slate-700/50 py-3 last:border-0">
-                <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 bg-cover bg-center shrink-0 border border-slate-200 dark:border-slate-700" style="background-image:url('${esc(i.img || (appData && appData.store ? appData.store.logo : ''))}')"></div>
+            <div class="flex gap-3 items-center border-b border-slate-100 dark:border-slate-800/80 py-3 last:border-0">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-950 bg-cover bg-center shrink-0 border border-slate-200/90 dark:border-slate-800/80" style="background-image:url('${esc(i.img || (appData && appData.store ? appData.store.logo : ''))}')"></div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-slate-800 dark:text-white truncate mb-0.5" title="${esc(i.name)}">${esc(i.name)}</p>
                     ${(i.variantName || i.poTime) ? `
                     <div class="flex flex-wrap gap-1 mb-1">
-                        ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[9px] font-semibold">${esc(i.variantName)}</span>` : ''}
+                        ${i.variantName ? `<span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[9px] font-semibold border border-slate-200/80 dark:border-slate-700">${esc(i.variantName)}</span>` : ''}
                         ${i.poTime ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase">PO ${esc(i.poTime)}</span>` : ''}
                     </div>
                     ` : ''}
@@ -450,16 +450,16 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                 <!-- DRAG PULL MOBILE -->
                 <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
 
-                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/80">
+                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200/90 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-900">
                     <div>
                         <h3 class="font-black text-slate-800 dark:text-white text-base">Rincian Pesanan</h3>
                         <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">ID: #${orderId.split('-').pop()}</p>
                     </div>
-                    <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
                 <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-6 hide-scrollbar text-sm" style="padding-bottom: max(6rem, calc(5rem + env(safe-area-inset-bottom))); -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
-                    <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                    <div class="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200/90 dark:border-slate-800/80 flex justify-between items-center">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status Pesanan</p>
                             <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 dark:bg-[rgba(var(--color-primary-rgb),0.15)] dark:border-[var(--color-primary)]/40">${esc(d.status || 'Baru')}</span>
@@ -471,7 +471,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60">
+                        <div class="bg-slate-50 dark:bg-slate-950/60 p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800/80">
                             <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-400"></i> Info Pelanggan</h4>
                             <div class="space-y-1 text-xs">
                                 <p class="font-bold text-slate-800 dark:text-slate-200">${cName}</p>
@@ -479,7 +479,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                                 ${(d.customer && d.customer.lat && d.customer.deliveryMethod === 'delivery') ? `<a href="https://www.google.com/maps?q=${esc(d.customer.lat)},${esc(d.customer.lng)}" target="_blank" class="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-bold hover:underline"><i class="fa-solid fa-location-dot"></i> Lihat Peta</a>` : ''}
                             </div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60">
+                        <div class="bg-slate-50 dark:bg-slate-950/60 p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800/80">
                             <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><i class="fa-solid fa-truck text-slate-400"></i> Pengiriman & Bayar</h4>
                             <div class="space-y-1 text-xs">
                                 <p><span class="text-slate-500 inline-block w-14">Metode</span> <span class="font-bold text-slate-800 dark:text-slate-200">: ${dMethod}</span></p>
@@ -489,11 +489,11 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                     </div>
 
                     <div class="space-y-2.5">
-                        <div class="bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60">
+                        <div class="bg-slate-50 dark:bg-slate-950/60 p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800/80">
                             <p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1">Alamat Tujuan</p>
                             <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">${cAddr}</p>
                         </div>
-                        ${dNotes ? `<div class="bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60"><p class="text-[9px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mb-1">Catatan Pembeli</p><p class="text-xs font-medium text-slate-700 dark:text-slate-200 leading-relaxed italic">"${dNotes}"</p></div>` : ''}
+                        ${dNotes ? `<div class="bg-slate-50 dark:bg-slate-950/60 p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800/80"><p class="text-[9px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mb-1">Catatan Pembeli</p><p class="text-xs font-medium text-slate-700 dark:text-slate-200 leading-relaxed italic">"${dNotes}"</p></div>` : ''}
                     </div>
 
                     ${d.buktiPayment ? `
@@ -507,7 +507,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                     
                     <div>
                         <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><i class="fa-solid fa-basket-shopping text-slate-400"></i> Daftar Produk</h4>
-                        <div class="bg-slate-50 dark:bg-slate-800/30 rounded-xl px-3 py-1 border border-slate-200 dark:border-slate-700/80">
+                        <div class="bg-slate-50 dark:bg-slate-950/60 rounded-xl px-3 py-1 border border-slate-200/90 dark:border-slate-800/80">
                             ${itemsHtml}
                         </div>
                     </div>
@@ -530,7 +530,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                         </div>` : ''}
                     </div>` : ''}
 
-                    <div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-xl space-y-2 text-xs">
+                    <div class="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200/90 dark:border-slate-800/80 space-y-2 text-xs">
                         <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Subtotal Produk</p><p class="font-bold text-slate-800 dark:text-white">${fCur(subtotal)}</p></div>
                         <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Ongkos Kirim</p><p class="font-bold text-slate-800 dark:text-white">${fCur(shipping)}</p></div>
                         ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
@@ -567,7 +567,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                                             const scDue = sc.dueDateFormatted || sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-');
                                             const scAmt = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || mInstall;
                                             return `
-                                            <div class="p-3 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-between gap-3 shadow-2xs">
+                                            <div class="p-3 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200/90 dark:border-slate-800/80 flex items-center justify-between gap-3 shadow-2xs">
                                                 <div class="flex items-center gap-2.5 min-w-0">
                                                     <div class="w-8 h-8 rounded-xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] font-black text-xs flex items-center justify-center shrink-0">
                                                         ${scNum}

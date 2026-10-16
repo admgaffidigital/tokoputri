@@ -120,7 +120,7 @@ export const rCat = () => {
             }
 
             backBtnContainer.innerHTML = `
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 flex flex-col gap-2.5 mb-5 shadow-sm">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3 flex flex-col gap-2.5 mb-5 shadow-sm">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-3 overflow-hidden">
                         <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
@@ -227,7 +227,7 @@ export const rCat = () => {
             // Data produk masih dalam proses unduh, pertahankan skeleton card
             return;
         }
-        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 border-dashed dark:border-slate-700 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br><span class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
+        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 border-dashed dark:border-slate-800/80 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100 dark:border-slate-800"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br><span class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
         hide('load-more-container'); 
         return;
     }
@@ -517,7 +517,7 @@ export const renderCatalogSkeleton = () => {
     let skeletonCards = '';
     for (let i = 0; i < count; i++) {
         skeletonCards += `
-        <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-2xl shadow-soft p-2.5 sm:p-3 flex flex-col space-y-2 overflow-hidden">
+        <div class="w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/80 rounded-2xl shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2 overflow-hidden">
             <div class="aspect-square w-full rounded-xl skeleton-shimmer"></div>
             <div class="h-3 w-16 rounded-md skeleton-shimmer"></div>
             <div class="h-3.5 w-full rounded-md skeleton-shimmer"></div>

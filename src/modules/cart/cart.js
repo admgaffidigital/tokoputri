@@ -163,23 +163,23 @@ export const renderCart = () => {
         const coverThumb = renderProductCoverHtml(i, { size: 'sm' });
 
         return `
-        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-300">
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800/80 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-300">
             
-            <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden">
+            <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 flex items-center justify-center overflow-hidden">
                 ${hasCartImg 
-                    ? `<img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
+                    ? `<img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
                     : coverThumb}
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
-                <button type="button" onclick="event.stopPropagation(); rmCart(${x});" aria-label="Hapus ${esc(i.name)}" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10 cursor-pointer"><i class="fa-solid fa-xmark text-sm pointer-events-none"></i></button>
+                <button type="button" onclick="event.stopPropagation(); rmCart(${x});" aria-label="Hapus ${esc(i.name)}" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-800/80 dark:hover:bg-rose-900/40 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-200/80 dark:border-slate-700/80 shadow-xs z-10 cursor-pointer"><i class="fa-solid fa-xmark text-sm pointer-events-none"></i></button>
                 
                 <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
                 <div class="flex flex-wrap items-center gap-2 mb-2.5">
                     ${isFs ? `<span class="px-2.5 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-black shadow-2xs flex items-center gap-1 uppercase tracking-wide text-white leading-tight" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-amber-300 text-[8.5px]"></i> Flash Sale</span>` : (w ? `<span class="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide leading-tight"><i class="fa-solid fa-layer-group text-[8.5px]"></i> Grosir</span>` : '')}
                     ${colorIndicator}
-                    ${i.variantName ? `<span class="bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200 px-2.5 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide leading-tight">${esc(i.variantName)}</span>` : ''}
+                    ${i.variantName ? `<span class="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2.5 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold border border-slate-200/80 dark:border-slate-700 uppercase tracking-wide leading-tight">${esc(i.variantName)}</span>` : ''}
                     ${i.poTime ? `<span class="amber-badge px-2.5 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold flex items-center uppercase tracking-wide leading-tight"><i class="fa-solid fa-clock mr-1 text-[8.5px]"></i> PO ${esc(i.poTime)}</span>` : ''}
                 </div>
                 
@@ -192,9 +192,9 @@ export const renderCart = () => {
                         </div>
                     </div>
                     
-                    <div class="flex bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shrink-0 shadow-sm h-10 sm:h-11">
-                        <button onclick="updCQty(${x}, -1)" class="w-10 sm:w-11 h-full flex items-center justify-center text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 font-bold transition-colors active:bg-slate-100 cursor-pointer"><i class="fa-solid fa-minus text-xs"></i></button>
-                        <input type="number" step="0.01" class="w-14 sm:w-16 h-full text-center text-xs sm:text-sm font-black bg-transparent text-slate-800 dark:text-white focus:outline-none border-x border-slate-200 dark:border-slate-700 px-1" value="${q}" onchange="setCQty(${x}, this.value)">
+                    <div class="flex bg-slate-50 dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 rounded-xl overflow-hidden shrink-0 shadow-sm h-10 sm:h-11">
+                        <button onclick="updCQty(${x}, -1)" class="w-10 sm:w-11 h-full flex items-center justify-center text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 font-bold transition-colors active:bg-slate-100 cursor-pointer"><i class="fa-solid fa-minus text-xs"></i></button>
+                        <input type="number" step="0.01" class="w-14 sm:w-16 h-full text-center text-xs sm:text-sm font-black bg-transparent text-slate-800 dark:text-white focus:outline-none border-x border-slate-200/90 dark:border-slate-800/80 px-1" value="${q}" onchange="setCQty(${x}, this.value)">
                         <button onclick="updCQty(${x}, 1)" class="w-10 sm:w-11 h-full flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] dark:text-slate-400 dark:hover:text-[var(--color-primary)] dark:hover:bg-[rgba(var(--color-primary-rgb),0.12)] font-bold transition-colors active:bg-slate-100 cursor-pointer"><i class="fa-solid fa-plus text-xs"></i></button>
                     </div>
                 </div>
@@ -218,7 +218,7 @@ export const renderCart = () => {
             fsEl.innerHTML = `
             <div class="p-4 rounded-2xl border transition-all duration-300 ${isQualified 
                 ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]/40 shadow-md shadow-[rgba(var(--color-primary-rgb),0.2)]' 
-                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm text-slate-800 dark:text-slate-100'}">
+                : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800/80 shadow-sm text-slate-800 dark:text-slate-100'}">
                 <div class="flex items-center justify-between gap-3 mb-2.5">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 ${isQualified ? 'bg-white/20 text-white' : 'bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)]'}">
@@ -239,7 +239,7 @@ export const renderCart = () => {
                         ${progress}%
                     </span>
                 </div>
-                <div class="w-full h-2 rounded-full overflow-hidden ${isQualified ? 'bg-black/20' : 'bg-slate-100 dark:bg-slate-700/60'}">
+                <div class="w-full h-2 rounded-full overflow-hidden ${isQualified ? 'bg-black/20' : 'bg-slate-100 dark:bg-slate-800/60'}">
                     <div class="h-full rounded-full transition-all duration-500 ${isQualified ? 'bg-white shadow-sm' : 'bg-[var(--color-primary)]'}" style="width: ${progress}%"></div>
                 </div>
             </div>`;
@@ -282,8 +282,8 @@ export const renderCart = () => {
 
             lpEl.innerHTML = `
             <div class="p-4 rounded-2xl border transition-all duration-300 ${totalPoints > 0 
-                ? 'bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 border-amber-200 dark:border-amber-700/60 dark:bg-amber-950/20' 
-                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm'}">
+                ? 'bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 border-amber-200/90 dark:border-amber-700/60 dark:bg-amber-950/20' 
+                : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800/80 shadow-sm'}">
                 <div class="flex items-center justify-between gap-3 mb-2">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 bg-amber-500 text-white shadow-sm shadow-amber-500/20">
