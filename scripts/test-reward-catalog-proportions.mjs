@@ -1,7 +1,7 @@
 /**
- * Test Suite: Verifikasi Proporsionalitas & Harmonisasi Tema Katalog Reward Poin & Tombol Aksi
- * Memastikan kartu katalog reward poin tidak lagi berukuran raksasa, poin proporsional,
- * dan tombol aksi selaras 100% dengan standar .btn-catalog-action tema toko.
+ * Test Suite: Verifikasi Proporsionalitas & Harmonisasi Tema Promo (Katalog Reward Poin & Flash Sale)
+ * Memastikan kartu reward dan flash sale tidak berukuran raksasa, proporsional,
+ * menggunakan tombol teks kompak ('Tukar Hadiah' & 'Beli Kilat') yang single-line dan rapi.
  */
 
 import fs from 'fs';
@@ -10,10 +10,11 @@ import assert from 'assert';
 
 const ROOT_DIR = process.cwd();
 const REWARD_JS_PATH = path.join(ROOT_DIR, 'src', 'modules', 'member', 'reward.js');
+const FLASH_SALE_JS_PATH = path.join(ROOT_DIR, 'src', 'modules', 'catalog', 'flash-sale-section.js');
 const STYLE_CSS_PATH = path.join(ROOT_DIR, 'src', 'style.css');
 
 console.log('\n============================================================');
-console.log('🧪 TEST SUITE: PROPORSIONALITAS KATALOG & POIN REWARD');
+console.log('🧪 TEST SUITE: PROPORSIONALITAS KATALOG REWARD & FLASH SALE');
 console.log('============================================================\n');
 
 let passedTests = 0;
@@ -32,7 +33,7 @@ function runTest(desc, testFn) {
 }
 
 // ── 1. UJI UKURAN KARTU & TATA LETAK KATALOG REWARD ──────────────
-console.log('📐 1. Uji Proporsionalitas Dimensi Kartu Reward:');
+console.log('🎁 1. Uji Proporsionalitas Kartu Reward Poin:');
 const rewardJsCode = fs.readFileSync(REWARD_JS_PATH, 'utf8');
 
 runTest('Kartu katalog reward tidak lagi menggunakan lebar berlebihan w-[180px]', () => {
@@ -42,97 +43,95 @@ runTest('Kartu katalog reward tidak lagi menggunakan lebar berlebihan w-[180px]'
     );
 });
 
-runTest('Kartu katalog reward menggunakan lebar proporsional w-[148px] sm:w-[172px] md:w-[190px]', () => {
+runTest('Kartu katalog reward menggunakan lebar proporsional w-[150px] sm:w-[172px] md:w-[188px]', () => {
     assert.ok(
-        rewardJsCode.includes('w-[148px] sm:w-[172px] md:w-[190px]'),
-        'Lebar proporsional w-[148px] sm:w-[172px] md:w-[190px] harus terpasang di reward.js'
+        rewardJsCode.includes('w-[150px] sm:w-[172px] md:w-[188px]'),
+        'Lebar proporsional w-[150px] sm:w-[172px] md:w-[188px] harus terpasang di reward.js'
     );
 });
 
-runTest('Padding kartu proporsional p-2.5 sm:p-3 (tidak puffy p-3.5 sm:p-4)', () => {
+runTest('Padding kartu reward proporsional p-2.5 sm:p-3 (tidak puffy p-3.5 sm:p-4)', () => {
     assert.ok(
         rewardJsCode.includes('p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900'),
         'Padding internal kartu reward harus proporsional p-2.5 sm:p-3'
     );
 });
 
-// ── 2. UJI KONSISTENSI TOMBOL AKSI DENGAN TEMA KATALOG ────────────
-console.log('\n🔘 2. Uji Penyelarasan Tombol Aksi Tukar Hadiah:');
-
-runTest('Tombol tidak lagi menggunakan .btn-native-action w-full yang membengkak 2-baris', () => {
+runTest('Tombol reward tetap menggunakan teks jelas "Tukar Hadiah" (.btn-reward-redeem)', () => {
     assert.ok(
-        !rewardJsCode.includes('btn-native-action w-full py-2.5 px-3 rounded-xl text-white font-black text-[11px] sm:text-xs uppercase tracking-wider text-center'),
-        'Masih ditemukan tombol raksasa 2 baris .btn-native-action w-full'
+        rewardJsCode.includes('class="btn-reward-redeem w-full"') && rewardJsCode.includes('<span>Tukar Hadiah</span>'),
+        'Tombol reward harus berupa tombol teks "Tukar Hadiah" dengan kelas .btn-reward-redeem'
     );
 });
 
-runTest('Tombol aksi mengadopsi standar tema .btn-catalog-action dan .btn-reward-action', () => {
-    assert.ok(
-        rewardJsCode.includes('btn-catalog-action btn-reward-action'),
-        'Tombol reward harus menggunakan kelas .btn-catalog-action dan .btn-reward-action'
-    );
-});
-
-runTest('Tombol aksi memiliki atribut aksesibilitas title dan aria-label', () => {
-    assert.ok(
-        rewardJsCode.includes('title="Tukar Hadiah') && rewardJsCode.includes('aria-label="Tukar Hadiah'),
-        'Tombol reward harus memiliki title dan aria-label ramah screen-reader'
-    );
-});
-
-// ── 3. UJI PENYATUAN BARIS POIN & TOMBOL SEJAJAR ────────────────
-console.log('\n⚖️ 3. Uji Penyatuan Baris Footer (Poin di Kiri & Tombol di Kanan):');
-
-runTest('Poin dan tombol aksi disatukan dalam 1 baris flex horizontal (items-end justify-between)', () => {
-    assert.ok(
-        rewardJsCode.includes('flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-800/80 gap-1.5'),
-        'Baris footer reward harus sejajar items-end justify-between selaras katalog utama'
-    );
-});
-
-runTest('Biaya poin memiliki label mini eyebrow (Biaya Poin) dan ikon koin rapi', () => {
+runTest('Biaya poin ditempatkan rapi di atas tombol dengan label Biaya Poin dan chip koin', () => {
     assert.ok(
         rewardJsCode.includes('Biaya Poin') && rewardJsCode.includes('fa-solid fa-coins text-amber-500'),
-        'Biaya poin harus memiliki label eyebrow Biaya Poin dan ikon fa-coins amber'
+        'Biaya poin harus memiliki label eyebrow Biaya Poin dan ikon koin'
     );
 });
 
-runTest('Eliminasi kotak tag poin terpisah bg-amber-50 yang memakan ruang vertikal', () => {
+// ── 2. UJI UKURAN KARTU & TATA LETAK FLASH SALE ──────────────────
+console.log('\n⚡ 2. Uji Proporsionalitas Kartu Flash Sale:');
+const flashSaleCode = fs.readFileSync(FLASH_SALE_JS_PATH, 'utf8');
+
+runTest('Kartu flash sale tidak lagi menggunakan lebar berlebihan w-[180px]', () => {
     assert.ok(
-        !rewardJsCode.includes('mt-2.5 flex items-center gap-1.5 py-1 px-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80'),
-        'Kotak tag poin terpisah bg-amber-50 harus sudah dihilangkan'
+        !flashSaleCode.includes('w-[180px] sm:w-[215px] md:w-[228px]'),
+        'Masih ditemukan lebar raksasa w-[180px] di flash-sale-section.js'
     );
 });
 
-// ── 4. UJI STYLE CSS DI SRC/STYLE.CSS ────────────────────────────
-console.log('\n🎨 4. Uji Styling CSS .btn-reward-action di style.css:');
+runTest('Kartu flash sale menggunakan lebar proporsional w-[150px] sm:w-[172px] md:w-[188px] selaras reward', () => {
+    assert.ok(
+        flashSaleCode.includes('w-[150px] sm:w-[172px] md:w-[188px]'),
+        'Lebar proporsional w-[150px] sm:w-[172px] md:w-[188px] harus terpasang di flash-sale-section.js'
+    );
+});
+
+runTest('Tombol flash sale menggunakan kelas khusus kompak .btn-flash-buy dengan teks "Beli Kilat"', () => {
+    assert.ok(
+        flashSaleCode.includes('class="btn-flash-buy w-full"') && flashSaleCode.includes('<span>Beli Kilat</span>'),
+        'Tombol flash sale harus menggunakan kelas .btn-flash-buy dan teks "Beli Kilat"'
+    );
+});
+
+runTest('Progress bar kuota flash sale berukuran kompak h-1.5 (tidak tebal h-2.5)', () => {
+    assert.ok(
+        flashSaleCode.includes('h-1.5 w-full overflow-hidden rounded-full'),
+        'Progress bar kuota flash sale harus kompak h-1.5'
+    );
+});
+
+// ── 3. UJI STYLE CSS DI SRC/STYLE.CSS ────────────────────────────
+console.log('\n🎨 3. Uji Aturan Styling CSS di style.css:');
 const styleCssCode = fs.readFileSync(STYLE_CSS_PATH, 'utf8');
 
-runTest('.btn-reward-action terdefinisi di src/style.css', () => {
+runTest('.btn-reward-redeem dan .btn-flash-buy terdefinisi dengan tinggi kompak 32px (34px desktop)', () => {
     assert.ok(
-        styleCssCode.includes('.btn-reward-action {'),
-        '.btn-reward-action harus didefinisikan di style.css'
+        styleCssCode.includes('.btn-reward-redeem,') && styleCssCode.includes('.btn-flash-buy {') && styleCssCode.includes('height: 32px !important;'),
+        'Tombol promo harus memiliki styling tinggi kompak 32px'
     );
 });
 
-runTest('.btn-reward-action mendukung Dark Mode', () => {
+runTest('.btn-reward-redeem dan .btn-flash-buy memiliki proteksi single-line (white-space: nowrap)', () => {
     assert.ok(
-        styleCssCode.includes('.dark .btn-reward-action {'),
-        '.dark .btn-reward-action harus didefinisikan di style.css'
+        styleCssCode.includes('white-space: nowrap !important;'),
+        'Tombol promo harus memiliki white-space: nowrap agar tidak meluber 2 baris'
     );
 });
 
-runTest('.btn-reward-action memiliki efek tactile feedback :active scale', () => {
+runTest('.btn-flash-buy-disabled terdefinisi untuk kondisi stok habis', () => {
     assert.ok(
-        styleCssCode.includes('.btn-reward-action:active {'),
-        '.btn-reward-action:active harus didefinisikan di style.css'
+        styleCssCode.includes('.btn-flash-buy-disabled {'),
+        '.btn-flash-buy-disabled harus didefinisikan di style.css'
     );
 });
 
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passedTests} Passed, ${failedTests} Failed`);
 if (failedTests === 0) {
-    console.log('✨ KATALOG DAN POIN REWARD 100% PROPORSIONAL & SELARAS TEMA! ✅');
+    console.log('✨ KATALOG REWARD & FLASH SALE 100% PROPORSIONAL, RAPI & SELARAS TEMA! ✅');
 } else {
     console.error('❌ BEBERAPA UJI COBA GAGAL!');
     process.exit(1);

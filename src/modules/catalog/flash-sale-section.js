@@ -87,16 +87,16 @@ export const renderStorefrontFlashSale = () => {
         const variantSuffix = item.variantName ? ` (${item.variantName})` : '';
 
         return `
-        <div class="group relative flex w-[180px] sm:w-[215px] md:w-[228px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start" style="transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;">
+        <div class="group relative flex w-[150px] sm:w-[172px] md:w-[188px] shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start text-left" style="transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;">
             <!-- Badge Diskon Petir Harmonis Tema -->
-            <div class="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
-                <i class="fa-solid fa-bolt text-amber-300 text-[10px]"></i>
+            <div class="absolute left-2 top-2 z-10 flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                <i class="fa-solid fa-bolt text-amber-300 text-[8.5px]"></i>
                 <span>-${Math.max(1, discountPct)}%</span>
             </div>
 
             ${remaining <= 3 && !isSoldOut && quota > 0 ? `
-            <div class="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg bg-amber-500 px-1.5 py-0.5 text-[9px] font-black text-white shadow-2xs">
-                <span><i class="fa-solid fa-fire text-amber-200 text-[8.5px]"></i> Sisa ${remaining}!</span>
+            <div class="absolute right-2 top-2 z-10 flex items-center gap-1 rounded-md bg-amber-500 px-1.5 py-0.5 text-[8.5px] font-black text-white shadow-2xs">
+                <span><i class="fa-solid fa-fire text-amber-200 text-[8px]"></i> Sisa ${remaining}!</span>
             </div>` : ''}
 
             <!-- Foto Produk: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
@@ -104,50 +104,49 @@ export const renderStorefrontFlashSale = () => {
                 <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='/favicon.png'">
                 ${isSoldOut ? `
                 <div class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-2 text-center text-white">
-                    <span class="rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest shadow-md text-white" style="background: var(--color-primary-dark);">HABIS TERJUAL</span>
-                    <span class="mt-1 text-[9px] font-medium text-slate-300">Kuota promo terpenuhi</span>
+                    <span class="rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest shadow-md text-white" style="background: var(--color-primary-dark);">HABIS</span>
+                    <span class="mt-0.5 text-[8.5px] font-medium text-slate-300">Kuota terpenuhi</span>
                 </div>` : ''}
             </div>
 
             <!-- Detail & Harga -->
-            <div class="flex flex-1 flex-col justify-between p-3.5">
+            <div class="flex flex-1 flex-col justify-between p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
                 <div>
-                    <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug" title="${esc(prodName + variantSuffix)}">
+                    <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem]" title="${esc(prodName + variantSuffix)}">
                         ${esc(prodName + variantSuffix)}
                     </h4>
                     
                     <!-- Coretan Harga & Harga Kilat Harmonis -->
-                    <div class="mt-2 flex flex-col">
-                        <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-through leading-tight">
+                    <div class="mt-1.5 flex flex-col">
+                        <span class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-through leading-tight">
                             ${fCur(normalPrice)}
                         </span>
-                        <span class="text-sm sm:text-base font-black truncate leading-tight mt-0.5" style="color: var(--color-primary);">
+                        <span class="text-xs sm:text-[14px] lg:text-[15px] font-black truncate leading-tight mt-0.5" style="color: var(--color-primary);">
                             ${fCur(flashPrice)}
                         </span>
                     </div>
                 </div>
 
-                <!-- FOMO Progress Bar Kuota -->
-                <div class="mt-3">
-                    <div class="flex items-center justify-between text-[9px] font-bold text-slate-500 dark:text-slate-400 mb-1">
-                        <span>${isSoldOut ? 'Terjual Habis' : `Terjual ${sold}/${quota || '∞'}`}</span>
-                        <span>${quota > 0 ? percentSold + '%' : 'Terbatas'}</span>
-                    </div>
-                    <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
-                        <div class="h-full rounded-full transition-all duration-500 ${isSoldOut ? 'bg-slate-400' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);'} width: ${isSoldOut ? 100 : Math.max(8, percentSold)}%;"></div>
+                <!-- Footer FOMO Progress Bar & Tombol Aksi Beli Kilat -->
+                <div class="mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-800/80">
+                    <div class="mb-1.5">
+                        <div class="flex items-center justify-between text-[8px] sm:text-[8.5px] font-bold text-slate-500 dark:text-slate-400 mb-0.5">
+                            <span>${isSoldOut ? 'Terjual Habis' : `Terjual ${sold}/${quota || '∞'}`}</span>
+                            <span>${quota > 0 ? percentSold + '%' : 'Terbatas'}</span>
+                        </div>
+                        <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
+                            <div class="h-full rounded-full transition-all duration-500 ${isSoldOut ? 'bg-slate-400' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);'} width: ${isSoldOut ? 100 : Math.max(8, percentSold)}%;"></div>
+                        </div>
                     </div>
 
-                    <!-- Tombol Aksi Beli Kilat -->
-                    <div class="mt-3">
-                        ${isSoldOut ? `
-                        <button type="button" disabled class="btn-native-action w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 text-xs font-bold cursor-not-allowed">
-                            Kuota Habis
-                        </button>` : `
-                        <button type="button" onclick="window.quickBuyFlashSaleItem('${esc(prod.id)}', '${esc(item.variantName || '')}')" class="btn-native-action w-full py-2.5 rounded-xl text-white text-xs font-black active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm whitespace-nowrap" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                            <i class="fa-solid fa-bolt text-amber-300 text-xs"></i>
-                            <span>Beli Kilat</span>
-                        </button>`}
-                    </div>
+                    ${isSoldOut ? `
+                    <button type="button" disabled class="btn-flash-buy-disabled w-full">
+                        <span>Kuota Habis</span>
+                    </button>` : `
+                    <button type="button" onclick="window.quickBuyFlashSaleItem('${esc(prod.id)}', '${esc(item.variantName || '')}')" class="btn-flash-buy w-full">
+                        <i class="fa-solid fa-bolt text-amber-300 text-[10.5px]"></i>
+                        <span>Beli Kilat</span>
+                    </button>`}
                 </div>
             </div>
         </div>`;
