@@ -4091,6 +4091,28 @@ span[class*="tracking-widest"][class*="rounded-"] {
     box-shadow: none !important;
 }
 
+/* Tombol Aksi Hadiah Poin — Selaras 100% dengan .btn-catalog-action (Squircle 38px/40px, Tema Toko, Anti-Gepeng) */
+.btn-reward-action {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25) !important;
+}
+.dark .btn-reward-action {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+}
+.btn-reward-action:hover {
+    filter: brightness(1.08) !important;
+    transform: translateY(-0.5px) !important;
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35) !important;
+}
+.btn-reward-action:active {
+    transform: scale(0.92) !important;
+    box-shadow: none !important;
+}
+
 /* Tombol Nonaktif (Stok Habis di POS Kasir) */
 .btn-catalog-disabled {
     background: #f1f5f9 !important;

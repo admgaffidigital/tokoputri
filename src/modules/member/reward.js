@@ -843,42 +843,49 @@ export const renderRewardCatalog = () => {
                 <span>Lihat Kartu VIP</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
             </button>
         </div>
-        <div class="flex gap-3 sm:gap-4 overflow-x-auto hide-scrollbar snap-x pb-2 pt-1 md:flex-wrap md:overflow-visible">
+        <div class="flex gap-2.5 sm:gap-3.5 overflow-x-auto hide-scrollbar snap-x pb-2 pt-1 md:flex-wrap md:overflow-visible">
             ${activeRewards.map((r) => {
                 const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
                 return `
-                <div class="group relative flex w-[180px] sm:w-[215px] md:w-[228px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start cursor-pointer select-none" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                <div class="group relative flex w-[148px] sm:w-[172px] md:w-[190px] shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start cursor-pointer select-none text-left" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                     
                     <!-- Canvas Gambar Produk 1:1 Presisi Full Frame Bersih Murni (Tanpa Badge & Tanpa Padding Menjorok) -->
                     <div class="relative aspect-square w-full overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80 shrink-0">
                         <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
                     </div>
 
-                    <!-- Detail & Aksi dengan Padding Lapang & Jarak Bernapas Proporsional -->
-                    <div class="flex flex-1 flex-col justify-between p-3.5 sm:p-4">
-                        <div>
-                            <div class="flex items-center justify-between gap-1 mb-1">
-                                <span class="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">REWARD POIN</span>
-                                <span class="text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 uppercase tracking-tight">100% Free</span>
-                            </div>
-                            <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] uppercase" title="${esc(r.name)}">
-                                ${esc(r.name)}
-                            </h4>
-
-                            <!-- Price Tag Biaya Poin (Elegan, Berkelas & Bebas Mepet) -->
-                            <div class="mt-2.5 flex items-center gap-1.5 py-1 px-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 w-fit">
-                                <i class="fa-solid fa-coins text-amber-500 text-xs"></i>
-                                <span class="text-sm sm:text-base font-black font-mono text-amber-950 dark:text-amber-300 leading-none">${ptsCost}</span>
-                                <span class="text-[9px] sm:text-[10px] font-extrabold uppercase text-amber-700 dark:text-amber-400 leading-none">POIN</span>
-                            </div>
+                    <!-- Detail & Aksi dengan Proporsi Selaras Tema Katalog Toko -->
+                    <div class="flex-1 flex flex-col p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
+                        <div class="flex items-center justify-between gap-1 mb-1">
+                            <span class="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">REWARD POIN</span>
+                            <span class="text-[8.5px] sm:text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 uppercase tracking-tight">100% Free</span>
                         </div>
+                        <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2.1rem] sm:min-h-[2.4rem] uppercase break-words mb-1" title="${esc(r.name)}">
+                            ${esc(r.name)}
+                        </h4>
 
-                        <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
-                            <div class="btn-native-action w-full py-2.5 px-3 rounded-xl text-white font-black text-[11px] sm:text-xs uppercase tracking-wider text-center shadow-xs transition-all flex items-center justify-center gap-1.5 active:scale-95 group-hover:brightness-105 cursor-pointer"
-                                 style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.25);">
-                                <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
-                                <span>Tukar Hadiah</span>
+                        <!-- Footer Biaya Poin & Tombol Aksi Tukar (Sejajar, 100% Selaras dengan Theme & Proporsional) -->
+                        <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-800/80 gap-1.5">
+                            <div class="min-w-0 pr-1 flex-1">
+                                <div class="h-3.5 flex items-center">
+                                    <span class="text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 leading-none">Biaya Poin</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-coins text-amber-500 text-[11px] sm:text-xs shrink-0"></i>
+                                    <p class="text-amber-600 dark:text-amber-400 font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight font-mono truncate">
+                                        ${ptsCost}
+                                    </p>
+                                    <span class="text-[8.5px] sm:text-[9px] font-black uppercase text-amber-700 dark:text-amber-300 leading-none">Poin</span>
+                                </div>
                             </div>
+
+                            <button type="button" 
+                                    onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
+                                    class="btn-catalog-action btn-reward-action z-20 group/btn" 
+                                    title="Tukar Hadiah ${esc(r.name)}" 
+                                    aria-label="Tukar Hadiah ${esc(r.name)}">
+                                <i class="fa-solid fa-gift text-[13px] font-black leading-none drop-shadow-2xs transition-transform group-hover/btn:scale-110"></i>
+                            </button>
                         </div>
                     </div>
                 </div>`;

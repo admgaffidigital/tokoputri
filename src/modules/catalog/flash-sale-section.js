@@ -143,7 +143,7 @@ export const renderStorefrontFlashSale = () => {
                         <button type="button" disabled class="btn-native-action w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 text-xs font-bold cursor-not-allowed">
                             Kuota Habis
                         </button>` : `
-                        <button type="button" onclick="window.quickBuyFlashSaleItem('${esc(prod.id)}', '${esc(item.variantName || '')}')" class="btn-native-action w-full py-2.5 rounded-xl text-white text-xs font-black active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button type="button" onclick="window.quickBuyFlashSaleItem('${esc(prod.id)}', '${esc(item.variantName || '')}')" class="btn-native-action w-full py-2.5 rounded-xl text-white text-xs font-black active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm whitespace-nowrap" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-bolt text-amber-300 text-xs"></i>
                             <span>Beli Kilat</span>
                         </button>`}
