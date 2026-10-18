@@ -4916,11 +4916,107 @@ select:not([class*="h-7"]):not([class*="h-8"]),
 .form-input-bento {
     min-height: 2.75rem !important; /* 44px golden standard touch target */
     border-radius: 0.875rem !important; /* 14px modern squircle */
-    padding-left: 0.875rem !important;
-    padding-right: 0.875rem !important;
     box-sizing: border-box !important;
     font-family: inherit;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease !important;
+}
+
+/* Padding Default Bersih untuk Kolom Input Tanpa Prefix / Ikon Khusus */
+input:not([class*="pl-"]):not([class*="px-"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not(.search-clean-input),
+select:not([class*="pl-"]):not([class*="px-"]):not([class*="p-"]),
+.admin-input:not([class*="pl-"]):not([class*="px-"]):not([class*="p-"]),
+.form-input-bento:not([class*="pl-"]):not([class*="px-"]):not([class*="p-"]) {
+    padding-left: 0.875rem !important;
+}
+
+input:not([class*="pr-"]):not([class*="px-"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not(.search-clean-input),
+select:not([class*="pr-"]):not([class*="px-"]):not([class*="p-"]),
+.admin-input:not([class*="pr-"]):not([class*="px-"]):not([class*="p-"]),
+.form-input-bento:not([class*="pr-"]):not([class*="px-"]):not([class*="p-"]) {
+    padding-right: 0.875rem !important;
+}
+
+/* ─── PADDING PRESISI UNIVERSAL INPUT (ANTI-TABRAKAN DENGAN IKON & PREFIX/SUFFIX) ─── */
+input[class*="pl-8"], select[class*="pl-8"], textarea[class*="pl-8"] { padding-left: 2rem !important; }
+input[class*="pl-9"], select[class*="pl-9"], textarea[class*="pl-9"] { padding-left: 2.25rem !important; }
+input[class*="pl-10"], select[class*="pl-10"], textarea[class*="pl-10"] { padding-left: 2.5rem !important; }
+input[class*="pl-11"], select[class*="pl-11"], textarea[class*="pl-11"] { padding-left: 2.75rem !important; }
+input[class*="pl-12"], select[class*="pl-12"], textarea[class*="pl-12"] { padding-left: 3rem !important; }
+input[class*="pl-14"], select[class*="pl-14"], textarea[class*="pl-14"] { padding-left: 3.5rem !important; }
+input[class*="pl-16"], select[class*="pl-16"], textarea[class*="pl-16"] { padding-left: 4rem !important; }
+input[class*="pl-20"], select[class*="pl-20"], textarea[class*="pl-20"] { padding-left: 5rem !important; }
+
+input[class*="pr-8"], select[class*="pr-8"], textarea[class*="pr-8"] { padding-right: 2rem !important; }
+input[class*="pr-9"], select[class*="pr-9"], textarea[class*="pr-9"] { padding-right: 2.25rem !important; }
+input[class*="pr-10"], select[class*="pr-10"], textarea[class*="pr-10"] { padding-right: 2.5rem !important; }
+input[class*="pr-11"], select[class*="pr-11"], textarea[class*="pr-11"] { padding-right: 2.75rem !important; }
+input[class*="pr-12"], select[class*="pr-12"], textarea[class*="pr-12"] { padding-right: 3rem !important; }
+input[class*="pr-14"], select[class*="pr-14"], textarea[class*="pr-14"] { padding-right: 3.5rem !important; }
+input[class*="pr-16"], select[class*="pr-16"], textarea[class*="pr-16"] { padding-right: 4rem !important; }
+input[class*="pr-20"], select[class*="pr-20"], textarea[class*="pr-20"] { padding-right: 5rem !important; }
+input[class*="pr-24"], select[class*="pr-24"], textarea[class*="pr-24"] { padding-right: 6rem !important; }
+
+/* Proteksi Kontekstual Jika Berada di Kontainer Berikon (Anti-Tabrakan Otomatis) */
+.relative:has(> i.absolute[class*="left-3"]) > input:not([class*="pl-"]),
+.relative:has(> i.absolute[class*="left-4"]) > input:not([class*="pl-"]),
+.relative:has(> span.absolute[class*="left-3"]) > input:not([class*="pl-"]),
+.relative:has(> span.absolute[class*="left-4"]) > input:not([class*="pl-"]) {
+    padding-left: 2.75rem !important;
+}
+
+.relative:has(> button.absolute[class*="right-2"]) > input:not([class*="pr-"]),
+.relative:has(> button.absolute[class*="right-3"]) > input:not([class*="pr-"]),
+.relative:has(> button.absolute[class*="right-4"]) > input:not([class*="pr-"]),
+.relative:has(> i.absolute[class*="right-3"]) > input:not([class*="pr-"]),
+.relative:has(> i.absolute[class*="right-4"]) > input:not([class*="pr-"]) {
+    padding-right: 2.75rem !important;
+}
+
+/* ─── SANITASI AUTOFILL AGAR SELALU BERSIH, HIGIENIS & KONTRASTING (ANTI-MUD/DIRTY BLUE) ─── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
+    -webkit-text-fill-color: #0f172a !important;
+    caret-color: #0f172a !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover, 
+html.dark input:-webkit-autofill:focus, 
+html.dark input:-webkit-autofill:active,
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+html.dark textarea:-webkit-autofill,
+html.dark textarea:-webkit-autofill:hover,
+html.dark textarea:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Eliminasi Tombol Bawaan Browser yang Bertumpukan dengan Icon Kustom (Edge/Chrome Native Controls) */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-search-cancel-button,
+input::-webkit-search-decoration {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
 }
 
 /* Standardisasi Textarea Multiline */
