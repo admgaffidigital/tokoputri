@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-07",
+        "version": "v1.18.7",
+        "date": "2026-10-18",
+        "title": "Pembaruan Antarmuka Full Native App Universal, Shimmer Skeleton Engine, Bento Empty State & Multi-Varian Flash Sale",
+        "category": "feature",
+        "badge": "Full Native App Universal & Shimmer Engine v1.18.7",
+        "items": [
+            "Transformasi Antarmuka Full Native App Universal: Mengeliminasi total tampilan klasik bawaan web browser di seluruh aplikasi (Etalase, Detail Produk, Kasir POS, CMS Admin, dan Member Rewards) dengan menerapkan Universal Theme Micro-Scrollbar 6px slim pill adaptif dark/light, Brand Theme Text Selection, dan sentuhan visual ergonomis di smartphone, tablet, maupun desktop.",
+            "Theme-Aware Shimmer Skeleton Engine: Menggantikan seluruh indikator loading berputar (spinner) dan teks polos dengan Shimmer Skeleton interaktif beraksen warna tema toko dinamis pada etalase produk, ulasan pelanggan, shift kasir POS, dan mutasi poin reward VIP.",
+            "Bento Island Zero-Result & Smart Action Chips: Menghadirkan kartu Bento Empty State modern dengan ambient glow dan tombol aksi cerdas terpadu (Reset Filter 1-klik, Tanya Stok via WhatsApp, Buka Scanner Kamera POS, dan Tambah Master Data Baru di CMS Admin).",
+            "Harmonisasi Proporsionalitas Flash Sale & Hadiah Poin: Tombol teks kompak 'Tukar Hadiah' dan 'Beli Kilat' (32px mobile / 34px desktop) dengan tata letak poin mandiri di atas tombol, bebas sempit, anti-meluber, serta dukungan promo Flash Sale multi-varian.",
+            "Multi-Channel Distribution v1.18.7 (Android versionCode 11807)."
+        ]
+    },
+    {
         "id": "log-1-18-02",
         "version": "v1.18.2",
         "date": "2026-10-17",
@@ -57,11 +72,7 @@ export const DEFAULT_CHANGELOG = [
             "Drawer Pratinjau & Kustomisasi Varian Interaktif: Modal drawer Bento yang memungkinkan klien mengatur harga jual toko, modal beli (HPP), dan stok awal rak/gudang secara mandiri, serta memilih checklist varian ukuran/warna yang dijual.",
             "Deteksi Status Cerdas (Smart Badging): Menampilkan status badge '✅ Ada di Toko' jika produk master sudah terimpor ke katalog toko dan '📥 Siap Impor' jika belum, mencegah terjadinya duplikasi barang.",
             "Two-Way Cloud Sharing (Simpan Produk Toko ke Pustaka Master): Tombol 1-klik di tabel produk admin untuk menyimpan produk kustom lokal menjadi master template bersama yang dapat dipakai ulang oleh cabang atau klien lain.",
-            "Sub-Tab Database Swatch Warna Cat Terpadu: Mengintegrasikan katalog kode warna HEX cat yang sudah ada ke dalam sub-tab terdedikasi dengan antarmuka Bento Grid modern, menjamin kompatibilitas 100%.",
-            "Integritas Penuh Style Theme Toko & Harmonisasi Kontainer: Menjaga keaslian seluruh fitur Style Theme Toko (Minimalist, Hero Arch kanopi dome, Aurora Glow, Tech Grid, dan Industrial) agar tetap dapat diganti bebas sesuai selera klien di CMS Admin, dengan grid kontainer dalam yang tetap 100% sejajar simetris dengan Banner Hero, Kategori, Produk, dan Footer Bento Hub.",
-            "Harmonisasi Proporsional Universal Antarmuka Aplikasi: Menyelaraskan seluruh kontainer halaman (Etalase, Keranjang, Checkout, Pembayaran, Riwayat Pesanan, Favorit, Q&A) pada skala universal px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mx-auto, standardisasi tombol squircle 1rem (16px) dengan touch target ergonomis min-height 44px (.btn-primary & .btn-solid), harmonisasi padding modular bento card (p-4 di smartphone, p-6 di desktop), penyelarasan proporsi kartu listview katalog (p-2.5 sm:p-3.5 gap-2.5 sm:gap-4), serta font minimal 16px pada seluruh kolom isian input di mobile anti auto-zoom.",
-            "Harmonisasi Tipografi & Kontras Kolom Pencarian Bertema: Menyelaraskan seluruh teks kolom pencarian (header mobile, etalase desktop, kasir POS, admin katalog, stok opname, buku kas tempo, dll.) menggunakan jenis huruf tema toko Archivo berbobot tebal (font-bold 700) dengan letter-spacing -0.015em, meningkatkan kontras placeholder menjadi slate-600/slate-300 yang tajam dan tidak pudar/kusam, serta menyelaraskan aksen ikon kaca pembesar dan tombol chiclet SCAN dengan warna tema toko dinamis (var(--color-primary)).",
-            "Multi-Channel Distribution v1.18.0 (Android versionCode 11800)."
+            "Sub-Tab Database Swatch Warna Cat Terpadu: Mengintegrasikan katalog kode warna HEX cat yang sudah ada ke dalam sub-tab terdedikasi dengan antarmuka Bento Grid modern, menjamin kompatibilitas 100%."
         ]
     },
     {
@@ -78,21 +89,6 @@ export const DEFAULT_CHANGELOG = [
             "Lebar Flexbox Input Stabil (Zero Layout Shift): Menghilangkan pergantian class hidden pada tombol clear pencarian dan menggantinya dengan transisi opacity, menjamin lebar input tidak pernah menyusut mendadak saat karakter pertama diketik.",
             "Lock WebView Zoom 100% pada Android Native Layer: Mengonfigurasi WebView settings (setTextZoom 100% dan setSupportZoom false) pada MainActivity Android guna menjamin tidak ada pergeseran skala viewport saat keyboard terangkat.",
             "Multi-Channel Distribution v1.17.9 (Android versionCode 11709)."
-        ]
-    },
-    {
-        "id": "log-1-17-08",
-        "version": "v1.17.8",
-        "date": "2026-10-15",
-        "title": "Resolusi Komprehensif Tombol Kembali & Tutup Modal, Navigasi Deterministik Seketika & Stabilitas Keyboard Native Android",
-        "category": "feature",
-        "badge": "Navigasi Deterministik & Keyboard Native v1.17.8",
-        "items": [
-            "Navigasi Kembali In-App Deterministik Seketika (1-Klik Pasti Kembali): Mengeliminasi tombol kembali yang macet di web dan aplikasi Android dengan mengganti ketergantungan rapuh window.history.back() pada tombol in-app header (Keranjang, Checkout, Pembayaran, Pesanan, Favorit, FAQ, dan Admin Login) menjadi navigasi deterministik terstruktur changeView(targetView, true) seketika pada sentuhan pertama.",
-            "Resolusi Konflik Double-Resize Keyboard Android (Native Window Resizing): Mengubah konfigurasi plugin Keyboard Capacitor dari 'resize: body' menjadi 'resize: native'. Eliminasi JavaScript layout thrashing pada document.body menuntaskan 100% masalah virtual keyboard Android (Gboard, Samsung Keyboard, Xiaomi) yang membuka-menutup sendiri (mental) saat pertama kali mengetik.",
-            "Sanitasi Peta Modal & Resolusi False-Positive factoryReset: Membersihkan elemen modal-factory-reset-box dari MODAL_ELEMENT_MAP agar status modal tertutup tidak lagi salah dilaporkan sebagai terbuka (isModalOpenInDOM) yang sebelumnya memblokir tombol kembali di halaman web.",
-            "Proteksi Sinkronisasi History URL Produk (Zero Navigation Lock): Menghapus eksekusi history.replaceState sinkron yang bertabrakan dengan in-flight history.back() saat menutup modal produk (closeProductModal) di engine Chromium/WebKit.",
-            "Multi-Channel Distribution v1.17.8 (Android versionCode 11708)."
         ]
     }
 ];
@@ -169,7 +165,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.2';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.7';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

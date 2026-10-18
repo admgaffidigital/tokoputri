@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.18.2** (Android VersionCode: `11802`)
+* **Versi Rilis**: **v1.18.7** (Android VersionCode: `11807`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.18.7 — Pembaruan Antarmuka Full Native App Universal, Shimmer Skeleton Engine, Bento Empty State & Multi-Varian Flash Sale (18 Okt 2026)
+- **Transformasi Antarmuka Full Native App Universal**: Mengeliminasi total tampilan klasik bawaan web browser di seluruh aplikasi (Etalase, Detail Produk, Kasir POS, CMS Admin, dan Member Rewards) dengan menerapkan Universal Theme Micro-Scrollbar 6px slim pill adaptif dark/light, Brand Theme Text Selection, dan sentuhan visual ergonomis di smartphone, tablet, maupun desktop.
+- **Theme-Aware Shimmer Skeleton Engine**: Menggantikan seluruh indikator loading berputar (*spinner*) dan teks polos dengan Shimmer Skeleton interaktif beraksen warna tema toko dinamis (`.skeleton-shimmer`) pada etalase produk, ulasan pelanggan, shift kasir POS, dan mutasi poin reward VIP.
+- **Bento Island Zero-Result & Smart Action Chips**: Menghadirkan kartu Bento Empty State modern (`.bento-empty-state-card`) dengan *ambient glow* dan tombol aksi cerdas terpadu (Reset Filter 1-klik, Tanya Stok via WhatsApp, Buka Scanner Kamera POS, dan Tambah Master Data Baru di CMS Admin).
+- **Harmonisasi Proporsionalitas Flash Sale & Hadiah Poin**: Tombol teks kompak 'Tukar Hadiah' (`.btn-reward-redeem`) dan 'Beli Kilat' (`.btn-flash-buy`) berukuran 32px di mobile (34px di desktop) dengan tata letak poin mandiri di atas tombol, bebas sempit, anti-meluber, serta dukungan promo Flash Sale untuk produk multi-varian.
+- **Multi-Channel Distribution v1.18.7**: Android VersionCode `11807`, versionName `1.18.7`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.18.2 — Pengelolaan Master Preset (Hapus & Pulihkan), Native Pull-to-Refresh CMS Admin & Standarisasi Universal Form Input & Tombol (17 Okt 2026)
 - **Fitur Hapus & Pulihkan Master Preset (Database Produk Bersama)**: Menghadirkan kapabilitas hapus dan pulihkan template produk bersama (custom maupun bawaan) dengan proteksi konfirmasi aman, penanda status terhapus, panel filter pemulihan, dan auto-sinkronisasi counter realtime di CMS Admin.
