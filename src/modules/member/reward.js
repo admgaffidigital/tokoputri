@@ -1281,10 +1281,16 @@ export const loadMemberPointsHistory = async (phone, force = false) => {
 
     if (force) {
         container.innerHTML = `
-            <div class="p-4 text-center text-slate-400 text-xs font-semibold">
-                <i class="fa-solid fa-circle-notch fa-spin mr-1.5 text-[var(--color-primary)]"></i> Memperbarui riwayat poin...
-            </div>
-        `;
+            <div class="space-y-2">
+                <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50">
+                    <div class="w-9 h-9 rounded-xl skeleton-shimmer shrink-0"></div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="h-3 w-32 rounded-md skeleton-shimmer"></div>
+                        <div class="h-2.5 w-44 rounded-md skeleton-shimmer"></div>
+                    </div>
+                    <div class="h-4 w-12 rounded-md skeleton-shimmer"></div>
+                </div>
+            </div>`;
     }
 
     const events = await getMemberPointsHistory(phone, force);
@@ -1292,13 +1298,13 @@ export const loadMemberPointsHistory = async (phone, force = false) => {
 
     if (!events || !events.length) {
         container.innerHTML = `
-            <div class="p-4 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-1.5 bg-slate-50/50 dark:bg-slate-900/30">
-                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-xs">
-                    <i class="fa-solid fa-receipt"></i>
+            <div class="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 text-center space-y-2 bg-slate-50/70 dark:bg-slate-900/40">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center mx-auto text-sm border border-amber-200/80 dark:border-amber-900/40 shadow-2xs">
+                    <i class="fa-solid fa-coins"></i>
                 </div>
-                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum Ada Riwayat Mutasi Poin</p>
-                <p class="text-[10px] text-slate-400 max-w-xs mx-auto">
-                    Kumpulkan poin di setiap belanja kasir POS atau pesanan online Toko Putri untuk menikmati diskon &amp; hadiah eksklusif.
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum Ada Mutasi Poin</p>
+                <p class="text-[11px] text-slate-400 max-w-xs mx-auto">
+                    Kumpulkan poin di setiap belanja kasir POS atau pesanan online Toko Putri untuk menikmati diskon tunai &amp; hadiah eksklusif.
                 </p>
             </div>
         `;
@@ -1822,8 +1828,23 @@ export const rMemberModalBody = () => {
                     </button>
                 </div>
                 <div id="member-points-history-list" class="space-y-2">
-                    <div class="p-4 text-center text-slate-400 text-xs font-semibold">
-                        <i class="fa-solid fa-circle-notch fa-spin mr-1.5 text-[var(--color-primary)]"></i> Memuat riwayat poin...
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50">
+                            <div class="w-9 h-9 rounded-xl skeleton-shimmer shrink-0"></div>
+                            <div class="flex-1 space-y-1.5">
+                                <div class="h-3 w-32 rounded-md skeleton-shimmer"></div>
+                                <div class="h-2.5 w-44 rounded-md skeleton-shimmer"></div>
+                            </div>
+                            <div class="h-4 w-12 rounded-md skeleton-shimmer"></div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50">
+                            <div class="w-9 h-9 rounded-xl skeleton-shimmer shrink-0"></div>
+                            <div class="flex-1 space-y-1.5">
+                                <div class="h-3 w-28 rounded-md skeleton-shimmer"></div>
+                                <div class="h-2.5 w-40 rounded-md skeleton-shimmer"></div>
+                            </div>
+                            <div class="h-4 w-12 rounded-md skeleton-shimmer"></div>
+                        </div>
                     </div>
                 </div>
             </div>

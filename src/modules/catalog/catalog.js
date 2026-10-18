@@ -7,7 +7,7 @@
  */
 
 import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
-import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast, renderProductCoverHtml, isPlaceholderImg } from '../../core/utils.js';
+import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast, renderProductCoverHtml, isPlaceholderImg, openWhatsApp } from '../../core/utils.js';
 import { computeTotalProductStock } from '../../core/pricing.js';
 import { updCart } from '../cart/cart.js';
 import { openProductModal, openQuickVariantSheet } from './product-modal.js';
@@ -223,11 +223,44 @@ export const rCat = () => {
         : 'flex flex-col gap-2.5 sm:gap-3';
     
     if (!f.length) {
-        if (!window.__isProductsLoaded && !sQ && !aCat && !aBrand) {
-            // Data produk masih dalam proses unduh, pertahankan skeleton card
+        if (!window.__isProductsLoaded && !sQ && (!aCat || aCat === 'Semua Produk') && (!aBrand || aBrand === 'Semua Merek')) {
+            renderCatalogSkeleton();
+            hide('load-more-container');
             return;
         }
-        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 border-dashed dark:border-slate-800/80 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100 dark:border-slate-800"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br><span class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
+
+        const activeTerm = sQ ? `"${esc(sQ)}"` : (aCat !== 'Semua Produk' ? `kategori "${esc(aCat)}"` : (aBrand !== 'Semua Merek' ? `merek "${esc(aBrand)}"` : 'filter ini'));
+        const storePhone = (appData.store && appData.store.phone) ? esc(appData.store.phone) : '';
+
+        c.innerHTML = `
+        <div class="col-span-full py-6 sm:py-10">
+            <div class="bento-empty-state-card max-w-xl mx-auto">
+                <div class="empty-glow"></div>
+                <!-- Squircle Icon Badge with Store Theme Gradient -->
+                <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl shadow-xl ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] text-white" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
+                    <i class="fa-solid fa-magnifying-glass text-3xl sm:text-4xl text-white drop-shadow-md"></i>
+                    <div class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-md border border-slate-100 dark:border-slate-800">
+                        <i class="fa-solid fa-box-open text-xs text-amber-500"></i>
+                    </div>
+                </div>
+
+                <h3 class="mb-2 text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">Produk Tidak Ditemukan</h3>
+                <p class="mx-auto mb-6 max-w-md text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+                    Tidak ada material atau perkakas yang cocok untuk <span class="font-bold text-slate-700 dark:text-slate-200">${activeTerm}</span>. Silakan coba kata kunci lain atau gunakan bantuan admin kami.
+                </p>
+
+                <!-- Smart Action Chips -->
+                <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+                    <button type="button" onclick="if(typeof window.resetSemuaFilter==='function') window.resetSemuaFilter();" class="btn-primary inline-flex items-center gap-2 rounded-2xl px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all cursor-pointer">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Filter
+                    </button>
+                    ${storePhone ? `
+                    <button type="button" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${storePhone}', 'Halo Admin Toko Putri, apakah ada stok untuk produk: ${sQ ? esc(sQ) : ''}?');" class="inline-flex items-center gap-2 rounded-2xl px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-sm"></i> Tanya Stok via WA
+                    </button>` : ''}
+                </div>
+            </div>
+        </div>`;
         hide('load-more-container'); 
         return;
     }
@@ -510,25 +543,26 @@ export const quickAddOrOpenProduct = (e, productId) => {
 /**
  * Tampilkan skeleton placeholder beranimasi shimmer saat memuat data
  */
-export const renderCatalogSkeleton = () => {
+export const renderCatalogSkeleton = (count = 6) => {
     const c = el('product-container');
     if (!c) return;
-    const count = 6;
     let skeletonCards = '';
     for (let i = 0; i < count; i++) {
         skeletonCards += `
-        <div class="w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/80 rounded-2xl shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2 overflow-hidden">
+        <div class="w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2 overflow-hidden">
             <div class="aspect-square w-full rounded-xl skeleton-shimmer"></div>
             <div class="h-3 w-16 rounded-md skeleton-shimmer"></div>
             <div class="h-3.5 w-full rounded-md skeleton-shimmer"></div>
             <div class="h-3 w-3/4 rounded-md skeleton-shimmer"></div>
             <div class="mt-auto pt-1 flex items-center justify-between">
-                <div class="h-4 w-16 rounded-md skeleton-shimmer"></div>
+                <div class="h-4 w-20 rounded-md skeleton-shimmer"></div>
                 <div class="w-7 h-7 rounded-xl skeleton-shimmer"></div>
             </div>
         </div>`;
     }
-    c.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-3 md:gap-3.5 lg:gap-4';
+    c.className = cView === 'grid' 
+        ? 'grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]' 
+        : 'flex flex-col gap-2.5 sm:gap-3';
     c.innerHTML = skeletonCards;
 };
 

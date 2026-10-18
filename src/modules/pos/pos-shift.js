@@ -2016,7 +2016,21 @@ export const renderAdminShiftReportView = async (containerEl) => {
 
         <!-- Shift Cards Container -->
         <div id="admin-shift-list-target" class="space-y-3">
-            <div class="text-center py-12 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-xs">Memuat laporan shift kasir...</p></div>
+            <div class="space-y-3">
+                <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="h-3.5 w-32 rounded-md skeleton-shimmer"></div>
+                        <div class="h-3 w-20 rounded-md skeleton-shimmer"></div>
+                    </div>
+                    <div class="h-3 w-48 rounded-md skeleton-shimmer"></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                        <div class="h-10 rounded-xl skeleton-shimmer"></div>
+                        <div class="h-10 rounded-xl skeleton-shimmer"></div>
+                        <div class="h-10 rounded-xl skeleton-shimmer"></div>
+                        <div class="h-10 rounded-xl skeleton-shimmer"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>`;
 

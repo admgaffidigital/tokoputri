@@ -201,7 +201,14 @@ export const loadProductReviews = async (productId) => {
             </div>`;
 
         if (!reviews.length) {
-            setH('product-modal-reviews-container', header + `<p class="text-[11px] font-bold text-slate-400 text-center py-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">Belum ada ulasan untuk produk ini.</p>`);
+            setH('product-modal-reviews-container', header + `
+            <div class="p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 text-center space-y-2">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center mx-auto text-sm border border-amber-200/80 dark:border-amber-900/40">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum Ada Ulasan</p>
+                <p class="text-[11px] text-slate-400 max-w-xs mx-auto">Jadilah yang pertama mencoba dan memberikan ulasan bintang 5 untuk produk ini!</p>
+            </div>`);
             return;
         }
 
@@ -240,7 +247,22 @@ export const loadProductReviews = async (productId) => {
         return;
     }
 
-    setH('product-modal-reviews-container', `<div class="text-center py-6"><i class="fa-solid fa-spinner fa-spin text-xl text-slate-300"></i></div>`);
+    setH('product-modal-reviews-container', `
+        <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between mb-3">
+                <div class="h-4 w-32 rounded-md skeleton-shimmer"></div>
+                <div class="h-3 w-16 rounded-md skeleton-shimmer"></div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="h-3 w-28 rounded-md skeleton-shimmer"></div>
+                    <div class="h-2.5 w-16 rounded-md skeleton-shimmer"></div>
+                </div>
+                <div class="h-3 w-20 rounded-md skeleton-shimmer"></div>
+                <div class="h-3 w-full rounded-md skeleton-shimmer"></div>
+                <div class="h-3 w-3/4 rounded-md skeleton-shimmer"></div>
+            </div>
+        </div>`);
     try {
         const snap = await db.collection("freshmart").doc("cms_data").collection("reviews").where("productId", "==", productId).get();
         let reviews = snap.docs.map(d => d.data()).filter(r => r.isVisible !== false);
@@ -254,7 +276,10 @@ export const loadProductReviews = async (productId) => {
         renderReviewList(reviews);
     } catch(e) {
         console.warn('Gagal memuat ulasan:', e);
-        setH('product-modal-reviews-container', `<p class="text-[11px] text-slate-400 text-center py-4">Belum ada ulasan yang dapat dimuat.</p>`);
+        setH('product-modal-reviews-container', `
+        <div class="p-4 text-center text-slate-400 text-xs font-semibold rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800">
+            <i class="fa-solid fa-circle-exclamation text-slate-400 mr-1.5"></i> Belum ada ulasan yang dapat dimuat.
+        </div>`);
     }
 };
 

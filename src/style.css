@@ -55,6 +55,16 @@ input, textarea, [contenteditable="true"] {
   user-select: text;
 }
 
+/* Brand Theme Text Selection — Mengeliminasi warna biru seleksi dokumen bawaan browser */
+::selection {
+  background-color: rgba(var(--color-primary-rgb), 0.28);
+  color: inherit;
+}
+::-moz-selection {
+  background-color: rgba(var(--color-primary-rgb), 0.28);
+  color: inherit;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -2038,11 +2048,47 @@ html.dark [id*="modal-"][id*="-box"] .admin-input {
     color: #f8fafc !important;
 }
 
+/* ============================================================
+   UNIVERSAL THEME MICRO-SCROLLBAR (DESKTOP & TABLET)
+   Mengeliminasi scrollbar abu-abu tebal 16px bawaan browser di Light & Dark Mode.
+   ============================================================ */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+}
+html.dark * {
+  scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+}
+
+/* Chrome, Edge, Safari, Opera */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.45);
+  border-radius: 99px;
+  transition: background-color 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary, #10b981);
+}
+
 /* Dark mode scrollbars */
-html.dark ::-webkit-scrollbar { width: 6px; height: 6px; }
-html.dark ::-webkit-scrollbar-track { background: #0b1121; }
-html.dark ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
-html.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
+html.dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.45);
+  border-radius: 99px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary, #10b981);
+}
 
 /* === 6. THERMAL PRINT STYLES (PRESISI UNIVERSAL 58mm & 80mm) === */
 #thermal-print-section { display: none; }
@@ -3474,20 +3520,62 @@ html.dark .step-line {
     background-color: var(--color-primary);
 }
 
-/* ─── SKELETON SHIMMER (LOADING STATE HALUS & SOLID) ─── */
+/* ─── SKELETON SHIMMER (LOADING STATE NATIVE BERTEMA TOKO) ─── */
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
 .skeleton-shimmer {
-    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background: linear-gradient(90deg, rgba(241, 245, 249, 0.8) 20%, rgba(var(--color-primary-rgb), 0.08) 50%, rgba(241, 245, 249, 0.8) 80%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    animation: shimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 html.dark .skeleton-shimmer {
-    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.8) 20%, rgba(var(--color-primary-rgb), 0.16) 50%, rgba(30, 41, 59, 0.8) 80%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    animation: shimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ─── BENTO EMPTY STATE UNIVERSAL CARD (NATIVE ZERO-RESULT ENGINE) ─── */
+.bento-empty-state-card {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 1.5rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+html.dark .bento-empty-state-card {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(30, 41, 59, 0.8);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+}
+.bento-empty-state-card .empty-glow {
+    position: absolute;
+    top: -4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14rem;
+    height: 14rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+    opacity: 0.15;
+    pointer-events: none;
+}
+html.dark .bento-empty-state-card .empty-glow {
+    opacity: 0.22;
+}
+
+/* Progressive Image Fade-In */
+.img-progressive-fade {
+    opacity: 0;
+    transition: opacity 0.35s ease-in-out;
+}
+.img-progressive-fade.loaded {
+    opacity: 1;
 }
 
 /* ─── FLOATING PILL CART (PENGALAMAN MOBILE ELEGAN) ─── */
