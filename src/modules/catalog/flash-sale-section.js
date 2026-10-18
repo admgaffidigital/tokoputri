@@ -82,7 +82,9 @@ export const renderStorefrontFlashSale = () => {
         const remaining = Math.max(0, quota - sold);
         const discountPct = normalPrice > 0 ? Math.round(((normalPrice - flashPrice) / normalPrice) * 100) : (item.discountPercent || 0);
 
-        const imgUrl = prod.img ? getOptImg(prod.img, 'w400-rw') : '/favicon.png';
+        const vObj = item.variantName && prod.variants ? prod.variants.find(v => v.name === item.variantName) : null;
+        const rawImg = (vObj && vObj.img) ? vObj.img : prod.img;
+        const imgUrl = rawImg ? getOptImg(rawImg, 'w400-rw') : '/favicon.png';
         const prodName = prod.name || 'Produk Promo';
         const variantSuffix = item.variantName ? ` (${item.variantName})` : '';
 
@@ -99,8 +101,8 @@ export const renderStorefrontFlashSale = () => {
                 <span><i class="fa-solid fa-fire text-amber-200 text-[8px]"></i> Sisa ${remaining}!</span>
             </div>` : ''}
 
-            <!-- Foto Produk: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
-            <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80 shrink-0" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}')">
+            <!-- Foto Produk / Varian: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
+            <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80 shrink-0" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
                 <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='/favicon.png'">
                 ${isSoldOut ? `
                 <div class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-2 text-center text-white">
@@ -112,8 +114,9 @@ export const renderStorefrontFlashSale = () => {
             <!-- Detail & Harga -->
             <div class="flex flex-1 flex-col justify-between p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
                 <div>
-                    <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem]" title="${esc(prodName + variantSuffix)}">
-                        ${esc(prodName + variantSuffix)}
+                    <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem] cursor-pointer" title="${esc(prodName + variantSuffix)}" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
+                        ${esc(prodName)}
+                        ${item.variantName ? `<span class="inline-flex items-center gap-1 mt-0.5 text-[8.5px] font-black px-1.5 py-0.2 rounded-md uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/80"><i class="fa-solid fa-shapes text-[8px] text-[var(--color-primary)]"></i>${esc(item.variantName)}</span>` : ''}
                     </h4>
                     
                     <!-- Coretan Harga & Harga Kilat Harmonis -->
@@ -230,14 +233,17 @@ export const quickBuyFlashSaleItem = (prodId, variantName = '') => {
     if (!prod) return;
 
     if (prod.variants && prod.variants.length > 0 && !variantName) {
-        // Jika produk memiliki varian, buka modal produk agar pembeli memilih varian
+        // Jika produk memiliki varian dan promo ini berlaku untuk semua varian tanpa spesifik, buka modal produk agar pembeli memilih varian
         openProductModal(prodId);
         return;
     }
 
-    // Jika tanpa varian atau varian sudah spesifik, masukkan langsung ke keranjang
+    // Jika tanpa varian atau varian sudah spesifik, masukkan langsung ke keranjang dengan varian tersebut
     const vName = variantName || (prod.variants && prod.variants[0] ? prod.variants[0].name : '');
-    const price = window.getEffP ? window.getEffP({ id: prod.id, price: prod.price, variantName: vName }) : prod.price;
+    const price = window.getEffP ? window.getEffP({ id: prod.id, price: prod.price, variantName: vName }, 'web') : prod.price;
+    const vObj = vName && prod.variants ? prod.variants.find(v => v.name === vName) : null;
+    const itemImg = (vObj && vObj.img) ? vObj.img : (prod.img || '');
+    const itemPoin = (vObj && parseFloat(vObj.poin) > 0) ? parseFloat(vObj.poin) : (parseFloat(prod.poin) || 0);
 
     const existingIndex = cart.findIndex(c => String(c.id) === String(prod.id) && String(c.variantName || '') === String(vName || ''));
     if (existingIndex > -1) {
@@ -248,15 +254,17 @@ export const quickBuyFlashSaleItem = (prodId, variantName = '') => {
             name: prod.name,
             variantName: vName,
             price: price,
-            img: prod.img || '',
+            img: itemImg,
             qty: 1,
-            unit: prod.unit || 'pcs'
+            unit: (vObj && vObj.unit) || prod.unit || 'pcs',
+            colorCode: (vObj && vObj.colorCode) || '',
+            poin: itemPoin
         });
     }
 
     try { localStorage.setItem('freshmart_cart', JSON.stringify(cart)); } catch(e) {}
     updCart();
-    showToast(`"${prod.name}" berhasil dimasukkan ke keranjang dengan harga Flash Sale!`, 'success');
+    showToast(`"${prod.name}${vName ? ` (${vName})` : ''}" berhasil dimasukkan ke keranjang dengan harga Flash Sale!`, 'success');
 };
 
 // Expose ke window

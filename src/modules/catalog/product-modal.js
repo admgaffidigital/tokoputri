@@ -33,7 +33,7 @@ let productNavStack = [];
 /**
  * Buka modal detail produk berdasarkan ID produk
  */
-export const openProductModal = (i, isFromNavStack = false) => {
+export const openProductModal = (i, isFromNavStack = false, targetVariantName = null) => {
     window.cSlideIdx = 0;
     const p = appData.products.find(x => x && x.id != null && String(x.id) === String(i));
     if (!p) return;
@@ -77,14 +77,20 @@ export const openProductModal = (i, isFromNavStack = false) => {
     setCProd(p);
     setCQty(1);
     
-    // Jika punya varian, otomatis pilih varian aktif pertama yang memiliki stok (smart auto-select)
+    // Jika punya varian, otomatis pilih varian target (jika diarahkan dari Flash Sale) atau varian aktif pertama yang memiliki stok
     if (p.variants && p.variants.length > 0) {
-        const found = p.variants.findIndex(v => {
-            const isActive = v.isActive !== false && v.isActive !== 'false';
-            const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
-            const stock = rawV != null ? (parseFloat(rawV) || 0) : 0;
-            return isActive && (!useStk || isPreorder || stock > 0);
-        });
+        let found = -1;
+        if (targetVariantName) {
+            found = p.variants.findIndex(v => v && String(v.name).trim().toLowerCase() === String(targetVariantName).trim().toLowerCase());
+        }
+        if (found < 0) {
+            found = p.variants.findIndex(v => {
+                const isActive = v.isActive !== false && v.isActive !== 'false';
+                const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+                const stock = rawV != null ? (parseFloat(rawV) || 0) : 0;
+                return isActive && (!useStk || isPreorder || stock > 0);
+            });
+        }
         setCVar(found >= 0 ? found : 0);
     } else {
         setCVar(0);
@@ -940,10 +946,14 @@ export const rProdMod = () => {
                         ? `<div class="paint-selected-badge"><span class="paint-selected-badge-inner ${isDark ? 'is-dark-bg' : 'is-light-bg'}"><i class="fa-solid fa-check"></i></span></div>`
                         : '';
 
+                    const swatchVarFs = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(p.id, r.name, 'web') : null;
+                    const isSwatchVarInFs = swatchVarFs && !swatchVarFs.isSoldOut && swatchVarFs.flashSalePrice > 0;
                     const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
-                    const metaRight = hasDiffPrice 
-                        ? `<span class="paint-swatch-stock font-bold ${isSelected ? 'text-[var(--color-primary)]' : ''}">${fCur(r.price)}</span>`
-                        : (hasVStock && !isVarOutOfStock ? `<span class="paint-swatch-stock ${varStock <= 5 ? 'is-low' : ''}">Stok ${varStock}</span>` : `<span class="paint-swatch-stock">${esc(r.unit || p.unit || '')}</span>`);
+                    const metaRight = isSwatchVarInFs
+                        ? `<span class="paint-swatch-stock font-black inline-flex items-center gap-0.5" style="color: var(--color-primary);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-400"></i>${fCur(swatchVarFs.flashSalePrice)}</span>`
+                        : (hasDiffPrice 
+                            ? `<span class="paint-swatch-stock font-bold ${isSelected ? 'text-[var(--color-primary)]' : ''}">${fCur(r.price)}</span>`
+                            : (hasVStock && !isVarOutOfStock ? `<span class="paint-swatch-stock ${varStock <= 5 ? 'is-low' : ''}">Stok ${varStock}</span>` : `<span class="paint-swatch-stock">${esc(r.unit || p.unit || '')}</span>`));
 
                     return `
                         <button type="button" ${!isVarSelectable ? 'disabled' : ''} class="paint-swatch-card ${isSelected ? 'is-selected' : ''} ${!isVarSelectable ? 'is-disabled' : ''}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
@@ -993,10 +1003,15 @@ export const rProdMod = () => {
                         ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-2xs">`
                         : '';
 
-                    const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
-                    const priceBadge = hasDiffPrice 
-                        ? `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`
-                        : '';
+                    const varFs = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(p.id, r.name, 'web') : null;
+                    const isVarInFs = varFs && !varFs.isSoldOut && varFs.flashSalePrice > 0;
+
+                    let priceBadge = '';
+                    if (isVarInFs) {
+                        priceBadge = `<span class="inline-flex items-center gap-1 text-[9.5px] font-black px-1.5 py-0.2 rounded text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-300"></i> ${fCur(varFs.flashSalePrice)} <span class="text-[8px] opacity-90">(-${varFs.discountPercent}%)</span></span>`;
+                    } else if (r.price && parseFloat(r.price) !== parseFloat(p.price)) {
+                        priceBadge = `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`;
+                    }
 
                     return `<button ${!isVarSelectable ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 flex items-center gap-2 cursor-pointer ${chipClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
                         ${thumbImg}

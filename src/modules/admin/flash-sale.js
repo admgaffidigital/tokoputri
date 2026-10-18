@@ -505,24 +505,36 @@ export const renderFlashSaleDraftItems = () => {
     container.innerHTML = sessionItemDrafts.map((item, idx) => {
         const selectedProd = products.find(p => String(p.id) === String(item.productId));
         const variants = selectedProd && Array.isArray(selectedProd.variants) ? selectedProd.variants : [];
-        const normalPrice = parseFloat(item.normalPrice) || (selectedProd ? parseFloat(selectedProd.price) : 0);
+        const selectedVariantObj = item.variantName && variants.length ? variants.find(v => v.name === item.variantName) : null;
+
+        const normalPrice = parseFloat(item.normalPrice) || (selectedVariantObj ? parseFloat(selectedVariantObj.price) : (selectedProd ? parseFloat(selectedProd.price) : 0));
         const flashPrice = parseFloat(item.flashSalePrice) || 0;
-        const hpp = selectedProd ? (item.variantName && variants.length ? (variants.find(v => v.name === item.variantName)?.hpp || selectedProd.hpp) : selectedProd.hpp) : 0;
+        const hpp = selectedVariantObj ? (parseFloat(selectedVariantObj.hpp) || parseFloat(selectedProd.hpp) || 0) : (selectedProd ? parseFloat(selectedProd.hpp) || 0 : 0);
         const isLoss = hpp > 0 && flashPrice > 0 && flashPrice < hpp;
         const discountPct = normalPrice > 0 && flashPrice > 0 ? Math.round(((normalPrice - flashPrice) / normalPrice) * 100) : 0;
+        const varStock = selectedVariantObj ? (parseFloat(selectedVariantObj.stock) || 0) : (selectedProd ? parseFloat(selectedProd.stock) || 0 : 0);
+        const itemImg = (selectedVariantObj && selectedVariantObj.img) ? selectedVariantObj.img : (selectedProd ? selectedProd.img : '');
 
         return `
         <div class="p-3.5 rounded-2xl border ${isLoss ? 'border-rose-300 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40'} space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-                <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary);">
-                    Item #${idx + 1}
-                </span>
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-2 flex-wrap">
+                    ${itemImg ? `<img src="${getOptImg(itemImg, 'w100-rw')}" alt="Thumb" class="w-7 h-7 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">` : ''}
+                    <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary);">
+                        Item #${idx + 1}
+                    </span>
+                    ${item.variantName ? `
+                    <span class="px-2 py-0.5 rounded-lg text-[9.5px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 flex items-center gap-1">
+                        <i class="fa-solid fa-shapes text-[8.5px]"></i> Varian: ${esc(item.variantName)}
+                    </span>` : (variants.length > 0 ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-200/70 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Semua Varian</span>` : '')}
+                    ${selectedProd ? `<span class="text-[10px] text-slate-400 font-medium">Stok: ${varStock} ${selectedProd.unit || 'unit'}</span>` : ''}
+                </div>
                 <button type="button" onclick="window.removeFlashSaleItemRow(${idx})" class="text-rose-500 hover:text-rose-700 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-trash-can mr-1"></i> Hapus
                 </button>
             </div>
 
-            <!-- Pilihan Produk & Varian -->
+            <!-- Pilihan Produk & Varian Multi-Varian -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Produk</label>
@@ -530,7 +542,7 @@ export const renderFlashSaleDraftItems = () => {
                         <option value="">-- Pilih Produk Katalog --</option>
                         ${products.map(p => `
                             <option value="${esc(p.id)}" ${String(p.id) === String(item.productId) ? 'selected' : ''}>
-                                ${esc(p.name)} (${fCur(p.price)})
+                                ${esc(p.name)} (${fCur(p.price)})${p.variants && p.variants.length > 0 ? ` [${p.variants.length} Varian]` : ''}
                             </option>
                         `).join('')}
                     </select>
@@ -538,23 +550,33 @@ export const renderFlashSaleDraftItems = () => {
 
                 ${variants.length > 0 ? `
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Varian (Opsional)</label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-[10px] font-bold text-slate-500">Pilih Varian (Spesifik / Global)</label>
+                        <button type="button" onclick="window.addAllVariantsToFlashSaleDraft(${idx})" class="text-[9.5px] font-black cursor-pointer hover:underline flex items-center gap-1" style="color: var(--color-primary);" title="Otomatis pecah menjadi baris tersendiri untuk setiap varian">
+                            <i class="fa-solid fa-shapes"></i> Muat Semua Varian (${variants.length})
+                        </button>
+                    </div>
                     <select onchange="window.updateFlashSaleItemVariant(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        <option value="">Semua Varian</option>
+                        <option value="">Semua Varian (Produk Global)</option>
                         ${variants.map(v => `
                             <option value="${esc(v.name)}" ${v.name === item.variantName ? 'selected' : ''}>
-                                ${esc(v.name)} (${fCur(v.price || selectedProd.price)})
+                                ${esc(v.name)} (${fCur(v.price || selectedProd.price)})${v.stock != null ? ` - Stok: ${v.stock}` : ''}
                             </option>
                         `).join('')}
                     </select>
                 </div>` : ''}
             </div>
 
-            <!-- Harga Normal, Harga Flash Sale, & Kuota -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- Harga Normal, Diskon %, Harga Flash Sale, & Kuota -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Normal (Rp)</label>
                     <input type="number" min="0" value="${normalPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'normalPrice', this.value)" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Diskon (%)</label>
+                    <input type="number" min="1" max="99" value="${discountPct || ''}" onchange="window.updateFlashSaleItemDiscountPct(${idx}, this.value)" placeholder="Contoh: 20" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
 
                 <div>
@@ -565,7 +587,7 @@ export const renderFlashSaleDraftItems = () => {
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Kuota Promo (Qty Unit)</label>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Kuota Promo (Qty)</label>
                     <input type="number" min="1" value="${item.quota || 10}" onchange="window.updateFlashSaleItemDraft(${idx}, 'quota', this.value)" placeholder="Batas kuota" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
@@ -595,6 +617,51 @@ export const renderFlashSaleDraftItems = () => {
             </div>
         </div>`;
     }).join('');
+};
+
+/**
+ * Muat Semua Varian dari Suatu Produk ke Draft Sekaligus (Multi-Varian Batch)
+ */
+export const addAllVariantsToFlashSaleDraft = (idx) => {
+    if (!sessionItemDrafts[idx]) return;
+    const item = sessionItemDrafts[idx];
+    const prod = (appData.products || []).find(p => String(p.id) === String(item.productId));
+    if (!prod || !Array.isArray(prod.variants) || prod.variants.length === 0) {
+        showToast('Produk ini tidak memiliki daftar varian.', 'info');
+        return;
+    }
+
+    const defaultQuota = parseFloat(item.quota) || 10;
+    const newRows = prod.variants.map(v => {
+        const vPrice = parseFloat(v.price) || parseFloat(prod.price) || 0;
+        const vFlashPrice = Math.round(vPrice * 0.8); // 20% diskon default
+        return {
+            productId: String(prod.id),
+            variantName: v.name || '',
+            normalPrice: vPrice,
+            flashSalePrice: vFlashPrice,
+            quota: defaultQuota,
+            soldCount: 0,
+            maxPerCustomer: item.maxPerCustomer || 2
+        };
+    });
+
+    sessionItemDrafts.splice(idx, 1, ...newRows);
+    renderFlashSaleDraftItems();
+    showToast(`Berhasil memuat ${newRows.length} varian produk "${prod.name}" ke draft Flash Sale!`, 'success');
+};
+
+/**
+ * Update Persentase Diskon di Draft (Otomatis Menghitung Harga Flash Sale)
+ */
+export const updateFlashSaleItemDiscountPct = (idx, pct) => {
+    if (!sessionItemDrafts[idx]) return;
+    const p = parseFloat(pct) || 0;
+    const normal = parseFloat(sessionItemDrafts[idx].normalPrice) || 0;
+    if (normal > 0 && p >= 0 && p < 100) {
+        sessionItemDrafts[idx].flashSalePrice = Math.round(normal * (1 - p / 100));
+        renderFlashSaleDraftItems();
+    }
 };
 
 /**
@@ -665,11 +732,16 @@ export const updateFlashSaleItemVariant = (idx, vName) => {
     if (!sessionItemDrafts[idx]) return;
     sessionItemDrafts[idx].variantName = vName;
     const prod = (appData.products || []).find(p => String(p.id) === String(sessionItemDrafts[idx].productId));
-    if (prod && vName && prod.variants) {
-        const v = prod.variants.find(vv => vv.name === vName);
-        if (v && v.price) {
-            sessionItemDrafts[idx].normalPrice = parseFloat(v.price) || 0;
-            sessionItemDrafts[idx].flashSalePrice = Math.round((parseFloat(v.price) || 0) * 0.8);
+    if (prod) {
+        if (vName && prod.variants) {
+            const v = prod.variants.find(vv => vv.name === vName);
+            if (v && v.price) {
+                sessionItemDrafts[idx].normalPrice = parseFloat(v.price) || 0;
+                sessionItemDrafts[idx].flashSalePrice = Math.round((parseFloat(v.price) || 0) * 0.8);
+            }
+        } else {
+            sessionItemDrafts[idx].normalPrice = parseFloat(prod.price) || 0;
+            sessionItemDrafts[idx].flashSalePrice = Math.round((parseFloat(prod.price) || 0) * 0.8);
         }
     }
     renderFlashSaleDraftItems();
@@ -997,3 +1069,5 @@ window.resetSessionItemSold = resetSessionItemSold;
 window.resetAllSessionItemsSold = resetAllSessionItemsSold;
 window.resetDraftItemSold = resetDraftItemSold;
 window.resetAllDraftItemsSold = resetAllDraftItemsSold;
+window.addAllVariantsToFlashSaleDraft = addAllVariantsToFlashSaleDraft;
+window.updateFlashSaleItemDiscountPct = updateFlashSaleItemDiscountPct;

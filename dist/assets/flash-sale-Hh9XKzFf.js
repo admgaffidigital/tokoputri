@@ -1,4 +1,4 @@
-import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";import{s as S,U as j}from"./module-pos-BeMRwSJd.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-BByc2H64.js";import"./module-faq-iRtxai8o.js";let M=null,c=[];const I=t=>{if(!t)return"";const e=new Date(t);if(isNaN(e.getTime()))return"";const a=d=>String(d).padStart(2,"0"),s=e.getFullYear(),i=a(e.getMonth()+1),u=a(e.getDate()),r=a(e.getHours()),o=a(e.getMinutes());return`${s}-${i}-${u}T${r}:${o}`},C=t=>{if(!t)return"-";const e=new Date(t);return isNaN(e.getTime())?"-":e.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})},w=()=>{const t=m("admin-content");if(!t)return;const e=Array.isArray(n.flashSales)?n.flashSales:[];let a=0,s=0,i=0;e.forEach(r=>{j(r)==="active"&&a++,(r.items||[]).forEach(d=>{s++,i+=parseFloat(d.soldCount)||0})});const u=e.length===0?`
+import{a as n,k as p,e as x,i as m,f as S,ak as R}from"./module-print-CFkN8-rJ.js";import{s as y,U as M}from"./module-pos-DiLCQ3kh.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-Dqu3evNX.js";import"./module-faq-DNO8fWIk.js";let H=null,i=[];const j=t=>{if(!t)return"";const e=new Date(t);if(isNaN(e.getTime()))return"";const a=c=>String(c).padStart(2,"0"),s=e.getFullYear(),l=a(e.getMonth()+1),d=a(e.getDate()),r=a(e.getHours()),o=a(e.getMinutes());return`${s}-${l}-${d}T${r}:${o}`},C=t=>{if(!t)return"-";const e=new Date(t);return isNaN(e.getTime())?"-":e.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})},v=()=>{const t=x("admin-content");if(!t)return;const e=Array.isArray(n.flashSales)?n.flashSales:[];let a=0,s=0,l=0;e.forEach(r=>{M(r)==="active"&&a++,(r.items||[]).forEach(c=>{s++,l+=parseFloat(c.soldCount)||0})});const d=e.length===0?`
         <div class="col-span-full py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl p-8 bg-slate-50/50 dark:bg-slate-900/30">
             <div class="w-16 h-16 mx-auto mb-4 rounded-3xl flex items-center justify-center text-3xl shadow-sm" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary);">
                 <i class="fa-solid fa-bolt"></i>
@@ -11,18 +11,18 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                 <i class="fa-solid fa-plus"></i>
                 <span>Buat Sesi Flash Sale Pertama</span>
             </button>
-        </div>`:e.map(r=>{const o=j(r),d=o==="active"?'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider animate-pulse" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-bolt" style="color: var(--color-primary);"></i> SEDANG BERLANGSUNG</span>':o==="upcoming"?'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300 dark:border-amber-800"><i class="fa-solid fa-clock"></i> SEGERA HADIR</span>':'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-check"></i> SELESAI</span>',x=r.channel==="pos"?"Hanya Kasir POS":r.channel==="web"?"Hanya Etalase Web":"Web & Kasir POS",g=Array.isArray(r.items)?r.items:[];return`
+        </div>`:e.map(r=>{const o=M(r),c=o==="active"?'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider animate-pulse" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-bolt" style="color: var(--color-primary);"></i> SEDANG BERLANGSUNG</span>':o==="upcoming"?'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300 dark:border-amber-800"><i class="fa-solid fa-clock"></i> SEGERA HADIR</span>':'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-check"></i> SELESAI</span>',g=r.channel==="pos"?"Hanya Kasir POS":r.channel==="web"?"Hanya Etalase Web":"Web & Kasir POS",w=Array.isArray(r.items)?r.items:[];return`
             <div class="bento-island-card rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
                 <div>
                     <!-- Header Card Sesi -->
                     <div class="flex items-start justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
                         <div>
                             <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-                                ${d}
-                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-store mr-1"></i>${x}</span>
+                                ${c}
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-store mr-1"></i>${g}</span>
                             </div>
                             <h3 class="font-extrabold text-base text-slate-900 dark:text-white leading-snug">
-                                ${b(r.title||"Sesi Flash Sale")}
+                                ${m(r.title||"Sesi Flash Sale")}
                             </h3>
                             <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium flex-wrap">
                                 <span><i class="fa-regular fa-calendar-check text-[var(--color-primary)] mr-1"></i>${C(r.startTime)}</span>
@@ -34,14 +34,14 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                         <!-- Aksi Tombol -->
                         <div class="flex items-center gap-1.5 shrink-0">
                             ${o==="ended"?`
-                            <button onclick="window.reactivateFlashSaleSession('${b(r.id)}', 4)" title="Naikkan kembali ke Flash Sale sekarang (+4 Jam)" class="btn-native-action px-2.5 py-1.5 rounded-xl text-white text-[11px] font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                            <button onclick="window.reactivateFlashSaleSession('${m(r.id)}', 4)" title="Naikkan kembali ke Flash Sale sekarang (+4 Jam)" class="btn-native-action px-2.5 py-1.5 rounded-xl text-white text-[11px] font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
                                 <i class="fa-solid fa-bolt text-amber-300"></i>
                                 <span>Naikkan Lagi</span>
                             </button>`:""}
-                            <button onclick="window.openFlashSaleModal('${b(r.id)}')" title="Edit Sesi" class="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
+                            <button onclick="window.openFlashSaleModal('${m(r.id)}')" title="Edit Sesi" class="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
-                            <button onclick="window.deleteFlashSaleSession('${b(r.id)}')" title="Hapus Sesi" class="w-9 h-9 rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
+                            <button onclick="window.deleteFlashSaleSession('${m(r.id)}')" title="Hapus Sesi" class="w-9 h-9 rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
@@ -51,39 +51,39 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                     <div class="mt-3.5 space-y-2.5">
                         <div class="flex items-center justify-between">
                             <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                Produk Promo (${g.length} Barang):
+                                Produk Promo (${w.length} Barang):
                             </p>
-                            ${g.some(l=>(parseFloat(l.soldCount)||0)>0)?`
-                            <button type="button" onclick="window.resetAllSessionItemsSold('${b(r.id)}')" class="text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+                            ${w.some(u=>(parseFloat(u.soldCount)||0)>0)?`
+                            <button type="button" onclick="window.resetAllSessionItemsSold('${m(r.id)}')" class="text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
                                 <i class="fa-solid fa-rotate-left text-[9px]"></i> Reset Semua Kuota
                             </button>`:""}
                         </div>
                         <div class="divide-y divide-slate-100 dark:divide-slate-800/80">
-                            ${g.map((l,f)=>{const k=(n.products||[]).find(D=>String(D.id)===String(l.productId)),N=k?k.name:l.productName||"Produk ID: "+l.productId,E=l.variantName?` (${l.variantName})`:"",y=parseFloat(l.quota)||0,F=parseFloat(l.soldCount)||0,$=y>0&&F>=y,A=parseFloat(l.normalPrice)||0,P=parseFloat(l.flashSalePrice)||0,B=A>0?Math.round((A-P)/A*100):l.discountPercent||0,T=k?l.variantName&&k.variants&&k.variants.find(D=>D.name===l.variantName)?.hpp||k.hpp:0,R=T>0&&P<T;return`
+                            ${w.map((u,b)=>{const k=(n.products||[]).find(I=>String(I.id)===String(u.productId)),f=k?k.name:u.productName||"Produk ID: "+u.productId,B=u.variantName?` (${u.variantName})`:"",F=parseFloat(u.quota)||0,$=parseFloat(u.soldCount)||0,P=F>0&&$>=F,A=parseFloat(u.normalPrice)||0,D=parseFloat(u.flashSalePrice)||0,E=A>0?Math.round((A-D)/A*100):u.discountPercent||0,T=k?u.variantName&&k.variants&&k.variants.find(I=>I.name===u.variantName)?.hpp||k.hpp:0,O=T>0&&D<T;return`
                                 <div class="py-2.5 flex items-center justify-between gap-3 text-xs">
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-1.5">
-                                            <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${b(N+E)}</p>
-                                            ${$?'<span class="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">HABIS</span>':""}
+                                            <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${m(f+B)}</p>
+                                            ${P?'<span class="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">HABIS</span>':""}
                                         </div>
                                         <div class="flex items-center gap-2 mt-0.5 flex-wrap">
-                                            <span class="text-[11px] text-slate-400 line-through">${v(A)}</span>
-                                            <span class="font-black" style="color: var(--color-primary);">${v(P)} (-${B}%)</span>
-                                            ${R?`<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-300 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8.5px]"></i> DI BAWAH HPP (${v(T)})</span>`:""}
+                                            <span class="text-[11px] text-slate-400 line-through">${S(A)}</span>
+                                            <span class="font-black" style="color: var(--color-primary);">${S(D)} (-${E}%)</span>
+                                            ${O?`<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-300 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8.5px]"></i> DI BAWAH HPP (${S(T)})</span>`:""}
                                         </div>
                                     </div>
 
                                     <!-- Indikator Kuota Terjual Harmonis -->
                                     <div class="text-right shrink-0">
                                         <div class="flex items-center justify-end gap-1">
-                                            <span class="text-[10px] font-bold ${$?"text-rose-500":"text-slate-500 dark:text-slate-400"}">Terjual ${F} / ${y||"∞"}</span>
-                                            ${F>0?`
-                                            <button onclick="window.resetSessionItemSold('${b(r.id)}', ${f})" title="Reset kuota terjual produk ini ke 0" class="text-amber-500 hover:text-amber-600 text-[10px] font-black cursor-pointer ml-1 p-0.5">
+                                            <span class="text-[10px] font-bold ${P?"text-rose-500":"text-slate-500 dark:text-slate-400"}">Terjual ${$} / ${F||"∞"}</span>
+                                            ${$>0?`
+                                            <button onclick="window.resetSessionItemSold('${m(r.id)}', ${b})" title="Reset kuota terjual produk ini ke 0" class="text-amber-500 hover:text-amber-600 text-[10px] font-black cursor-pointer ml-1 p-0.5">
                                                 <i class="fa-solid fa-rotate-left"></i>
                                             </button>`:""}
                                         </div>
                                         <div class="w-20 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-200/50 dark:border-slate-700/50">
-                                            <div class="h-full rounded-full ${$?"bg-rose-500":""}" style="${$?"":"background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);"} width: ${y>0?Math.min(100,Math.round(F/y*100)):100}%;"></div>
+                                            <div class="h-full rounded-full ${P?"bg-rose-500":""}" style="${P?"":"background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);"} width: ${F>0?Math.min(100,Math.round($/F*100)):100}%;"></div>
                                         </div>
                                     </div>
                                 </div>`}).join("")}
@@ -101,11 +101,11 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                     </div>
                     <div class="flex items-center gap-1.5">
                         ${o==="ended"?`
-                        <button onclick="window.reactivateFlashSaleSession('${b(r.id)}', 4)" class="btn-native-action px-3 py-1 rounded-xl text-white text-xs font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                        <button onclick="window.reactivateFlashSaleSession('${m(r.id)}', 4)" class="btn-native-action px-3 py-1 rounded-xl text-white text-xs font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
                             <i class="fa-solid fa-bolt text-amber-300"></i>
                             <span>Naikkan Lagi</span>
                         </button>`:""}
-                        <button onclick="window.toggleFlashSaleActive('${b(r.id)}')" class="px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${r.isActive!==!1&&o==="active"?"bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800":"bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200"}">
+                        <button onclick="window.toggleFlashSaleActive('${m(r.id)}')" class="px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${r.isActive!==!1&&o==="active"?"bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800":"bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200"}">
                             <i class="fa-solid fa-power-off mr-1"></i> ${r.isActive!==!1&&o==="active"?"Sesi Aktif":r.isActive!==!1?"Aktifkan (Perpanjang)":"Dinonaktifkan"}
                         </button>
                     </div>
@@ -162,16 +162,16 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                 </div>
                 <div>
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Total Unit Terjual</span>
-                    <span class="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">${i} Unit</span>
+                    <span class="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">${l} Unit</span>
                 </div>
             </div>
         </div>
 
         <!-- Daftar Sesi Flash Sale Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            ${u}
+            ${d}
         </div>
-    </div>`},O=(t=null)=>{M=t;const e=t?(n.flashSales||[]).find(d=>d.id===t):null;c=e&&Array.isArray(e.items)?JSON.parse(JSON.stringify(e.items)):[];const a=Date.now(),s=e?.endTime?typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime():0,i=e&&(!s||s<=a);let u=e?e.startTime:new Date(a).toISOString(),r=e?e.endTime:new Date(a+4*3600*1e3).toISOString();if(i){const d=e.startTime&&e.endTime?Math.max(36e5,(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime())-(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.startTime):new Date(e.startTime).getTime())):144e5;u=new Date(a).toISOString(),r=new Date(a+d).toISOString()}const o=m("modal-flash-sale-form");o&&o.remove(),document.body.insertAdjacentHTML("beforeend",`
+    </div>`},K=(t=null)=>{H=t;const e=t?(n.flashSales||[]).find(c=>c.id===t):null;i=e&&Array.isArray(e.items)?JSON.parse(JSON.stringify(e.items)):[];const a=Date.now(),s=e?.endTime?typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime():0,l=e&&(!s||s<=a);let d=e?e.startTime:new Date(a).toISOString(),r=e?e.endTime:new Date(a+4*3600*1e3).toISOString();if(l){const c=e.startTime&&e.endTime?Math.max(36e5,(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime())-(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.startTime):new Date(e.startTime).getTime())):144e5;d=new Date(a).toISOString(),r=new Date(a+c).toISOString()}const o=x("modal-flash-sale-form");o&&o.remove(),document.body.insertAdjacentHTML("beforeend",`
     <div id="modal-flash-sale-form" class="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 transition-opacity duration-200 opacity-0" style="background: rgba(15, 23, 42, 0.75);">
         <div id="flash-sale-modal-card" class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-200">
             <!-- Modal Header -->
@@ -194,7 +194,7 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
 
             <!-- Modal Body Scrollable -->
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-                ${i?`
+                ${l?`
                 <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs text-amber-800 dark:text-amber-200 flex items-center justify-between gap-2.5 flex-wrap">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-clock-rotate-left text-amber-500 text-base shrink-0"></i>
@@ -210,7 +210,7 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                         Judul Sesi Promo <span class="text-rose-500">*</span>
                     </label>
-                    <input type="text" id="fs-input-title" value="${b(e?.title||"Flash Sale Spesial Hari Ini")}" placeholder="Contoh: Flash Sale Akhir Pekan Alat Teknik" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <input type="text" id="fs-input-title" value="${m(e?.title||"Flash Sale Spesial Hari Ini")}" placeholder="Contoh: Flash Sale Akhir Pekan Alat Teknik" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
 
                 <!-- Rentang Waktu (Mulai & Selesai) -->
@@ -219,13 +219,13 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                             Waktu Mulai <span class="text-rose-500">*</span>
                         </label>
-                        <input type="datetime-local" id="fs-input-start" value="${I(u)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        <input type="datetime-local" id="fs-input-start" value="${j(d)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                             Waktu Berakhir <span class="text-rose-500">*</span>
                         </label>
-                        <input type="datetime-local" id="fs-input-end" value="${I(r)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        <input type="datetime-local" id="fs-input-end" value="${j(r)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                 </div>
 
@@ -280,7 +280,7 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                             <p class="text-[10px] text-slate-400">Tentukan harga diskon, kuota unit, dan proteksi margin modal.</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            ${c.some(d=>(parseFloat(d.soldCount)||0)>0)?`
+                            ${i.some(c=>(parseFloat(c.soldCount)||0)>0)?`
                             <button type="button" onclick="window.resetAllDraftItemsSold()" title="Reset semua kuota terjual ke 0" class="btn-native-action px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1">
                                 <i class="fa-solid fa-rotate-left text-amber-500"></i>
                                 <span>Reset Kuota</span>
@@ -310,64 +310,82 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
                 </button>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("flashSaleForm"),h(),requestAnimationFrame(()=>{const d=m("modal-flash-sale-form"),x=m("flash-sale-modal-card");d&&d.classList.remove("opacity-0"),x&&x.classList.remove("scale-95")})},H=(t=!1)=>{const e=m("modal-flash-sale-form"),a=m("flash-sale-modal-card");if(!e)return;const s=()=>{e.classList.add("opacity-0"),a&&a.classList.add("scale-95"),setTimeout(()=>e.remove(),200)};!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("flashSaleForm",!1,s):s()},h=()=>{const t=m("fs-items-container");if(!t)return;const e=Array.isArray(n.products)?n.products:[];if(c.length===0){t.innerHTML=`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("flashSaleForm"),h(),requestAnimationFrame(()=>{const c=x("modal-flash-sale-form"),g=x("flash-sale-modal-card");c&&c.classList.remove("opacity-0"),g&&g.classList.remove("scale-95")})},N=(t=!1)=>{const e=x("modal-flash-sale-form"),a=x("flash-sale-modal-card");if(!e)return;const s=()=>{e.classList.add("opacity-0"),a&&a.classList.add("scale-95"),setTimeout(()=>e.remove(),200)};!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("flashSaleForm",!1,s):s()},h=()=>{const t=x("fs-items-container");if(!t)return;const e=Array.isArray(n.products)?n.products:[];if(i.length===0){t.innerHTML=`
         <div class="py-6 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-slate-400 text-xs">
             Belum ada produk yang dipilih. Klik tombol <b>"+ Tambah Produk"</b> di atas.
-        </div>`;return}t.innerHTML=c.map((a,s)=>{const i=e.find(l=>String(l.id)===String(a.productId)),u=i&&Array.isArray(i.variants)?i.variants:[],r=parseFloat(a.normalPrice)||(i?parseFloat(i.price):0),o=parseFloat(a.flashSalePrice)||0,d=i?a.variantName&&u.length&&u.find(l=>l.name===a.variantName)?.hpp||i.hpp:0,x=d>0&&o>0&&o<d,g=r>0&&o>0?Math.round((r-o)/r*100):0;return`
-        <div class="p-3.5 rounded-2xl border ${x?"border-rose-300 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/20":"border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40"} space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-                <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary);">
-                    Item #${s+1}
-                </span>
+        </div>`;return}t.innerHTML=i.map((a,s)=>{const l=e.find(f=>String(f.id)===String(a.productId)),d=l&&Array.isArray(l.variants)?l.variants:[],r=a.variantName&&d.length?d.find(f=>f.name===a.variantName):null,o=parseFloat(a.normalPrice)||(r?parseFloat(r.price):l?parseFloat(l.price):0),c=parseFloat(a.flashSalePrice)||0,g=r?parseFloat(r.hpp)||parseFloat(l.hpp)||0:l&&parseFloat(l.hpp)||0,w=g>0&&c>0&&c<g,u=o>0&&c>0?Math.round((o-c)/o*100):0,b=r?parseFloat(r.stock)||0:l&&parseFloat(l.stock)||0,k=r&&r.img?r.img:l?l.img:"";return`
+        <div class="p-3.5 rounded-2xl border ${w?"border-rose-300 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/20":"border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40"} space-y-2.5">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-2 flex-wrap">
+                    ${k?`<img src="${R(k,"w100-rw")}" alt="Thumb" class="w-7 h-7 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">`:""}
+                    <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary);">
+                        Item #${s+1}
+                    </span>
+                    ${a.variantName?`
+                    <span class="px-2 py-0.5 rounded-lg text-[9.5px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 flex items-center gap-1">
+                        <i class="fa-solid fa-shapes text-[8.5px]"></i> Varian: ${m(a.variantName)}
+                    </span>`:d.length>0?'<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-200/70 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Semua Varian</span>':""}
+                    ${l?`<span class="text-[10px] text-slate-400 font-medium">Stok: ${b} ${l.unit||"unit"}</span>`:""}
+                </div>
                 <button type="button" onclick="window.removeFlashSaleItemRow(${s})" class="text-rose-500 hover:text-rose-700 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-trash-can mr-1"></i> Hapus
                 </button>
             </div>
 
-            <!-- Pilihan Produk & Varian -->
+            <!-- Pilihan Produk & Varian Multi-Varian -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Produk</label>
                     <select onchange="window.updateFlashSaleItemProduct(${s}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                         <option value="">-- Pilih Produk Katalog --</option>
-                        ${e.map(l=>`
-                            <option value="${b(l.id)}" ${String(l.id)===String(a.productId)?"selected":""}>
-                                ${b(l.name)} (${v(l.price)})
+                        ${e.map(f=>`
+                            <option value="${m(f.id)}" ${String(f.id)===String(a.productId)?"selected":""}>
+                                ${m(f.name)} (${S(f.price)})${f.variants&&f.variants.length>0?` [${f.variants.length} Varian]`:""}
                             </option>
                         `).join("")}
                     </select>
                 </div>
 
-                ${u.length>0?`
+                ${d.length>0?`
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Varian (Opsional)</label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-[10px] font-bold text-slate-500">Pilih Varian (Spesifik / Global)</label>
+                        <button type="button" onclick="window.addAllVariantsToFlashSaleDraft(${s})" class="text-[9.5px] font-black cursor-pointer hover:underline flex items-center gap-1" style="color: var(--color-primary);" title="Otomatis pecah menjadi baris tersendiri untuk setiap varian">
+                            <i class="fa-solid fa-shapes"></i> Muat Semua Varian (${d.length})
+                        </button>
+                    </div>
                     <select onchange="window.updateFlashSaleItemVariant(${s}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                        <option value="">Semua Varian</option>
-                        ${u.map(l=>`
-                            <option value="${b(l.name)}" ${l.name===a.variantName?"selected":""}>
-                                ${b(l.name)} (${v(l.price||i.price)})
+                        <option value="">Semua Varian (Produk Global)</option>
+                        ${d.map(f=>`
+                            <option value="${m(f.name)}" ${f.name===a.variantName?"selected":""}>
+                                ${m(f.name)} (${S(f.price||l.price)})${f.stock!=null?` - Stok: ${f.stock}`:""}
                             </option>
                         `).join("")}
                     </select>
                 </div>`:""}
             </div>
 
-            <!-- Harga Normal, Harga Flash Sale, & Kuota -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- Harga Normal, Diskon %, Harga Flash Sale, & Kuota -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Normal (Rp)</label>
-                    <input type="number" min="0" value="${r||""}" onchange="window.updateFlashSaleItemDraft(${s}, 'normalPrice', this.value)" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <input type="number" min="0" value="${o||""}" onchange="window.updateFlashSaleItemDraft(${s}, 'normalPrice', this.value)" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Diskon (%)</label>
+                    <input type="number" min="1" max="99" value="${u||""}" onchange="window.updateFlashSaleItemDiscountPct(${s}, this.value)" placeholder="Contoh: 20" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-bold mb-1" style="color: var(--color-primary);">
                         Harga Flash Sale (Rp) <span class="text-rose-500">*</span>
                     </label>
-                    <input type="number" min="0" value="${o||""}" onchange="window.updateFlashSaleItemDraft(${s}, 'flashSalePrice', this.value)" placeholder="Harga Promo" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-black focus:outline-none focus:border-[var(--color-primary)]" style="color: var(--color-primary);">
+                    <input type="number" min="0" value="${c||""}" onchange="window.updateFlashSaleItemDraft(${s}, 'flashSalePrice', this.value)" placeholder="Harga Promo" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-black focus:outline-none focus:border-[var(--color-primary)]" style="color: var(--color-primary);">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Kuota Promo (Qty Unit)</label>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Kuota Promo (Qty)</label>
                     <input type="number" min="1" value="${a.quota||10}" onchange="window.updateFlashSaleItemDraft(${s}, 'quota', this.value)" placeholder="Batas kuota" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
             </div>
@@ -386,13 +404,13 @@ import{e as m,a as n,i as b,k as p,f as v}from"./module-print-6CTOdbhx.js";impor
             <!-- Margin Guard Alert -->
             <div class="flex items-center justify-between text-[10px] flex-wrap gap-2 pt-1">
                 <div class="flex items-center gap-2">
-                    ${g>0?`<span class="font-black" style="color: var(--color-primary);">Diskon: -${g}%</span>`:""}
-                    ${d>0?`<span class="text-slate-400">Modal HPP: ${v(d)}</span>`:""}
+                    ${u>0?`<span class="font-black" style="color: var(--color-primary);">Diskon: -${u}%</span>`:""}
+                    ${g>0?`<span class="text-slate-400">Modal HPP: ${S(g)}</span>`:""}
                 </div>
-                ${x?`
+                ${w?`
                 <div class="text-rose-600 font-bold flex items-center gap-1">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span>Peringatan: Harga Flash Sale di bawah modal HPP!</span>
                 </div>`:""}
             </div>
-        </div>`}).join("")},K=t=>{c[t]&&(c[t].soldCount=0,h(),p("Kuota terjual produk ini berhasil di-reset ke 0!","success"))},L=()=>{c.forEach(t=>{t&&(t.soldCount=0)}),h(),p("Seluruh kuota terjual berhasil di-reset ke 0! Produk siap dinaikkan kembali.","success")},G=()=>{c.push({productId:"",variantName:"",normalPrice:0,flashSalePrice:0,quota:10,soldCount:0,maxPerCustomer:2}),h()},J=t=>{c.splice(t,1),h()},W=(t,e)=>{if(!c[t])return;const a=(n.products||[]).find(s=>String(s.id)===String(e));c[t].productId=e,c[t].variantName="",a&&(c[t].normalPrice=parseFloat(a.price)||0,c[t].flashSalePrice=Math.round((parseFloat(a.price)||0)*.8)),h()},q=(t,e)=>{if(!c[t])return;c[t].variantName=e;const a=(n.products||[]).find(s=>String(s.id)===String(c[t].productId));if(a&&e&&a.variants){const s=a.variants.find(i=>i.name===e);s&&s.price&&(c[t].normalPrice=parseFloat(s.price)||0,c[t].flashSalePrice=Math.round((parseFloat(s.price)||0)*.8))}h()},V=(t,e,a)=>{c[t]&&(c[t][e]=parseFloat(a)||0,h())},U=t=>{const e=m("fs-input-start"),a=m("fs-input-end");if(!e||!a)return;const s=e.value?new Date(e.value):new Date,i=new Date(s.getTime()+t*3600*1e3);a.value=I(i)},Y=async()=>{const t=(m("fs-input-title")?.value||"").trim(),e=m("fs-input-start")?.value,a=m("fs-input-end")?.value,s=m("fs-input-channel")?.value||"both",i=m("fs-input-active")?.value!=="false";if(!t){p("Judul sesi Flash Sale wajib diisi.","warning");return}if(!e||!a){p("Waktu mulai dan berakhir wajib ditentukan.","warning");return}const u=new Date(e),r=new Date(a);if(r<=u){p("Waktu berakhir harus setelah waktu mulai.","warning");return}const o=Date.now();if(i&&r.getTime()<=o){p("Waktu berakhir sudah lewat dari waktu saat ini. Gunakan preset jam (+3 Jam / +6 Jam) agar sesi langsung aktif di etalase toko.","warning");return}const d=c.filter(f=>f.productId&&f.flashSalePrice>0);if(d.length===0){p("Minimal tentukan 1 produk dengan harga Flash Sale yang valid.","warning");return}Array.isArray(n.flashSales)||(n.flashSales=[]);const x=M||`FS-${Date.now().toString(36).toUpperCase()}`,g={id:x,title:t,startTime:u.toISOString(),endTime:r.toISOString(),channel:s,isActive:i,updatedAt:o,items:d.map(f=>({productId:String(f.productId),variantName:f.variantName||"",normalPrice:parseFloat(f.normalPrice)||0,flashSalePrice:parseFloat(f.flashSalePrice)||0,quota:parseFloat(f.quota)||10,soldCount:parseFloat(f.soldCount)||0,maxPerCustomer:parseFloat(f.maxPerCustomer)||2}))},l=n.flashSales.findIndex(f=>f.id===x);l>-1?n.flashSales[l]=g:n.flashSales.unshift(g);try{await S(["flashSales"]),H(),w(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p("Sesi Flash Sale berhasil disimpan dan disinkronkan!","success")}catch(f){console.error("[FlashSale] Gagal simpan sesi:",f),p("Gagal menyimpan ke server. Coba lagi.","error")}},z=async t=>{if(!Array.isArray(n.flashSales))return;const e=n.flashSales.find(o=>o.id===t);if(!e)return;const a=e.isActive===!1;e.isActive=a;const s=Date.now(),i=e.endTime?typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime():0,u=!i||i<=s;let r=!1;if(a&&u){const o=e.startTime&&e.endTime?Math.max(36e5,(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime())-(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.startTime):new Date(e.startTime).getTime())):144e5;e.startTime=new Date(s).toISOString(),e.endTime=new Date(s+o).toISOString(),e.updatedAt=s,r=!0,Array.isArray(e.items)&&e.items.forEach(d=>{d&&(d.soldCount=0)})}else e.updatedAt=s;try{await S(["flashSales"]),w(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),a?p(r?`Sesi "${e.title}" berhasil diaktifkan kembali! Waktu diperpanjang dan produk langsung aktif di etalase toko.`:`Sesi "${e.title}" kini aktif!`,"success"):p(`Sesi "${e.title}" telah dinonaktifkan.`,"info")}catch{p("Gagal mengubah status sesi.","error")}},Q=async(t,e=4)=>{if(!Array.isArray(n.flashSales))return;const a=n.flashSales.find(r=>r.id===t);if(!a)return;const s=Date.now(),i=e*3600*1e3;a.startTime=new Date(s).toISOString(),a.endTime=new Date(s+i).toISOString(),a.isActive=!0,a.updatedAt=s,Array.isArray(a.items)&&a.items.forEach(r=>{r&&(r.soldCount=0)});const u=n.flashSales.findIndex(r=>r.id===t);u>0&&(n.flashSales.splice(u,1),n.flashSales.unshift(a));try{await S(["flashSales"]),w(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p(`Sesi Flash Sale "${a.title}" berhasil dinaikkan kembali! Aktif selama ${e} jam dan langsung tayang di etalase toko.`,"success")}catch{p("Gagal menaikkan sesi Flash Sale.","error")}},X=async(t,e)=>{if(!Array.isArray(n.flashSales))return;const a=n.flashSales.find(s=>s.id===t);if(!(!a||!Array.isArray(a.items)||!a.items[e])){a.items[e].soldCount=0,a.updatedAt=Date.now();try{await S(["flashSales"]),w(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat();const s=a.items[e].productName||"Produk Promo";p(`Kuota produk "${s}" berhasil di-reset ke 0!`,"success")}catch{p("Gagal mereset kuota produk.","error")}}},Z=async t=>{if(!Array.isArray(n.flashSales))return;const e=n.flashSales.find(a=>a.id===t);if(!(!e||!Array.isArray(e.items))){e.items.forEach(a=>{a&&(a.soldCount=0)}),e.updatedAt=Date.now();try{await S(["flashSales"]),w(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p(`Seluruh kuota produk di sesi "${e.title}" berhasil di-reset ke 0!`,"success")}catch{p("Gagal mereset kuota produk.","error")}}},_=t=>{if(!Array.isArray(n.flashSales))return;const e=n.flashSales.find(s=>s.id===t);if(!e)return;const a=async()=>{n.flashSales=n.flashSales.filter(s=>s.id!==t);try{await S(["flashSales"]),w(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p("Sesi Flash Sale berhasil dihapus.","success")}catch{p("Gagal menghapus sesi.","error")}};typeof window.showConfirm=="function"?window.showConfirm("Hapus Sesi Flash Sale",`Apakah Anda yakin ingin menghapus sesi promo "${e.title}"?`,a,"Ya, Hapus",!0):a()};window.renderFlashSaleAdminView=w;window.openFlashSaleModal=O;window.closeFlashSaleModal=H;window.renderFlashSaleDraftItems=h;window.addFlashSaleItemRow=G;window.removeFlashSaleItemRow=J;window.updateFlashSaleItemProduct=W;window.updateFlashSaleItemVariant=q;window.updateFlashSaleItemDraft=V;window.setFlashSalePresetDuration=U;window.saveFlashSaleSession=Y;window.toggleFlashSaleActive=z;window.deleteFlashSaleSession=_;window.reactivateFlashSaleSession=Q;window.resetSessionItemSold=X;window.resetAllSessionItemsSold=Z;window.resetDraftItemSold=K;window.resetAllDraftItemsSold=L;export{G as addFlashSaleItemRow,H as closeFlashSaleModal,_ as deleteFlashSaleSession,O as openFlashSaleModal,Q as reactivateFlashSaleSession,J as removeFlashSaleItemRow,w as renderFlashSaleAdminView,h as renderFlashSaleDraftItems,L as resetAllDraftItemsSold,Z as resetAllSessionItemsSold,K as resetDraftItemSold,X as resetSessionItemSold,Y as saveFlashSaleSession,U as setFlashSalePresetDuration,z as toggleFlashSaleActive,V as updateFlashSaleItemDraft,W as updateFlashSaleItemProduct,q as updateFlashSaleItemVariant};
+        </div>`}).join("")},L=t=>{if(!i[t])return;const e=i[t],a=(n.products||[]).find(d=>String(d.id)===String(e.productId));if(!a||!Array.isArray(a.variants)||a.variants.length===0){p("Produk ini tidak memiliki daftar varian.","info");return}const s=parseFloat(e.quota)||10,l=a.variants.map(d=>{const r=parseFloat(d.price)||parseFloat(a.price)||0,o=Math.round(r*.8);return{productId:String(a.id),variantName:d.name||"",normalPrice:r,flashSalePrice:o,quota:s,soldCount:0,maxPerCustomer:e.maxPerCustomer||2}});i.splice(t,1,...l),h(),p(`Berhasil memuat ${l.length} varian produk "${a.name}" ke draft Flash Sale!`,"success")},V=(t,e)=>{if(!i[t])return;const a=parseFloat(e)||0,s=parseFloat(i[t].normalPrice)||0;s>0&&a>=0&&a<100&&(i[t].flashSalePrice=Math.round(s*(1-a/100)),h())},G=t=>{i[t]&&(i[t].soldCount=0,h(),p("Kuota terjual produk ini berhasil di-reset ke 0!","success"))},q=()=>{i.forEach(t=>{t&&(t.soldCount=0)}),h(),p("Seluruh kuota terjual berhasil di-reset ke 0! Produk siap dinaikkan kembali.","success")},J=()=>{i.push({productId:"",variantName:"",normalPrice:0,flashSalePrice:0,quota:10,soldCount:0,maxPerCustomer:2}),h()},W=t=>{i.splice(t,1),h()},U=(t,e)=>{if(!i[t])return;const a=(n.products||[]).find(s=>String(s.id)===String(e));i[t].productId=e,i[t].variantName="",a&&(i[t].normalPrice=parseFloat(a.price)||0,i[t].flashSalePrice=Math.round((parseFloat(a.price)||0)*.8)),h()},Q=(t,e)=>{if(!i[t])return;i[t].variantName=e;const a=(n.products||[]).find(s=>String(s.id)===String(i[t].productId));if(a)if(e&&a.variants){const s=a.variants.find(l=>l.name===e);s&&s.price&&(i[t].normalPrice=parseFloat(s.price)||0,i[t].flashSalePrice=Math.round((parseFloat(s.price)||0)*.8))}else i[t].normalPrice=parseFloat(a.price)||0,i[t].flashSalePrice=Math.round((parseFloat(a.price)||0)*.8);h()},Y=(t,e,a)=>{i[t]&&(i[t][e]=parseFloat(a)||0,h())},z=t=>{const e=x("fs-input-start"),a=x("fs-input-end");if(!e||!a)return;const s=e.value?new Date(e.value):new Date,l=new Date(s.getTime()+t*3600*1e3);a.value=j(l)},X=async()=>{const t=(x("fs-input-title")?.value||"").trim(),e=x("fs-input-start")?.value,a=x("fs-input-end")?.value,s=x("fs-input-channel")?.value||"both",l=x("fs-input-active")?.value!=="false";if(!t){p("Judul sesi Flash Sale wajib diisi.","warning");return}if(!e||!a){p("Waktu mulai dan berakhir wajib ditentukan.","warning");return}const d=new Date(e),r=new Date(a);if(r<=d){p("Waktu berakhir harus setelah waktu mulai.","warning");return}const o=Date.now();if(l&&r.getTime()<=o){p("Waktu berakhir sudah lewat dari waktu saat ini. Gunakan preset jam (+3 Jam / +6 Jam) agar sesi langsung aktif di etalase toko.","warning");return}const c=i.filter(b=>b.productId&&b.flashSalePrice>0);if(c.length===0){p("Minimal tentukan 1 produk dengan harga Flash Sale yang valid.","warning");return}Array.isArray(n.flashSales)||(n.flashSales=[]);const g=H||`FS-${Date.now().toString(36).toUpperCase()}`,w={id:g,title:t,startTime:d.toISOString(),endTime:r.toISOString(),channel:s,isActive:l,updatedAt:o,items:c.map(b=>({productId:String(b.productId),variantName:b.variantName||"",normalPrice:parseFloat(b.normalPrice)||0,flashSalePrice:parseFloat(b.flashSalePrice)||0,quota:parseFloat(b.quota)||10,soldCount:parseFloat(b.soldCount)||0,maxPerCustomer:parseFloat(b.maxPerCustomer)||2}))},u=n.flashSales.findIndex(b=>b.id===g);u>-1?n.flashSales[u]=w:n.flashSales.unshift(w);try{await y(["flashSales"]),N(),v(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p("Sesi Flash Sale berhasil disimpan dan disinkronkan!","success")}catch(b){console.error("[FlashSale] Gagal simpan sesi:",b),p("Gagal menyimpan ke server. Coba lagi.","error")}},Z=async t=>{if(!Array.isArray(n.flashSales))return;const e=n.flashSales.find(o=>o.id===t);if(!e)return;const a=e.isActive===!1;e.isActive=a;const s=Date.now(),l=e.endTime?typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime():0,d=!l||l<=s;let r=!1;if(a&&d){const o=e.startTime&&e.endTime?Math.max(36e5,(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.endTime):new Date(e.endTime).getTime())-(typeof window.parseSafeTimestamp=="function"?window.parseSafeTimestamp(e.startTime):new Date(e.startTime).getTime())):144e5;e.startTime=new Date(s).toISOString(),e.endTime=new Date(s+o).toISOString(),e.updatedAt=s,r=!0,Array.isArray(e.items)&&e.items.forEach(c=>{c&&(c.soldCount=0)})}else e.updatedAt=s;try{await y(["flashSales"]),v(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),a?p(r?`Sesi "${e.title}" berhasil diaktifkan kembali! Waktu diperpanjang dan produk langsung aktif di etalase toko.`:`Sesi "${e.title}" kini aktif!`,"success"):p(`Sesi "${e.title}" telah dinonaktifkan.`,"info")}catch{p("Gagal mengubah status sesi.","error")}},_=async(t,e=4)=>{if(!Array.isArray(n.flashSales))return;const a=n.flashSales.find(r=>r.id===t);if(!a)return;const s=Date.now(),l=e*3600*1e3;a.startTime=new Date(s).toISOString(),a.endTime=new Date(s+l).toISOString(),a.isActive=!0,a.updatedAt=s,Array.isArray(a.items)&&a.items.forEach(r=>{r&&(r.soldCount=0)});const d=n.flashSales.findIndex(r=>r.id===t);d>0&&(n.flashSales.splice(d,1),n.flashSales.unshift(a));try{await y(["flashSales"]),v(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p(`Sesi Flash Sale "${a.title}" berhasil dinaikkan kembali! Aktif selama ${e} jam dan langsung tayang di etalase toko.`,"success")}catch{p("Gagal menaikkan sesi Flash Sale.","error")}},ee=async(t,e)=>{if(!Array.isArray(n.flashSales))return;const a=n.flashSales.find(s=>s.id===t);if(!(!a||!Array.isArray(a.items)||!a.items[e])){a.items[e].soldCount=0,a.updatedAt=Date.now();try{await y(["flashSales"]),v(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat();const s=a.items[e].productName||"Produk Promo";p(`Kuota produk "${s}" berhasil di-reset ke 0!`,"success")}catch{p("Gagal mereset kuota produk.","error")}}},ae=async t=>{if(!Array.isArray(n.flashSales))return;const e=n.flashSales.find(a=>a.id===t);if(!(!e||!Array.isArray(e.items))){e.items.forEach(a=>{a&&(a.soldCount=0)}),e.updatedAt=Date.now();try{await y(["flashSales"]),v(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p(`Seluruh kuota produk di sesi "${e.title}" berhasil di-reset ke 0!`,"success")}catch{p("Gagal mereset kuota produk.","error")}}},te=t=>{if(!Array.isArray(n.flashSales))return;const e=n.flashSales.find(s=>s.id===t);if(!e)return;const a=async()=>{n.flashSales=n.flashSales.filter(s=>s.id!==t);try{await y(["flashSales"]),v(),typeof window.renderStorefrontFlashSale=="function"&&window.renderStorefrontFlashSale(),typeof window.rCat=="function"&&window.rCat(),p("Sesi Flash Sale berhasil dihapus.","success")}catch{p("Gagal menghapus sesi.","error")}};typeof window.showConfirm=="function"?window.showConfirm("Hapus Sesi Flash Sale",`Apakah Anda yakin ingin menghapus sesi promo "${e.title}"?`,a,"Ya, Hapus",!0):a()};window.renderFlashSaleAdminView=v;window.openFlashSaleModal=K;window.closeFlashSaleModal=N;window.renderFlashSaleDraftItems=h;window.addFlashSaleItemRow=J;window.removeFlashSaleItemRow=W;window.updateFlashSaleItemProduct=U;window.updateFlashSaleItemVariant=Q;window.updateFlashSaleItemDraft=Y;window.setFlashSalePresetDuration=z;window.saveFlashSaleSession=X;window.toggleFlashSaleActive=Z;window.deleteFlashSaleSession=te;window.reactivateFlashSaleSession=_;window.resetSessionItemSold=ee;window.resetAllSessionItemsSold=ae;window.resetDraftItemSold=G;window.resetAllDraftItemsSold=q;window.addAllVariantsToFlashSaleDraft=L;window.updateFlashSaleItemDiscountPct=V;export{L as addAllVariantsToFlashSaleDraft,J as addFlashSaleItemRow,N as closeFlashSaleModal,te as deleteFlashSaleSession,K as openFlashSaleModal,_ as reactivateFlashSaleSession,W as removeFlashSaleItemRow,v as renderFlashSaleAdminView,h as renderFlashSaleDraftItems,q as resetAllDraftItemsSold,ae as resetAllSessionItemsSold,G as resetDraftItemSold,ee as resetSessionItemSold,X as saveFlashSaleSession,z as setFlashSalePresetDuration,Z as toggleFlashSaleActive,V as updateFlashSaleItemDiscountPct,Y as updateFlashSaleItemDraft,U as updateFlashSaleItemProduct,Q as updateFlashSaleItemVariant};

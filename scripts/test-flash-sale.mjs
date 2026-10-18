@@ -238,6 +238,47 @@ assert(guardDanger.isBelowHpp === true, 'Harga Flash Sale Rp 48.000 di bawah HPP
 assert(parseFloat(guardDanger.profit) === -6000, `Potensi kerugian -Rp 6.000 terdeteksi presisi (didapat: ${guardDanger.profit})`);
 
 
+// ─── 7. UJI MULTI-VARIAN FLASH SALE & ALOKASI KUOTA INDEPENDEN ─
+console.log('\n🎨 7. Uji Multi-Varian Flash Sale & Alokasi Kuota Independen:');
+
+const fsVariantAbu = {
+    productId: 'PROD-002',
+    variantName: 'Abu Modern',
+    normalPrice: 140000,
+    flashSalePrice: 122000,
+    quota: 8,
+    soldCount: 2,
+    discountPercent: 13
+};
+
+// Reset Putih Salju ke status aktif
+fsVariantMock.soldCount = 1;
+fsVariantMock.quota = 5;
+
+appData.flashSales[0].items = [fsItemMock, fsVariantMock, fsVariantAbu];
+
+// Resolusi varian spesifik
+const foundPutih = getFlashSaleItem('PROD-002', 'Putih Salju', 'web');
+const foundAbu = getFlashSaleItem('PROD-002', 'Abu Modern', 'web');
+
+assert(foundPutih !== null && foundPutih.flashSalePrice === 119000, 'Varian "Putih Salju" meresolusi harga Flash Sale Rp 119.000');
+assert(foundAbu !== null && foundAbu.flashSalePrice === 122000, 'Varian "Abu Modern" meresolusi harga Flash Sale Rp 122.000');
+assert(foundPutih.remainingQuota === 4, 'Sisa kuota Putih Salju: 4 unit (5 - 1)');
+assert(foundAbu.remainingQuota === 6, 'Sisa kuota Abu Modern: 6 unit (8 - 2)');
+
+// Penjualan pada varian tertentu tidak mengurangi kuota varian lain
+const saleAbuSuccess = recordFlashSaleSale('PROD-002', 'Abu Modern', 2);
+assert(saleAbuSuccess === true, 'Pencatatan penjualan varian Abu Modern sukses');
+assert(fsVariantAbu.soldCount === 4, 'soldCount varian Abu Modern bertambah 2 (2 -> 4)');
+assert(fsVariantMock.soldCount === 1, 'soldCount varian Putih Salju tetap 1 (tidak terpengaruh varian lain)');
+
+// Evaluasi harga efektif masing-masing varian
+assert(getEffP({ id: 'PROD-002', variantName: 'Putih Salju' }, 'web') === 119000, 'Harga efektif varian Putih Salju adalah harga Flash Sale Rp 119.000');
+assert(getEffP({ id: 'PROD-002', variantName: 'Abu Modern' }, 'web') === 122000, 'Harga efektif varian Abu Modern adalah harga Flash Sale Rp 122.000');
+
+// Fallback untuk varian yang tidak didaftarkan dalam flash sale
+assert(getEffP({ id: 'PROD-002', variantName: 'Coklat Tua', price: 145000 }, 'web') === 145000, 'Varian tanpa promo Flash Sale tetap menggunakan harga normalnya');
+
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passed} Passed, ${failed} Failed`);
 if (failed === 0) {
