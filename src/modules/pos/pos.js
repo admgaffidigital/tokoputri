@@ -4531,10 +4531,10 @@ const buildPOSLayout = ({ isStorefront }) => {
     <div class="flex flex-col h-full w-full overflow-hidden bg-slate-50/50 dark:bg-slate-900/40 relative">
         ${headerHTML}
 
-        <!-- MAIN SPLIT WORKSPACE: Desktop side-by-side, Mobile full catalog -->
+        <!-- MAIN SPLIT WORKSPACE: Tablet & Desktop side-by-side, Mobile full catalog -->
         <div class="flex flex-1 overflow-hidden">
-            <!-- PANEL KIRI: KATALOG (Mobile 100%, Desktop 63%-65%) -->
-            <div class="flex flex-col flex-1 lg:w-[63%] xl:w-[65%] border-r border-slate-200/80 dark:border-slate-800 overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+            <!-- PANEL KIRI: KATALOG (Mobile 100%, Tablet 58%, Desktop 63%-65%) -->
+            <div class="flex flex-col flex-1 md:w-[58%] lg:w-[63%] xl:w-[65%] border-r border-slate-200/80 dark:border-slate-800 overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
                 <!-- Search & Category Bar with View Switcher -->
                 <div class="p-2.5 sm:p-3.5 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2 shrink-0 shadow-2xs">
                     <div class="flex items-center gap-2">
@@ -4589,8 +4589,8 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <div id="pos-catalog-grid" class="${posCatalogViewMode === 'list' ? 'pos-catalog-list-mode' : 'pos-catalog-grid-mode'}"></div>
             </div>
 
-            <!-- PANEL KANAN: BILLING & KERANJANG (Hanya Desktop >= lg) -->
-            <div class="hidden lg:flex flex-col lg:w-[37%] xl:w-[35%] bg-white dark:bg-slate-900 border-l border-slate-200/80 dark:border-slate-800 overflow-hidden shrink-0 shadow-sm">
+            <!-- PANEL KANAN: BILLING & KERANJANG (Tablet >= md & Desktop >= lg) -->
+            <div class="hidden md:flex flex-col md:w-[42%] lg:w-[37%] xl:w-[35%] bg-white dark:bg-slate-900 border-l border-slate-200/80 dark:border-slate-800 overflow-hidden shrink-0 shadow-sm">
                 <!-- Header Keranjang Desktop -->
                 <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
                     <div class="flex items-center gap-2 min-w-0">
@@ -4676,8 +4676,8 @@ const buildPOSLayout = ({ isStorefront }) => {
             </div>
         </div>
 
-        <!-- FLOATING CART BAR (Khusus Mobile < lg saat keranjang ada isi with safe-area) -->
-        <div id="pos-mobile-floating-bar" class="lg:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
+        <!-- FLOATING CART BAR (Khusus Mobile < md saat keranjang ada isi with safe-area) -->
+        <div id="pos-mobile-floating-bar" class="md:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
             <div class="bg-slate-900 dark:bg-slate-950 text-white p-3 rounded-2xl flex items-center justify-between border border-slate-700/80 cursor-pointer active:scale-[0.99] transition-all" onclick="window.openPOSCartDrawer()">
                 <div class="flex items-center gap-2.5">
                     <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shrink-0" style="background:linear-gradient(135deg, var(--color-primary-light,#34d399), var(--color-primary,#10b981))">

@@ -38,22 +38,55 @@
     </noscript>
 
     <!-- Vite entry point dipindah ke body agar tidak render-blocking -->
-    <!-- Otomatis bersihkan service worker / cache lama agar semua perangkat selalu mengambil update live -->
+    <!-- PWA Offline Service Worker & Lifecycle Registration Engine (v1.18.8) -->
     <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function (registrations) {
-          for (var reg of registrations) {
-            reg.unregister();
+      (function() {
+        // Tangkap prompt instalasi PWA native
+        window.deferredPWAInstallPrompt = null;
+        window.isPWAInstallable = false;
+        window.addEventListener('beforeinstallprompt', function(e) {
+          e.preventDefault();
+          window.deferredPWAInstallPrompt = e;
+          window.isPWAInstallable = true;
+          if (typeof window.renderPWAInstallBadge === 'function') {
+            window.renderPWAInstallBadge();
           }
-        }).catch(function () {});
-      }
-      if ('caches' in window) {
-        caches.keys().then(function (names) {
-          for (var name of names) {
-            caches.delete(name);
+        });
+        window.promptPWAInstall = function() {
+          if (window.deferredPWAInstallPrompt) {
+            window.deferredPWAInstallPrompt.prompt();
+            window.deferredPWAInstallPrompt.userChoice.then(function(choice) {
+              if (choice.outcome === 'accepted') {
+                window.deferredPWAInstallPrompt = null;
+                window.isPWAInstallable = false;
+              }
+            });
           }
-        }).catch(function () {});
-      }
+        };
+
+        // Daftarkan Service Worker jika didukung oleh browser
+        if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+              .then(function(reg) {
+                // Deteksi update versi baru
+                reg.addEventListener('updatefound', function() {
+                  var newWorker = reg.installing;
+                  if (newWorker) {
+                    newWorker.addEventListener('statechange', function() {
+                      if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        console.log('[PWA] Versi baru tersedia dan ter-cache di background.');
+                      }
+                    });
+                  }
+                });
+              })
+              .catch(function(err) {
+                console.warn('[PWA] Service Worker registration skipped:', err);
+              });
+          });
+        }
+      })();
     </script>
     <!-- Initialize theme color CSS variables, PWA header meta, & dark mode instantly to avoid FOUC/flash -->
     <script>

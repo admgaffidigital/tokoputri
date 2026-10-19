@@ -562,6 +562,122 @@ export const initConnectivityBanner = () => {
 };
 
 /**
+ * ============================================================
+ * SCREEN WAKE LOCK API CONTROLLER (POS Terminal & Scanner Keep-Awake)
+ * Menjaga layar tablet / smartphone kasir tetap menyala (anti-tidur)
+ * saat aktif di terminal POS Kasir, Barcode Scanner, atau Stock Opname.
+ * ============================================================
+ */
+let activeWakeLock = null;
+let activeWakeLockReason = null;
+
+export const requestScreenWakeLock = async (reason = 'pos_cashier') => {
+    try {
+        if (typeof navigator === 'undefined' || !('wakeLock' in navigator)) return false;
+        if (activeWakeLock && !activeWakeLock.released) return true;
+
+        activeWakeLock = await navigator.wakeLock.request('screen');
+        activeWakeLockReason = reason;
+
+        activeWakeLock.addEventListener('release', () => {
+            activeWakeLock = null;
+        });
+        return true;
+    } catch (err) {
+        // WakeLock dapat ditolak oleh OS (misal baterai low / tab tidak aktif)
+        return false;
+    }
+};
+
+export const releaseScreenWakeLock = async (reason = null) => {
+    try {
+        if (reason && activeWakeLockReason && reason !== activeWakeLockReason) {
+            return false;
+        }
+        if (activeWakeLock && typeof activeWakeLock.release === 'function') {
+            await activeWakeLock.release();
+            activeWakeLock = null;
+            activeWakeLockReason = null;
+            return true;
+        }
+    } catch (_) {}
+    return false;
+};
+
+// Re-acquire WakeLock otomatis saat tab kembali aktif dari background
+if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && activeWakeLockReason) {
+            requestScreenWakeLock(activeWakeLockReason).catch(() => {});
+        }
+    });
+}
+
+/**
+ * ============================================================
+ * CAPACITOR STATUS BAR & NATIVE THEMING SYNC
+ * ============================================================
+ */
+export const syncCapacitorStatusBar = (isDark = false) => {
+    try {
+        const StatusBar = window.Capacitor?.Plugins?.StatusBar;
+        if (!StatusBar) return;
+
+        // Set style teks status bar (DARK untuk teks terang di background gelap, LIGHT sebaliknya)
+        if (typeof StatusBar.setStyle === 'function') {
+            StatusBar.setStyle({ style: isDark ? 'DARK' : 'LIGHT' }).catch(() => {});
+        }
+        // Set background status bar selaras dengan tema toko
+        if (typeof StatusBar.setBackgroundColor === 'function') {
+            const rootStyle = getComputedStyle(document.documentElement);
+            const primaryHex = rootStyle.getPropertyValue('--color-primary').trim() || '#10b981';
+            StatusBar.setBackgroundColor({ color: isDark ? '#0f172a' : primaryHex }).catch(() => {});
+        }
+    } catch (_) {}
+};
+
+/**
+ * ============================================================
+ * APP LIFECYCLE RESUME & AUTO-RECONNECT LISTENER
+ * Menangani pemulihan otomatis saat pengguna kembali ke aplikasi
+ * ============================================================
+ */
+export const initAppLifecycleHandler = () => {
+    if (typeof window === 'undefined') return;
+
+    // 1. Web visibilitychange listener
+    if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                // Pengguna kembali ke aplikasi
+                if (typeof window.posSyncOfflineTransactions === 'function' && navigator.onLine) {
+                    window.posSyncOfflineTransactions(true);
+                }
+            }
+        });
+    }
+
+    // 2. Capacitor App State Change listener (APK Android / iOS)
+    const CapApp = window.Capacitor?.Plugins?.App;
+    if (CapApp && typeof CapApp.addListener === 'function') {
+        CapApp.addListener('appStateChange', (state) => {
+            if (state && state.isActive) {
+                if (typeof window.posSyncOfflineTransactions === 'function' && navigator.onLine) {
+                    window.posSyncOfflineTransactions(true);
+                }
+            }
+        });
+    }
+};
+
+// Expose ke window
+if (typeof window !== 'undefined') {
+    window.requestScreenWakeLock = requestScreenWakeLock;
+    window.releaseScreenWakeLock = releaseScreenWakeLock;
+    window.syncCapacitorStatusBar = syncCapacitorStatusBar;
+}
+
+/**
  * Inisialisasi Seluruh Mesin Native Mobile Toko Putri
  */
 export const initNativeMobileEngine = () => {
@@ -569,4 +685,5 @@ export const initNativeMobileEngine = () => {
     initAutoHapticFeedback();
     initFloatingScrollTop();
     initConnectivityBanner();
+    initAppLifecycleHandler();
 };

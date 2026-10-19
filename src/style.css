@@ -5435,5 +5435,92 @@ html.dark .search-clean-input::placeholder {
     opacity: 1 !important;
 }
 
+/* ============================================================
+   FLUID NATIVE VIEW TRANSITIONS ENGINE — TOKO PUTRI v1.18.8
+   Menghadirkan sensasi navigasi aplikasi native smartphone:
+   1. Forward transition: lembut meluncur dari kanan (+18px) & scale (0.985 -> 1)
+   2. Backward transition: lembut meluncur dari kiri (-18px) & scale (0.985 -> 1)
+   3. Modal/Full transition: scale lift & fade in (0.97 -> 1)
+   4. GPU hardware accelerated (translate3d, will-change, zero layout thrashing)
+   5. Aksesibilitas: prefers-reduced-motion safe
+   ============================================================ */
+@keyframes viewEnterForward {
+    0% {
+        opacity: 0;
+        transform: translate3d(18px, 0, 0) scale(0.985);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes viewEnterBackward {
+    0% {
+        opacity: 0;
+        transform: translate3d(-18px, 0, 0) scale(0.985);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes viewEnterScale {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+.view-transition-forward {
+    animation: viewEnterForward 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.view-transition-backward {
+    animation: viewEnterBackward 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.view-transition-scale {
+    animation: viewEnterScale 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .view-transition-forward,
+    .view-transition-backward,
+    .view-transition-scale {
+        animation: none !important;
+    }
+}
+
+/* ============================================================
+   ERGONOMIS TOUCH & TACTILE PRESS INTERACTION FEEDBACK
+   ============================================================ */
+.interactive-tap,
+.btn-catalog-action,
+.pos-shortcut-chiclet,
+.bnav-item,
+button.active\:scale-95:active,
+button.active\:scale-90:active {
+    -webkit-touch-callout: none;
+}
+
+/* Sticky Action Bar Glassmorphism Backdrop */
+.sticky-glass-bar {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+
 
 

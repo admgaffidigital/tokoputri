@@ -87,6 +87,7 @@ export const changeView = (v, fH = false) => {
     if (curViewName === 'view-pos-cashier' && v !== 'view-pos-cashier') {
         if (typeof window.destroyBarcodeListener === 'function') window.destroyBarcodeListener();
         if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
+        if (typeof window.releaseScreenWakeLock === 'function') window.releaseScreenWakeLock('pos_cashier');
     }
     if (curViewName === 'view-admin' && v !== 'view-admin') {
         const adminView = el('view-admin');
@@ -99,17 +100,32 @@ export const changeView = (v, fH = false) => {
         if (u) u.value = '';
         if (p) p.value = '';
     }
+    if (v === 'view-pos-cashier') {
+        if (typeof window.requestScreenWakeLock === 'function') window.requestScreenWakeLock('pos_cashier');
+    }
     
     const t = el(v);
     if (t) {
-        t.classList.remove('hidden');
-        t.classList.add('flex');
+        // Tentukan animasi transisi native app cerdas
+        const isBack = Boolean(fH);
+        const isModalLike = (v === 'view-pos-cashier' || v === 'view-admin-login');
+        const animClass = isModalLike ? 'view-transition-scale' : (isBack ? 'view-transition-backward' : 'view-transition-forward');
+
+        t.classList.remove('hidden', 'view-transition-forward', 'view-transition-backward', 'view-transition-scale', 'fade-in');
+        t.classList.add('flex', animClass);
+
+        const cleanAnim = () => {
+            t.classList.remove('view-transition-forward', 'view-transition-backward', 'view-transition-scale');
+            t.removeEventListener('animationend', cleanAnim);
+        };
+        t.addEventListener('animationend', cleanAnim, { once: true });
+        setTimeout(cleanAnim, 260);
     }
     
     document.querySelectorAll('.view-section').forEach(e => {
         if (e !== t) {
             e.classList.add('hidden');
-            e.classList.remove('flex');
+            e.classList.remove('flex', 'view-transition-forward', 'view-transition-backward', 'view-transition-scale');
         }
     });
 
