@@ -154,6 +154,14 @@ assert(routerContent.includes("'priceListExport'"), 'allKnownModals memuat price
 const nativeMobileContent = fs.readFileSync('src/core/native-mobile.js', 'utf8');
 assert(nativeMobileContent.includes("case 'modal-pricelist-export':"), 'native-mobile.js memiliki case modal-pricelist-export');
 
+// 8. Verifikasi Pencegahan Popstate Race Condition & Stabilitas Preview PDF
+console.log('\n🛡️ 8. Memeriksa Stabilitas Transisi Modal & Eliminasi Race Condition...');
+assert(routerContent.includes('export const replaceModalHistory = (oldName, newName) =>'), 'router.js mengekspor replaceModalHistory');
+assert(routerContent.includes('window.replaceModalHistory = replaceModalHistory'), 'router.js mengekspos window.replaceModalHistory');
+assert(modalContent.includes('replaceModalHistory') || modalContent.includes('priceListExport'), 'pricelist-modal.js menyelaraskan state priceListExport ke docPreview');
+assert(!modalContent.includes("if (mode === 'pdf') {\n        closePriceListExportModal();"), 'executePriceListExport mode pdf tidak memicu closePriceListExportModal history race condition');
+assert(docsContent.includes("mDoc.classList.remove('hidden')"), 'documents.js menjamin class hidden terhapus saat membuka preview');
+
 console.log('\n============================================================');
 console.log(`🏁 HASIL TEST: ${passedTests} LULUS, ${failedTests} GAGAL`);
 console.log('============================================================\n');

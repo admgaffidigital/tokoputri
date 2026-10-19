@@ -315,11 +315,12 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
         });
 
         setIn('doc-modal-title', 'Katalog & Daftar Harga Resmi A4');
+        const categoryLabel = (!selectedCategory || selectedCategory === 'all') ? 'Semua Kategori Produk' : selectedCategory;
+        setIn('doc-modal-subtitle', `Katalog Resmi Proyek • ${prods.length} Produk (${categoryLabel}) • Kertas A4`);
         const logoHTML = getStoreLogoHtml('w-16 h-16');
         const printDate = formatDate(Date.now(), true);
         const plNumber = `PL-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
         const validUntil = formatDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
-        const categoryLabel = (!selectedCategory || selectedCategory === 'all') ? 'Semua Kategori Produk' : selectedCategory;
 
         const kopHtml = `
         <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-4 mb-4">
@@ -2636,11 +2637,21 @@ const renderPagesToContainer = (pages) => {
 const showDocModalWithAnim = (pageCount = 1) => {
     const mDoc = el('doc-preview-modal');
     const bDoc = el('doc-preview-modal-box');
-    if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+    if (!mDoc) return;
+
+    if (mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('docPreview');
     }
     openModalAnim(mDoc, bDoc);
+    mDoc.classList.remove('hidden');
+
     fitDocPreview();
+    setTimeout(() => {
+        fitDocPreview();
+    }, 60);
+    setTimeout(() => {
+        fitDocPreview();
+    }, 200);
 };
 
 export const fitDocPreview = () => {

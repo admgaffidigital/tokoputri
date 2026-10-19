@@ -7,7 +7,8 @@
  */
 
 import { el, esc, fCur, showToast, openModalAnim, closeModalAnim } from '../../../core/utils.js';
-import { appData } from '../../../core/state.js';
+import { appData, oMods } from '../../../core/state.js';
+import { replaceModalHistory } from '../../../core/router.js';
 
 /**
  * Pastikan kontainer modal ekspor daftar harga terpasang di DOM
@@ -382,7 +383,29 @@ export const executePriceListExport = async (mode = 'pdf') => {
     };
 
     if (mode === 'pdf') {
-        closePriceListExportModal();
+        // Tutup modal konfigurasi langsung dengan animasi tanpa memicu history.back()
+        // agar tidak memicu race-condition popstate yang menutup docPreview
+        const m = el('modal-pricelist-export');
+        const b = el('modal-pricelist-export-box');
+        if (m && b) {
+            closeModalAnim(m, b);
+        }
+
+        // Transisi riwayat & stack oMods: ganti priceListExport dengan docPreview
+        if (typeof replaceModalHistory === 'function') {
+            replaceModalHistory('priceListExport', 'docPreview');
+        } else if (typeof window.replaceModalHistory === 'function') {
+            window.replaceModalHistory('priceListExport', 'docPreview');
+        } else {
+            const plIdx = oMods.lastIndexOf('priceListExport');
+            if (plIdx > -1) oMods.splice(plIdx, 1);
+            if (typeof history !== 'undefined' && history.state && history.state.modal === 'priceListExport') {
+                try {
+                    history.replaceState({ modal: 'docPreview' }, '', window.location.href);
+                } catch (e) {}
+            }
+        }
+
         if (typeof window.openDocPreview === 'function') {
             window.openDocPreview('pricelist', options);
         } else {

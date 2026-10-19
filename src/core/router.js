@@ -20,10 +20,34 @@ export let viewHistoryStack = ['view-catalog'];
  * Mendaftarkan modal yang dibuka ke riwayat browser
  */
 export const pushModalHistory = (name) => {
+    if (oMods.length > 0 && oMods[oMods.length - 1] === name) {
+        return; // Sudah terdaftar sebagai modal aktif teratas
+    }
     if (typeof history !== 'undefined' && typeof window !== 'undefined') {
+        if (history.state && history.state.modal === name) {
+            if (!oMods.includes(name)) oMods.push(name);
+            return;
+        }
         history.pushState({ modal: name }, '', window.location.href);
     }
     oMods.push(name);
+};
+
+/**
+ * Mengganti modal aktif di stack dan riwayat tanpa memicu race-condition history.back()
+ */
+export const replaceModalHistory = (oldName, newName) => {
+    const idx = oMods.lastIndexOf(oldName);
+    if (idx > -1) {
+        oMods[idx] = newName;
+    } else if (!oMods.includes(newName)) {
+        oMods.push(newName);
+    }
+    if (typeof history !== 'undefined' && typeof window !== 'undefined') {
+        try {
+            history.replaceState({ modal: newName }, '', window.location.href);
+        } catch (e) {}
+    }
 };
 
 /**
@@ -1146,11 +1170,11 @@ export const setupHistoryRouter = () => {
     } catch(e) {}
 
     window.addEventListener('popstate', e => {
-        // Jika penutupan modal dipicu secara terprogram (klik tombol X/backdrop), lewati event popstate kecuali membawa navigasi view
+        // Jika penutupan modal dipicu secara terprogram (klik tombol X/backdrop), lewati event popstate
         if (isProgrammaticModalClose) {
             isProgrammaticModalClose = false;
             if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
-            if (!e.state || !e.state.view) return;
+            return;
         }
 
         // 1. Jika ada modal yang terbuka, tutup modal teratas (LIFO)
@@ -1208,6 +1232,7 @@ export const setupHistoryRouter = () => {
 // ─── Expose ke window untuk navigasi inline HTML ──────
 if (typeof window !== 'undefined') {
     window.pushModalHistory = pushModalHistory;
+    window.replaceModalHistory = replaceModalHistory;
     window.requestCloseModal = requestCloseModal;
     window.changeView = changeView;
     window.setupHistoryRouter = setupHistoryRouter;
