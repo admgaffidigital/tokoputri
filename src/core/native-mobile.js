@@ -172,6 +172,9 @@ export const closeModalById = (id) => {
         case 'modal-flash-sale-form':
             if (typeof window.closeFlashSaleModal === 'function') window.closeFlashSaleModal();
             break;
+        case 'modal-pricelist-export':
+            if (typeof window.closePriceListExportModal === 'function') window.closePriceListExportModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {

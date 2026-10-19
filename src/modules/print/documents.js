@@ -273,8 +273,257 @@ const paginateTableDocument = ({
  * FUNGSI UTAMA PREVIEW DOKUMEN A4
  * ============================================================
  */
-export const openDocPreview = (type, targetId = null) => {
+export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
     currentDocType = type;
+
+    // ────────────────────────────────────────────────────────────
+    // 0. KATALOG & DAFTAR HARGA RESMI (PRICELIST PROYEK & TUKANG)
+    // ────────────────────────────────────────────────────────────
+    if (type === 'pricelist') {
+        const opts = (typeof targetId === 'object' && targetId !== null) ? targetId : (extraOptions || {});
+        const selectedCategory = opts.category || '';
+        const searchQuery = (opts.search || '').toLowerCase().trim();
+        const includeVariants = opts.includeVariants !== false;
+        const includeWholesale = opts.includeWholesale !== false;
+        const includeStock = opts.includeStock !== false;
+        const includeInactive = opts.includeInactive === true;
+
+        let prods = (appData.products || []).filter(p => {
+            if (!includeInactive && (p.isActive === false || p.isActive === 'false')) return false;
+            if (selectedCategory && selectedCategory !== 'all' && (p.category || '').toLowerCase() !== selectedCategory.toLowerCase()) return false;
+            if (searchQuery) {
+                const matchesName = (p.name || '').toLowerCase().includes(searchQuery);
+                const matchesSku = (p.sku || p.barcode || '').toLowerCase().includes(searchQuery);
+                const matchesCat = (p.category || '').toLowerCase().includes(searchQuery);
+                const matchesBrand = (p.brand || '').toLowerCase().includes(searchQuery);
+                if (!matchesName && !matchesSku && !matchesCat && !matchesBrand) return false;
+            }
+            return true;
+        });
+
+        if (prods.length === 0) {
+            if (typeof window.showToast === 'function') window.showToast('Tidak ada produk yang sesuai filter untuk dicetak!');
+            return;
+        }
+
+        // Urutkan per kategori lalu nama produk
+        prods.sort((a, b) => {
+            const catA = (a.category || 'Lainnya').toLowerCase();
+            const catB = (b.category || 'Lainnya').toLowerCase();
+            if (catA !== catB) return catA.localeCompare(catB);
+            return (a.name || '').localeCompare(b.name || '');
+        });
+
+        setIn('doc-modal-title', 'Katalog & Daftar Harga Resmi A4');
+        const logoHTML = getStoreLogoHtml('w-16 h-16');
+        const printDate = formatDate(Date.now(), true);
+        const plNumber = `PL-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const validUntil = formatDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
+        const categoryLabel = (!selectedCategory || selectedCategory === 'all') ? 'Semua Kategori Produk' : selectedCategory;
+
+        const kopHtml = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-4 mb-4">
+            <div class="flex items-center gap-4">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">${esc(appData.store?.slogan || 'Pusat Bahan Bangunan & Alat Teknik')}</p>
+                    <p class="text-[11px] font-medium text-slate-500 mt-0.5 leading-snug">${esc(appData.store?.address || 'Alamat fisik toko')}</p>
+                    <p class="text-[11px] font-medium text-slate-500"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || appData.store?.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-2xl tracking-widest text-slate-900 uppercase">DAFTAR HARGA</h2>
+                <p class="text-[11px] font-extrabold text-[var(--color-primary)] uppercase tracking-wider mt-0.5">Katalog Resmi Proyek</p>
+                <p class="text-xs font-bold text-slate-700 mt-1 font-mono">#${esc(plNumber)}</p>
+                <p class="text-[10.5px] font-semibold text-slate-500 mt-0.5">Tanggal: ${printDate}</p>
+            </div>
+        </div>
+        `;
+
+        const metaHtml = `
+        <div class="grid grid-cols-3 gap-3 mb-4 text-xs">
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Kategori Filter:</span>
+                <span class="font-bold text-slate-800 text-xs truncate block">${esc(categoryLabel)}</span>
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Total Katalog:</span>
+                <span class="font-bold text-slate-800 text-xs font-mono block">${prods.length} Item Produk</span>
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Masa Berlaku Estimasi:</span>
+                <span class="font-bold text-emerald-700 text-xs block">s/d ${validUntil}</span>
+            </div>
+        </div>
+        `;
+
+        const tableHeaderHtml = `
+        <tr class="bg-slate-900 text-white font-bold uppercase tracking-wider text-[10px]">
+            <th class="py-2.5 px-2.5 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Nama Barang &amp; Spesifikasi</th>
+            <th class="py-2.5 px-2 text-center w-16 border-r border-slate-700">Satuan</th>
+            <th class="py-2.5 px-3 text-right w-28 border-r border-slate-700">Harga Eceran</th>
+            ${includeWholesale ? `<th class="py-2.5 px-2.5 text-left w-36 border-r border-slate-700">Harga Grosir / Proyek</th>` : ''}
+            ${includeStock ? `<th class="py-2.5 px-2 rounded-tr-xl text-center w-20">Ketersediaan</th>` : ''}
+        </tr>
+        `;
+
+        let currentCategoryGroup = '';
+        const rows = [];
+        let itemIndex = 1;
+
+        prods.forEach(p => {
+            const pCat = (p.category || 'Lainnya').toUpperCase();
+            if ((!selectedCategory || selectedCategory === 'all') && pCat !== currentCategoryGroup) {
+                currentCategoryGroup = pCat;
+                rows.push(`
+                <tr class="bg-slate-100 border-y border-slate-300">
+                    <td colspan="${4 + (includeWholesale ? 1 : 0) + (includeStock ? 1 : 0)}" class="py-1 px-3 font-black text-slate-800 text-[10px] uppercase tracking-wider">
+                        <i class="fa-solid fa-folder-open text-[var(--color-primary)] mr-1"></i> ${esc(pCat)}
+                    </td>
+                </tr>
+                `);
+            }
+
+            const pUnit = p.unit || 'pcs';
+            const hasVariants = Array.isArray(p.variants) && p.variants.length > 0;
+            const hasMultiUnits = Array.isArray(p.multiUnits) && p.multiUnits.length > 0;
+            const stockQty = parseFloat(p.stock) || 0;
+
+            let variantsHtml = '';
+            if (includeVariants && hasVariants) {
+                variantsHtml = `
+                <div class="mt-1 flex flex-wrap gap-1">
+                    ${p.variants.map(v => `
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8.5px] font-medium bg-slate-50 border border-slate-200 text-slate-700">
+                            ${v.colorCode ? `<span class="w-2 h-2 rounded-full border border-slate-300 shrink-0" style="background-color: ${esc(v.colorCode)};"></span>` : ''}
+                            <span>${esc(v.name)}</span>
+                            ${v.price ? `<b class="text-slate-900 font-mono">${fCur(v.price)}</b>` : ''}
+                        </span>
+                    `).join('')}
+                </div>
+                `;
+            }
+
+            let multiUnitsHtml = '';
+            if (includeVariants && hasMultiUnits) {
+                multiUnitsHtml = `
+                <div class="mt-0.5 text-[8.5px] text-slate-500 font-mono">
+                    Satuan Lain: ${p.multiUnits.map(mu => `${esc(mu.name)} (1 ${esc(mu.name)} = ${mu.multiplier} ${esc(pUnit)} @ ${fCur(mu.price)})`).join(' • ')}
+                </div>
+                `;
+            }
+
+            let wholesaleHtml = '';
+            if (includeWholesale) {
+                if (Array.isArray(p.wholesale) && p.wholesale.length > 0) {
+                    wholesaleHtml = `
+                    <div class="space-y-0.5 text-[9px] font-mono leading-tight">
+                        ${p.wholesale.map(w => `
+                            <div class="flex justify-between items-center gap-1">
+                                <span class="text-slate-500">≥${w.min} ${esc(pUnit)}:</span>
+                                <span class="font-bold text-emerald-700">${fCur(w.price)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    `;
+                } else if (p.wholesalePrice && p.wholesalePrice < p.price) {
+                    wholesaleHtml = `
+                    <div class="text-[9px] font-mono leading-tight">
+                        <span class="text-slate-500">≥${p.wholesaleMin || 10} ${esc(pUnit)}:</span>
+                        <span class="font-bold text-emerald-700">${fCur(p.wholesalePrice)}</span>
+                    </div>
+                    `;
+                } else {
+                    wholesaleHtml = `<span class="text-slate-400 italic text-[9px]">Sesuai Kuantitas</span>`;
+                }
+            }
+
+            let stockHtml = '';
+            if (includeStock) {
+                stockHtml = stockQty > 0
+                    ? `<span class="inline-block px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Ready</span>`
+                    : `<span class="inline-block px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Inden</span>`;
+            }
+
+            rows.push(`
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-2 px-2.5 text-center font-mono text-slate-500 font-bold border-r border-slate-200 text-[10px]">${itemIndex}</td>
+                <td class="py-2 px-3 border-r border-slate-200">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="font-bold text-slate-900 text-xs uppercase">${esc(p.name)}</span>
+                        ${p.brand ? `<span class="px-1.5 py-0.2 rounded text-[8px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">${esc(p.brand)}</span>` : ''}
+                    </div>
+                    ${p.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(p.sku)}</span>` : ''}
+                    ${variantsHtml}
+                    ${multiUnitsHtml}
+                </td>
+                <td class="py-2 px-2 text-center text-slate-700 font-semibold border-r border-slate-200 uppercase text-[11px]">${esc(pUnit)}</td>
+                <td class="py-2 px-3 text-right font-mono font-bold text-slate-900 border-r border-slate-200 text-xs">${fCur(p.price)}</td>
+                ${includeWholesale ? `<td class="py-2 px-2.5 border-r border-slate-200">${wholesaleHtml}</td>` : ''}
+                ${includeStock ? `<td class="py-2 px-2 text-center">${stockHtml}</td>` : ''}
+            </tr>
+            `);
+
+            itemIndex++;
+        });
+
+        const extraBlocksHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-4 text-xs">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <h4 class="font-bold text-slate-800 text-[10px] uppercase tracking-wider mb-1"><i class="fa-solid fa-circle-info text-[var(--color-primary)] mr-1"></i> Ketentuan &amp; Pemesanan Proyek:</h4>
+                <ul class="text-[9.5px] text-slate-600 space-y-0.5 list-disc list-inside">
+                    <li>Harga sewaktu-waktu dapat berubah mengikuti fluktuasi harga pabrik &amp; distributor.</li>
+                    <li>Pengadaan kuantitas besar / borongan proyek berhak mengajukan Surat Penawaran Harga (SPH) resmi.</li>
+                    <li>Layanan kirim armada toko (Pick-up / Truk) siap antar langsung ke lokasi proyek.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col justify-between">
+                <div>
+                    <h4 class="font-bold text-slate-800 text-[10px] uppercase tracking-wider mb-1"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> Kontak Sales &amp; Konsultasi Proyek:</h4>
+                    <p class="text-[11px] font-bold text-slate-900 uppercase">${esc(appData.store?.name || 'Toko Putri')}</p>
+                    <p class="text-[10px] text-slate-600">${esc(appData.store?.address || '-')}</p>
+                    <p class="text-[10.5px] font-mono font-bold text-emerald-700 mt-1"><i class="fa-brands fa-whatsapp"></i> ${esc(appData.store?.wa || appData.store?.phone || '-')}</p>
+                </div>
+            </div>
+        </div>
+        `;
+
+        const signaturesHtml = `
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-auto pt-4 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-12 uppercase tracking-widest text-[9px]">Dibuat &amp; Diverifikasi:</span>
+                <div class="w-40 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 uppercase">Bagian Penjualan &amp; Logistik</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-12 uppercase tracking-widest text-[9px]">Mengetahui:</span>
+                <div class="w-40 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(appData.store?.name || 'Pimpinan Toko')}</span>
+            </div>
+        </div>
+        `;
+
+        const pages = paginateTableDocument({
+            docTitle: 'Katalog & Daftar Harga Resmi',
+            docNumber: `#${plNumber}`,
+            docDate: printDate,
+            kopHtml,
+            metaHtml,
+            tableHeaderHtml,
+            rows,
+            extraBlocksHtml,
+            signaturesHtml,
+            singlePageMax: 9,
+            itemsFirstPage: 8,
+            itemsMiddlePage: 14,
+            itemsLastPage: 7
+        });
+
+        renderPagesToContainer(pages);
+        return;
+    }
 
     // ────────────────────────────────────────────────────────────
     // 1. PURCHASE ORDER (PO SUPPLIER)
@@ -2458,7 +2707,7 @@ export const printDocA4 = () => {
     }
 
     const printWindow = window.open('', '_blank');
-    const docTitleLabel = currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : (currentDocType === 'sales_return' ? 'Nota Retur Penjualan' : (currentDocType === 'vendor_return' ? 'Surat Pengembalian Barang' : 'Dokumen Resmi A4')))))));
+    const docTitleLabel = currentDocType === 'pricelist' ? 'Katalog & Daftar Harga Resmi' : (currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : (currentDocType === 'sales_return' ? 'Nota Retur Penjualan' : (currentDocType === 'vendor_return' ? 'Surat Pengembalian Barang' : 'Dokumen Resmi A4'))))))));
 
     const printHtml = `<!DOCTYPE html>
 <html lang="id">

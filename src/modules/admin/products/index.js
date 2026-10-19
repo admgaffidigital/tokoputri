@@ -58,7 +58,9 @@ import './pricing.js';
 import './fifo-modal.js';
 import './barcode-label-modal.js';
 import './master-presets.js';
+import './pricelist-modal.js';
 
 export * from './barcode-label-modal.js';
 export * from './master-presets.js';
+export * from './pricelist-modal.js';
 

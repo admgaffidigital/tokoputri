@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.18.11",
+  "version": "1.18.12",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,9 +9,10 @@
     "preview": "vite preview",
     "sync": "node scripts/sync.mjs",
     "release": "node scripts/sync.mjs",
-    "audit": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run test:flashsalenative && npm run test:adminmodalsnative && npm run test:bugfixesaudit",
-    "maintenance": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:license && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run test:flashsalenative && npm run test:adminmodalsnative && npm run test:bugfixesaudit && npm run sync",
+    "audit": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run test:flashsalenative && npm run test:adminmodalsnative && npm run test:bugfixesaudit && npm run test:pricelist",
+    "maintenance": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:license && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run test:flashsalenative && npm run test:adminmodalsnative && npm run test:bugfixesaudit && npm run test:pricelist && npm run sync",
     "license:generate": "node scripts/generate-license.mjs",
+    "test:pricelist": "node scripts/test-pricelist-catalog.mjs",
     "test:bugfixesaudit": "node scripts/test-bugfixes-audit.mjs",
     "test:adminmodalsnative": "node scripts/test-admin-modals-native-ui.mjs",
     "test:flashsalenative": "node scripts/test-flash-sale-modal-native-ui.mjs",

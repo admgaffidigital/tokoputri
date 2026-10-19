@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-12",
+        "version": "v1.18.12",
+        "date": "2026-10-19",
+        "title": "Ekspor Brosur & Daftar Harga Cepat Kontraktor & Tukang (1-Klik PDF A4 & WhatsApp), Live Counter & Format Grosir",
+        "category": "feature",
+        "badge": "Contractor Price List & Instant Catalog Generator v1.18.12",
+        "items": [
+            "Generator Brosur & Daftar Harga Resmi (PDF A4 Multi-Halaman): Mengintegrasikan engine cetak A4 presisi di src/modules/print/documents.js lengkap dengan kop surat toko, logo resmi, alamat, kontak WhatsApp, nomor dokumen PL-YYYYMMDD-XXXX, masa berlaku estimasi, pembagian kategori rapi, kolom harga grosir/proyek, multi-varian, status ketersediaan, dan tanda tangan verifikasi.",
+            "Salin Format WhatsApp 1-Klik untuk Kontraktor & Tukang: Menghasilkan format pesan WhatsApp terstruktur, ringkas, dan sangat informatif mencakup nama material, satuan, harga eceran, tier grosir, ketersediaan stok, dan tautan pemesanan proyek langsung ke chat WhatsApp toko.",
+            "Modal Konfigurasi Fleksibel & Native Bottom Sheet: Menyediakan filter kategori dinamis, kata kunci pencarian, sakelar opsi varian, kolom grosir, status stok, dan live counter pill dengan standar antarmuka Native Bottom Sheet (rounded-t-[2rem] sm:rounded-3xl, pull-indicator pill, dan touch target 44px).",
+            "Integrasi Toolbar Produk Admin & Universal Router: Menambahkan tombol 'Daftar Harga' berdampingan dengan Stock Opname di toolbar admin produk, terdaftar penuh pada MODAL_ELEMENT_MAP, closeModalByName, allKnownModals, dan gesture engine swipe dismiss.",
+            "Multi-Channel Distribution v1.18.12 (Android versionCode 11812)."
+        ]
+    },
+    {
         "id": "log-1-18-11",
         "version": "v1.18.11",
         "date": "2026-10-19",
@@ -75,23 +90,9 @@ export const DEFAULT_CHANGELOG = [
             "Screen WakeLock API Controller: Menjaga layar tablet dan smartphone kasir tetap menyala (anti-sleep) secara otomatis saat terminal POS Kasir aktif dan melepaskan lock saat keluar, menjamin kelancaran antrean kasir tanpa gangguan layar mati.",
             "Multi-Channel Distribution v1.18.8 (Android versionCode 11808)."
         ]
-    },
-    {
-        "id": "log-1-18-07",
-        "version": "v1.18.7",
-        "date": "2026-10-18",
-        "title": "Pembaruan Antarmuka Full Native App Universal, Shimmer Skeleton Engine, Bento Empty State & Multi-Varian Flash Sale",
-        "category": "feature",
-        "badge": "Full Native App Universal & Shimmer Engine v1.18.7",
-        "items": [
-            "Transformasi Antarmuka Full Native App Universal: Mengeliminasi total tampilan klasik bawaan web browser di seluruh aplikasi (Etalase, Detail Produk, Kasir POS, CMS Admin, dan Member Rewards) dengan menerapkan Universal Theme Micro-Scrollbar 6px slim pill adaptif dark/light, Brand Theme Text Selection, dan sentuhan visual ergonomis di smartphone, tablet, maupun desktop.",
-            "Theme-Aware Shimmer Skeleton Engine: Menggantikan seluruh indikator loading berputar (spinner) dan teks polos dengan Shimmer Skeleton interaktif beraksen warna tema toko dinamis pada etalase produk, ulasan pelanggan, shift kasir POS, dan mutasi poin reward VIP.",
-            "Bento Island Zero-Result & Smart Action Chips: Menghadirkan kartu Bento Empty State modern dengan ambient glow dan tombol aksi cerdas terpadu (Reset Filter 1-klik, Tanya Stok via WhatsApp, Buka Scanner Kamera POS, dan Tambah Master Data Baru di CMS Admin).",
-            "Harmonisasi Proporsionalitas Flash Sale & Hadiah Poin: Tombol teks kompak 'Tukar Hadiah' dan 'Beli Kilat' (32px mobile / 34px desktop) dengan tata letak poin mandiri di atas tombol, bebas sempit, anti-meluber, serta dukungan promo Flash Sale multi-varian.",
-            "Multi-Channel Distribution v1.18.7 (Android versionCode 11807)."
-        ]
     }
 ];
+
 
 /**
  * Mengurai string versi (misal 'v1.8.5' atau '1.8.5') menjadi tuple [major, minor, patch]

@@ -485,7 +485,8 @@ export const MODAL_ELEMENT_MAP = {
     deliveryOrder: ['modal-delivery-order', 'delivery-order-modal'],
     deliverySignature: ['modal-delivery-signature', 'delivery-signature-modal'],
     flashSaleForm: ['modal-flash-sale-form', 'flash-sale-form-modal'],
-    factoryReset: ['modal-factory-reset', 'factory-reset-modal']
+    factoryReset: ['modal-factory-reset', 'factory-reset-modal'],
+    priceListExport: ['modal-pricelist-export', 'pricelist-export-modal']
 };
 
 /**
@@ -767,6 +768,9 @@ export const closeModalByName = (m) => {
         case 'factoryReset':
             if (typeof window.closeFactoryResetModal === 'function') { window.closeFactoryResetModal(true); return true; }
             break;
+        case 'priceListExport':
+            if (typeof window.closePriceListExportModal === 'function') { window.closePriceListExportModal(true); return true; }
+            break;
         default:
             break;
     }
@@ -928,6 +932,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
         'variantPreview', 'quickVariant', 'product',
+        'priceListExport',
         'factoryReset',
         'flashSaleForm',
         'deliverySignature', 'deliveryOrder',
