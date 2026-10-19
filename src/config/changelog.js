@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-10",
+        "version": "v1.18.10",
+        "date": "2026-10-19",
+        "title": "Standarisasi Universal Native Bottom Sheet Seluruh Modal CMS & Storefront, Theme Gradient Harmony & Integrasi Swipe Gesture",
+        "category": "feature",
+        "badge": "Universal Native Bottom Sheet & Gesture Harmony v1.18.10",
+        "items": [
+            "Transformasi Menyeluruh Modal CMS & Storefront Native Bottom Sheet: Menyempurnakan Form Master Data (#admin-modal), Detail Pesanan Admin (#admin-order-modal), Pengaturan Printer POS (#printer-settings-modal), Tanya Admin (#modal-ask-question), Editor Q&A FAQ (#modal-admin-faq), Kartu Member Digital (#member-modal), dan Rincian Pesanan Pelanggan (#order-detail-modal) mengadopsi arsitektur modal-bottom-sheet responsif dengan drag pull-indicator pill, squircle radius rounded-t-[2rem] sm:rounded-3xl, dan safe area bottom inset padding.",
+            "Harmonisasi Penuh Tema Toko Dinamis (Theme Gradient Header): Menerapkan header bergradasi halus bertema var(--color-primary) dan aksen ikon toko pada seluruh modal, menghilangkan kesan kaku desktop dan menyatukan estetika visual premium di smartphone maupun desktop.",
+            "Integrasi Native Swipe-Down to Dismiss Gesture Engine: Mendaftarkan seluruh modal CMS ke closeModalById pada core gesture engine native-mobile.js dengan isolasi interaktif guard sehingga modal dapat ditutup dengan usapan jari ke bawah yang mulus tanpa mengganggu scrolling tabel dan input form.",
+            "Standardisasi Touch Target & Form Inputs: Mengunci seluruh kolom input, dropdown select, dan tombol aksi modal pada tinggi proporsional min-h-[44px] dengan font 16px di mobile anti auto-zoom/mental Chromium.",
+            "Multi-Channel Distribution v1.18.10 (Android versionCode 11810)."
+        ]
+    },
+    {
         "id": "log-1-18-09",
         "version": "v1.18.9",
         "date": "2026-10-19",
@@ -73,21 +88,6 @@ export const DEFAULT_CHANGELOG = [
             "Native Pull-to-Refresh & Tombol Segarkan 1-Klik CMS Admin: Pengalaman navigasi smartphone tarik ke bawah untuk memuat ulang data etalase dan CMS Admin secara instan dengan indikator putar visual dan getaran haptic feedback, didukung tombol 'Segarkan' 1-klik di header admin desktop & mobile.",
             "Universal Button & Form Input Consistency Harmony Engine: Standardisasi konsistensi 100% pada seluruh tombol (squircle radius 1rem tombol utama & 0.875rem tombol aksi, min-height 44px touch target, active:scale-[0.96] tactile press), seluruh kolom input/select/textarea (tinggi seragam 44px, radius 0.875rem, font 16px mobile anti auto-zoom/mental, focus ring bertema var(--color-primary), dan placeholder kontras tinggi).",
             "Multi-Channel Distribution v1.18.2 (Android versionCode 11802)."
-        ]
-    },
-    {
-        "id": "log-1-18-01",
-        "version": "v1.18.1",
-        "date": "2026-10-16",
-        "title": "Harmonisasi Presisi UI/UX Native App: Redesain Kartu Reward Bersih, Touch Target Ergonomis Pesanan & Wishlist, Margin Bento Simetris & Live Zero-404",
-        "category": "feature",
-        "badge": "Presisi UI/UX Native App & Live Stability v1.18.1",
-        "items": [
-            "Redesain Kartu Produk, Flash Sale & Reward Presisi Full Frame: Menghilangkan badge hadiah gratis pada kartu reward agar kanvas murni bersih, menyempurnakan foto produk pada katalog, flash sale, dan reward menjadi presisi 1:1 full frame edge-to-edge tanpa padding menjorok, serta menyelaraskan tema dark mode (slate-900 / slate-950) monolitik yang mewah dan konsisten.",
-            "Standardisasi Touch Target Ergonomis Pesanan & Wishlist: Meningkatkan ukuran tombol aksi interaktif 'Detail' & 'Status' pada riwayat pesanan serta tombol 'Beli' & 'Hapus' pada daftar keinginan (wishlist) menjadi min-height 38-40px dengan padding lapang dan font tebal yang nyaman untuk navigasi jempol di smartphone.",
-            "Harmonisasi Margin Bento Storefront Universal: Menyelaraskan seluruh ritme vertikal antar seksi etalase toko (Header, Banner Hero, Flash Sale, Kategori, Rekomendasi Produk, dan Footer Bento Hub) dengan jarak simetris mt-4 sm:mt-5 yang konsisten dan bebas tumpang-tindih.",
-            "Resolusi Zero-404 Aset Live CDN & Stabilitas Modul: Memverifikasi integritas seluruh dynamic chunk modules (module-member, module-print, module-admin, dll.) pada live CDN Vercel agar selalu merespons 200 OK tanpa kendala modul terputus saat navigasi.",
-            "Multi-Channel Distribution v1.18.1 (Android versionCode 11801)."
         ]
     }
 ];
@@ -164,7 +164,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.9';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.10';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

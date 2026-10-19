@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * TOKO PUTRI — ENTERPRISE OFFLINE PWA SERVICE WORKER ENGINE
- * Versi Cache: v1.18.9
+ * Versi Cache: v1.18.10
  * 
  * Strategi Caching:
  * 1. Navigasi HTML: Network-First dengan Cache Fallback (0ms offline load)
@@ -12,7 +12,7 @@
  * ============================================================
  */
 
-const CACHE_VERSION = 'v1.18.9';
+const CACHE_VERSION = 'v1.18.10';
 const CACHE_NAME = `tokoputri-cache-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `tokoputri-runtime-${CACHE_VERSION}`;
 

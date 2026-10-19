@@ -446,16 +446,23 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
         const grandTotal = taxInfo.grandTotal;
 
         m.innerHTML = `
-            <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden pointer-events-auto" id="order-detail-content">
-                <!-- DRAG PULL MOBILE -->
-                <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
+            <div class="modal-bottom-sheet bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden pointer-events-auto" id="order-detail-content">
+                <!-- DRAG PULL INDICATOR MOBILE -->
+                <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
+                    <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
+                </div>
 
-                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200/90 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-900">
-                    <div>
-                        <h3 class="font-black text-slate-800 dark:text-white text-base">Rincian Pesanan</h3>
-                        <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">ID: #${orderId.split('-').pop()}</p>
+                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200/90 dark:border-slate-800 flex justify-between items-center shrink-0" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                            <i class="fa-solid fa-receipt text-base"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-slate-800 dark:text-white text-base leading-tight">Rincian Pesanan</h3>
+                            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">ID: #${orderId.split('-').pop()}</p>
+                        </div>
                     </div>
-                    <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="closeCustomerOrderDetailModal()" class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
                 <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-6 hide-scrollbar text-sm" style="padding-bottom: max(6rem, calc(5rem + env(safe-area-inset-bottom))); -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">

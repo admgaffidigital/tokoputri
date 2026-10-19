@@ -154,6 +154,24 @@ export const closeModalById = (id) => {
         case 'modal-client-tempo-pay':
             if (typeof window.closeClientPaymentModal === 'function') window.closeClientPaymentModal();
             break;
+        case 'admin-modal':
+            if (typeof window.closeAdminModal === 'function') window.closeAdminModal();
+            break;
+        case 'printer-settings-modal':
+            if (typeof window.closePrinterSettingsModal === 'function') window.closePrinterSettingsModal();
+            break;
+        case 'modal-ask-question':
+            if (typeof window.closeAskQuestionModal === 'function') window.closeAskQuestionModal();
+            break;
+        case 'modal-admin-faq':
+            if (typeof window.closeAdminFAQModal === 'function') window.closeAdminFAQModal();
+            break;
+        case 'member-modal':
+            if (typeof window.closeMemberModal === 'function') window.closeMemberModal();
+            break;
+        case 'modal-flash-sale-form':
+            if (typeof window.closeFlashSaleModal === 'function') window.closeFlashSaleModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {

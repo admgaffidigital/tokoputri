@@ -1059,34 +1059,36 @@ export const openMemberModal = () => {
     }
     const isAlreadyOpen = m.style.display !== 'none' && m.style.opacity === '1';
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-lg sm:max-w-2xl lg:max-w-3xl rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden">
-            <!-- DRAG PULL MOBILE -->
-            <div class="pull-indicator sm:hidden"></div>
+        <div class="modal-bottom-sheet bg-white dark:bg-slate-900 w-full max-w-lg sm:max-w-2xl lg:max-w-3xl rounded-t-[2rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden" id="member-modal-box">
+            <!-- DRAG PULL INDICATOR MOBILE -->
+            <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
+                <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
+            </div>
 
             <!-- Header Modal -->
-            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
+            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white shadow-xs" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
-                        <i class="fa-solid fa-id-card text-xs"></i>
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                        <i class="fa-solid fa-id-card text-base"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Kartu Member Digital</h3>
                         <p class="text-[10px] font-semibold text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-1.5 sm:gap-2">
+                <div class="flex items-center gap-2">
                     <!-- Privacy Eye Shield Toggle -->
-                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
+                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
                         <i class="fa-solid ${isMemberPrivacyHidden ? 'fa-eye-slash text-amber-500' : 'fa-eye text-slate-500'} text-xs"></i>
                     </button>
 
                     <!-- Quick Session Lock -->
-                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Kunci Sesi Member (Logout Cepat)">
+                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Kunci Sesi Member (Logout Cepat)">
                         <i class="fa-solid fa-lock text-xs"></i>
                     </button>
 
                     <!-- Close Button -->
-                    <button type="button" onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
+                    <button type="button" onclick="closeMemberModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
                         <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
                 </div>
