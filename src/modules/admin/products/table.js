@@ -328,11 +328,11 @@ window.rAdmL = t => {
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     ${t === 'products' ? `
-                    <button onclick="window.openPriceListExportModal()" class="h-12 px-3.5 sm:px-4 rounded-2xl border font-bold text-xs flex items-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700/80" title="Katalog & Daftar Harga Cepat (PDF A4 / WhatsApp)">
+                    <button onclick="window.openPriceListExportModal()" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700/80" title="Katalog & Daftar Harga Cepat (PDF A4 / WhatsApp)">
                         <i class="fa-solid fa-file-pdf text-rose-500 text-sm"></i>
                         <span class="hidden sm:inline">Daftar Harga</span>
                     </button>
-                    <button onclick="openAdminTab('stock_opname')" class="h-12 px-4 rounded-2xl border font-bold text-xs flex items-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Stock Opname (Audit Fisik Stok)">
+                    <button onclick="openAdminTab('stock_opname')" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Stock Opname (Audit Fisik Stok)">
                         <i class="fa-solid fa-clipboard-check text-sm"></i>
                         <span class="hidden sm:inline">Stock Opname</span>
                     </button>` : ''}
