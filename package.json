@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.18.8",
+  "version": "1.18.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,9 +9,10 @@
     "preview": "vite preview",
     "sync": "node scripts/sync.mjs",
     "release": "node scripts/sync.mjs",
-    "audit": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa",
-    "maintenance": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:license && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run sync",
+    "audit": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run test:flashsalenative",
+    "maintenance": "node scripts/audit-check.mjs && npm run test:modals && npm run test:fifo && npm run test:sku && npm run test:dualstock && npm run test:barcode && npm run test:estimator && npm run test:estimatorzindex && npm run test:rma && npm run test:delivery && npm run test:uom && npm run test:flashsale && npm run test:license && npm run test:member && npm run test:authguard && npm run test:posheader && npm run test:reports && npm run test:factoryreset && npm run test:masterpresets && npm run test:ptr && npm run test:inputcleanliness && npm run test:rewardproportions && npm run test:visualharmony && npm run test:offlinepwa && npm run test:flashsalenative && npm run sync",
     "license:generate": "node scripts/generate-license.mjs",
+    "test:flashsalenative": "node scripts/test-flash-sale-modal-native-ui.mjs",
     "test:offlinepwa": "node scripts/test-offline-pwa-and-view-transitions.mjs",
     "test:visualharmony": "node scripts/test-native-app-visual-harmony.mjs",
     "test:rewardproportions": "node scripts/test-reward-catalog-proportions.mjs",

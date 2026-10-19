@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-09",
+        "version": "v1.18.9",
+        "date": "2026-10-19",
+        "title": "Redesain Modal Flash Sale Full Native App Bottom Sheet, Penyelarasan Tema Dinamis & Eliminasi Total Kebocoran Layout",
+        "category": "feature",
+        "badge": "Native App Flash Sale & Theme Harmony v1.18.9",
+        "items": [
+            "Redesain Modal Pembuat Sesi Flash Sale Native App Bottom Sheet: Mengganti tampilan modal kaku klasik dengan arsitektur modal-bottom-sheet responsif (docked di bagian bawah pada smartphone dengan pull-indicator drag handle bar, dan centered modal elegan di layar tablet/desktop) terintegrasi dengan gesture engine swipe-down to dismiss.",
+            "Penyelarasan Total Tema Toko Dinamis (Theme Harmony): Menerapkan CSS custom property var(--color-primary) dan var(--color-primary-dark) secara konsisten pada header modal, tombol aksi utama, chip preset durasi jam (+3J, +6J, 24J, 48J), serta styling khusus kontras tinggi pada kolom input Harga Kilat bertema toko.",
+            "Eliminasi Kebocoran Layout & Anti Teks Terpotong: Restrukturisasi tata letak baris 'Daftar Barang Flash Sale' menjadi responsif (flex-col di mobile, sm:flex-row di desktop) dan proteksi overflow-x-hidden, melenyapkan total kendala tombol '+ Tambah Produk' terpotong di tepi kanan layar dan scrollbar horizontal liar di smartphone.",
+            "Bento Island Empty State & Form Input Touch Target 44px: Menggantikan kotak border-dashed abu-abu datar dengan kartu Bento Empty State interaktif beraksen petir tema toko, serta standardisasi kolom input form dan dropdown select berukuran touch target proporsional (min-h-[44px], font 16px mobile anti-auto-zoom).",
+            "Multi-Channel Distribution v1.18.9 (Android versionCode 11809)."
+        ]
+    },
+    {
         "id": "log-1-18-08",
         "version": "v1.18.8",
         "date": "2026-10-19",
@@ -73,22 +88,6 @@ export const DEFAULT_CHANGELOG = [
             "Harmonisasi Margin Bento Storefront Universal: Menyelaraskan seluruh ritme vertikal antar seksi etalase toko (Header, Banner Hero, Flash Sale, Kategori, Rekomendasi Produk, dan Footer Bento Hub) dengan jarak simetris mt-4 sm:mt-5 yang konsisten dan bebas tumpang-tindih.",
             "Resolusi Zero-404 Aset Live CDN & Stabilitas Modul: Memverifikasi integritas seluruh dynamic chunk modules (module-member, module-print, module-admin, dll.) pada live CDN Vercel agar selalu merespons 200 OK tanpa kendala modul terputus saat navigasi.",
             "Multi-Channel Distribution v1.18.1 (Android versionCode 11801)."
-        ]
-    },
-    {
-        "id": "log-1-18-00",
-        "version": "v1.18.0",
-        "date": "2026-10-15",
-        "title": "Pustaka Database Produk Bersama & Multi-Varian: Impor Selektif Per-Produk, Kustomisasi Harga Modal & Jual Lokal Toko, Bento Grid UI & Pustaka Swatch Warna Cat",
-        "category": "feature",
-        "badge": "Pustaka Database Bersama & Multi-Varian v1.18.0",
-        "items": [
-            "Pustaka Master Produk Bersama (Global Template Library): Menghadirkan pustaka induk berisi 25+ produk material bangunan & alat teknik standar Indonesia (Cat & Pelapis, Semen & Mortar, Pipa PVC, Besi & Baja, Perkakas Listrik, Baut SDS, Sanitari, dan Kelistrikan) lengkap dengan spesifikasi teknis, merek ternama, dan paket multi-varian siap pakai untuk mempercepat klien baru mengisi katalog toko dalam 5 menit tanpa perlu mengetik dari awal.",
-            "Impor Selektif Per-Produk (Anti-Banjir & Anti-Katalog Bercampur): Sistem impor mandiri 1-per-1 (atau per-kategori) yang menyalin master template ke katalog lokal toko (appData.products). Mencegah tercampurnya katalog toko dengan barang kosong dan memastikan toko hanya menjual barang yang benar-benar ada stok fisiknya.",
-            "Drawer Pratinjau & Kustomisasi Varian Interaktif: Modal drawer Bento yang memungkinkan klien mengatur harga jual toko, modal beli (HPP), dan stok awal rak/gudang secara mandiri, serta memilih checklist varian ukuran/warna yang dijual.",
-            "Deteksi Status Cerdas (Smart Badging): Menampilkan status badge '✅ Ada di Toko' jika produk master sudah terimpor ke katalog toko dan '📥 Siap Impor' jika belum, mencegah terjadinya duplikasi barang.",
-            "Two-Way Cloud Sharing (Simpan Produk Toko ke Pustaka Master): Tombol 1-klik di tabel produk admin untuk menyimpan produk kustom lokal menjadi master template bersama yang dapat dipakai ulang oleh cabang atau klien lain.",
-            "Sub-Tab Database Swatch Warna Cat Terpadu: Mengintegrasikan katalog kode warna HEX cat yang sudah ada ke dalam sub-tab terdedikasi dengan antarmuka Bento Grid modern, menjamin kompatibilitas 100%."
         ]
     }
 ];
@@ -165,7 +164,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.8';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.9';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

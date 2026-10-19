@@ -309,97 +309,110 @@ export const openFlashSaleModal = (sessionId = null) => {
     if (existingModal) existingModal.remove();
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="modal-flash-sale-form" class="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 transition-opacity duration-200 opacity-0" style="background: rgba(15, 23, 42, 0.75);">
-        <div id="flash-sale-modal-card" class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-200">
+    <div id="modal-flash-sale-form" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 backdrop-blur-xs transition-opacity duration-300 opacity-0 overflow-hidden" onclick="if(event.target===this) window.closeFlashSaleModal()">
+        <div id="modal-flash-sale-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-8 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
+            <!-- Pull Indicator for Mobile Bottom Sheet -->
+            <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px; width: 44px; height: 5px; border-radius: 9999px; background: rgba(148, 163, 184, 0.4);"></div>
+
             <!-- Modal Header -->
-            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
+            <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-lg shadow-sm" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl text-white flex items-center justify-center text-base sm:text-lg shrink-0 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-bolt text-amber-300"></i>
                     </div>
                     <div>
-                        <h3 class="font-black text-base text-slate-900 dark:text-white leading-snug">
+                        <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white leading-snug">
                             ${existing ? 'Edit Sesi Flash Sale' : 'Buat Sesi Flash Sale Baru'}
                         </h3>
-                        <p class="text-xs text-slate-400">Atur judul, jadwal tayang, dan daftar barang promo kilat.</p>
+                        <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Atur judul, jadwal tayang, dan daftar barang promo kilat.</p>
                     </div>
                 </div>
-                <button type="button" onclick="window.closeFlashSaleModal()" class="w-8 h-8 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors leading-none">
+                <button type="button" onclick="window.closeFlashSaleModal()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-white flex items-center justify-center text-sm cursor-pointer transition-colors leading-none">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <!-- Modal Body Scrollable -->
-            <div class="p-5 overflow-y-auto space-y-4 flex-1">
+            <div class="p-4 sm:p-6 overflow-y-auto overflow-x-hidden space-y-4 sm:space-y-5 flex-1 custom-scrollbar min-h-0">
                 ${isExistingExpired ? `
-                <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs text-amber-800 dark:text-amber-200 flex items-center justify-between gap-2.5 flex-wrap">
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs text-amber-800 dark:text-amber-200 flex items-center justify-between gap-2.5 flex-wrap shadow-2xs">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-clock-rotate-left text-amber-500 text-base shrink-0"></i>
-                        <span>Sesi ini sebelumnya telah selesai. Waktu promo otomatis disesuaikan ke jam sekarang agar langsung tayang saat disimpan.</span>
+                        <span class="font-medium">Sesi ini sebelumnya telah selesai. Waktu promo otomatis disesuaikan ke jam sekarang agar langsung tayang saat disimpan.</span>
                     </div>
-                    <button type="button" onclick="window.resetAllDraftItemsSold()" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black cursor-pointer shadow-xs">
+                    <button type="button" onclick="window.resetAllDraftItemsSold()" class="shrink-0 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black cursor-pointer shadow-xs active:scale-95 transition-all">
                         <i class="fa-solid fa-rotate-left mr-1"></i> Reset Kuota Terjual
                     </button>
                 </div>` : ''}
 
                 <!-- Judul Sesi -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
-                        Judul Sesi Promo <span class="text-rose-500">*</span>
+                    <label class="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-heading text-[10px]" style="color: var(--color-primary);"></i>
+                        <span>Judul Sesi Promo</span>
+                        <span style="color: var(--color-primary);">*</span>
                     </label>
-                    <input type="text" id="fs-input-title" value="${esc(existing?.title || 'Flash Sale Spesial Hari Ini')}" placeholder="Contoh: Flash Sale Akhir Pekan Alat Teknik" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <input type="text" id="fs-input-title" value="${esc(existing?.title || 'Flash Sale Spesial Hari Ini')}" placeholder="Contoh: Flash Sale Akhir Pekan Alat Teknik" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all">
                 </div>
 
                 <!-- Rentang Waktu (Mulai & Selesai) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
-                            Waktu Mulai <span class="text-rose-500">*</span>
+                        <label class="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-regular fa-calendar-plus text-[10px]" style="color: var(--color-primary);"></i>
+                            <span>Waktu Mulai</span>
+                            <span style="color: var(--color-primary);">*</span>
                         </label>
-                        <input type="datetime-local" id="fs-input-start" value="${toDatetimeLocal(defaultStart)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        <input type="datetime-local" id="fs-input-start" value="${toDatetimeLocal(defaultStart)}" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
-                            Waktu Berakhir <span class="text-rose-500">*</span>
+                        <label class="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-regular fa-calendar-check text-[10px]" style="color: var(--color-primary);"></i>
+                            <span>Waktu Berakhir</span>
+                            <span style="color: var(--color-primary);">*</span>
                         </label>
-                        <input type="datetime-local" id="fs-input-end" value="${toDatetimeLocal(defaultEnd)}" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        <input type="datetime-local" id="fs-input-end" value="${toDatetimeLocal(defaultEnd)}" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all">
                     </div>
                 </div>
 
                 <!-- Preset Cepat Durasi -->
-                <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-1">Preset Jam:</span>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(3)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                <div class="p-3 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 flex items-center gap-2 flex-wrap">
+                    <span class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mr-1 flex items-center gap-1">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> Preset Jam:
+                    </span>
+                    <button type="button" onclick="window.setFlashSalePresetDuration(3)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all cursor-pointer active:scale-95 shadow-2xs">
                         +3 Jam
                     </button>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(6)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(6)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all cursor-pointer active:scale-95 shadow-2xs">
                         +6 Jam
                     </button>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(24)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(24)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all cursor-pointer active:scale-95 shadow-2xs">
                         1 Hari (24 Jam)
                     </button>
-                    <button type="button" onclick="window.setFlashSalePresetDuration(48)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <button type="button" onclick="window.setFlashSalePresetDuration(48)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all cursor-pointer active:scale-95 shadow-2xs">
                         Akhir Pekan (2 Hari)
                     </button>
                 </div>
 
                 <!-- Saluran & Status -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
-                            Saluran Penjualan
+                        <label class="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-store text-[10px]" style="color: var(--color-primary);"></i>
+                            <span>Saluran Penjualan</span>
                         </label>
-                        <select id="fs-input-channel" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        <select id="fs-input-channel" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all cursor-pointer">
                             <option value="both" ${existing?.channel === 'both' || !existing ? 'selected' : ''}>Etalase Web &amp; Kasir POS (Semua)</option>
                             <option value="web" ${existing?.channel === 'web' ? 'selected' : ''}>Hanya Etalase Web / Online</option>
                             <option value="pos" ${existing?.channel === 'pos' ? 'selected' : ''}>Hanya Kasir POS Offline</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
-                            Status Sesi
+                        <label class="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-power-off text-[10px]" style="color: var(--color-primary);"></i>
+                            <span>Status Sesi</span>
                         </label>
-                        <select id="fs-input-active" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        <select id="fs-input-active" class="w-full h-11 text-xs sm:text-sm font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all cursor-pointer">
                             <option value="true" ${existing?.isActive !== false ? 'selected' : ''}>Aktif (Berjalan Sesuai Jam)</option>
                             <option value="false" ${existing?.isActive === false ? 'selected' : ''}>Nonaktifkan Sementara</option>
                         </select>
@@ -407,42 +420,44 @@ export const openFlashSaleModal = (sessionId = null) => {
                 </div>
 
                 <!-- Bagian Item Produk Flash Sale -->
-                <div class="pt-3 border-t border-slate-200/80 dark:border-slate-800">
-                    <div class="flex items-center justify-between mb-3">
-                        <div>
-                            <h4 class="font-extrabold text-xs text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fa-solid fa-box" style="color: var(--color-primary);"></i>
+                <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-black text-xs sm:text-sm text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[11px]" style="background: var(--color-primary);">
+                                    <i class="fa-solid fa-box-open"></i>
+                                </span>
                                 <span>Daftar Barang Flash Sale</span>
                             </h4>
-                            <p class="text-[10px] text-slate-400">Tentukan harga diskon, kuota unit, dan proteksi margin modal.</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Tentukan harga diskon kilat, kuota promo, dan proteksi margin modal.</p>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
                             ${sessionItemDrafts.some(it => (parseFloat(it.soldCount) || 0) > 0) ? `
-                            <button type="button" onclick="window.resetAllDraftItemsSold()" title="Reset semua kuota terjual ke 0" class="btn-native-action px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1">
+                            <button type="button" onclick="window.resetAllDraftItemsSold()" title="Reset semua kuota terjual ke 0" class="btn-native-action h-9 px-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 text-xs font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs">
                                 <i class="fa-solid fa-rotate-left text-amber-500"></i>
                                 <span>Reset Kuota</span>
                             </button>` : ''}
-                            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action px-3 py-1.5 rounded-xl text-white text-[11px] font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
-                                <i class="fa-solid fa-plus"></i>
+                            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action h-9 sm:h-10 px-4 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                                <i class="fa-solid fa-plus text-xs"></i>
                                 <span>Tambah Produk</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Container Baris Produk -->
-                    <div id="fs-items-container" class="space-y-3">
+                    <div id="fs-items-container" class="space-y-3 overflow-x-hidden">
                         <!-- Diisi via renderFlashSaleDraftItems() -->
                     </div>
                 </div>
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-end gap-2.5 shrink-0">
-                <button type="button" onclick="window.closeFlashSaleModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+            <div class="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-end gap-2.5 shrink-0 z-10" style="padding-bottom: max(0.85rem, env(safe-area-inset-bottom))">
+                <button type="button" onclick="window.closeFlashSaleModal()" class="h-10 sm:h-11 px-5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="button" onclick="window.saveFlashSaleSession()" class="btn-native-action px-5 py-2.5 rounded-xl text-white font-black text-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                    <i class="fa-solid fa-floppy-disk"></i>
+                <button type="button" onclick="window.saveFlashSaleSession()" class="btn-native-action h-10 sm:h-11 px-6 rounded-xl text-white font-black text-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2 shadow-md hover:opacity-95" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-floppy-disk text-xs"></i>
                     <span>Simpan Sesi Flash Sale</span>
                 </button>
             </div>
@@ -458,9 +473,13 @@ export const openFlashSaleModal = (sessionId = null) => {
 
     requestAnimationFrame(() => {
         const m = el('modal-flash-sale-form');
-        const c = el('flash-sale-modal-card');
+        const c = el('modal-flash-sale-form-box') || el('flash-sale-modal-card');
         if (m) m.classList.remove('opacity-0');
-        if (c) c.classList.remove('scale-95');
+        if (c) {
+            c.classList.remove('translate-y-full');
+            c.classList.remove('sm:translate-y-8');
+            c.classList.remove('scale-95');
+        }
     });
 };
 
@@ -469,13 +488,17 @@ export const openFlashSaleModal = (sessionId = null) => {
  */
 export const closeFlashSaleModal = (skipHistory = false) => {
     const m = el('modal-flash-sale-form');
-    const c = el('flash-sale-modal-card');
+    const c = el('modal-flash-sale-form-box') || el('flash-sale-modal-card');
     if (!m) return;
 
     const performClose = () => {
         m.classList.add('opacity-0');
-        if (c) c.classList.add('scale-95');
-        setTimeout(() => m.remove(), 200);
+        if (c) {
+            c.classList.add('translate-y-full');
+            c.classList.add('sm:translate-y-8');
+            c.classList.add('scale-95');
+        }
+        setTimeout(() => m.remove(), 250);
     };
 
     if (!skipHistory && typeof window.requestCloseModal === 'function') {
@@ -496,8 +519,18 @@ export const renderFlashSaleDraftItems = () => {
 
     if (sessionItemDrafts.length === 0) {
         container.innerHTML = `
-        <div class="py-6 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-slate-400 text-xs">
-            Belum ada produk yang dipilih. Klik tombol <b>"+ Tambah Produk"</b> di atas.
+        <div class="py-8 px-4 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl bg-slate-50/60 dark:bg-slate-850/40 my-1">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center text-2xl shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.2);">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h5 class="font-extrabold text-sm text-slate-800 dark:text-white mb-1">Belum Ada Produk Promo Terpilih</h5>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto mb-4 leading-relaxed">
+                Pilih produk katalog untuk diskon kilat berbatas waktu dan alokasikan kuota promo.
+            </p>
+            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action h-10 px-4 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 3px 10px rgba(var(--color-primary-rgb), 0.35);">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>Tambah Produk Pertama</span>
+            </button>
         </div>`;
         return;
     }
@@ -516,29 +549,32 @@ export const renderFlashSaleDraftItems = () => {
         const itemImg = (selectedVariantObj && selectedVariantObj.img) ? selectedVariantObj.img : (selectedProd ? selectedProd.img : '');
 
         return `
-        <div class="p-3.5 rounded-2xl border ${isLoss ? 'border-rose-300 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40'} space-y-2.5">
+        <div class="p-3.5 sm:p-4 rounded-2xl border ${isLoss ? 'border-rose-300 dark:border-rose-900 bg-rose-50/40 dark:bg-rose-950/20' : 'border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800/60'} space-y-3 shadow-2xs overflow-hidden">
             <div class="flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-2 flex-wrap">
-                    ${itemImg ? `<img src="${getOptImg(itemImg, 'w100-rw')}" alt="Thumb" class="w-7 h-7 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">` : ''}
-                    <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary);">
+                <div class="flex items-center gap-2 flex-wrap min-w-0">
+                    ${itemImg ? `<img src="${getOptImg(itemImg, 'w100-rw')}" alt="Thumb" class="w-8 h-8 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs">` : ''}
+                    <span class="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                         Item #${idx + 1}
                     </span>
                     ${item.variantName ? `
-                    <span class="px-2 py-0.5 rounded-lg text-[9.5px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 flex items-center gap-1">
-                        <i class="fa-solid fa-shapes text-[8.5px]"></i> Varian: ${esc(item.variantName)}
-                    </span>` : (variants.length > 0 ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-200/70 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Semua Varian</span>` : '')}
-                    ${selectedProd ? `<span class="text-[10px] text-slate-400 font-medium">Stok: ${varStock} ${selectedProd.unit || 'unit'}</span>` : ''}
+                    <span class="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 flex items-center gap-1 shadow-2xs">
+                        <i class="fa-solid fa-shapes text-[9px]"></i> Varian: ${esc(item.variantName)}
+                    </span>` : (variants.length > 0 ? `<span class="px-2 py-0.5 rounded-lg text-[9.5px] font-bold bg-slate-200/70 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Semua Varian</span>` : '')}
+                    ${selectedProd ? `<span class="text-[11px] text-slate-400 font-medium ml-1">Stok: <b>${varStock}</b> ${selectedProd.unit || 'unit'}</span>` : ''}
                 </div>
-                <button type="button" onclick="window.removeFlashSaleItemRow(${idx})" class="text-rose-500 hover:text-rose-700 text-xs font-bold cursor-pointer">
-                    <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                <button type="button" onclick="window.removeFlashSaleItemRow(${idx})" class="btn-native-action h-8 px-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-xs font-bold cursor-pointer transition-all flex items-center gap-1 active:scale-95 shadow-2xs">
+                    <i class="fa-solid fa-trash-can text-[11px]"></i>
+                    <span>Hapus</span>
                 </button>
             </div>
 
             <!-- Pilihan Produk & Varian Multi-Varian -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Pilih Produk</label>
-                    <select onchange="window.updateFlashSaleItemProduct(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Pilih Produk Katalog
+                    </label>
+                    <select onchange="window.updateFlashSaleItemProduct(${idx}, this.value)" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm font-bold text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all cursor-pointer">
                         <option value="">-- Pilih Produk Katalog --</option>
                         ${products.map(p => `
                             <option value="${esc(p.id)}" ${String(p.id) === String(item.productId) ? 'selected' : ''}>
@@ -551,12 +587,14 @@ export const renderFlashSaleDraftItems = () => {
                 ${variants.length > 0 ? `
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="block text-[10px] font-bold text-slate-500">Pilih Varian (Spesifik / Global)</label>
-                        <button type="button" onclick="window.addAllVariantsToFlashSaleDraft(${idx})" class="text-[9.5px] font-black cursor-pointer hover:underline flex items-center gap-1" style="color: var(--color-primary);" title="Otomatis pecah menjadi baris tersendiri untuk setiap varian">
-                            <i class="fa-solid fa-shapes"></i> Muat Semua Varian (${variants.length})
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                            Pilih Varian
+                        </label>
+                        <button type="button" onclick="window.addAllVariantsToFlashSaleDraft(${idx})" class="text-[10px] font-black cursor-pointer hover:underline flex items-center gap-1 active:scale-95" style="color: var(--color-primary);" title="Otomatis pecah menjadi baris tersendiri untuk setiap varian">
+                            <i class="fa-solid fa-shapes"></i> Muat Semua (${variants.length})
                         </button>
                     </div>
-                    <select onchange="window.updateFlashSaleItemVariant(${idx}, this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <select onchange="window.updateFlashSaleItemVariant(${idx}, this.value)" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm font-bold text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] transition-all cursor-pointer">
                         <option value="">Semua Varian (Produk Global)</option>
                         ${variants.map(v => `
                             <option value="${esc(v.name)}" ${v.name === item.variantName ? 'selected' : ''}>
@@ -568,50 +606,58 @@ export const renderFlashSaleDraftItems = () => {
             </div>
 
             <!-- Harga Normal, Diskon %, Harga Flash Sale, & Kuota -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Normal (Rp)</label>
-                    <input type="number" min="0" value="${normalPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'normalPrice', this.value)" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Diskon (%)</label>
-                    <input type="number" min="1" max="99" value="${discountPct || ''}" onchange="window.updateFlashSaleItemDiscountPct(${idx}, this.value)" placeholder="Contoh: 20" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-bold mb-1" style="color: var(--color-primary);">
-                        Harga Flash Sale (Rp) <span class="text-rose-500">*</span>
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Harga Normal
                     </label>
-                    <input type="number" min="0" value="${flashPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'flashSalePrice', this.value)" placeholder="Harga Promo" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-black focus:outline-none focus:border-[var(--color-primary)]" style="color: var(--color-primary);">
+                    <input type="number" min="0" value="${normalPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'normalPrice', this.value)" class="w-full h-10 sm:h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm font-bold text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-all">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Kuota Promo (Qty)</label>
-                    <input type="number" min="1" value="${item.quota || 10}" onchange="window.updateFlashSaleItemDraft(${idx}, 'quota', this.value)" placeholder="Batas kuota" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Diskon (%)
+                    </label>
+                    <input type="number" min="1" max="99" value="${discountPct || ''}" onchange="window.updateFlashSaleItemDiscountPct(${idx}, this.value)" placeholder="20" class="w-full h-10 sm:h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm font-bold text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider mb-1" style="color: var(--color-primary);">
+                        Harga Kilat (Rp) <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="number" min="0" value="${flashPrice || ''}" onchange="window.updateFlashSaleItemDraft(${idx}, 'flashSalePrice', this.value)" placeholder="Harga Promo" class="w-full h-10 sm:h-11 px-3 rounded-xl border-2 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm font-black focus:outline-hidden transition-all" style="color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.45);">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Kuota Promo (Qty)
+                    </label>
+                    <input type="number" min="1" value="${item.quota || 10}" onchange="window.updateFlashSaleItemDraft(${idx}, 'quota', this.value)" placeholder="10" class="w-full h-10 sm:h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm font-bold text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-all">
                 </div>
             </div>
 
             <!-- Kuota Terjual & Reset Helper -->
-            <div class="flex items-center justify-between text-[10px] bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200/60 dark:border-slate-700/60 flex-wrap gap-2">
-                <span class="font-bold text-slate-500 dark:text-slate-400">
-                    Keterjualan Saat Ini: <b class="${(parseFloat(item.soldCount) || 0) >= (parseFloat(item.quota) || 10) ? 'text-rose-500' : 'text-slate-800 dark:text-slate-200'}">${item.soldCount || 0} Unit Terjual</b>
+            <div class="flex items-center justify-between text-[11px] bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap gap-2">
+                <span class="font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-fire text-amber-500"></i>
+                    <span>Keterjualan:</span>
+                    <b class="${(parseFloat(item.soldCount) || 0) >= (parseFloat(item.quota) || 10) ? 'text-rose-500' : 'font-black'}" style="${(parseFloat(item.soldCount) || 0) >= (parseFloat(item.quota) || 10) ? '' : 'color: var(--color-primary);'}">${item.soldCount || 0} / ${item.quota || 10} Unit Terjual</b>
                 </span>
                 ${(parseFloat(item.soldCount) || 0) > 0 ? `
-                <button type="button" onclick="window.resetDraftItemSold(${idx})" class="text-[10px] text-amber-600 hover:text-amber-700 dark:text-amber-400 font-black flex items-center gap-1 cursor-pointer">
-                    <i class="fa-solid fa-rotate-left"></i> Reset ke 0 (Naikkan Lagi)
-                </button>` : `<span class="text-[9px] text-slate-400">Kuota promo penuh tersedia</span>`}
+                <button type="button" onclick="window.resetDraftItemSold(${idx})" class="btn-native-action px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black flex items-center gap-1 cursor-pointer active:scale-95 transition-all shadow-xs">
+                    <i class="fa-solid fa-rotate-left text-[9px]"></i> Reset ke 0
+                </button>` : `<span class="text-[10px] font-medium text-slate-400">Kuota promo penuh tersedia</span>`}
             </div>
 
             <!-- Margin Guard Alert -->
-            <div class="flex items-center justify-between text-[10px] flex-wrap gap-2 pt-1">
+            <div class="flex items-center justify-between text-xs flex-wrap gap-2 pt-0.5">
                 <div class="flex items-center gap-2">
-                    ${discountPct > 0 ? `<span class="font-black" style="color: var(--color-primary);">Diskon: -${discountPct}%</span>` : ''}
-                    ${hpp > 0 ? `<span class="text-slate-400">Modal HPP: ${fCur(hpp)}</span>` : ''}
+                    ${discountPct > 0 ? `<span class="px-2 py-0.5 rounded-lg text-[10px] font-black" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">Diskon -${discountPct}%</span>` : ''}
+                    ${hpp > 0 ? `<span class="text-[11px] text-slate-400 font-medium">Modal HPP: <b>${fCur(hpp)}</b></span>` : ''}
                 </div>
                 ${isLoss ? `
-                <div class="text-rose-600 font-bold flex items-center gap-1">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                <div class="text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900">
+                    <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
                     <span>Peringatan: Harga Flash Sale di bawah modal HPP!</span>
                 </div>` : ''}
             </div>
