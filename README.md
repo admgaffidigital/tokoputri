@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.18.7** (Android VersionCode: `11807`)
+* **Versi Rilis**: **v1.18.12** (Android VersionCode: `11812`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,53 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.18.12 — Ekspor Brosur & Daftar Harga Cepat Kontraktor & Tukang (1-Klik PDF A4 & WhatsApp), Live Counter & Format Grosir (19 Okt 2026)
+- **Generator Brosur & Daftar Harga Resmi (PDF A4 Multi-Halaman)**: Mengintegrasikan engine cetak A4 presisi di `src/modules/print/documents.js` lengkap dengan kop surat toko, logo resmi, alamat, kontak WhatsApp, nomor dokumen `PL-YYYYMMDD-XXXX`, masa berlaku estimasi, pembagian kategori rapi, kolom harga grosir/proyek, multi-varian, status ketersediaan, dan tanda tangan verifikasi.
+- **Salin Format WhatsApp 1-Klik untuk Kontraktor & Tukang**: Menghasilkan format pesan WhatsApp terstruktur, ringkas, dan sangat informatif mencakup nama material, satuan, harga eceran, tier grosir, ketersediaan stok, dan tautan pemesanan proyek langsung ke chat WhatsApp toko.
+- **Modal Konfigurasi Fleksibel & Native Bottom Sheet**: Menyediakan filter kategori dinamis, kata kunci pencarian, sakelar opsi varian, kolom grosir, status stok, dan live counter pill dengan standar antarmuka Native Bottom Sheet (`rounded-t-[2rem] sm:rounded-3xl`, pull-indicator pill, dan touch target 44px).
+- **Eliminasi Popstate Race Condition & Stabilitas Preview PDF A4**: Menerapkan engine `replaceModalHistory` di `router.js` yang mentransisikan state modal secara deterministik dan mengeliminasi tabrakan `history.back()`, menjamin lembar preview dokumen A4 langsung muncul seketika tanpa tertutup kembali.
+- **Integrasi Toolbar Produk Admin & Universal Router**: Menambahkan tombol 'Daftar Harga' berdampingan dengan Stock Opname di toolbar admin produk, terdaftar penuh pada `MODAL_ELEMENT_MAP`, `closeModalByName`, `allKnownModals`, dan gesture engine swipe dismiss.
+- **Multi-Channel Distribution v1.18.12**: Android VersionCode `11812`, versionName `1.18.12`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
+
+### v1.18.11 — Audit Komprehensif Sistem, Resolusi Floating-Point Stok Habis, Multi-Unit Keranjang, Dialog Konfirmasi & Presisi GPS (19 Okt 2026)
+- **Resolusi Dialog Konfirmasi & Modals Proxy**: Menyempurnakan `showConfirm(...args)` di `src/core/utils.js` untuk meneruskan seluruh 5 parameter secara utuh tanpa pemotongan argumen, menjamin tombol konfirmasi aksi aman (`isDanger = false`) di retur barang dan master preset tetap beraksen warna tema toko primer tanpa keliru berubah merah.
+- **Proteksi Floating-Point Stok Depleted & Auto-Deactivate**: Menghilangkan residu desimal pada transaksi checkout dan terminal kasir POS dengan batas toleransi stok `<= 0.0001` dipatok ke 0, memastikan produk dan varian yang terjual habis otomatis dinonaktifkan secara tepat waktu.
+- **Validasi Multi-Unit Multiplier Keranjang Belanja**: Mengintegrasikan faktor pengali kemasan `ci.unitMultiplier` pada `setCQty` dan `updCQty`, menyelaraskan kuantitas maksimum kemasan (Dus/Karton/Lusin) dengan ketersediaan stok fisik riil di gudang toko.
+- **Presisi Kalkulasi Jarak GPS Khatulistiwa**: Memperbaiki parser koordinat Haversine `getDist` di `src/core/pricing.js` dengan validasi `isNaN(parseFloat)`, menjamin titik koordinat lintang 0 (Pontianak / khatulistiwa) terkalkulasi secara akurat tanpa terpotong menjadi 0 km.
+- **Multi-Channel Distribution v1.18.11**: Android VersionCode `11811`, versionName `1.18.11`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
+
+### v1.18.10 — Standarisasi Universal Native Bottom Sheet Seluruh Modal CMS & Storefront, Theme Gradient Harmony & Integrasi Swipe Gesture (19 Okt 2026)
+- **Transformasi Menyeluruh Modal CMS & Storefront Native Bottom Sheet**: Menyempurnakan Form Master Data (`#admin-modal`), Detail Pesanan Admin (`#admin-order-modal`), Pengaturan Printer POS (`#printer-settings-modal`), Tanya Admin (`#modal-ask-question`), Editor Q&A FAQ (`#modal-admin-faq`), Kartu Member Digital (`#member-modal`), dan Rincian Pesanan Pelanggan (`#order-detail-modal`) mengadopsi arsitektur `modal-bottom-sheet` responsif dengan drag pull-indicator pill, squircle radius `rounded-t-[2rem] sm:rounded-3xl`, dan safe area bottom inset padding.
+- **Harmonisasi Penuh Tema Toko Dinamis (Theme Gradient Header)**: Menerapkan header bergradasi halus bertema `var(--color-primary)` dan aksen ikon toko pada seluruh modal, menghilangkan kesan kaku desktop dan menyatukan estetika visual premium di smartphone maupun desktop.
+- **Integrasi Native Swipe-Down to Dismiss Gesture Engine**: Mendaftarkan seluruh modal CMS ke `closeModalById` pada core gesture engine `native-mobile.js` dengan isolasi interaktif guard sehingga modal dapat ditutup dengan usapan jari ke bawah yang mulus tanpa mengganggu scrolling tabel dan input form.
+- **Standardisasi Touch Target & Form Inputs**: Mengunci seluruh kolom input, dropdown select, dan tombol aksi modal pada tinggi proporsional `min-h-[44px]` dengan font 16px di mobile anti auto-zoom/mental Chromium.
+- **Multi-Channel Distribution v1.18.10**: Android VersionCode `11810`, versionName `1.18.10`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
+
+### v1.18.9 — Redesain Modal Flash Sale Full Native App Bottom Sheet, Penyelarasan Tema Dinamis & Eliminasi Total Kebocoran Layout (19 Okt 2026)
+- **Redesain Modal Pembuat Sesi Flash Sale Native App Bottom Sheet**: Mengganti tampilan modal kaku klasik dengan arsitektur `modal-bottom-sheet` responsif (docked di bagian bawah pada smartphone dengan pull-indicator drag handle bar, dan centered modal elegan di layar tablet/desktop) terintegrasi dengan gesture engine swipe-down to dismiss.
+- **Penyelarasan Total Tema Toko Dinamis (Theme Harmony)**: Menerapkan CSS custom property `var(--color-primary)` dan `var(--color-primary-dark)` secara konsisten pada header modal, tombol aksi utama, chip preset durasi jam (+3J, +6J, 24J, 48J), serta styling khusus kontras tinggi pada kolom input Harga Kilat bertema toko.
+- **Eliminasi Kebocoran Layout & Anti Teks Terpotong**: Restrukturisasi tata letak baris 'Daftar Barang Flash Sale' menjadi responsif (flex-col di mobile, sm:flex-row di desktop) dan proteksi `overflow-x-hidden`, melenyapkan total kendala tombol '+ Tambah Produk' terpotong di tepi kanan layar dan scrollbar horizontal liar di smartphone.
+- **Bento Island Empty State & Form Input Touch Target 44px**: Menggantikan kotak border-dashed abu-abu datar dengan kartu Bento Empty State interaktif beraksen petir tema toko, serta standardisasi kolom input form dan dropdown select berukuran touch target proporsional (min-h-[44px], font 16px mobile anti-auto-zoom).
+- **Multi-Channel Distribution v1.18.9**: Android VersionCode `11809`, versionName `1.18.9`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
+
+### v1.18.8 — Arsitektur Offline PWA Service Worker, Fluid Native View Transitions, Layout Tablet POS Kasir & Screen WakeLock (19 Okt 2026)
+- **Enterprise Offline PWA Service Worker Engine**: Implementasi `public/sw.js` modern dengan strategi caching komprehensif (Network-First dengan 3s timeout & cache fallback untuk navigasi HTML, Stale-While-Revalidate untuk aset statis JS/CSS/WebP, Cache-First untuk Google Fonts & FontAwesome, auto-purge cache lama, dan pengecualian Firestore API) yang memungkinkan aplikasi dibuka dan berfungsi 100% offline seketika (0ms latency).
+- **PWA 1-Click Install Prompt Capture**: Menangkap event `beforeinstallprompt` pada `index.html` dan menyediakan handler native `window.promptPWAInstall()` untuk pengalaman instalasi PWA mulus di Android, Chrome, Edge, dan iOS.
+- **Fluid Native View Transitions Engine**: Transisi layar antar-view berbasis GPU hardware acceleration (`translate3d`, `will-change`, scale 0.985 -> 1.0) dengan deteksi arah navigasi maju (`viewEnterForward`) dan mundur (`viewEnterBackward`) serta transisi modal scale lift, dilengkapi pematuhan preferensi aksesibilitas `prefers-reduced-motion`.
+- **Ergonomi Antarmuka Tablet POS Kasir (Split Workspace)**: Mengaktifkan tata letak split-screen side-by-side (katalog barang 58% + keranjang belanja 42%) secara langsung pada layar tablet (iPad, Galaxy Tab, dsb. >= 768px), membebaskan kasir dari keharusan membuka drawer berulang kali.
+- **Screen WakeLock API Controller**: Menjaga layar tablet dan smartphone kasir tetap menyala (anti-sleep) secara otomatis saat terminal POS Kasir aktif dan melepaskan lock saat keluar, menjamin kelancaran antrean kasir tanpa gangguan layar mati.
+- **Multi-Channel Distribution v1.18.8**: Android VersionCode `11808`, versionName `1.18.8`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.18.7 — Pembaruan Antarmuka Full Native App Universal, Shimmer Skeleton Engine, Bento Empty State & Multi-Varian Flash Sale (18 Okt 2026)
 - **Transformasi Antarmuka Full Native App Universal**: Mengeliminasi total tampilan klasik bawaan web browser di seluruh aplikasi (Etalase, Detail Produk, Kasir POS, CMS Admin, dan Member Rewards) dengan menerapkan Universal Theme Micro-Scrollbar 6px slim pill adaptif dark/light, Brand Theme Text Selection, dan sentuhan visual ergonomis di smartphone, tablet, maupun desktop.
