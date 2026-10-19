@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-18-11",
+        "version": "v1.18.11",
+        "date": "2026-10-19",
+        "title": "Audit Komprehensif Sistem, Resolusi Floating-Point Stok Habis, Multi-Unit Keranjang, Dialog Konfirmasi & Presisi GPS",
+        "category": "feature",
+        "badge": "System Audit & Core Logic Resolution v1.18.11",
+        "items": [
+            "Resolusi Dialog Konfirmasi & Modals Proxy: Menyempurnakan showConfirm(...args) di src/core/utils.js untuk meneruskan seluruh 5 parameter secara utuh tanpa pemotongan argumen, menjamin tombol konfirmasi aksi aman (isDanger = false) di retur barang dan master preset tetap beraksen warna tema toko primer tanpa keliru berubah merah.",
+            "Proteksi Floating-Point Stok Depleted & Auto-Deactivate: Menghilangkan residu desimal pada transaksi checkout dan terminal kasir POS dengan batas toleransi stok <= 0.0001 dipatok ke 0, memastikan produk dan varian yang terjual habis otomatis dinonaktifkan secara tepat waktu.",
+            "Validasi Multi-Unit Multiplier Keranjang Belanja: Mengintegrasikan faktor pengali kemasan ci.unitMultiplier pada setCQty dan updCQty, menyelaraskan kuantitas maksimum kemasan (Dus/Karton/Lusin) dengan ketersediaan stok fisik riil di gudang toko.",
+            "Presisi Kalkulasi Jarak GPS Khatulistiwa: Memperbaiki parser koordinat Haversine getDist di src/core/pricing.js dengan validasi isNaN(parseFloat), menjamin titik koordinat lintang 0 (Pontianak / khatulistiwa) terkalkulasi secara akurat tanpa terpotong menjadi 0 km.",
+            "Multi-Channel Distribution v1.18.11 (Android versionCode 11811)."
+        ]
+    },
+    {
         "id": "log-1-18-10",
         "version": "v1.18.10",
         "date": "2026-10-19",
@@ -74,20 +89,6 @@ export const DEFAULT_CHANGELOG = [
             "Bento Island Zero-Result & Smart Action Chips: Menghadirkan kartu Bento Empty State modern dengan ambient glow dan tombol aksi cerdas terpadu (Reset Filter 1-klik, Tanya Stok via WhatsApp, Buka Scanner Kamera POS, dan Tambah Master Data Baru di CMS Admin).",
             "Harmonisasi Proporsionalitas Flash Sale & Hadiah Poin: Tombol teks kompak 'Tukar Hadiah' dan 'Beli Kilat' (32px mobile / 34px desktop) dengan tata letak poin mandiri di atas tombol, bebas sempit, anti-meluber, serta dukungan promo Flash Sale multi-varian.",
             "Multi-Channel Distribution v1.18.7 (Android versionCode 11807)."
-        ]
-    },
-    {
-        "id": "log-1-18-02",
-        "version": "v1.18.2",
-        "date": "2026-10-17",
-        "title": "Pengelolaan Master Preset (Hapus & Pulihkan), Native Pull-to-Refresh CMS Admin & Standarisasi Universal Form Input & Tombol",
-        "category": "feature",
-        "badge": "Master Preset, Pull-to-Refresh & UI Harmony v1.18.2",
-        "items": [
-            "Fitur Hapus & Pulihkan Master Preset (Database Produk Bersama): Menghadirkan kapabilitas hapus dan pulihkan template produk bersama (custom maupun bawaan) dengan proteksi konfirmasi aman, penanda status terhapus, panel filter pemulihan, dan auto-sinkronisasi counter realtime di CMS Admin.",
-            "Native Pull-to-Refresh & Tombol Segarkan 1-Klik CMS Admin: Pengalaman navigasi smartphone tarik ke bawah untuk memuat ulang data etalase dan CMS Admin secara instan dengan indikator putar visual dan getaran haptic feedback, didukung tombol 'Segarkan' 1-klik di header admin desktop & mobile.",
-            "Universal Button & Form Input Consistency Harmony Engine: Standardisasi konsistensi 100% pada seluruh tombol (squircle radius 1rem tombol utama & 0.875rem tombol aksi, min-height 44px touch target, active:scale-[0.96] tactile press), seluruh kolom input/select/textarea (tinggi seragam 44px, radius 0.875rem, font 16px mobile anti auto-zoom/mental, focus ring bertema var(--color-primary), dan placeholder kontras tinggi).",
-            "Multi-Channel Distribution v1.18.2 (Android versionCode 11802)."
         ]
     }
 ];

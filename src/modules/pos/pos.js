@@ -3702,7 +3702,9 @@ export const processPOSTx = async () => {
                     if (prod.warehouseStock !== undefined) updatePayload.warehouseStock = prod.warehouseStock;
                     if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
                     if (prod.hpp) updatePayload.hpp = prod.hpp;
-                    if (prod.stock === 0) {
+                    if (prod.stock <= 0.0001) {
+                        prod.stock = 0;
+                        updatePayload.stock = 0;
                         prod.isActive = 'false';
                         updatePayload.isActive = 'false';
                     }
@@ -3716,7 +3718,10 @@ export const processPOSTx = async () => {
                         deductFifoStock(prod, vNeed, vName);
                         const vIdx = prod.variants.findIndex(v => v.name === vName);
                         if (vIdx > -1) {
-                            if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
+                            if (prod.variants[vIdx].stock <= 0.0001) {
+                                prod.variants[vIdx].stock = 0;
+                                prod.variants[vIdx].isActive = false;
+                            }
                             prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + vNeed;
                         }
                     });

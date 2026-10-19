@@ -339,9 +339,14 @@ export const setCQty = (i, v) => {
                         const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
                         avail = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
                     }
-                    if (nv > avail) { 
-                        nv = avail; 
-                        if (typeof window.showToast === 'function') window.showToast(`Maks stok: ${avail}`); 
+                    const multiplier = parseFloat(ci.unitMultiplier) || 1;
+                    const neededBase = nv * multiplier;
+                    if (neededBase > avail) { 
+                        const maxUnits = multiplier > 1 ? Math.floor(avail / multiplier) : avail;
+                        nv = maxUnits; 
+                        if (typeof window.showToast === 'function') {
+                            window.showToast(`Maks stok: ${maxUnits} ${ci.unit || 'unit'}${multiplier > 1 ? ` (${avail} ${ci.baseUnit || p.unit || 'pcs'})` : ''}`); 
+                        }
                     }
                 }
             }
@@ -380,9 +385,14 @@ export const updCQty = (i, c) => {
                         const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
                         avail = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
                     }
-                    if (nv > avail) { 
-                        nv = avail; 
-                        if (typeof window.showToast === 'function') window.showToast(`Kuantitas disesuaikan dengan stok maksimal (${avail} unit)`); 
+                    const multiplier = parseFloat(ci.unitMultiplier) || 1;
+                    const neededBase = nv * multiplier;
+                    if (neededBase > avail) { 
+                        const maxUnits = multiplier > 1 ? Math.floor(avail / multiplier) : avail;
+                        nv = maxUnits; 
+                        if (typeof window.showToast === 'function') {
+                            window.showToast(`Kuantitas disesuaikan dengan stok maksimal (${maxUnits} ${ci.unit || 'unit'})`); 
+                        }
                     }
                 }
             }

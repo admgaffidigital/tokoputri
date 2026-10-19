@@ -359,17 +359,24 @@ export const hLoad = () => {
     } 
 };
 
-export const showToast = (m, type, title, duration) => {
+export const showToast = (...args) => {
     if (typeof window.showToast === 'function') {
-        window.showToast(m, type, title, duration);
+        return window.showToast(...args);
     }
 };
 
-export const showConfirm = (t, m, y, n) => {
+export const showConfirm = (...args) => {
     if (typeof window.showConfirm === 'function') {
-        return window.showConfirm(t, m, y, n);
+        return window.showConfirm(...args);
     }
 };
+
+export const customPrompt = (...args) => {
+    if (typeof window.customPrompt === 'function') {
+        return window.customPrompt(...args);
+    }
+};
+
 
 export const loadedScripts = {};
 if (typeof window !== 'undefined') window.loadedScripts = loadedScripts;

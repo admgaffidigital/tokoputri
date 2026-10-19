@@ -225,12 +225,16 @@ export const getEffPoin = (i) => {
  * Hitung jarak Haversine antara dua titik koordinat GPS (satuan KM)
  */
 export const getDist = (lat1, lon1, lat2, lon2) => {
-    if (!lat1 || !lon1 || !lat2 || !lon2) return 0;
+    const pLat1 = parseFloat(lat1);
+    const pLon1 = parseFloat(lon1);
+    const pLat2 = parseFloat(lat2);
+    const pLon2 = parseFloat(lon2);
+    if (isNaN(pLat1) || isNaN(pLon1) || isNaN(pLat2) || isNaN(pLon2)) return 0;
     const R = 6371; 
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const dLat = (pLat2 - pLat1) * Math.PI / 180;
+    const dLon = (pLon2 - pLon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + 
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+              Math.cos(pLat1 * Math.PI / 180) * Math.cos(pLat2 * Math.PI / 180) * 
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;

@@ -25,7 +25,8 @@ assert(fs.existsSync(swPath), 'Berkas public/sw.js tersedia');
 
 if (fs.existsSync(swPath)) {
     const swContent = fs.readFileSync(swPath, 'utf8');
-    assert(swContent.includes('CACHE_VERSION') && swContent.includes('v1.18.10'), 'sw.js menggunakan versi cache terkini v1.18.10');
+    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    assert(swContent.includes('CACHE_VERSION') && swContent.includes(`v${pkg.version}`), `sw.js menggunakan versi cache terkini v${pkg.version}`);
     assert(swContent.includes('PRECACHE_URLS') && swContent.includes('/index.html'), 'sw.js mem-precache app shell utama (/index.html, /manifest.json)');
     assert(swContent.includes("request.mode === 'navigate'"), 'sw.js mengimplementasikan penanganan mode navigasi HTML');
     assert(swContent.includes('skipWaiting()'), 'sw.js memiliki skipWaiting() agar aktif seketika');

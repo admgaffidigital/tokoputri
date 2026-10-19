@@ -12,7 +12,7 @@
  * ============================================================
  */
 
-const CACHE_VERSION = 'v1.18.10';
+const CACHE_VERSION = 'v1.18.11';
 const CACHE_NAME = `tokoputri-cache-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `tokoputri-runtime-${CACHE_VERSION}`;
 
