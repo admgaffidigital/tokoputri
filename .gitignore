@@ -35,3 +35,7 @@ _scripts/
 
 # Cadangan aturan Firestore lokal (rollback)
 firestore.rules.backup
+
+# Electron Desktop Builds
+dist-electron/
+

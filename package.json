@@ -3,8 +3,11 @@
   "private": true,
   "version": "1.19.4",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
+    "electron:dev": "electron electron/main.cjs",
+    "build:exe": "npm run build && electron-builder --win",
     "build": "vite build",
     "preview": "vite preview",
     "sync": "node scripts/sync.mjs",
@@ -64,6 +67,8 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.18",
+    "electron": "^44.9.1",
+    "electron-builder": "^26.15.3",
     "postcss": "^8.4.35",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
@@ -77,6 +82,32 @@
     "not dead",
     "iOS >= 12",
     "Safari >= 12"
-  ]
+  ],
+  "build": {
+    "appId": "com.tokoputri.pos",
+    "productName": "Toko Putri",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "public/logo.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Toko Putri POS"
+    }
+  }
 }
-
