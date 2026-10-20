@@ -236,8 +236,8 @@ export const rCat = () => {
         <div class="col-span-full py-6 sm:py-10">
             <div class="bento-empty-state-card max-w-xl mx-auto">
                 <div class="empty-glow"></div>
-                <!-- Squircle Icon Badge with Store Theme Gradient -->
-                <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl shadow-xl ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] text-white" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
+                <!-- Squircle Icon Badge with Store Theme -->
+                <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border border-[rgba(var(--color-primary-rgb),0.3)] shadow-md text-white" style="background: var(--color-primary);">
                     <i class="fa-solid fa-magnifying-glass text-3xl sm:text-4xl text-white drop-shadow-md"></i>
                     <div class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-md border border-slate-100 dark:border-slate-800">
                         <i class="fa-solid fa-box-open text-xs text-amber-500"></i>
@@ -251,11 +251,11 @@ export const rCat = () => {
 
                 <!-- Smart Action Chips -->
                 <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-                    <button type="button" onclick="if(typeof window.resetSemuaFilter==='function') window.resetSemuaFilter();" class="btn-primary inline-flex items-center gap-2 rounded-2xl px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all cursor-pointer">
+                    <button type="button" onclick="if(typeof window.resetSemuaFilter==='function') window.resetSemuaFilter();" class="btn-primary inline-flex items-center gap-2 rounded-2xl px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all cursor-pointer whitespace-nowrap">
                         <i class="fa-solid fa-rotate-left"></i> Reset Filter
                     </button>
                     ${storePhone ? `
-                    <button type="button" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${storePhone}', 'Halo Admin Toko Putri, apakah ada stok untuk produk: ${sQ ? esc(sQ) : ''}?');" class="inline-flex items-center gap-2 rounded-2xl px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer">
+                    <button type="button" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${storePhone}', 'Halo Admin Toko Putri, apakah ada stok untuk produk: ${sQ ? esc(sQ) : ''}?');" class="inline-flex items-center gap-2 rounded-2xl px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer whitespace-nowrap">
                         <i class="fa-brands fa-whatsapp text-sm"></i> Tanya Stok via WA
                     </button>` : ''}
                 </div>

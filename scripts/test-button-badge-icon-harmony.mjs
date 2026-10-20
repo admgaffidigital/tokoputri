@@ -187,6 +187,54 @@ assert(
     'Welcome tag dashboard admin di index.html menggunakan whitespace-nowrap anti-wrap'
 );
 
+// ─── 8. Verifikasi Dropdown Ekspor & Badge di reports.js ──────────────────
+console.log('\n📊 8. Memeriksa Dropdown Ekspor & Badge di src/modules/admin/reports.js...');
+const reportsJsPath = path.join(rootDir, 'src', 'modules', 'admin', 'reports.js');
+const reportsContent = fs.readFileSync(reportsJsPath, 'utf-8');
+
+assert(
+    reportsContent.includes('id="report-export-dropdown-menu"') &&
+    reportsContent.includes('left-0 sm:left-auto sm:right-0') &&
+    reportsContent.includes('max-w-[calc(100vw-2rem)]'),
+    'Dropdown ekspor di reports.js memiliki proteksi anti-clipping ke sisi kiri layar'
+);
+
+assert(
+    reportsContent.includes('px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap') &&
+    reportsContent.includes('Live'),
+    'Badge Live di header reports.js menggunakan rounded-lg dan whitespace-nowrap'
+);
+
+assert(
+    reportsContent.includes('px-2 py-0.5 rounded-lg bg-emerald-100') &&
+    reportsContent.includes('whitespace-nowrap') &&
+    reportsContent.includes('Aktif'),
+    'Badge Aktif di dropdown ekspor menggunakan rounded-lg dan whitespace-nowrap'
+);
+
+// ─── 9. Verifikasi Empty State & Switcher Kasir di pos.js ───────────────────
+console.log('\n🛒 9. Memeriksa Empty State & Switcher di src/modules/pos/pos.js...');
+const posJsPath = path.join(rootDir, 'src', 'modules', 'pos', 'pos.js');
+const posContent = fs.readFileSync(posJsPath, 'utf-8');
+
+assert(
+    posContent.includes('Bersihkan (Esc)') &&
+    posContent.includes('whitespace-nowrap inline-flex items-center justify-center shrink-0'),
+    'Tombol Bersihkan (Esc) di empty state kasir menggunakan whitespace-nowrap anti-wrap'
+);
+
+assert(
+    posContent.includes('Scan Kamera') &&
+    posContent.includes('whitespace-nowrap inline-flex items-center justify-center shrink-0'),
+    'Tombol Scan Kamera di empty state kasir menggunakan whitespace-nowrap anti-wrap'
+);
+
+const emptyBlockMatch = posContent.match(/bento-empty-state-card[\s\S]*?Item Tidak Ditemukan/);
+assert(
+    emptyBlockMatch && !emptyBlockMatch[0].includes('linear-gradient'),
+    'Wadah ikon empty state kasir tidak lagi menggunakan linear-gradient'
+);
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passedTests} Passed, ${totalTests - passedTests} Failed`);
 if (passedTests === totalTests) {

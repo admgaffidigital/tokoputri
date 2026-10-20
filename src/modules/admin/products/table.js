@@ -511,7 +511,7 @@ window.rAdmItms = (t, skipStats = false) => {
             <div class="py-8 sm:py-12">
                 <div class="bento-empty-state-card max-w-md mx-auto">
                     <div class="empty-glow"></div>
-                    <div class="relative mx-auto mb-4 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl shadow-lg ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] text-white" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
+                    <div class="relative mx-auto mb-4 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl border border-[rgba(var(--color-primary-rgb),0.3)] shadow-md text-white" style="background: var(--color-primary);">
                         <i class="fa-solid fa-boxes-stacked text-2xl sm:text-3xl text-white drop-shadow-sm"></i>
                     </div>
                     <h3 class="font-extrabold text-base sm:text-lg text-slate-800 dark:text-white mb-1.5">Tidak Ada ${currentLabel}</h3>
@@ -520,10 +520,10 @@ window.rAdmItms = (t, skipStats = false) => {
                     </p>
                     <div class="flex flex-wrap items-center justify-center gap-2">
                         ${searchVal ? `
-                        <button type="button" onclick="const inEl = document.getElementById('admin-search-input') || document.getElementById('master-search-input'); if(inEl){ inEl.value=''; inEl.dispatchEvent(new Event('input')); }" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
+                        <button type="button" onclick="const inEl = document.getElementById('admin-search-input') || document.getElementById('master-search-input'); if(inEl){ inEl.value=''; inEl.dispatchEvent(new Event('input')); }" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" style="background: var(--color-primary);">
                             <i class="fa-solid fa-rotate-left"></i> Bersihkan Filter
                         </button>` : ''}
-                        <button type="button" onclick="if(typeof window.openAdminModal==='function') window.openAdminModal('${esc(t)}');" class="px-4 py-2.5 rounded-xl text-xs font-bold ${searchVal ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200' : 'text-white'} shadow-sm active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" ${searchVal ? '' : 'style="background: var(--color-primary);"'}>
+                        <button type="button" onclick="if(typeof window.openAdminModal==='function') window.openAdminModal('${esc(t)}');" class="px-4 py-2.5 rounded-xl text-xs font-bold ${searchVal ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200' : 'text-white'} shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" ${searchVal ? '' : 'style="background: var(--color-primary);"'}>
                             <i class="fa-solid fa-plus"></i> Tambah ${currentLabel}
                         </button>
                     </div>

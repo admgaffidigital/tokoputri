@@ -95,7 +95,7 @@ export const setPOSViewMode = (mode) => {
     try { localStorage.setItem('pos_view_mode', mode); } catch (e) {}
     document.querySelectorAll('#pos-view-btn-grid').forEach(bGrid => {
         if (mode === 'grid') {
-            bGrid.style.background = 'linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%)';
+            bGrid.style.background = 'var(--color-primary)';
             bGrid.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
         } else {
             bGrid.style.removeProperty('background');
@@ -104,7 +104,7 @@ export const setPOSViewMode = (mode) => {
     });
     document.querySelectorAll('#pos-view-btn-list').forEach(bList => {
         if (mode === 'list') {
-            bList.style.background = 'linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%)';
+            bList.style.background = 'var(--color-primary)';
             bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
         } else {
             bList.style.removeProperty('background');
@@ -1808,16 +1808,16 @@ export const renderCatalog = (isLoadMore = false) => {
             ? `<div class="col-span-full py-8 sm:py-12 px-4">
                  <div class="bento-empty-state-card max-w-sm mx-auto">
                    <div class="empty-glow"></div>
-                   <div class="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] text-white" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
+                   <div class="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-[rgba(var(--color-primary-rgb),0.3)] shadow-md text-white" style="background: var(--color-primary);">
                      <i class="fa-solid fa-barcode text-2xl text-white drop-shadow-sm"></i>
                    </div>
                    <p class="font-extrabold text-sm text-slate-800 dark:text-white">Item Tidak Ditemukan</p>
                    <p class="text-xs text-slate-400 mt-1 mb-5">Barcode atau nama barang tidak cocok dengan katalog kasir saat ini.</p>
                    <div class="flex items-center justify-center gap-2">
-                     <button type="button" onclick="if(typeof window.posClearSearch==='function') window.posClearSearch();" class="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
+                     <button type="button" onclick="if(typeof window.posClearSearch==='function') window.posClearSearch();" class="min-h-[38px] px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" style="background: var(--color-primary);">
                        <i class="fa-solid fa-rotate-left"></i> Bersihkan (Esc)
                      </button>
-                     <button type="button" onclick="if(typeof window.openPosScannerModal==='function') window.openPosScannerModal();" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
+                     <button type="button" onclick="if(typeof window.openPosScannerModal==='function') window.openPosScannerModal();" class="min-h-[38px] px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs active:scale-95 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5">
                        <i class="fa-solid fa-camera"></i> Scan Kamera
                      </button>
                    </div>
@@ -4256,10 +4256,10 @@ export const renderOfflineQueueBadge = (isSyncing = false) => {
 export const updateNetworkStatusUI = (isOnline) => {
     document.querySelectorAll('.pos-network-status-badge').forEach(badge => {
         if (isOnline) {
-            badge.className = 'pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30';
+            badge.className = 'pos-network-status-badge hidden xl:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 whitespace-nowrap';
             badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Online</span>`;
         } else {
-            badge.className = 'pos-network-status-badge inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-300 bg-rose-950/60 px-2.5 py-1 rounded-lg border border-rose-500/40 animate-pulse';
+            badge.className = 'pos-network-status-badge inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-300 bg-rose-950/60 px-2.5 py-1 rounded-lg border border-rose-500/40 animate-pulse whitespace-nowrap';
             badge.innerHTML = `<i class="fa-solid fa-wifi-slash text-[10px] text-rose-400"></i><span>Offline</span>`;
         }
     });
@@ -4357,7 +4357,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div class="pos-offline-sync-container hidden items-center shrink-0"></div>
                 <span id="pos-live-clock" class="hidden xl:inline-block text-[10px] font-mono text-white/90 px-2.5 py-1 bg-black/15 rounded-lg border border-white/20">--:--:--</span>
-                <span class="hidden 2xl:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
+                <span class="hidden 2xl:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg whitespace-nowrap">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
                 </span>
                 <div id="pos-shift-btn-storefront" class="flex items-center shrink-0"></div>
@@ -4545,7 +4545,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1 min-w-0">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                            <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode... [F2]" 
+                            <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode..." 
                                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                                 class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)"
@@ -4561,10 +4561,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                         </button>
                         <!-- View Switcher (Grid vs List) -->
                         <div class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shrink-0">
-                            <button id="pos-view-btn-grid" onclick="window.setPOSViewMode('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'grid' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'grid' ? 'background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 60%, var(--color-primary-dark,#a87f1b) 100%)' : ''}" title="Tampilan Grid Foto">
+                            <button id="pos-view-btn-grid" onclick="window.setPOSViewMode('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'grid' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'grid' ? 'background: var(--color-primary);' : ''}" title="Tampilan Grid Foto">
                                 <i class="fa-solid fa-grip"></i>
                             </button>
-                            <button id="pos-view-btn-list" onclick="window.setPOSViewMode('list')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'list' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'list' ? 'background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 60%, var(--color-primary-dark,#a87f1b) 100%)' : ''}" title="Tampilan List Baris Kompak">
+                            <button id="pos-view-btn-list" onclick="window.setPOSViewMode('list')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'list' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'list' ? 'background: var(--color-primary);' : ''}" title="Tampilan List Baris Kompak">
                                 <i class="fa-solid fa-list-ul"></i>
                             </button>
                         </div>

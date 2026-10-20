@@ -6005,3 +6005,19 @@ span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar) {
     justify-content: center !important;
     box-sizing: border-box !important;
 }
+
+/* ─── 4. BENTO EMPTY STATE & DROPDOWN CLAMPING ENGINE ─── */
+.bento-empty-state-card button {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#report-export-dropdown-menu {
+    max-width: calc(100vw - 2rem) !important;
+    box-sizing: border-box !important;
+}
+

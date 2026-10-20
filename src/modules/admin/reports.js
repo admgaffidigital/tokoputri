@@ -320,10 +320,10 @@ export const renderReportsShell = () => {
                         <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                             <i class="fa-solid fa-chart-pie text-lg sm:text-xl"></i>
                         </div>
-                        <div class="min-w-0">
+                        <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2">
-                                <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider truncate">Pusat Laporan &amp; Keuangan</h1>
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live</span>
+                                <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan</h1>
+                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live</span>
                             </div>
                             <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium truncate">
                                 Laba Rugi, Penjualan, Valuasi Stok, Utang Piutang &amp; Pajak
@@ -363,14 +363,14 @@ export const renderReportsShell = () => {
                                 <span class="hidden sm:inline">Ekspor Excel</span>
                                 <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5"></i>
                             </button>
-                            <div id="report-export-dropdown-menu" class="hidden absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                            <div id="report-export-dropdown-menu" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                                 <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pilih Format Ekspor (.csv / Excel)</p>
                                 </div>
                                 <div class="py-1 space-y-0.5">
                                     <button type="button" onclick="exportCurrentReportCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-800 dark:text-white hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] transition-all flex items-center justify-between cursor-pointer">
                                         <span class="flex items-center gap-2"><i class="fa-solid fa-download text-emerald-600"></i> Ekspor Tab Saat Ini</span>
-                                        <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Aktif</span>
+                                        <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 whitespace-nowrap">Aktif</span>
                                     </button>
                                     <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
                                     <button type="button" onclick="exportPnlReportCSV(); closeReportExportMenu();" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer">
@@ -744,11 +744,11 @@ export const renderExecutiveSummaryTab = () => {
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs" style="border-color: rgba(var(--color-primary-rgb), 0.3);">
-                        <i class="fa-solid fa-boxes-stacked mr-1" style="color: var(--color-primary)"></i> Cek Valuasi Stok
+                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs whitespace-nowrap inline-flex items-center" style="border-color: rgba(var(--color-primary-rgb), 0.3);">
+                        <i class="fa-solid fa-boxes-stacked mr-1.5" style="color: var(--color-primary)"></i> Cek Valuasi Stok
                     </button>
-                    <button type="button" onclick="if(typeof window.openPOSCashierMode === 'function') window.openPOSCashierMode(); else if(window.openAdminTab) window.openAdminTab('pos');" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" style="background: var(--color-primary);">
-                        <i class="fa-solid fa-cash-register mr-1"></i> Buka Kasir POS
+                    <button type="button" onclick="if(typeof window.openPOSCashierMode === 'function') window.openPOSCashierMode(); else if(window.openAdminTab) window.openAdminTab('pos');" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95 whitespace-nowrap inline-flex items-center" style="background: var(--color-primary);">
+                        <i class="fa-solid fa-cash-register mr-1.5"></i> Buka Kasir POS
                     </button>
                 </div>
             </div>` : ''}
@@ -2826,6 +2826,18 @@ export const toggleReportExportMenu = () => {
     if (!menu) return;
     const isHidden = menu.classList.contains('hidden');
     if (isHidden) {
+        // Auto-clamp posisi agar tidak terpotong tepi layar (kiri maupun kanan)
+        const container = el('report-export-dropdown-container');
+        if (container) {
+            const rect = container.getBoundingClientRect();
+            if (rect.left < 260) {
+                menu.classList.remove('sm:right-0');
+                menu.classList.add('left-0');
+            } else if (window.innerWidth - rect.right < 260) {
+                menu.classList.remove('left-0');
+                menu.classList.add('right-0');
+            }
+        }
         menu.classList.remove('hidden');
         setTimeout(() => {
             const handleOutside = (e) => {
