@@ -113,7 +113,7 @@ export const ensureExpenseModals = () => {
                 <!-- Compact Sticky Header Modal -->
                 <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
@@ -554,7 +554,7 @@ export const renderExpensesAdminView = () => {
             <!-- 1. TOP APP BAR & QUICK ACTION -->
             <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-xl shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-xl shrink-0" style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                     </div>
                     <div>

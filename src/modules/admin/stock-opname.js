@@ -617,7 +617,7 @@ export const renderStockOpnameView = () => {
             <div class="rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-4 sm:p-6 shadow-2xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 border border-white/20 text-white shadow-md" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 border border-white/20 text-white shadow-md" style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-clipboard-check text-xl sm:text-2xl"></i>
                         </div>
                         <div class="min-w-0">
@@ -780,7 +780,7 @@ export const renderSoActiveView = (categories, brands) => {
                         <button onclick="window.printSoWorksheet()" class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95" title="Cetak lembar hitung fisik untuk staf rak">
                             <i class="fa-solid fa-print text-slate-500"></i> <span class="whitespace-nowrap">Lembar Kerja</span>
                         </button>
-                        <button onclick="window.openFinalizeModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openFinalizeModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap" style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-floppy-disk"></i> <span>Terapkan Penyesuaian</span>
                         </button>
                     </div>
@@ -1047,7 +1047,7 @@ export const ensureSoModals = () => {
 
                 <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-clipboard-check"></i>
                         </div>
                         <div>
@@ -1066,7 +1066,7 @@ export const ensureSoModals = () => {
                     <button type="button" onclick="window.closeFinalizeModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer active:scale-95 transition-all text-xs">
                         Batal
                     </button>
-                    <button type="button" onclick="window.executeSoFinalize()" class="px-5 py-2 rounded-xl text-white font-extrabold flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 transition-all text-xs" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                    <button type="button" onclick="window.executeSoFinalize()" class="px-5 py-2 rounded-xl text-white font-extrabold flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 transition-all text-xs" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-check"></i> <span>Konfirmasi &amp; Update Stok</span>
                     </button>
                 </div>
@@ -1088,7 +1088,7 @@ export const ensureSoModals = () => {
 
                 <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-file-invoice"></i>
                         </div>
                         <div>
@@ -1432,7 +1432,7 @@ export const renderSoHistoryView = () => {
                             <button onclick="window.viewSoHistoryDetail('${rec.id}')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs">
                                 <i class="fa-solid fa-eye text-xs"></i> <span>Rincian</span>
                             </button>
-                            <button onclick="window.openDocPreview && window.openDocPreview('stock_opname', '${rec.id}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <button onclick="window.openDocPreview && window.openDocPreview('stock_opname', '${rec.id}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                                 <i class="fa-solid fa-print text-xs"></i> <span>Cetak A4</span>
                             </button>
                             ${isOwnerUser() ? `

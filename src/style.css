@@ -5667,21 +5667,42 @@ html.dark [class*="bg-gradient-"][class*="from-white"] {
     background-image: none !important;
 }
 
-/* Elemen bertema toko dengan gradient otomatis menjadi solid var(--color-primary) */
-[style*="linear-gradient"][style*="var(--color-primary)"]:not([style*="var(--color-primary-rgb)"]):not([style*="repeating-linear-gradient"]),
-[style*="linear-gradient"][style*="--color-primary-light"]:not([style*="repeating-linear-gradient"]) {
+/* Elemen bertema toko (Icon Pods, Tombol, Badge) otomatis menjadi Solid var(--color-primary) dengan Ikon Putih Kontras Tinggi */
+[style*="var(--color-primary)"][class*="text-white"],
+[style*="--color-primary"][class*="text-white"],
+[style*="linear-gradient"][style*="var(--color-primary)"]:not([style*="rgba(var(--color-primary-rgb), 0.08)"]):not([style*="rgba(var(--color-primary-rgb),0.08)"]):not([style*="repeating-linear-gradient"]),
+[style*="linear-gradient"][style*="--color-primary-light"]:not([style*="repeating-linear-gradient"]),
+[style*="linear-gradient"][style*="--color-primary-dark"]:not([style*="repeating-linear-gradient"]),
+.text-white[style*="linear-gradient"]:not([style*="repeating-linear-gradient"]) {
     background: var(--color-primary) !important;
+    background-color: var(--color-primary) !important;
     background-image: none !important;
     color: #ffffff !important;
 }
 
-/* Header modal semi-gradient diset solid latar bersih */
-[style*="linear-gradient"][style*="var(--color-primary-rgb)"]:not([style*="repeating-linear-gradient"]) {
+/* Pastikan seluruh ikon dan teks di dalam wadah bertema toko selalu putih kontras tinggi */
+[style*="var(--color-primary)"][class*="text-white"] i,
+[style*="var(--color-primary)"][class*="text-white"] svg,
+[style*="--color-primary"][class*="text-white"] i,
+[style*="--color-primary"][class*="text-white"] svg,
+[style*="linear-gradient"][style*="var(--color-primary)"]:not([style*="rgba(var(--color-primary-rgb), 0.08)"]) i,
+[style*="linear-gradient"][style*="--color-primary-light"] i,
+.text-white[style*="linear-gradient"] i {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+}
+
+/* Header modal eks-transparan tipis (0.08) diset solid latar bersih */
+div[class*="border-b"][style*="rgba(var(--color-primary-rgb), 0.08)"],
+div[class*="border-b"][style*="rgba(var(--color-primary-rgb),0.08)"],
+.modal-header[style*="rgba(var(--color-primary-rgb), 0.08)"] {
     background-color: #f8fafc !important;
     background-image: none !important;
 }
 
-.dark [style*="linear-gradient"][style*="var(--color-primary-rgb)"]:not([style*="repeating-linear-gradient"]) {
+.dark div[class*="border-b"][style*="rgba(var(--color-primary-rgb), 0.08)"],
+.dark div[class*="border-b"][style*="rgba(var(--color-primary-rgb),0.08)"],
+.dark .modal-header[style*="rgba(var(--color-primary-rgb), 0.08)"] {
     background-color: #1e293b !important;
     background-image: none !important;
 }

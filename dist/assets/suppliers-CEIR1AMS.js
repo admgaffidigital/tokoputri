@@ -1,4 +1,4 @@
-import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k,k as f,H as F,aa as B}from"./module-print-Cx8aJcU5.js";import{s as N}from"./module-pos-Du5qFLNi.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-CqmOehwv.js";import"./module-faq-DKOoVq9x.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const s=document.querySelector("#admin-content #modal-supplier-form");if(s&&s.remove(),!u("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
+import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k,k as f,H as F,aa as B}from"./module-print-DWKJWB6R.js";import{s as N}from"./module-pos-BJ-8Uail.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-UR57dDlN.js";import"./module-faq-C_M_v-CW.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const s=document.querySelector("#admin-content #modal-supplier-form");if(s&&s.remove(),!u("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
@@ -42,7 +42,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Rekanan</span>
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                                 <i class="fa-solid fa-truck-field"></i>
                             </div>
                         </div>
@@ -75,7 +75,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
-                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                         </div>

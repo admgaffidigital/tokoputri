@@ -316,6 +316,34 @@ assert(
     'Tombol Segarkan widget arus kas menggunakan fa-arrows-rotate text-xs selaras proporsional dengan header'
 );
 
+// ─── 13. Verifikasi Proteksi Kontras Tinggi Icon Pods & Anti White-on-White ───
+console.log('\n🛡️ 13. Memeriksa Proteksi Kontras Tinggi Icon Pods & Anti White-on-White...');
+const settingsJsPath = path.join(rootDir, 'src', 'modules', 'admin', 'settings.js');
+const settingsContent = fs.readFileSync(settingsJsPath, 'utf-8');
+
+assert(
+    settingsContent.includes('style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.28);"') &&
+    !settingsContent.includes('style="background: linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%'),
+    'Icon pods kartu pengaturan toko di settings.js menggunakan solid background-color var(--color-primary)'
+);
+
+assert(
+    cssContent.includes('[style*="var(--color-primary)"][class*="text-white"]') &&
+    cssContent.includes('background-color: var(--color-primary) !important;'),
+    'Proteksi CSS menegakkan background-color var(--color-primary) pada elemen bertema toko berteks putih'
+);
+
+assert(
+    cssContent.includes('[style*="var(--color-primary)"][class*="text-white"] i') &&
+    cssContent.includes('color: #ffffff !important;'),
+    'Ikon di dalam wadah bertema toko terkunci putih kontras tinggi (anti-pudar / anti white-on-white)'
+);
+
+assert(
+    !cssContent.includes('[style*="linear-gradient"][style*="var(--color-primary-rgb)"]:not([style*="repeating-linear-gradient"]) {'),
+    'Selector bermasalah yang menimpa icon pods bertema toko menjadi latar pudar telah dieliminasi'
+);
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passedTests} Passed, ${totalTests - passedTests} Failed`);
 if (passedTests === totalTests) {

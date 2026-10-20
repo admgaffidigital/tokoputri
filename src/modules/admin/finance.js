@@ -526,7 +526,7 @@ export const openTaxDocPreview = (reportType) => {
     if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
         logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-14 h-14 object-contain rounded-xl border border-slate-200">`;
     } else {
-        logoHTML = `<div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-md shrink-0" style="background: linear-gradient(135deg, var(--color-primary, #b8860b), var(--color-primary-dark, #8b6508));"><i class="fa-solid fa-store"></i></div>`;
+        logoHTML = `<div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-md shrink-0" style="background-color: var(--color-primary, #b8860b);"><i class="fa-solid fa-store"></i></div>`;
     }
 
     const titles = { summary: 'LAPORAN PPN & OMSET BULANAN', income: 'LAPORAN LABA RUGI KOMPREHENSIF', balance: 'NERACA KEUANGAN (BALANCE SHEET)' };
