@@ -37,6 +37,7 @@ import {
     attachPrivateDataListener, 
     detachPrivateDataListener 
 } from '../../services/storage.js';
+import { renderDashboardCashflowWidget } from './dashboard-cashflow.js';
 
 /**
  * Terapkan penyaringan menu navigasi dashboard CMS sesuai hak akses akun aktif
@@ -226,6 +227,7 @@ export const openAdminMenu = () => {
     applyStaffMenuPermissions();
 
     loadAdminReport(lastReportPeriod); 
+    renderDashboardCashflowWidget();
     toggleTaxMenuVisibility(); 
 };
 
