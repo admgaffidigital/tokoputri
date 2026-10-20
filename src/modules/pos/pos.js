@@ -4544,10 +4544,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <div class="p-2.5 sm:p-3.5 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2 shrink-0 shadow-2xs">
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1 min-w-0">
-                            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                            <input id="pos-search-input" type="text" placeholder="Cari produk / barcode..." 
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                            <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode... [F2]" 
                                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                                class="w-full pl-7.5 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
+                                class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)"
                                 onkeydown="window.handlePOSSearchKeydown(event)">
                             <button type="button" onclick="window.posClearSearch()" class="pos-search-clear-btn hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 text-xs p-1 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian (Esc)">
@@ -4557,7 +4557,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <!-- Tombol Scan Barcode Kamera HP / Laptop (F9) -->
                         <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border border-[rgba(var(--color-primary-rgb),0.25)] shrink-0 cursor-pointer shadow-2xs" title="Scan Barcode Kamera (F9)">
                             <i class="fa-solid fa-camera text-xs shrink-0"></i>
-                            <span class="hidden xl:inline whitespace-nowrap">Scan (F9)</span>
+                            <span class="hidden sm:inline whitespace-nowrap">Scan (F9)</span>
                         </button>
                         <!-- View Switcher (Grid vs List) -->
                         <div class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shrink-0">

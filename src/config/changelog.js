@@ -26,10 +26,10 @@ export const DEFAULT_CHANGELOG = [
             "Universal Badge Anti-Wrap & Anti-Bloat Engine: Menstandarkan seluruh badge status dan info pill di seluruh aplikasi (Pesanan, Supplier, Kulakan PO, Retur, dan Tempo) dengan white-space: nowrap !important, line-height: 1.15, max-height 26px, dan letter-spacing proporsional, mengeliminasi teks bertumpuk atau mekar menggembung secara tuntas.",
             "Hierarki Border Radius Tombol Selaras: Mengunci seluruh tombol aksi ke sistem squircle terstandar: Tombol Utama/CTA/Submit (1rem / 16px), Tombol Sekunder/Filter Chiclet/Tab (0.75rem / 12px), Tombol Aksi Kompak (0.75rem / 12px), dan Micro Action/Drag Handle (0.5rem / 8px).",
             "Standarisasi Wadah Ikon (Icon Pods): Menyelaraskan border radius seluruh wadah ikon berdasarkan dimensi (Large 56-64px ke 16px squircle, Medium 40-48px ke 14px, Compact/Stat 32-36px ke 12px, dan Small 24-28px ke 8px) dengan proteksi aspect-ratio 1:1 anti-gepeng.",
-            "Penyelarasan Anti-Wrap Widget Arus Kas & Tombol P&L: Mengunci judul 'Arus Kas Hari Ini', tanggal, dan tombol aksi 'Laporan P&L' ke whitespace-nowrap dan shrink-0, mengeliminasi teks patah dua baris di dashboard CMS.",
-            "Optimalisasi Search Bar Kasir POS: Meringkas placeholder search kasir menjadi 'Cari produk / barcode...' dan menyetel tombol scan kamera hemat ruang pada tablet/mobile sehingga kolom pencarian bebas terpotong.",
+            "Penyelarasan Proporsional Tombol Sinkronasi (Segarkan) & Widget Arus Kas: Menetralkan aspect-ratio paksaan pada tombol yang memiliki teks responsif (w-auto / aspect-auto) dan mengunci tinggi tombol header CMS (#btn-admin-refresh) serta tombol Segarkan arus kas ke 32px (h-8) proporsional, mengeliminasi tombol membesar tidak selaras.",
+            "Pemulihan Presisi Antarmuka POS Kasir: Mengembalikan placeholder asli kasir 'Cari nama, SKU, barcode... [F2]' lengkap dengan shortcut, teks tombol scan kamera 'Scan (F9)' pada tablet/desktop, dan menetralkan aspect-ratio tombol parkir antrean serta stepper kuantitas keranjang sehingga antarmuka POS kasir kembali 100% identik dengan aslinya.",
             "Penyelarasan Template Modul CMS & Storefront: Merapikan seluruh template badge di orders.js, suppliers.js, purchases.js, table.js, tempo.js, dan index.html sehingga bebas dari inkonsistensi rounded-full jomplang.",
-            "Suite Unit Test Baru test-button-badge-icon-harmony.mjs (32 pengujian) 100% Passed dan terintegrasi otomatis ke audit kesehatan sistem.",
+            "Suite Unit Test Baru test-button-badge-icon-harmony.mjs (34 pengujian) 100% Passed dan terintegrasi otomatis ke audit kesehatan sistem.",
             "Multi-Channel Distribution v1.19.3 (Android versionCode 11903)."
         ]
     },

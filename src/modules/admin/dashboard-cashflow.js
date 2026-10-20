@@ -164,9 +164,9 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                 </div>
 
                 <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
-                    <button type="button" onclick="window.refreshDashboardCashflow()" class="h-8 px-2 sm:px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap shadow-2xs" title="Perbarui Ringkasan Kas Hari Ini">
+                    <button type="button" onclick="window.refreshDashboardCashflow()" class="h-8 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap shadow-2xs" title="Perbarui Ringkasan Kas Hari Ini">
                         <i class="fa-solid fa-rotate text-[11px]" id="dashboard-cashflow-refresh-icon"></i>
-                        <span class="hidden sm:inline text-[11px] whitespace-nowrap">Segarkan</span>
+                        <span class="text-[11px] whitespace-nowrap">Segarkan</span>
                     </button>
                     <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="h-8 px-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1 shrink-0 whitespace-nowrap shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Pusat Laporan Keuangan Lengkap">
                         <span class="text-[11px] whitespace-nowrap">Laporan P&amp;L</span>

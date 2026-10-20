@@ -267,13 +267,25 @@ assert(
 );
 
 assert(
-    posContent.includes('placeholder="Cari produk / barcode..."'),
-    'Search input POS kasir menggunakan placeholder ringkas anti-terpotong'
+    posContent.includes('placeholder="Cari nama, SKU, barcode... [F2]"'),
+    'Search input POS kasir menggunakan placeholder asli lengkap dengan shortcut [F2]'
 );
 
 assert(
-    posContent.includes('hidden xl:inline whitespace-nowrap">Scan (F9)</span>'),
-    'Tombol kamera di search bar POS hemat ruang di tablet/mobile'
+    posContent.includes('hidden sm:inline whitespace-nowrap">Scan (F9)</span>'),
+    'Tombol kamera di search bar POS menampilkan teks Scan (F9) pada layar tablet & desktop'
+);
+
+assert(
+    cssContent.includes('button[class*=":w-auto"]') &&
+    cssContent.includes('aspect-ratio: auto !important;'),
+    'Tombol dengan w-auto atau aspect-auto ternetralkan dari aspect-ratio 1:1 paksaan'
+);
+
+assert(
+    cssContent.includes('#btn-admin-refresh') &&
+    cssContent.includes('height: 2rem !important;'),
+    'Tombol sinkronasi admin #btn-admin-refresh terkunci proporsional ke height: 2rem (32px)'
 );
 
 console.log('\n============================================================');
