@@ -317,13 +317,13 @@ export const renderReportsShell = () => {
             <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-3.5 sm:p-5 shadow-2xs space-y-3.5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400 shadow-2xs">
                             <i class="fa-solid fa-chart-pie text-lg sm:text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2">
                                 <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan</h1>
-                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live</span>
+                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap border border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300">Live</span>
                             </div>
                             <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium truncate">
                                 Laba Rugi, Penjualan, Valuasi Stok, Utang Piutang &amp; Pajak
@@ -744,8 +744,8 @@ export const renderExecutiveSummaryTab = () => {
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs whitespace-nowrap inline-flex items-center" style="border-color: rgba(var(--color-primary-rgb), 0.3);">
-                        <i class="fa-solid fa-boxes-stacked mr-1.5" style="color: var(--color-primary)"></i> Cek Valuasi Stok
+                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs whitespace-nowrap inline-flex items-center border-[rgba(var(--color-primary-rgb),0.3)] dark:border-rose-500/30">
+                        <i class="fa-solid fa-boxes-stacked mr-1.5 text-[var(--color-primary)] dark:text-rose-400"></i> Cek Valuasi Stok
                     </button>
                     <button type="button" onclick="if(typeof window.openPOSCashierMode === 'function') window.openPOSCashierMode(); else if(window.openAdminTab) window.openAdminTab('pos');" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95 whitespace-nowrap inline-flex items-center" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cash-register mr-1.5"></i> Buka Kasir POS
@@ -760,13 +760,13 @@ export const renderExecutiveSummaryTab = () => {
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
-                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.1)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400"><i class="fa-solid fa-arrow-trend-up"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(grossSales)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 font-medium">${totals.orderCount} transaksi</span>
-                        <span class="text-rose-500 font-bold">Disc: ${fCur(totalDiscount)}</span>
+                        <span class="text-rose-600 dark:text-rose-400 font-bold">Disc: ${fCur(totalDiscount)}</span>
                     </div>
                 </div>
 
@@ -775,13 +775,13 @@ export const renderExecutiveSummaryTab = () => {
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Laba Kotor</span>
-                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)"><i class="fa-solid fa-sack-dollar"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400"><i class="fa-solid fa-sack-dollar"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(grossProfit)}</p>
+                        <p class="text-base sm:text-xl font-black truncate text-[var(--color-primary)] dark:text-rose-300">${fCur(grossProfit)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 font-medium">HPP: ${fCur(totalHpp)}</span>
-                        <span class="font-bold" style="color: var(--color-primary)">Margin ${grossMarginPercent}%</span>
+                        <span class="font-bold text-[var(--color-primary)] dark:text-rose-300">Margin ${grossMarginPercent}%</span>
                     </div>
                 </div>
 
@@ -801,17 +801,17 @@ export const renderExecutiveSummaryTab = () => {
                 </div>
 
                 <!-- 4. Laba Bersih Akhir (Royal Theme Card) -->
-                <div class="card-modern p-4 sm:p-5 flex flex-col justify-between col-span-2 lg:col-span-1 rounded-2xl" style="border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-primary-rgb), 0.03));">
+                <div class="card-modern p-4 sm:p-5 flex flex-col justify-between col-span-2 lg:col-span-1 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] dark:border-rose-500/40 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.1)] to-[rgba(var(--color-primary-rgb),0.03)] dark:from-rose-950/40 dark:to-slate-900 shadow-2xs">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">Laba Bersih Riil</span>
-                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.18); color: var(--color-primary)"><i class="fa-solid fa-crown"></i></span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-[var(--color-primary)] dark:text-rose-400">Laba Bersih Riil</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.18)] dark:bg-rose-950/60 text-[var(--color-primary)] dark:text-rose-400"><i class="fa-solid fa-crown"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(netProfit)}</p>
+                        <p class="text-base sm:text-xl font-black truncate text-[var(--color-primary)] dark:text-rose-300">${fCur(netProfit)}</p>
                     </div>
-                    <div class="mt-3 pt-2.5 flex items-center justify-between text-[10px]" style="border-top: 1px solid rgba(var(--color-primary-rgb), 0.2);">
-                        <span class="font-medium" style="color: var(--color-primary); opacity: 0.85;">Net Profit</span>
-                        <span class="font-black" style="color: var(--color-primary)">${netMarginPercent}%</span>
+                    <div class="mt-3 pt-2.5 flex items-center justify-between text-[10px] border-t border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30">
+                        <span class="font-medium text-[var(--color-primary)] dark:text-rose-300/80">Net Profit</span>
+                        <span class="font-black text-[var(--color-primary)] dark:text-rose-300">${netMarginPercent}%</span>
                     </div>
                 </div>
             </div>
@@ -820,7 +820,7 @@ export const renderExecutiveSummaryTab = () => {
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-2xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400">
                             <i class="fa-solid fa-chart-column"></i>
                         </div>
                         <div>
@@ -853,7 +853,7 @@ export const renderExecutiveSummaryTab = () => {
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
                 <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400">
                             <i class="fa-solid fa-file-invoice"></i>
                         </div>
                         <div>

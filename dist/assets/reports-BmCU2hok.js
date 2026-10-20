@@ -1,5 +1,5 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/expenses-B22JyUgb.js","assets/module-print-C3IMjvY-.js","assets/vendor-firebase-core-D2OF5R23.js","assets/vendor-firebase-db-BIUZcnOd.js","assets/module-pos-D-_dOLX5.js","assets/module-member-IH8LVnZ4.js","assets/module-faq-BFLV0yfa.js","assets/module-admin-CXZBX1OB.js","assets/vendor-sortable-DzmX_rHT.js"])))=>i.map(i=>d[i]);
-import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,_ as Ut,s as Ht,g as ct}from"./module-print-C3IMjvY-.js";import{E as R,f as ut,g as at,c as W,o as Z,e as pt,M as E,s as Vt}from"./module-admin-CXZBX1OB.js";import{computePurchaseMetrics as mt}from"./purchases-DcDSQq2W.js";import{i as Gt}from"./module-pos-D-_dOLX5.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./vendor-sortable-DzmX_rHT.js";import"./module-faq-BFLV0yfa.js";import"./module-member-IH8LVnZ4.js";let T="executive",w=new Date().getFullYear(),$=0,he="month",tt="all",J="all",ve="all",I="",M=[],O=[],yt="";const ft=t=>{if(!t)return null;let a=null;if(t.timestamp?.toDate)a=t.timestamp.toDate();else if(t.createdAt?.toDate)a=t.createdAt.toDate();else if(t.timestamp&&typeof t.timestamp=="object"){const e=t.timestamp.seconds??t.timestamp._seconds;typeof e=="number"&&!isNaN(e)&&e>0&&(a=new Date(e*1e3))}else if(t.createdAt&&typeof t.createdAt=="object"){const e=t.createdAt.seconds??t.createdAt._seconds;typeof e=="number"&&!isNaN(e)&&e>0&&(a=new Date(e*1e3))}else t.dateMs?a=new Date(t.dateMs):t.dateString?a=new Date(t.dateString):typeof t.timestamp=="number"?a=new Date(t.timestamp>1e11?t.timestamp:t.timestamp*1e3):typeof t.timestamp=="string"?a=new Date(t.timestamp):typeof t.createdAt=="string"&&(a=new Date(t.createdAt));if(a&&!isNaN(a.getTime()))return a;const o=t.orderId||t.id||"";if(typeof o=="string"&&o.startsWith("ORD-")){const e=o.split("-");if(e.length>=2&&e[1].length>=6){const s=parseInt(e[1],36);if(!isNaN(s)&&s>15e11&&s<25e11)return new Date(s)}}return null},st=async(t=!1)=>{const a=`${w}-${$}`;if(!t&&yt===a&&M.length>0)return{orders:M,piutang:O};M=[],O=[];try{(await dt.collection("freshmart_orders").orderBy("timestamp","desc").limit(2e3).get().catch(async()=>await dt.collection("freshmart_orders").limit(2e3).get())).forEach(n=>{const p=n.data();if(p.status==="Dibatalkan"||p.status==="Test")return;const l=ft(p);if(!l)return;const i=l.getFullYear(),m=l.getMonth()+1;i===w&&($!==0&&m!==$||M.push(p))}),(await dt.collection("freshmart_orders").where("payment.method","==","tempo").where("payment.paymentStatus","==","hutang").get()).forEach(n=>{O.push(n.data())}),yt=a}catch(o){console.error("[ReportsHub] Gagal memuat data transaksi:",o),C("Gagal memuat data transaksi laporan: "+o.message)}return{orders:M,piutang:O}},gt=()=>{let t=0,a=0,o=0,e=0,s=M.length;return M.forEach(n=>{const p=n.payment?.dppAmount!==void 0&&n.payment?.dppAmount!==null?parseFloat(n.payment.dppAmount):parseFloat(n.payment?.subtotal)||0;t+=p,a+=parseFloat(n.payment?.ppnAmount)||0,e+=parseFloat(n.payment?.productDiscount)||0,(n.items||[]).forEach(l=>{const i=l.hpp!==void 0&&l.hpp!==null?parseFloat(l.hpp):W(l)||0;o+=(parseFloat(i)||0)*(parseFloat(l.qty)||1)})}),{omset:t,ppn:a,hpp:o,disc:e,orderCount:s}},Y=()=>{const t=v.taxSettings?.expenseBreakdown||{},a=v.taxSettings?.monthlyExpenses||{},o=Array.isArray(v.expenses)?v.expenses:[],e=$===0?Array.from({length:12},(n,p)=>p+1):[$],s={total:0,transactionCount:0,categories:{},periodExpenses:[]};return R.forEach(n=>{s.categories[n.key]=0}),o.forEach(n=>{if(!n||!n.date)return;const[p,l]=n.date.split("-"),i=parseInt(p,10),m=parseInt(l,10);if(i===w&&($===0||m===$)){const u=parseFloat(n.amount)||0,b=n.category||"lainnya";s.categories[b]!==void 0?s.categories[b]+=u:s.categories.lainnya+=u,s.total+=u,s.transactionCount++,s.periodExpenses.push(n)}}),s.periodExpenses.sort((n,p)=>new Date(p.date).getTime()-new Date(n.date).getTime()),e.forEach(n=>{const p=`${w}-${n}`;if(!o.some(i=>{if(!i||!i.date)return!1;const[m,u]=i.date.split("-");return parseInt(m,10)===w&&parseInt(u,10)===n})){const i=t[p];if(i)R.forEach(m=>{s.categories[m.key]+=parseFloat(i[m.key])||0}),s.total+=parseFloat(a[p])||0;else{const m=parseFloat(a[p])||0;s.total+=m,s.categories.lainnya+=m}}}),s},Pt=async(t=null)=>{t&&(T=t),j("admin-content")&&(L("admin-content",`
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/expenses-DmbZHSKc.js","assets/module-print-C3IMjvY-.js","assets/vendor-firebase-core-D2OF5R23.js","assets/vendor-firebase-db-BIUZcnOd.js","assets/module-pos-D-_dOLX5.js","assets/module-member-IH8LVnZ4.js","assets/module-faq-BFLV0yfa.js","assets/module-admin-KM7W2W9d.js","assets/vendor-sortable-DzmX_rHT.js"])))=>i.map(i=>d[i]);
+import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,_ as Ut,s as Ht,g as ct}from"./module-print-C3IMjvY-.js";import{E as R,f as ut,g as at,c as W,o as Z,e as pt,M as E,s as Vt}from"./module-admin-KM7W2W9d.js";import{computePurchaseMetrics as mt}from"./purchases-DcDSQq2W.js";import{i as Gt}from"./module-pos-D-_dOLX5.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./vendor-sortable-DzmX_rHT.js";import"./module-faq-BFLV0yfa.js";import"./module-member-IH8LVnZ4.js";let T="executive",w=new Date().getFullYear(),$=0,he="month",tt="all",J="all",ve="all",I="",M=[],O=[],yt="";const ft=t=>{if(!t)return null;let a=null;if(t.timestamp?.toDate)a=t.timestamp.toDate();else if(t.createdAt?.toDate)a=t.createdAt.toDate();else if(t.timestamp&&typeof t.timestamp=="object"){const e=t.timestamp.seconds??t.timestamp._seconds;typeof e=="number"&&!isNaN(e)&&e>0&&(a=new Date(e*1e3))}else if(t.createdAt&&typeof t.createdAt=="object"){const e=t.createdAt.seconds??t.createdAt._seconds;typeof e=="number"&&!isNaN(e)&&e>0&&(a=new Date(e*1e3))}else t.dateMs?a=new Date(t.dateMs):t.dateString?a=new Date(t.dateString):typeof t.timestamp=="number"?a=new Date(t.timestamp>1e11?t.timestamp:t.timestamp*1e3):typeof t.timestamp=="string"?a=new Date(t.timestamp):typeof t.createdAt=="string"&&(a=new Date(t.createdAt));if(a&&!isNaN(a.getTime()))return a;const o=t.orderId||t.id||"";if(typeof o=="string"&&o.startsWith("ORD-")){const e=o.split("-");if(e.length>=2&&e[1].length>=6){const s=parseInt(e[1],36);if(!isNaN(s)&&s>15e11&&s<25e11)return new Date(s)}}return null},st=async(t=!1)=>{const a=`${w}-${$}`;if(!t&&yt===a&&M.length>0)return{orders:M,piutang:O};M=[],O=[];try{(await dt.collection("freshmart_orders").orderBy("timestamp","desc").limit(2e3).get().catch(async()=>await dt.collection("freshmart_orders").limit(2e3).get())).forEach(n=>{const p=n.data();if(p.status==="Dibatalkan"||p.status==="Test")return;const l=ft(p);if(!l)return;const i=l.getFullYear(),m=l.getMonth()+1;i===w&&($!==0&&m!==$||M.push(p))}),(await dt.collection("freshmart_orders").where("payment.method","==","tempo").where("payment.paymentStatus","==","hutang").get()).forEach(n=>{O.push(n.data())}),yt=a}catch(o){console.error("[ReportsHub] Gagal memuat data transaksi:",o),C("Gagal memuat data transaksi laporan: "+o.message)}return{orders:M,piutang:O}},gt=()=>{let t=0,a=0,o=0,e=0,s=M.length;return M.forEach(n=>{const p=n.payment?.dppAmount!==void 0&&n.payment?.dppAmount!==null?parseFloat(n.payment.dppAmount):parseFloat(n.payment?.subtotal)||0;t+=p,a+=parseFloat(n.payment?.ppnAmount)||0,e+=parseFloat(n.payment?.productDiscount)||0,(n.items||[]).forEach(l=>{const i=l.hpp!==void 0&&l.hpp!==null?parseFloat(l.hpp):W(l)||0;o+=(parseFloat(i)||0)*(parseFloat(l.qty)||1)})}),{omset:t,ppn:a,hpp:o,disc:e,orderCount:s}},Y=()=>{const t=v.taxSettings?.expenseBreakdown||{},a=v.taxSettings?.monthlyExpenses||{},o=Array.isArray(v.expenses)?v.expenses:[],e=$===0?Array.from({length:12},(n,p)=>p+1):[$],s={total:0,transactionCount:0,categories:{},periodExpenses:[]};return R.forEach(n=>{s.categories[n.key]=0}),o.forEach(n=>{if(!n||!n.date)return;const[p,l]=n.date.split("-"),i=parseInt(p,10),m=parseInt(l,10);if(i===w&&($===0||m===$)){const u=parseFloat(n.amount)||0,b=n.category||"lainnya";s.categories[b]!==void 0?s.categories[b]+=u:s.categories.lainnya+=u,s.total+=u,s.transactionCount++,s.periodExpenses.push(n)}}),s.periodExpenses.sort((n,p)=>new Date(p.date).getTime()-new Date(n.date).getTime()),e.forEach(n=>{const p=`${w}-${n}`;if(!o.some(i=>{if(!i||!i.date)return!1;const[m,u]=i.date.split("-");return parseInt(m,10)===w&&parseInt(u,10)===n})){const i=t[p];if(i)R.forEach(m=>{s.categories[m.key]+=parseFloat(i[m.key])||0}),s.total+=parseFloat(a[p])||0;else{const m=parseFloat(a[p])||0;s.total+=m,s.categories.lainnya+=m}}}),s},Pt=async(t=null)=>{t&&(T=t),j("admin-content")&&(L("admin-content",`
         <div class="py-20 text-center flex flex-col items-center justify-center">
             <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-3 border border-slate-200 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
                 <i class="fa-solid fa-spinner fa-spin"></i>
@@ -20,13 +20,13 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
             <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-3.5 sm:p-5 shadow-2xs space-y-3.5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400 shadow-2xs">
                             <i class="fa-solid fa-chart-pie text-lg sm:text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2">
                                 <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan</h1>
-                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live</span>
+                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap border border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300">Live</span>
                             </div>
                             <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium truncate">
                                 Laba Rugi, Penjualan, Valuasi Stok, Utang Piutang &amp; Pajak
@@ -183,8 +183,8 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs whitespace-nowrap inline-flex items-center" style="border-color: rgba(var(--color-primary-rgb), 0.3);">
-                        <i class="fa-solid fa-boxes-stacked mr-1.5" style="color: var(--color-primary)"></i> Cek Valuasi Stok
+                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs whitespace-nowrap inline-flex items-center border-[rgba(var(--color-primary-rgb),0.3)] dark:border-rose-500/30">
+                        <i class="fa-solid fa-boxes-stacked mr-1.5 text-[var(--color-primary)] dark:text-rose-400"></i> Cek Valuasi Stok
                     </button>
                     <button type="button" onclick="if(typeof window.openPOSCashierMode === 'function') window.openPOSCashierMode(); else if(window.openAdminTab) window.openAdminTab('pos');" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95 whitespace-nowrap inline-flex items-center" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cash-register mr-1.5"></i> Buka Kasir POS
@@ -199,13 +199,13 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
-                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.1)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400"><i class="fa-solid fa-arrow-trend-up"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${c(o)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 font-medium">${t.orderCount} transaksi</span>
-                        <span class="text-rose-500 font-bold">Disc: ${c(e)}</span>
+                        <span class="text-rose-600 dark:text-rose-400 font-bold">Disc: ${c(e)}</span>
                     </div>
                 </div>
 
@@ -214,13 +214,13 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Laba Kotor</span>
-                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)"><i class="fa-solid fa-sack-dollar"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400"><i class="fa-solid fa-sack-dollar"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${c(p)}</p>
+                        <p class="text-base sm:text-xl font-black truncate text-[var(--color-primary)] dark:text-rose-300">${c(p)}</p>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 font-medium">HPP: ${c(n)}</span>
-                        <span class="font-bold" style="color: var(--color-primary)">Margin ${f}%</span>
+                        <span class="font-bold text-[var(--color-primary)] dark:text-rose-300">Margin ${f}%</span>
                     </div>
                 </div>
 
@@ -240,17 +240,17 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
                 </div>
 
                 <!-- 4. Laba Bersih Akhir (Royal Theme Card) -->
-                <div class="card-modern p-4 sm:p-5 flex flex-col justify-between col-span-2 lg:col-span-1 rounded-2xl" style="border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-primary-rgb), 0.03));">
+                <div class="card-modern p-4 sm:p-5 flex flex-col justify-between col-span-2 lg:col-span-1 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] dark:border-rose-500/40 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.1)] to-[rgba(var(--color-primary-rgb),0.03)] dark:from-rose-950/40 dark:to-slate-900 shadow-2xs">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">Laba Bersih Riil</span>
-                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.18); color: var(--color-primary)"><i class="fa-solid fa-crown"></i></span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-[var(--color-primary)] dark:text-rose-400">Laba Bersih Riil</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.18)] dark:bg-rose-950/60 text-[var(--color-primary)] dark:text-rose-400"><i class="fa-solid fa-crown"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${c(d)}</p>
+                        <p class="text-base sm:text-xl font-black truncate text-[var(--color-primary)] dark:text-rose-300">${c(d)}</p>
                     </div>
-                    <div class="mt-3 pt-2.5 flex items-center justify-between text-[10px]" style="border-top: 1px solid rgba(var(--color-primary-rgb), 0.2);">
-                        <span class="font-medium" style="color: var(--color-primary); opacity: 0.85;">Net Profit</span>
-                        <span class="font-black" style="color: var(--color-primary)">${r}%</span>
+                    <div class="mt-3 pt-2.5 flex items-center justify-between text-[10px] border-t border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30">
+                        <span class="font-medium text-[var(--color-primary)] dark:text-rose-300/80">Net Profit</span>
+                        <span class="font-black text-[var(--color-primary)] dark:text-rose-300">${r}%</span>
                     </div>
                 </div>
             </div>
@@ -259,7 +259,7 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-2xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400">
                             <i class="fa-solid fa-chart-column"></i>
                         </div>
                         <div>
@@ -292,7 +292,7 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
                 <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400">
                             <i class="fa-solid fa-file-invoice"></i>
                         </div>
                         <div>
@@ -1086,7 +1086,7 @@ import{e as j,a1 as wt,f as c,l as _,n as U,a as v,k as C,b as L,q as dt,i as P,
                 </div>
             </div>
         </div>
-    `)},ee=async(t=null)=>{if(typeof window.openExpenseModal=="function"){window.openExpenseModal(t);return}try{const a=await Ut(()=>import("./expenses-B22JyUgb.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8]));a&&typeof a.openExpenseModal=="function"?a.openExpenseModal(t):typeof window.openExpenseModal=="function"&&window.openExpenseModal(t)}catch(a){console.error("[Reports] Gagal membuka form pengeluaran operasional:",a),C("Gagal memuat modul pengeluaran operasional.")}};window.openExpenseModalFromReports=ee;const ae=()=>{const t=$===0?`Tahun ${w}`:`${E[$-1]} ${w}`,a=Y(),o=$===0?null:`${w}-${$}`,e=v.taxSettings?.monthlyExpenses||{},s=v.taxSettings?.expenseBreakdown||{},n=R.map(m=>{const u=a.categories[m.key]||0,b=a.total>0?(u/a.total*100).toFixed(0):"0";return`
+    `)},ee=async(t=null)=>{if(typeof window.openExpenseModal=="function"){window.openExpenseModal(t);return}try{const a=await Ut(()=>import("./expenses-DmbZHSKc.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8]));a&&typeof a.openExpenseModal=="function"?a.openExpenseModal(t):typeof window.openExpenseModal=="function"&&window.openExpenseModal(t)}catch(a){console.error("[Reports] Gagal membuka form pengeluaran operasional:",a),C("Gagal memuat modul pengeluaran operasional.")}};window.openExpenseModalFromReports=ee;const ae=()=>{const t=$===0?`Tahun ${w}`:`${E[$-1]} ${w}`,a=Y(),o=$===0?null:`${w}-${$}`,e=v.taxSettings?.monthlyExpenses||{},s=v.taxSettings?.expenseBreakdown||{},n=R.map(m=>{const u=a.categories[m.key]||0,b=a.total>0?(u/a.total*100).toFixed(0):"0";return`
             <div class="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-2">

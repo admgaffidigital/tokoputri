@@ -332,8 +332,8 @@ window.rAdmL = t => {
                         <i class="fa-solid fa-file-pdf text-rose-500 text-sm"></i>
                         <span class="hidden sm:inline">Daftar Harga</span>
                     </button>
-                    <button onclick="openAdminTab('stock_opname')" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Stock Opname (Audit Fisik Stok)">
-                        <i class="fa-solid fa-clipboard-check text-sm"></i>
+                    <button onclick="openAdminTab('stock_opname')" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/40 bg-[rgba(var(--color-primary-rgb),0.1)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 hover:brightness-110" title="Stock Opname (Audit Fisik Stok)">
+                        <i class="fa-solid fa-clipboard-check text-sm text-[var(--color-primary)] dark:text-rose-400"></i>
                         <span class="hidden sm:inline">Stock Opname</span>
                     </button>` : ''}
                     <button onclick="oAAdd()" class="h-12 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
@@ -398,12 +398,12 @@ window.rAdmItms = (t, skipStats = false) => {
 
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--color-primary)">Varian Aktif</span>
+                        <span class="text-[10px] font-black uppercase tracking-wider text-[var(--color-primary)] dark:text-rose-400">Varian Aktif</span>
                         <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black tracking-tight" style="color: var(--color-primary)">${st.activeVar}</p>
+                    <p class="text-xl sm:text-2xl font-black tracking-tight text-[var(--color-primary)] dark:text-rose-300">${st.activeVar}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-0.5">Opsi Rasa, Ukuran &amp; Warna</p>
                 </div>
 
@@ -429,7 +429,7 @@ window.rAdmItms = (t, skipStats = false) => {
                         <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Modal: <b class="text-slate-800 dark:text-slate-200">${fCur(st.assetHpp)}</b></p>
                         <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">Jual: <b class="text-slate-800 dark:text-slate-200">${fCur(st.assetJual)}</b></p>
                     </div>
-                    <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('stock'), 100);}" class="mt-2 inline-flex items-center gap-1.5 text-[10px] font-black text-[var(--color-primary)] hover:underline cursor-pointer transition-colors">
+                    <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('stock'), 100);}" class="mt-2 inline-flex items-center gap-1.5 text-[10px] font-black text-[var(--color-primary)] dark:text-rose-400 hover:underline cursor-pointer transition-colors">
                         <i class="fa-solid fa-chart-pie text-[10px]"></i>
                         <span>Laporan Stok Lengkap &rarr;</span>
                     </button>
@@ -667,12 +667,12 @@ window.rAdmItms = (t, skipStats = false) => {
 
                     ${isP ? `
                         <div class="flex items-center gap-2 flex-wrap mb-1.5">
-                            <span class="text-base sm:text-lg font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</span>
+                            <span class="text-base sm:text-lg font-black text-[var(--color-primary)] dark:text-rose-300 tracking-tight">${fCur(x.price)}</span>
                             <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)] px-2 py-0.5 rounded-md border border-slate-200/60 hover:border-[var(--color-primary)] dark:border-slate-600/60 transition-colors cursor-pointer" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Klik untuk Cetak Label Barcode &amp; Harga">
                                 <i class="fa-solid fa-barcode text-[8.5px]"></i> ${esc(x.sku || 'TANPA SKU')}
                             </span>
                             ${x.variants && x.variants.length > 0 ? `
-                                <span class="inline-flex items-center gap-1 text-[9px] font-black border px-2 py-0.5 rounded-md" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="${x.variants.length} Varian">
+                                <span class="inline-flex items-center gap-1 text-[9px] font-black border px-2 py-0.5 rounded-md border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300" title="${x.variants.length} Varian">
                                     <i class="fa-solid fa-layer-group text-[8.5px]"></i> ${x.variants.length} Varian
                                 </span>
                             ` : ''}
@@ -776,7 +776,7 @@ window.rAdmItms = (t, skipStats = false) => {
                             <span class="hidden sm:inline">Harga</span>
                         </button>
 
-                        <button type="button" class="h-10 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Cetak Label Harga &amp; Barcode Barang">
+                        <button type="button" class="h-10 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 hover:brightness-110" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Cetak Label Harga &amp; Barcode Barang">
                             <i class="fa-solid fa-barcode text-xs"></i>
                             <span class="hidden sm:inline">Label</span>
                         </button>
