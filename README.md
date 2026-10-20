@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.19.3** (Android VersionCode: `11903`)
+* **Versi Rilis**: **v1.19.4** (Android VersionCode: `11904`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.19.4 — Persistensi Database Bersama (Anti-Hilang saat Reload), Batch Import 'Salin Semua ke Toko' & Proteksi Ganda Firestore Sub-Koleksi (20 Okt 2026)
+- **Penyimpanan Permanen Master Presets ke Cloud Firestore Sub-Koleksi**: Mengintegrasikan penulisan langsung setiap produk yang disalin dari Database Bersama ke sub-koleksi Firestore `freshmart/cms_data/products/{id}`, pendaftaran otomatis ke susunan produk `productOrder`, dan pembaruan seketika cache lokal `freshmart_products`, mengeliminasi produk hilang setelah reload secara permanen.
+- **Fitur Baru '⚡ Salin Semua ke Toko' (Batch Import All)**: Menyediakan tombol aksi cepat di toolbar Database Bersama dan kartu interaktif 'Tersedia utk Diimpor' untuk menyalin seluruh template produk, varian, dan spesifikasi sekaligus ke etalase & kasir POS dengan opsi penentuan stok awal massal.
+- **Batch Write Firestore Berkinerja Tinggi**: Eksekusi impor massal diproses menggunakan `db.batch()` dalam batas aman Firestore (maks 450 dokumen per commit), mendaftarkan kategori & brand baru otomatis, dan menyiarkan sinyal sinkronisasi realtime `product_bulk` ke seluruh perangkat.
+- **Proteksi Ganda saveApp di storage.js**: Memfilter key 'products' dari dokumen utama `cms_data` agar terhindar dari pembengkakan batas dokumen 1MB Firestore dan menyediakan mekanisme batch sync otomatis untuk `updatedProductIds`.
+- **Suite Unit Test Baru test-master-presets-persistence.mjs & test-master-product-presets.mjs**: 57 pengujian terverifikasi 100% Passed.
+- **Multi-Channel Distribution v1.19.4**: Android VersionCode `11904`, versionName `1.19.4`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.19.3 — Universal Harmony Engine: Penyelarasan Border Radius Tombol, Badge Anti-Wrap & Anti-Bloat, dan Konsistensi Wadah Ikon (Icon Pods) (20 Okt 2026)
 - **Universal Badge Anti-Wrap & Anti-Bloat Engine**: Mengunci seluruh badge status dan info pill di seluruh aplikasi (Pesanan, Supplier, PO Kulakan, Retur, dan Tempo) dengan `white-space: nowrap !important`, `line-height: 1.15`, `max-height: 26px`, dan letter-spacing proporsional, mengeliminasi teks bertumpuk atau mekar menggembung secara tuntas.
