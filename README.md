@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.19.1** (Android VersionCode: `11901`)
+* **Versi Rilis**: **v1.19.2** (Android VersionCode: `11902`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.19.2 — Smart Dual-Mode High-Contrast Solid Engine, Eliminasi Warna Belang-Belang & Penajaman Garis Border serta Font Mode Terang (20 Okt 2026)
+- **Smart Dual-Mode High-Contrast Solid Engine**: Mengeliminasi disparitas kontras dan warna pudar di tampilan terang (Light Mode) serta menyelaraskan rasio kontras visual otomatis antara mode terang dan gelap tanpa efek gradasi.
+- **Penajaman Garis Pembatas (Border) & Divider**: Meningkatkan hairline border kartu bento, panel CMS, modal, input form, dan pembagi (`hr`, `divide-*`) ke `#cbd5e1` (Slate-300) di Light Mode dan `#334155` di Dark Mode, menghadirkan batas elemen yang tegas, rapi, dan tidak kabur.
+- **Penajaman Font, Teks Sekunder & Ikon**: Mengoptimalkan seluruh teks sekunder (`text-slate-400` / `text-slate-500`) ke `#475569` (Slate-600) dan `#334155` (Slate-700) di Light Mode, melampaui standar aksesibilitas WCAG AA (5.7:1) & AAA (9.3:1) sehingga subtitle, SKU, catatan, dan ikon terbaca tajam dan tidak samar.
+- **Solid Fallback Anti-Transparansi & Anti White-on-White**: Menyediakan pemetaan warna solid murni berbobot (Emerald `#059669`, Amber `#d97706`, Rose `#e11d48`, Blue `#2563eb`, Slate `#0f172a`, Primary `var(--color-primary)`) untuk seluruh elemen eks-gradasi, menjamin teks putih tidak hilang di atas latar terang.
+- **Uniform Solid Canvas & Flat Hairline Elevation**: Menyeragamkan latar kanvas seluruh tema ke `#f1f5f9` (Light) dan `#0b1120` (Dark), mengeliminasi warna belang-belang dengan elevasi flat presisi (`0 1px 3px rgba(15,23,42,0.08)`).
+- **Multi-Channel Distribution v1.19.2**: Android VersionCode `11902`, versionName `1.19.2`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.19.1 — Eliminasi Total Warna Gradient, Glassmorphism, Efek Kaca Lengkung & Shadow Tebal (100% Solid Flat Clean UI) (20 Okt 2026)
 - **Desain 100% Solid, Flat & Clean**: Mengeliminasi seluruh efek warna gradasi (`linear-gradient`, `radial-gradient`, `conic-gradient`) dan utilitas `bg-gradient-to-*` di seluruh halaman katalog etalase, menu navigasi, kartu bento, header, modal, hingga footer, bertransformasi ke warna solid murni yang berani, tenang, dan kontras tinggi.

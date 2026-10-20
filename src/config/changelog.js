@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-19-2",
+        "version": "v1.19.2",
+        "date": "2026-10-20",
+        "title": "Smart Dual-Mode High-Contrast Solid Engine, Eliminasi Warna Belang-Belang & Penajaman Garis Border serta Font Mode Terang",
+        "category": "optimization",
+        "badge": "Smart Dual-Mode High-Contrast Solid Engine v1.19.2",
+        "items": [
+            "Smart Dual-Mode High-Contrast Solid Engine: Mengeliminasi disparitas kontras dan warna pudar di tampilan terang (Light Mode) serta menyelaraskan rasio kontras visual otomatis antara mode terang dan gelap tanpa efek gradasi.",
+            "Penajaman Garis Pembatas (Border) & Divider: Meningkatkan hairline border kartu bento, panel CMS, modal, input form, dan pembagi (hr/divide) ke #cbd5e1 (Slate-300) di Light Mode dan #334155 di Dark Mode, menghadirkan batas elemen yang tegas, rapi, dan tidak kabur.",
+            "Penajaman Font, Teks Sekunder & Ikon: Mengoptimalkan seluruh teks sekunder (text-slate-400 / text-slate-500) ke #475569 (Slate-600) dan #334155 (Slate-700) di Light Mode, melampaui standar aksesibilitas WCAG AA (5.7:1) & AAA (9.3:1) sehingga subtitle, SKU, catatan, dan ikon terbaca tajam dan tidak samar.",
+            "Solid Fallback Anti-Transparansi & Anti White-on-White: Menyediakan pemetaan warna solid murni berbobot (Emerald #059669, Amber #d97706, Rose #e11d48, Blue #2563eb, Slate #0f172a, Primary var(--color-primary)) untuk seluruh elemen eks-gradasi, menjamin teks putih tidak hilang di atas latar terang.",
+            "Uniform Solid Canvas & Flat Hairline Elevation: Menyeragamkan latar kanvas seluruh tema ke #f1f5f9 (Light) dan #0b1120 (Dark), mengeliminasi warna belang-belang dengan elevasi flat presisi (0 1px 3px rgba(15,23,42,0.08)).",
+            "Multi-Channel Distribution v1.19.2 (Android versionCode 11902)."
+        ]
+    },
+    {
         "id": "log-1-19-1",
         "version": "v1.19.1",
         "date": "2026-10-20",
@@ -77,21 +93,6 @@ export const DEFAULT_CHANGELOG = [
             "Validasi Multi-Unit Multiplier Keranjang Belanja: Mengintegrasikan faktor pengali kemasan ci.unitMultiplier pada setCQty dan updCQty, menyelaraskan kuantitas maksimum kemasan (Dus/Karton/Lusin) dengan ketersediaan stok fisik riil di gudang toko.",
             "Presisi Kalkulasi Jarak GPS Khatulistiwa: Memperbaiki parser koordinat Haversine getDist di src/core/pricing.js dengan validasi isNaN(parseFloat), menjamin titik koordinat lintang 0 (Pontianak / khatulistiwa) terkalkulasi secara akurat tanpa terpotong menjadi 0 km.",
             "Multi-Channel Distribution v1.18.11 (Android versionCode 11811)."
-        ]
-    },
-    {
-        "id": "log-1-18-10",
-        "version": "v1.18.10",
-        "date": "2026-10-19",
-        "title": "Standarisasi Universal Native Bottom Sheet Seluruh Modal CMS & Storefront, Theme Gradient Harmony & Integrasi Swipe Gesture",
-        "category": "feature",
-        "badge": "Universal Native Bottom Sheet & Gesture Harmony v1.18.10",
-        "items": [
-            "Transformasi Menyeluruh Modal CMS & Storefront Native Bottom Sheet: Menyempurnakan Form Master Data (#admin-modal), Detail Pesanan Admin (#admin-order-modal), Pengaturan Printer POS (#printer-settings-modal), Tanya Admin (#modal-ask-question), Editor Q&A FAQ (#modal-admin-faq), Kartu Member Digital (#member-modal), dan Rincian Pesanan Pelanggan (#order-detail-modal) mengadopsi arsitektur modal-bottom-sheet responsif dengan drag pull-indicator pill, squircle radius rounded-t-[2rem] sm:rounded-3xl, dan safe area bottom inset padding.",
-            "Harmonisasi Penuh Tema Toko Dinamis (Theme Gradient Header): Menerapkan header bergradasi halus bertema var(--color-primary) dan aksen ikon toko pada seluruh modal, menghilangkan kesan kaku desktop dan menyatukan estetika visual premium di smartphone maupun desktop.",
-            "Integrasi Native Swipe-Down to Dismiss Gesture Engine: Mendaftarkan seluruh modal CMS ke closeModalById pada core gesture engine native-mobile.js dengan isolasi interaktif guard sehingga modal dapat ditutup dengan usapan jari ke bawah yang mulus tanpa mengganggu scrolling tabel dan input form.",
-            "Standardisasi Touch Target & Form Inputs: Mengunci seluruh kolom input, dropdown select, dan tombol aksi modal pada tinggi proporsional min-h-[44px] dengan font 16px di mobile anti auto-zoom/mental Chromium.",
-            "Multi-Channel Distribution v1.18.10 (Android versionCode 11810)."
         ]
     }
 ];
@@ -169,7 +170,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.1';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.2';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.19.1';
+    const localVer = getLatestVersion(appData) || 'v1.19.2';
 
     isFetchingRelease = true;
     try {
@@ -83,7 +83,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.19.1';
+        const fallbackVer = getLatestVersion(appData) || 'v1.19.2';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,
@@ -217,7 +217,7 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.19.1</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.19.2</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.19.1) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.19.2) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.19.1</span>
+                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.19.2</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,7 +264,13 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Universal Solid Flat Clean UI (v1.19.1):</b> Eliminasi total warna gradient, efek kaca (glassmorphism/blur), dan bayangan tebal beralih ke desain 100% solid, flat, minimalis dengan garis pembatas hairline border yang bersih.
+                            <b>Smart Dual-Mode High-Contrast Solid Engine (v1.19.2):</b> Mengeliminasi disparitas kontras dan warna pudar di Light Mode serta menyelaraskan rasio kontras visual otomatis antara mode terang dan gelap. Border kartu, panel, dan modal dipertajam dengan hairline border Slate-300 (#cbd5e1) serta teks sekunder yang tajam dan nyaman dibaca.
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
+                        <span class="font-medium text-[11px] leading-relaxed">
+                            <b>Universal Solid Flat Clean UI:</b> Eliminasi total warna gradient, efek kaca (glassmorphism/blur), dan bayangan tebal beralih ke desain 100% solid, flat, minimalis dengan garis pembatas hairline border yang bersih.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
@@ -484,7 +490,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.19.1';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.19.2';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);
