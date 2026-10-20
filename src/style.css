@@ -3206,10 +3206,10 @@ html.dark #bottom-nav-bar,
 }
 
 /* ─── SMART DUAL-MODE SOLID CLEAN CARDS & BENTO BOXES ─── */
-.card-modern,
-.card-native,
-.bento-island-card,
-[data-bg-style] .bento-island-card {
+html:not(.dark) .card-modern,
+html:not(.dark) .card-native,
+html:not(.dark) .bento-island-card,
+html:not(.dark)[data-bg-style] .bento-island-card {
     background-color: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08) !important;
@@ -5329,20 +5329,56 @@ button.active\:scale-90:active {
     -webkit-backdrop-filter: none !important;
 }
 
-/* Pastikan wadah semi-transparan kaca menjadi solid 100% */
-.bg-white\/95,
-.bg-white\/90,
-.bg-white\/80,
-.bg-white\/75 {
+/* Pastikan wadah semi-transparan kaca menjadi solid 100% tanpa kebocoran warna antar tema */
+html:not(.dark) .bg-white\/95,
+html:not(.dark) .bg-white\/90,
+html:not(.dark) .bg-white\/85,
+html:not(.dark) .bg-white\/80,
+html:not(.dark) .bg-white\/75,
+html:not(.dark) .bg-white\/70,
+html:not(.dark) .bg-white\/60,
+html:not(.dark) .bg-white\/50 {
     background-color: #ffffff !important;
 }
 
-.dark .bg-slate-800\/95,
-.dark .bg-slate-800\/90,
-.dark .bg-slate-800\/80,
-.dark .bg-slate-900\/95,
-.dark .bg-slate-900\/90,
-.dark .bg-slate-900\/80 {
+/* Kunci Solid Dark untuk Seluruh Elemen Slate di Dark Mode (Mencegah Kartu Bocor Putih) */
+html.dark [class*="dark:bg-slate-800"],
+html.dark [class*="dark:bg-slate-850"],
+.dark [class*="dark:bg-slate-800"],
+.dark [class*="dark:bg-slate-850"] {
+    background-color: #1e293b !important;
+}
+
+html.dark [class*="dark:bg-slate-900"],
+.dark [class*="dark:bg-slate-900"] {
+    background-color: #0f172a !important;
+}
+
+html.dark [class*="dark:bg-slate-950"],
+.dark [class*="dark:bg-slate-950"] {
+    background-color: #020617 !important;
+}
+
+html.dark [class*="dark:bg-slate-700"],
+.dark [class*="dark:bg-slate-700"] {
+    background-color: #334155 !important;
+}
+
+/* Sub-kotak info & tabel gelap di dalam kartu (misal bg-slate-900/50 di kartu supplier) */
+html.dark [class*="dark:bg-slate-900/50"],
+html.dark [class*="dark:bg-slate-900/60"],
+.dark [class*="dark:bg-slate-900/50"],
+.dark [class*="dark:bg-slate-900/60"] {
+    background-color: #0b1120 !important;
+}
+
+/* Proteksi Elemen Ber-class bg-white/95 tanpa dark:bg-* saat berada di Dark Mode */
+html.dark .bg-white\/95:not([class*="dark:bg-"]):not([class*="text-"]):not(input):not(select):not(textarea),
+html.dark .bg-white\/90:not([class*="dark:bg-"]):not([class*="text-"]):not(input):not(select):not(textarea),
+html.dark .bg-white\/80:not([class*="dark:bg-"]):not([class*="text-"]):not(input):not(select):not(textarea),
+.dark .bg-white\/95:not([class*="dark:bg-"]):not([class*="text-"]):not(input):not(select):not(textarea),
+.dark .bg-white\/90:not([class*="dark:bg-"]):not([class*="text-"]):not(input):not(select):not(textarea),
+.dark .bg-white\/80:not([class*="dark:bg-"]):not([class*="text-"]):not(input):not(select):not(textarea) {
     background-color: #1e293b !important;
 }
 
@@ -5368,29 +5404,51 @@ button.active\:scale-90:active {
 }
 
 /* Modal Box & Sheets: Bebas bayangan tebal melayang, gunakan hairline border solid bersih */
-.modal-bottom-sheet,
-#admin-modal-box,
-#admin-order-modal-box,
-#printer-settings-modal-box,
-#modal-ask-question-box,
-#modal-admin-faq-box,
-#member-modal-box,
-#order-detail-content,
-#salary-advance-modal-box,
-#salary-advance-detail-modal-box,
-#payroll-item-modal-box,
-#payslip-preview-modal-box,
-#permissions-modal-box,
-#add-staff-modal-box,
-#edit-staff-modal-box,
-#owner-hr-modal-box,
-#pricelist-export-modal-box,
-#modal-flash-sale-box {
+html:not(.dark) .modal-bottom-sheet,
+html:not(.dark) #admin-modal-box,
+html:not(.dark) #admin-order-modal-box,
+html:not(.dark) #printer-settings-modal-box,
+html:not(.dark) #modal-ask-question-box,
+html:not(.dark) #modal-admin-faq-box,
+html:not(.dark) #member-modal-box,
+html:not(.dark) #order-detail-content,
+html:not(.dark) #salary-advance-modal-box,
+html:not(.dark) #salary-advance-detail-modal-box,
+html:not(.dark) #payroll-item-modal-box,
+html:not(.dark) #payslip-preview-modal-box,
+html:not(.dark) #permissions-modal-box,
+html:not(.dark) #add-staff-modal-box,
+html:not(.dark) #edit-staff-modal-box,
+html:not(.dark) #owner-hr-modal-box,
+html:not(.dark) #pricelist-export-modal-box,
+html:not(.dark) #modal-flash-sale-box,
+html:not(.dark) #modal-supplier-detail-box,
+html:not(.dark) #modal-supplier-form-box {
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
     border: 1px solid #cbd5e1 !important;
     background-color: #ffffff !important;
 }
 
+html.dark .modal-bottom-sheet,
+html.dark #admin-modal-box,
+html.dark #admin-order-modal-box,
+html.dark #printer-settings-modal-box,
+html.dark #modal-ask-question-box,
+html.dark #modal-admin-faq-box,
+html.dark #member-modal-box,
+html.dark #order-detail-content,
+html.dark #salary-advance-modal-box,
+html.dark #salary-advance-detail-modal-box,
+html.dark #payroll-item-modal-box,
+html.dark #payslip-preview-modal-box,
+html.dark #permissions-modal-box,
+html.dark #add-staff-modal-box,
+html.dark #edit-staff-modal-box,
+html.dark #owner-hr-modal-box,
+html.dark #pricelist-export-modal-box,
+html.dark #modal-flash-sale-box,
+html.dark #modal-supplier-detail-box,
+html.dark #modal-supplier-form-box,
 .dark .modal-bottom-sheet,
 .dark #admin-modal-box,
 .dark #admin-order-modal-box,
@@ -5408,7 +5466,9 @@ button.active\:scale-90:active {
 .dark #edit-staff-modal-box,
 .dark #owner-hr-modal-box,
 .dark #pricelist-export-modal-box,
-.dark #modal-flash-sale-box {
+.dark #modal-flash-sale-box,
+.dark #modal-supplier-detail-box,
+.dark #modal-supplier-form-box {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
     border: 1px solid #334155 !important;
     background-color: #1e293b !important;
@@ -5717,24 +5777,47 @@ html.dark .border-slate-700,
 html.dark .border-slate-800,
 html.dark .border-slate-800\/60,
 html.dark .border-gray-700,
-html.dark .border-gray-800 {
+html.dark .border-gray-800,
+html.dark [class*="dark:border-slate-700"],
+html.dark [class*="dark:border-slate-800"],
+html.dark [class*="dark:border-slate-600"],
+html.dark [class*="dark:border-gray-700"],
+html.dark [class*="dark:border-gray-800"],
+.dark [class*="dark:border-slate-700"],
+.dark [class*="dark:border-slate-800"] {
     border-color: #334155 !important; /* Slate-700: Garis pembatas kartu/panel rapi di latar gelap */
 }
 
 html.dark .divide-slate-700 > :not([hidden]) ~ :not([hidden]),
 html.dark .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+html.dark [class*="dark:divide-slate-700"] > :not([hidden]) ~ :not([hidden]),
+html.dark [class*="dark:divide-slate-800"] > :not([hidden]) ~ :not([hidden]),
 html.dark hr {
     border-color: #334155 !important;
 }
 
 html.dark .text-slate-400,
-html.dark .text-gray-400 {
+html.dark .text-gray-400,
+html.dark [class*="dark:text-slate-400"],
+.dark [class*="dark:text-slate-400"] {
     color: #94a3b8 !important; /* Slate-400 jelas di Dark Mode */
 }
 
 html.dark .text-slate-500,
-html.dark .text-gray-500 {
+html.dark .text-gray-500,
+html.dark [class*="dark:text-slate-300"],
+.dark [class*="dark:text-slate-300"] {
     color: #cbd5e1 !important; /* Slate-300 jelas di Dark Mode */
+}
+
+html.dark [class*="dark:text-slate-200"],
+.dark [class*="dark:text-slate-200"] {
+    color: #e2e8f0 !important; /* Slate-200 jelas di Dark Mode */
+}
+
+html.dark [class*="dark:text-white"],
+.dark [class*="dark:text-white"] {
+    color: #ffffff !important;
 }
 
 html.dark .admin-input,
@@ -5750,6 +5833,7 @@ html.dark ::placeholder {
     color: #94a3b8 !important;
     opacity: 1 !important;
 }
+
 
 
 
