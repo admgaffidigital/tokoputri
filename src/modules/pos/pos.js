@@ -1887,7 +1887,7 @@ export const renderCatalog = (isLoadMore = false) => {
 
                 // 4. Badges Lengkap (Varian, Grosir, Poin Reward, Terjual)
                 const variantBadge = hasVariants
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-layer-group text-[8px] sm:text-[8.5px]"></i> Varian</span>`
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-layer-group text-[8px] sm:text-[8.5px]"></i> Varian</span>`
                     : '';
 
                 const grosirBadge = hasGrosir
@@ -1898,7 +1898,7 @@ export const renderCatalog = (isLoadMore = false) => {
                     ? Math.max(...p.variants.map(v => parseFloat(v.poin) || 0))
                     : (parseFloat(p.poin) || 0);
                 const poinBadge = activePoin > 0
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-star text-[8px] sm:text-[8.5px]"></i> +${activePoin}</span>`
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-rose-500/30 px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-star text-[8px] sm:text-[8.5px]"></i> +${activePoin}</span>`
                     : '';
 
                 const totalSoldPos = (p.variants && p.variants.length)
@@ -2156,7 +2156,7 @@ const renderCart = () => {
                         ${item.poTime ? `<span class="inline-flex items-center gap-1 text-[8px] font-bold px-1.5 py-0.5 rounded text-amber-700 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs uppercase tracking-wide"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(item.poTime)}</span>` : ''}
                         ${canViewHpp() && itemHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700 shadow-2xs" title="Harga Modal (HPP)"><i class="fa-solid fa-coins text-[7px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(itemHpp)}</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
-                            ${(item.isWholesale || item.isFlashSale) && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
+                            ${(item.isWholesale || item.isFlashSale) && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold text-[var(--color-primary)] dark:text-rose-300">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
                     ${uomPillHtml}
@@ -2190,7 +2190,7 @@ const renderCart = () => {
                         </button>
                     </div>
                     ${item.isPackagingUnit ? `
-                        <span class="text-[9px] font-bold mt-1" style="color:var(--color-primary)" title="Kuantitas satuan dasar yang dipotong">= ${formatQty(item.qty * (item.unitMultiplier || 1))} ${esc(item.baseUnit || 'pcs')}</span>
+                        <span class="text-[9px] font-bold mt-1 text-[var(--color-primary)] dark:text-rose-300" title="Kuantitas satuan dasar yang dipotong">= ${formatQty(item.qty * (item.unitMultiplier || 1))} ${esc(item.baseUnit || 'pcs')}</span>
                     ` : ''}
                     ${/^(kg|kilo|kilogram|meter|m|ltr|liter|m2|m3|ons|gram|g)$/i.test((item.unit || '').trim()) ? `
                     <div class="flex items-center gap-0.5 mt-1 justify-end">
@@ -2202,9 +2202,9 @@ const renderCart = () => {
                     ` : ''}
                     <div class="flex items-baseline gap-1 mt-1.5">
                         ${hasItemDisc ? `<span class="line-through text-[10px] text-slate-400">${fRp(item.price * item.qty)}</span>` : ''}
-                        <p class="text-xs font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
+                        <p class="pos-item-subtotal text-xs font-black text-[var(--color-primary)] dark:text-rose-300">${fRp(item.subtotal)}</p>
                     </div>
-                    ${canViewHpp() && itemHpp > 0 ? `<p class="text-[9px] font-bold ${itemMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'} mt-0.5" title="Estimasi laba kotor item ini"><i class="fa-solid fa-arrow-trend-up text-[8px] mr-0.5"></i>Untung: ${fRp(itemMargin)}</p>` : ''}
+                    ${canViewHpp() && itemHpp > 0 ? `<p class="text-[9px] font-bold ${itemMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} mt-0.5" title="Estimasi laba kotor item ini"><i class="fa-solid fa-arrow-trend-up text-[8px] mr-0.5"></i>Untung: ${fRp(itemMargin)}</p>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -2394,11 +2394,11 @@ export const openPayModal = () => {
         <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
           <div>
             <h2 class="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
-              <i class="fa-solid fa-cash-register" style="color:var(--color-primary)"></i>
+              <i class="fa-solid fa-cash-register text-[var(--color-primary)] dark:text-rose-400"></i>
               <span>Proses Pembayaran Kasir</span>
             </h2>
             <div class="flex items-center gap-2 mt-0.5 flex-wrap">
-              <span class="text-xs text-slate-500">Total Tagihan: <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(posTotal())}</span></span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Total Tagihan: <span class="font-black text-sm text-[var(--color-primary)] dark:text-rose-300">${fRp(posTotal())}</span></span>
               ${canViewHpp() && totalCartHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-full border border-amber-300/80 dark:border-amber-700 shadow-2xs"><i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(totalCartHpp)}</span>` : ''}
             </div>
           </div>
@@ -2523,7 +2523,7 @@ const renderPayDetail = (method) => {
         </div>` : ''}
         <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
           <span class="text-slate-700 dark:text-slate-200 font-bold">Total Wajib Bayar</span>
-          <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(total)}</span>
+          <span class="font-black text-sm text-[var(--color-primary)] dark:text-rose-300">${fRp(total)}</span>
         </div>
         ${canViewHpp() && totalCartHpp > 0 ? `
         <div class="flex justify-between items-center pt-1 border-t border-slate-200/40 dark:border-slate-700/40 text-[10px]">
@@ -4668,7 +4668,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex-1 relative">
-                                    <span class="pos-disc-prefix absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black" style="color:var(--color-primary)">Rp</span>
+                                    <span class="pos-disc-prefix absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black text-[var(--color-primary)] dark:text-rose-300">Rp</span>
                                     <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 h-10 text-right text-sm font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                                 </div>
                                 <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
@@ -4779,7 +4779,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="flex-1 relative">
-                                    <span class="pos-disc-prefix absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black" style="color:var(--color-primary)">Rp</span>
+                                    <span class="pos-disc-prefix absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black text-[var(--color-primary)] dark:text-rose-300">Rp</span>
                                     <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 h-10 text-right text-sm font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                                 </div>
                                 <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>

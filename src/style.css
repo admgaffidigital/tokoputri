@@ -6229,5 +6229,19 @@ html.dark button[onclick*="stock_opname"] i {
     color: #fb7185 !important;
 }
 
+html.dark .pos-item-subtotal,
+html.dark .pos-disc-prefix,
+html.dark #pos-pay-modal .font-black[style*="var(--color-primary)"],
+html.dark #pos-pay-modal span[style*="var(--color-primary)"] {
+    color: #fda4af !important; /* Rose-300 cerah kontras tinggi */
+}
+
+html.dark #pos-catalog-grid span.bg-\[rgba\(var\(--color-primary-rgb\)\,0\.08\)\] {
+    color: #fda4af !important;
+    border-color: rgba(251, 113, 133, 0.35) !important;
+    background: rgba(225, 29, 72, 0.16) !important;
+}
+
+
 
 
