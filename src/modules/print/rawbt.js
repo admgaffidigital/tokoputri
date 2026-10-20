@@ -518,9 +518,9 @@ export const renderThermalDOMAndPrint = (content) => {
     const cols = getPaperCols(config.paperSize);
     const is80 = cols >= 40;
     const paperWidth = is80 ? '80mm' : '58mm';
-    // Kalibrasi zona cetak aman (Zero Edge Clipping): 44mm untuk roll 58mm & 68mm untuk roll 80mm
-    const contentWidth = is80 ? '68mm' : '44mm';
-    const fontSize = is80 ? '10.5px' : '8.8px';
+    // Kalibrasi zona cetak optimal (Printable Head Area): 48mm untuk roll 58mm & 72mm untuk roll 80mm
+    const contentWidth = is80 ? '72mm' : '48mm';
+    const fontSize = is80 ? '11.5px' : '10px';
 
     const isHTML = typeof content === 'string' && content.includes('<') && content.includes('>');
 
@@ -577,7 +577,7 @@ export const renderThermalDOMAndPrint = (content) => {
   <style>
     @page {
       margin: 0mm !important;
-      size: ${paperWidth} auto;
+      size: auto;
     }
     * {
       box-sizing: border-box !important;
@@ -587,23 +587,26 @@ export const renderThermalDOMAndPrint = (content) => {
       print-color-adjust: exact !important;
     }
     html, body {
-      margin: 0 !important;
+      margin: 0 auto !important;
       padding: 0 !important;
-      width: ${contentWidth} !important;
-      max-width: ${contentWidth} !important;
-      background: #fff;
-      color: #000;
-      font-family: 'Courier New', Courier, monospace;
+      width: 100% !important;
+      background: #ffffff;
+      color: #000000;
+      font-family: 'Consolas', 'Courier New', Courier, monospace;
       font-size: ${fontSize};
-      line-height: 1.25;
+      font-weight: 700;
+      line-height: 1.28;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      -webkit-text-stroke: 0.15px #000000;
     }
     .utp-thermal-wrap {
       width: ${contentWidth} !important;
       max-width: ${contentWidth} !important;
       box-sizing: border-box !important;
-      padding: 0 ${is80 ? '2.5mm' : '1.5mm'} 4mm ${is80 ? '1mm' : '0.5mm'} !important;
-      margin: 0 !important;
+      padding: 0 ${is80 ? '2mm' : '1mm'} 4mm ${is80 ? '2mm' : '1mm'} !important;
+      margin: 0 auto !important;
     }
     .utp-row {
       display: flex !important;
@@ -611,44 +614,65 @@ export const renderThermalDOMAndPrint = (content) => {
       align-items: baseline !important;
       width: 100% !important;
       margin: 0.5px 0 !important;
-      line-height: 1.25 !important;
+      line-height: 1.28 !important;
       box-sizing: border-box !important;
+      font-weight: 700 !important;
+      color: #000000 !important;
     }
     .utp-col-left {
       text-align: left !important;
       word-break: break-word !important;
       flex: 1 1 auto !important;
       min-width: 0 !important;
+      font-weight: 700 !important;
+      color: #000000 !important;
     }
     .utp-col-right {
       text-align: right !important;
       white-space: nowrap !important;
       flex-shrink: 0 !important;
-      margin-left: 5px !important;
-      padding-right: ${is80 ? '2.5mm' : '1.5mm'} !important;
+      margin-left: 4px !important;
+      padding-right: ${is80 ? '1.5mm' : '1mm'} !important;
       font-variant-numeric: tabular-nums !important;
+      font-weight: 800 !important;
+      color: #000000 !important;
     }
     .utp-line {
-      line-height: 1.25 !important;
+      line-height: 1.28 !important;
       word-break: break-word !important;
       margin: 0.5px 0 !important;
+      font-weight: 700 !important;
+      color: #000000 !important;
     }
     .utp-align-center { text-align: center !important; }
     .utp-align-right { text-align: right !important; }
     .utp-align-left { text-align: left !important; }
-    .font-bold { font-weight: bold !important; }
-    .utp-title { font-size: 1.2em !important; font-weight: bold !important; line-height: 1.15 !important; }
-    .utp-tall { font-size: 1.12em !important; font-weight: bold !important; }
+    .font-bold { 
+      font-weight: 900 !important; 
+      -webkit-text-stroke: 0.25px #000000;
+    }
+    .utp-title { 
+      font-size: 1.35em !important; 
+      font-weight: 900 !important; 
+      line-height: 1.15 !important; 
+      letter-spacing: 0.5px !important;
+      -webkit-text-stroke: 0.35px #000000;
+    }
+    .utp-tall { 
+      font-size: 1.18em !important; 
+      font-weight: 900 !important; 
+      -webkit-text-stroke: 0.3px #000000;
+    }
     .utp-empty-line { height: 0.6em !important; }
     .utp-separator {
-      border-bottom: 1px dashed #000 !important;
-      margin: 2.5px 0 !important;
+      border-bottom: 1.5px dashed #000000 !important;
+      margin: 3px 0 !important;
       width: 100% !important;
       height: 0 !important;
     }
     .utp-double-separator {
-      border-bottom: 3px double #000 !important;
-      margin: 2.5px 0 !important;
+      border-bottom: 3px double #000000 !important;
+      margin: 3px 0 !important;
       width: 100% !important;
       height: 0 !important;
     }
@@ -662,9 +686,9 @@ export const renderThermalDOMAndPrint = (content) => {
       width: 100% !important;
     }
     .utp-barcode-bars {
-      width: 82% !important;
-      max-width: ${is80 ? '220px' : '150px'} !important;
-      height: ${is80 ? '36px' : '30px'} !important;
+      width: 85% !important;
+      max-width: ${is80 ? '230px' : '160px'} !important;
+      height: ${is80 ? '38px' : '32px'} !important;
       background: repeating-linear-gradient(
         90deg,
         #000 0px, #000 2px,
@@ -682,9 +706,9 @@ export const renderThermalDOMAndPrint = (content) => {
       border-bottom: 1px solid #000 !important;
     }
     .utp-barcode-code {
-      font-family: 'Courier New', Courier, monospace !important;
-      font-size: 9.5px !important;
-      font-weight: bold !important;
+      font-family: 'Consolas', 'Courier New', Courier, monospace !important;
+      font-size: 10px !important;
+      font-weight: 800 !important;
       letter-spacing: 2px !important;
       margin-top: 2px !important;
       text-align: center !important;
@@ -735,10 +759,10 @@ const fallbackDOMPrint = (htmlContent, paperWidth, contentWidth) => {
         pageStyle.id = 'dynamic-print-page-style';
         document.head.appendChild(pageStyle);
     }
-    pageStyle.innerHTML = `@media print { @page { margin: 0 !important; size: ${paperWidth} auto; } html, body { width: ${contentWidth} !important; margin: 0 !important; } }`;
+    pageStyle.innerHTML = `@media print { @page { margin: 0 !important; size: auto; } html, body { width: 100% !important; margin: 0 !important; } }`;
 
     t.innerHTML = `
-        <div class="utp-thermal-wrap" style="width:${contentWidth};max-width:${contentWidth};font-family:'Courier New',Courier,monospace;font-size:${is80 ? '10.5px' : '8.8px'};line-height:1.25;color:#000;background:#fff;padding:0 ${is80 ? '2.5mm' : '1.5mm'} 4mm ${is80 ? '1mm' : '0.5mm'};margin:0;box-sizing:border-box;">
+        <div class="utp-thermal-wrap" style="width:${contentWidth};max-width:${contentWidth};font-family:'Consolas','Courier New',Courier,monospace;font-size:${is80 ? '11.5px' : '10px'};font-weight:700;line-height:1.28;color:#000;background:#fff;padding:0 ${is80 ? '2mm' : '1mm'} 4mm ${is80 ? '2mm' : '1mm'};margin:0 auto;box-sizing:border-box;">
             ${htmlContent}
         </div>
     `;

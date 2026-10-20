@@ -42,9 +42,9 @@ const ensurePreviewStyles = () => {
         }
         .dark .utp-canvas { background-color: #0f172a; background-image: none; }
         .utp-paper {
-            position: relative; background: #fff; color: #0b0b0b;
-            font-family: 'Courier New', Courier, ui-monospace, monospace;
-            font-size: 12px; line-height: 1.32; padding: 16px 12px 18px;
+            position: relative; background: #fff; color: #000000;
+            font-family: 'Consolas', 'Courier New', Courier, ui-monospace, monospace;
+            font-size: 12px; font-weight: 700; line-height: 1.32; padding: 16px 14px 18px;
             box-shadow: 0 1px 2px rgba(15,23,42,.08), 0 14px 32px -12px rgba(15,23,42,.35);
             margin-bottom: 14px; box-sizing: content-box;
         }
@@ -55,9 +55,9 @@ const ensurePreviewStyles = () => {
                 linear-gradient(-45deg, transparent 33.33%, #fff 33.33%, #fff 66.66%, transparent 66.66%);
             background-size: 14px 28px; background-position: 0 -14px;
         }
-        .utp-line { white-space: pre; overflow: hidden; min-height: 1.32em; }
-        .utp-line.utp-title { font-size: 2em; line-height: 1.12; }
-        .utp-line.utp-tall { height: 2.64em; }
+        .utp-line { white-space: pre; overflow: hidden; min-height: 1.32em; font-weight: 700; color: #000000; }
+        .utp-line.utp-title { font-size: 1.85em; font-weight: 900; line-height: 1.15; letter-spacing: 0.5px; }
+        .utp-line.utp-tall { height: 2.64em; font-weight: 900; }
         .utp-line.utp-tall > span { display: block; transform: scaleY(2); transform-origin: top center; }
         .utp-row {
             display: flex;
@@ -65,11 +65,15 @@ const ensurePreviewStyles = () => {
             align-items: baseline;
             width: 100%;
             line-height: 1.32;
+            font-weight: 700;
+            color: #000000;
         }
         .utp-col-left {
             text-align: left;
             word-break: break-word;
             flex: 1 1 auto;
+            font-weight: 700;
+            color: #000000;
         }
         .utp-col-right {
             text-align: right;
@@ -77,15 +81,17 @@ const ensurePreviewStyles = () => {
             flex-shrink: 0;
             margin-left: 6px;
             font-variant-numeric: tabular-nums;
+            font-weight: 800;
+            color: #000000;
         }
         .utp-separator {
-            border-bottom: 1px dashed #000;
+            border-bottom: 1.5px dashed #000000;
             margin: 4px 0;
             width: 100%;
             height: 0;
         }
         .utp-double-separator {
-            border-bottom: 3px double #000;
+            border-bottom: 3px double #000000;
             margin: 4px 0;
             width: 100%;
             height: 0;

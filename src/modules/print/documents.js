@@ -2745,7 +2745,9 @@ export const printDocA4 = () => {
             padding: 0 !important;
             background: #ffffff !important;
             font-family: 'Barlow', system-ui, -apple-system, sans-serif;
-            color: #0f172a;
+            color: #000000 !important;
+            -webkit-font-smoothing: antialiased !important;
+            text-rendering: geometricPrecision !important;
         }
         .a4-page {
             width: 210mm !important;
@@ -2769,20 +2771,29 @@ export const printDocA4 = () => {
             background: #ffffff !important;
             font-size: 13px !important;
             line-height: 1.45 !important;
+            color: #000000 !important;
         }
         .a4-page:last-child {
             page-break-after: avoid !important;
             break-after: avoid !important;
         }
+        .a4-page th, .a4-page td {
+            color: #000000 !important;
+        }
+        .a4-page .font-bold, .a4-page .font-black, .a4-page b, .a4-page strong {
+            font-weight: 800 !important;
+            color: #000000 !important;
+        }
         .a4-page-footer {
             margin-top: auto;
             padding-top: 8px;
-            border-top: 1px solid #cbd5e1;
+            border-top: 1px solid #94a3b8;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 10px;
-            color: #64748b;
+            font-weight: 600;
+            color: #334155 !important;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
         @media screen {
