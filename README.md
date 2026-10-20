@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.19.0** (Android VersionCode: `11900`)
+* **Versi Rilis**: **v1.19.1** (Android VersionCode: `11901`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.19.1 — Eliminasi Total Warna Gradient, Glassmorphism, Efek Kaca Lengkung & Shadow Tebal (100% Solid Flat Clean UI) (20 Okt 2026)
+- **Desain 100% Solid, Flat & Clean**: Mengeliminasi seluruh efek warna gradasi (`linear-gradient`, `radial-gradient`, `conic-gradient`) dan utilitas `bg-gradient-to-*` di seluruh halaman katalog etalase, menu navigasi, kartu bento, header, modal, hingga footer, bertransformasi ke warna solid murni yang berani, tenang, dan kontras tinggi.
+- **Eliminasi Glassmorphism & Efek Kaca Lengkung**: Menghapus seluruh efek `backdrop-filter: blur(...)` dan `backdrop-blur-*` pada header, bottom navigation bar, drawer, dan modal. Menonaktifkan permanen overlay efek kaca bezel melengkung flagship (`#flagship-edge-screen-overlay`).
+- **Shadow Flat Hairline & Border Bersih**: Menurunkan seluruh bayangan tebal (`shadow-2xl`, `shadow-xl`, `shadow-lg`) menjadi flat subtle shadow (`shadow-xs` / `0 1px 3px rgba(15,23,42,0.08)`) dengan pembatas hairline border bersih (`1px solid #e2e8f0` / dark: `#334155`).
+- **Universal Solid Clean Engine & Proteksi Struk Thermal POS**: Mengintegrasikan engine CSS otomatis di `src/style.css` dengan proteksi selektor khusus `[style*="linear-gradient"]:not([style*="repeating-linear-gradient"])` sehingga garis barcode struk thermal di kasir tetap presisi dan tajam.
+- **Multi-Channel Distribution v1.19.1**: Android VersionCode `11901`, versionName `1.19.1`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.19.0 — Sistem HRD & Penggajian (Payroll) Terpadu, Multi-Role Staff, Presensi Kehadiran, Buku Kasbon, Slip Gaji Multi-Format & Beban Operasional (20 Okt 2026)
 - **Manajemen Staf & Multi-Role Terpadu**: Struktur akun komprehensif untuk Pemilik Toko (Owner), Admin Operasional, Kasir POS, dan Staf Gudang/Logistik dengan ID Karyawan baku (`EMP-xxx` / `OWN-001`) dan kontrol hak akses granular 22 modul.

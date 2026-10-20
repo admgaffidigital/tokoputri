@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.19.0';
+    const localVer = getLatestVersion(appData) || 'v1.19.1';
 
     isFetchingRelease = true;
     try {
@@ -83,7 +83,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.19.0';
+        const fallbackVer = getLatestVersion(appData) || 'v1.19.1';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,
@@ -217,7 +217,7 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.19.0</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.19.1</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
@@ -229,8 +229,8 @@ const ensureAppDownloadModalDOM = () => {
             </div>
 
             <!-- Kartu QR Code untuk Pengguna Desktop / Laptop -->
-            <div id="app-desktop-qr-card" class="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/40 dark:from-slate-900/60 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 flex flex-col sm:flex-row items-center gap-4">
-                <div class="w-28 h-28 bg-white p-2 rounded-xl shadow-md border border-slate-200/80 dark:border-slate-700 shrink-0 flex items-center justify-center">
+            <div id="app-desktop-qr-card" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-emerald-200/60 dark:border-emerald-800/40 flex flex-col sm:flex-row items-center gap-4">
+                <div class="w-28 h-28 bg-white p-2 rounded-xl shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0 flex items-center justify-center">
                     <img id="app-download-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https%3A%2F%2Fgithub.com%2Fadmgaffidigital%2Ftokoputri%2Freleases%2Flatest%2Fdownload%2FTokoPutri.OfficialStore.apk" alt="QR Code Unduh APK" class="w-full h-full object-contain" loading="lazy">
                 </div>
                 <div class="flex-1 text-center sm:text-left">
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.19.0) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.19.1) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.19.0</span>
+                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.19.1</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,7 +264,13 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Sistem HRD &amp; Penggajian (Payroll v1.19.0):</b> Mesin kompensasi hulu-ke-hilir untuk seluruh staf &amp; owner direksi dengan ID Karyawan (EMP-xxx/OWN-001), presensi kehadiran, buku kasbon cicilan multi-bulan, potongan barang hilang, dan integrasi otomatis ke beban operasional toko.
+                            <b>Universal Solid Flat Clean UI (v1.19.1):</b> Eliminasi total warna gradient, efek kaca (glassmorphism/blur), dan bayangan tebal beralih ke desain 100% solid, flat, minimalis dengan garis pembatas hairline border yang bersih.
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
+                        <span class="font-medium text-[11px] leading-relaxed">
+                            <b>Sistem HRD &amp; Penggajian (Payroll):</b> Mesin kompensasi hulu-ke-hilir untuk seluruh staf &amp; owner direksi dengan ID Karyawan (EMP-xxx/OWN-001), presensi kehadiran, buku kasbon cicilan multi-bulan, potongan barang hilang, dan integrasi otomatis ke beban operasional toko.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
@@ -478,7 +484,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.19.0';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.19.1';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);

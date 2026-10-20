@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-19-1",
+        "version": "v1.19.1",
+        "date": "2026-10-20",
+        "title": "Eliminasi Total Gradient, Glassmorphism, Efek Kaca Lengkung & Shadow Tebal — 100% Solid Flat Clean UI Engine",
+        "category": "optimization",
+        "badge": "Universal 100% Solid Flat Clean Engine v1.19.1",
+        "items": [
+            "Desain 100% Solid, Flat & Clean: Mengeliminasi seluruh efek warna gradasi (linear, radial, conic gradient) dan class bg-gradient-to-* pada seluruh halaman etalase, menu navigasi, kartu bento, header, modal, hingga footer, bertransformasi ke warna solid murni yang tegas, tenang, dan nyaman di mata.",
+            "Eliminasi Glassmorphism & Efek Kaca Lengkung: Menghapus seluruh efek backdrop-filter blur kaca di header, navbar, drawer, dan modal. Menonaktifkan secara permanen efek kaca overlay bezel lengkung flagship (#flagship-edge-screen-overlay) untuk estetika flat minimalis modern.",
+            "Shadow Flat Hairline & Border Bersih: Menurunkan seluruh bayangan tebal (shadow-2xl, shadow-xl, shadow-lg) menjadi flat subtle shadow (shadow-xs) dengan pembatas hairline border rapi (1px solid #e2e8f0 / dark: #334155).",
+            "Universal Solid Clean Engine & Proteksi Struk Thermal: Menerapkan engine CSS otomatis di style.css dengan proteksi khusus garis barcode thermal repeating-linear-gradient pada struk nota POS agar tetap tercetak presisi dan tajam.",
+            "Multi-Channel Distribution v1.19.1 (Android versionCode 11901)."
+        ]
+    },
+    {
         "id": "log-1-19-0",
         "version": "v1.19.0",
         "date": "2026-10-20",
@@ -77,21 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Integrasi Native Swipe-Down to Dismiss Gesture Engine: Mendaftarkan seluruh modal CMS ke closeModalById pada core gesture engine native-mobile.js dengan isolasi interaktif guard sehingga modal dapat ditutup dengan usapan jari ke bawah yang mulus tanpa mengganggu scrolling tabel dan input form.",
             "Standardisasi Touch Target & Form Inputs: Mengunci seluruh kolom input, dropdown select, dan tombol aksi modal pada tinggi proporsional min-h-[44px] dengan font 16px di mobile anti auto-zoom/mental Chromium.",
             "Multi-Channel Distribution v1.18.10 (Android versionCode 11810)."
-        ]
-    },
-    {
-        "id": "log-1-18-09",
-        "version": "v1.18.9",
-        "date": "2026-10-19",
-        "title": "Redesain Modal Flash Sale Full Native App Bottom Sheet, Penyelarasan Tema Dinamis & Eliminasi Total Kebocoran Layout",
-        "category": "feature",
-        "badge": "Native App Flash Sale & Theme Harmony v1.18.9",
-        "items": [
-            "Redesain Modal Pembuat Sesi Flash Sale Native App Bottom Sheet: Mengganti tampilan modal kaku klasik dengan arsitektur modal-bottom-sheet responsif (docked di bagian bawah pada smartphone dengan pull-indicator drag handle bar, dan centered modal elegan di layar tablet/desktop) terintegrasi dengan gesture engine swipe-down to dismiss.",
-            "Penyelarasan Total Tema Toko Dinamis (Theme Harmony): Menerapkan CSS custom property var(--color-primary) dan var(--color-primary-dark) secara konsisten pada header modal, tombol aksi utama, chip preset durasi jam (+3J, +6J, 24J, 48J), serta styling khusus kontras tinggi pada kolom input Harga Kilat bertema toko.",
-            "Eliminasi Kebocoran Layout & Anti Teks Terpotong: Restrukturisasi tata letak baris 'Daftar Barang Flash Sale' menjadi responsif (flex-col di mobile, sm:flex-row di desktop) dan proteksi overflow-x-hidden, melenyapkan total kendala tombol '+ Tambah Produk' terpotong di tepi kanan layar dan scrollbar horizontal liar di smartphone.",
-            "Bento Island Empty State & Form Input Touch Target 44px: Menggantikan kotak border-dashed abu-abu datar dengan kartu Bento Empty State interaktif beraksen petir tema toko, serta standardisasi kolom input form dan dropdown select berukuran touch target proporsional (min-h-[44px], font 16px mobile anti-auto-zoom).",
-            "Multi-Channel Distribution v1.18.9 (Android versionCode 11809)."
         ]
     }
 ];
@@ -169,7 +169,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.0';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.1';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     
