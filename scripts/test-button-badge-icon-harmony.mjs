@@ -288,6 +288,34 @@ assert(
     'Tombol sinkronasi admin #btn-admin-refresh terkunci proporsional ke height: 2rem (32px)'
 );
 
+// ─── 12. Verifikasi Proteksi Hidden & Keselarasan Icon Sinkronasi ─────────────
+console.log('\n🔒 12. Memeriksa Proteksi Hidden & Keselarasan Icon Sinkronasi...');
+assert(
+    cssContent.includes('.hidden,') &&
+    cssContent.includes('[hidden]') &&
+    cssContent.includes('display: none !important;'),
+    'Proteksi mutlak utilitas Tailwind .hidden & [hidden] terpasang dengan display: none !important'
+);
+
+assert(
+    cssContent.includes('[class*="badge"]:not(.hidden):not([hidden])') &&
+    cssContent.includes('div[class*="w-8"][class*="h-8"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden])'),
+    'Badge dan Icon Pods memiliki guard :not(.hidden):not([hidden]) anti-kebocoran display di HP'
+);
+
+assert(
+    cssContent.includes('#admin-refresh-icon') &&
+    cssContent.includes('#dashboard-cashflow-refresh-icon') &&
+    cssContent.includes('transform-origin: center center !important;'),
+    'Icon sinkronasi admin & arus kas terstandarisasi proporsional 1:1 dengan transform-origin di pusat'
+);
+
+assert(
+    cashflowContent.includes('fa-arrows-rotate text-xs') &&
+    cashflowContent.includes('id="dashboard-cashflow-refresh-icon"'),
+    'Tombol Segarkan widget arus kas menggunakan fa-arrows-rotate text-xs selaras proporsional dengan header'
+);
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passedTests} Passed, ${totalTests - passedTests} Failed`);
 if (passedTests === totalTests) {

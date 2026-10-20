@@ -4339,9 +4339,9 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </div>
                 <div class="min-w-0 flex-1">
                     <h1 class="text-xs sm:text-sm font-black uppercase tracking-wide leading-tight text-white truncate drop-shadow-2xs">${storeName}</h1>
-                    <div class="flex items-center gap-1.5 mt-0.5">
+                    <div class="flex items-center gap-1.5 mt-0.5 text-[10px] text-white/90 font-medium leading-none truncate">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse shrink-0"></span>
-                        <span class="text-[10px] text-white/95 font-medium truncate">${esc(cashierName)}</span>
+                        <span class="truncate">Kasir: <span class="font-bold text-white">${esc(cashierName)}</span></span>
                     </div>
                 </div>
             </div>
@@ -4399,8 +4399,20 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </button>
                 </div>
                 <div class="p-1 space-y-0.5">
-                    <button onclick="window.closePOSMobileMenu(); if(typeof window.toggleTheme==='function') window.toggleTheme();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                    <button onclick="window.closePOSMobileMenu(); window.openPOSHeldModal && window.openPOSHeldModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
                         <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-800/60">
+                            <i class="fa-solid fa-hourglass-half text-xs"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-bold leading-tight flex items-center justify-between">
+                                <span>Antrean Parkir</span>
+                                <span class="text-[10px] text-slate-400 font-mono">F8</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Daftar transaksi tertahan</div>
+                        </div>
+                    </button>
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.toggleTheme==='function') window.toggleTheme();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200/60 dark:border-slate-700/60">
                             <i class="fa-solid fa-circle-half-stroke text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -4451,8 +4463,9 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <i class="fa-solid fa-chart-pie text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <div class="text-xs font-bold leading-tight">
-                                <span>Ringkasan Shift</span>
+                            <div class="text-xs font-bold leading-tight flex items-center justify-between">
+                                <span>Buka / Ringkasan Shift</span>
+                                <span class="text-[10px] text-slate-400 font-mono">F10</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">X-Report saldo & rekap kasir</div>
                         </div>

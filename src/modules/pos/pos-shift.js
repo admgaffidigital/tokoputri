@@ -1956,7 +1956,7 @@ export const renderShiftHeaderBadge = () => {
                     <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
                         <i class="fa-solid fa-cash-register text-emerald-300 text-xs"></i>
                         <span class="hidden xl:inline text-xs font-medium">Shift: </span>
-                        <b class="text-white text-xs whitespace-nowrap">${fRp(shift.startingCash)}</b>
+                        <b class="text-white text-xs whitespace-nowrap hidden sm:inline">${fRp(shift.startingCash)}</b>
                     </button>
                     <button onclick="window.openPOSCashMovementModal()" class="hidden xl:inline-flex h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-amber-300 border border-amber-300/30 transition-all cursor-pointer shadow-xs active:scale-95 items-center gap-1 whitespace-nowrap shrink-0" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
                         <i class="fa-solid fa-money-bill-transfer text-xs"></i>
@@ -1981,10 +1981,10 @@ export const renderShiftHeaderBadge = () => {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
             if (isStorefront) {
                 target.innerHTML = `
-                <button onclick="window.openPOSOpenShiftModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer border border-white/25 whitespace-nowrap shrink-0" title="Buka shift kasir baru">
+                <button onclick="window.openPOSOpenShiftModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs inline-flex items-center gap-1 sm:gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer border border-white/25 whitespace-nowrap shrink-0" title="Buka shift kasir baru">
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse"></span>
                     <i class="fa-solid fa-wallet text-amber-300 text-xs"></i>
-                    <span class="text-xs font-black whitespace-nowrap">Buka Shift</span>
+                    <span class="text-xs font-black whitespace-nowrap hidden sm:inline">Buka Shift</span>
                 </button>`;
             } else {
                 target.innerHTML = `

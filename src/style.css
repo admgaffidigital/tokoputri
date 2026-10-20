@@ -4038,15 +4038,15 @@ button.h-12.w-12:not([class*=":w-auto"]):not([class*=":aspect-auto"]):not(.w-aut
 }
 
 /* Proteksi Anti-Gepeng & Anti-Wrap Badge Status di Seluruh Aplikasi */
-.badge-native,
-.status-pill,
-.badge-compact,
-span[class*="tracking-widest"][class*="rounded-"],
-span[class*="tracking-wider"][class*="rounded-"] {
+.badge-native:not(.hidden):not([hidden]),
+.status-pill:not(.hidden):not([hidden]),
+.badge-compact:not(.hidden):not([hidden]),
+span[class*="tracking-widest"][class*="rounded-"]:not(.hidden):not([hidden]),
+span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
-    display: inline-flex !important;
+    display: inline-flex;
     align-items: center !important;
 }
 
@@ -5857,25 +5857,25 @@ html.dark ::placeholder {
    ============================================================ */
 
 /* ─── 1. UNIVERSAL BADGE & STATUS PILL HARMONY (ANTI-WRAP & ANTI-BLOAT) ─── */
-[class*="badge"],
-.badge-native,
-.status-pill,
-.badge-compact,
-.so-badge,
-.fifo-badge,
-span[class*="rounded-"][class*="text-[7"],
-span[class*="rounded-"][class*="text-[8"],
-span[class*="rounded-"][class*="text-[9"],
-span[class*="rounded-"][class*="text-[10"],
-span[class*="rounded-"][class*="text-[11"],
-span[class*="rounded-"][class*="uppercase"][class*="px-"],
-span[class*="rounded-"][class*="uppercase"][class*="p-"],
-span[class*="tracking-widest"][class*="rounded-"],
-span[class*="tracking-wider"][class*="rounded-"] {
+[class*="badge"]:not(.hidden):not([hidden]),
+.badge-native:not(.hidden):not([hidden]),
+.status-pill:not(.hidden):not([hidden]),
+.badge-compact:not(.hidden):not([hidden]),
+.so-badge:not(.hidden):not([hidden]),
+.fifo-badge:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="text-[7"]:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="text-[8"]:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="text-[9"]:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="text-[10"]:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="text-[11"]:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="uppercase"][class*="px-"]:not(.hidden):not([hidden]),
+span[class*="rounded-"][class*="uppercase"][class*="p-"]:not(.hidden):not([hidden]),
+span[class*="tracking-widest"][class*="rounded-"]:not(.hidden):not([hidden]),
+span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     white-space: nowrap !important;
     word-break: keep-all !important;
     flex-shrink: 0 !important;
-    display: inline-flex !important;
+    display: inline-flex;
     align-items: center !important;
     justify-content: center !important;
     line-height: 1.15 !important;
@@ -5955,7 +5955,7 @@ button.aspect-auto {
     aspect-ratio: auto !important;
 }
 
-/* Proteksi Presisi Header CMS Admin & Tombol Aksi: Tinggi Konsisten 32px (h-8) Bebas Membengkak */
+/* Proteksi Presisi Header CMS Admin & Tombol Aksi */
 #view-admin .glass-header button[class*="h-8"],
 #btn-admin-refresh,
 #btn-admin-theme-toggle {
@@ -5963,70 +5963,122 @@ button.aspect-auto {
     max-height: 2rem !important;
     box-sizing: border-box !important;
 }
+
+/* Di Mobile (<640px): Seluruh tombol aksi header CMS Admin wajib tepat 32px x 32px bujur sangkar murni (1:1 squircle) */
+@media (max-width: 639.98px) {
+    #view-admin .glass-header button[class*="h-8"],
+    #btn-admin-refresh,
+    #btn-admin-theme-toggle {
+        width: 2rem !important;
+        min-width: 2rem !important;
+        max-width: 2rem !important;
+        height: 2rem !important;
+        min-height: 2rem !important;
+        max-height: 2rem !important;
+        aspect-ratio: 1 / 1 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 0.75rem !important;
+        box-sizing: border-box !important;
+        flex-shrink: 0 !important;
+    }
+    #btn-admin-refresh span,
+    #btn-admin-theme-toggle span,
+    #view-admin .glass-header button[class*="h-8"] span {
+        display: none !important;
+    }
+}
+
 @media (min-width: 640px) {
     #view-admin .glass-header button[class*="h-8"],
     #btn-admin-refresh,
     #btn-admin-theme-toggle {
         aspect-ratio: auto !important;
         height: 2rem !important;
+        max-height: 2rem !important;
         width: auto !important;
     }
 }
 
 /* ─── 3. UNIVERSAL ICON POD & CONTAINER HARMONY ─── */
 /* A. Large Icon Pods (w-14 / w-16: 56px - 64px) -> 1rem (16px squircle) */
-div[class*="w-14"][class*="h-14"],
-div[class*="w-16"][class*="h-16"],
-button[class*="w-14"][class*="h-14"] > div,
-button[class*="w-16"][class*="h-16"] > div {
+div[class*="w-14"][class*="h-14"]:not(.hidden):not([hidden]),
+div[class*="w-16"][class*="h-16"]:not(.hidden):not([hidden]),
+button[class*="w-14"][class*="h-14"]:not(.hidden):not([hidden]) > div,
+button[class*="w-16"][class*="h-16"]:not(.hidden):not([hidden]) > div {
     border-radius: 1rem !important;
     flex-shrink: 0 !important;
     aspect-ratio: 1 / 1 !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
 }
 
 /* B. Medium Icon Pods (w-10 / w-12: 40px - 48px) -> 0.875rem (14px squircle) */
-div[class*="w-10"][class*="h-10"]:not([class*="rounded-full"]):not(.avatar),
-div[class*="w-12"][class*="h-12"]:not([class*="rounded-full"]):not(.avatar) {
+div[class*="w-10"][class*="h-10"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]),
+div[class*="w-12"][class*="h-12"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]) {
     border-radius: 0.875rem !important;
     flex-shrink: 0 !important;
     aspect-ratio: 1 / 1 !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
 }
 
 /* C. Compact Icon Pods & KPI Stat Cards (w-8 / w-9: 32px - 36px) -> 0.75rem (12px squircle) */
-div[class*="w-8"][class*="h-8"]:not([class*="rounded-full"]):not(.avatar),
-div[class*="w-9"][class*="h-9"]:not([class*="rounded-full"]):not(.avatar) {
+div[class*="w-8"][class*="h-8"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]),
+div[class*="w-9"][class*="h-9"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]) {
     border-radius: 0.75rem !important;
     flex-shrink: 0 !important;
     aspect-ratio: 1 / 1 !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
 }
 
 /* D. Small Icon Pods & Step Indicators (w-6 / w-7: 24px - 28px) -> 0.5rem (8px squircle) */
-div[class*="w-6"][class*="h-6"]:not([class*="rounded-full"]):not(.avatar),
-div[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar),
-span[class*="w-6"][class*="h-6"]:not([class*="rounded-full"]):not(.avatar),
-span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar) {
+div[class*="w-6"][class*="h-6"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]),
+div[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]),
+span[class*="w-6"][class*="h-6"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]),
+span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar):not(.hidden):not([hidden]) {
     border-radius: 0.5rem !important;
     flex-shrink: 0 !important;
     aspect-ratio: 1 / 1 !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
 }
 
-/* ─── 4. BENTO EMPTY STATE & DROPDOWN CLAMPING ENGINE ─── */
+/* ─── 4. PENYELARASAN ICONS SINKRONISASI (ANTI-GEPENG & PROPORSIONAL 1:1) ─── */
+#admin-refresh-icon,
+#dashboard-cashflow-refresh-icon,
+.fa-arrows-rotate,
+.fa-rotate {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    aspect-ratio: 1 / 1 !important;
+    line-height: 1 !important;
+    transform-origin: center center !important;
+}
+#admin-refresh-icon {
+    font-size: 0.75rem !important;
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+}
+#dashboard-cashflow-refresh-icon {
+    font-size: 0.75rem !important;
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+}
+
+/* ─── 5. BENTO EMPTY STATE & DROPDOWN CLAMPING ENGINE ─── */
 .bento-empty-state-card button {
     white-space: nowrap !important;
     word-break: keep-all !important;
@@ -6039,5 +6091,41 @@ span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar) {
 #report-export-dropdown-menu {
     max-width: calc(100vw - 2rem) !important;
     box-sizing: border-box !important;
+}
+
+/* ─── 6. PROTEKSI MUTLAK UTILITAS HIDDEN & RESPONSIVE DISPLAY ENGINE ─── */
+.hidden,
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 639.98px) {
+    .sm\:hidden {
+        display: none !important;
+    }
+    .hidden:not(.sm\:inline):not(.sm\:block):not(.sm\:flex):not(.sm\:inline-flex) {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1279.98px) {
+    .pos-network-status-badge.hidden,
+    #pos-live-clock.hidden,
+    .hidden[class*="xl:inline-flex"],
+    .hidden[class*="xl:flex"],
+    .hidden[class*="xl:inline-block"],
+    .hidden[class*="xl:inline"],
+    .hidden[class*="xl:block"] {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1535.98px) {
+    .hidden[class*="2xl:inline-flex"],
+    .hidden[class*="2xl:flex"],
+    .hidden[class*="2xl:inline"],
+    .hidden[class*="2xl:block"] {
+        display: none !important;
+    }
 }
 
