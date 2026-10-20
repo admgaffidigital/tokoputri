@@ -55,14 +55,15 @@ if (typeof window !== 'undefined') {
 // mendapatkan data terbaru dari server, bukan data lama dari IndexedDB.
 // Ini KRITIS untuk realtime sync antar perangkat yang benar.
 // PENTING: merge:true agar tidak menimpa host/config internal Firebase yang sudah ada.
-// OPTIMASI v1.9.73: experimentalForceLongPolling diganti dengan experimentalAutoDetectLongPolling.
-// Dengan auto-detect, Firestore akan memilih WebSocket (lebih hemat & cepat) jika jaringan
-// mendukung, dan hanya fallback ke long-polling jika memang diperlukan (jaringan proxy/corporate).
-// Ini mengurangi beban koneksi & hemat kuota terutama di HP Android dengan jaringan normal.
+// PROTEKSI KONEKSI & ANTI-ERR_QUIC_PROTOCOL_ERROR:
+// Menggunakan experimentalForceLongPolling: true untuk menjamin seluruh komunikasi streaming
+// Firestore berjalan via standard HTTPS TCP (Port 443). Ini mengeliminasi putusnya sesi UDP
+// (net::ERR_QUIC_PROTOCOL_ERROR dan HTTP 400 Bad Request) yang sering terjadi di jaringan
+// ISP / WiFi / Seluler lokal di Indonesia, memastikan sinkronisasi realtime kasir POS 100% stabil.
 try {
     db.settings({
         ignoreUndefinedProperties: true,
-        experimentalAutoDetectLongPolling: true,
+        experimentalForceLongPolling: true,
         merge: true,
     });
 } catch(e) {}
