@@ -274,11 +274,11 @@ const renderTempoDetailModalContent = (o) => {
                 <div class="min-w-0">
                     <div class="flex items-center gap-2 flex-wrap">
                         <h3 class="font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight truncate">${esc(o.customer?.name || 'Pelanggan Anonim')}</h3>
-                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider whitespace-nowrap inline-flex items-center border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
                             ${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}
                         </span>
                         ${(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater') ? `
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded-xl uppercase tracking-widest border border-emerald-300 dark:border-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 flex items-center gap-1">
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider whitespace-nowrap inline-flex items-center border border-emerald-300 dark:border-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 gap-1">
                                 <i class="fa-solid fa-bolt text-emerald-500"></i> Putri PayLater
                             </span>
                         ` : ''}
@@ -2109,11 +2109,11 @@ const renderTempoCardItem = (o) => {
                             <i class="fa-brands fa-whatsapp text-emerald-500"></i>
                             <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="hover:underline text-slate-600 dark:text-slate-300 font-mono">+${esc(waNum || '-')}</a>
                         </p>
-                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider whitespace-nowrap inline-flex items-center border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
                             ${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}
                         </span>
                         ${(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater') ? `
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded-xl uppercase tracking-widest border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider whitespace-nowrap inline-flex items-center border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 gap-1">
                                 <i class="fa-solid fa-bolt text-emerald-500"></i>PayLater (${o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari')})
                             </span>
                         ` : ''}

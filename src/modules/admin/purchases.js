@@ -263,7 +263,7 @@ export const renderPurchasesView = () => {
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="space-y-1.5 max-w-xl">
                         <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-2xs whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-cart-flatbed"></i> Pengadaan &amp; Purchase Order (PO)
                             </span>
                         </div>
@@ -276,15 +276,15 @@ export const renderPurchasesView = () => {
                     </div>
 
                     <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="if(window.openAdminTab) window.openAdminTab('suppliers');" class="px-3.5 sm:px-4 py-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                        <button onclick="if(window.openAdminTab) window.openAdminTab('suppliers');" class="px-3.5 sm:px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                             <i class="fa-solid fa-truck-field" style="color:var(--color-primary)"></i>
                             <span>Data Supplier</span>
                         </button>
-                        <button onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('debts'), 100);}" class="px-3.5 sm:px-4 py-3 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-bold text-xs shadow-2xs hover:bg-amber-100 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                        <button onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('debts'), 100);}" class="px-3.5 sm:px-4 py-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-bold text-xs shadow-2xs hover:bg-amber-100 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                             <i class="fa-solid fa-chart-pie text-amber-600 dark:text-amber-400"></i>
                             <span>Laporan Utang</span>
                         </button>
-                        <button onclick="window.openCreatePOModal()" class="px-4 sm:px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openCreatePOModal()" class="px-4 sm:px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Buat Order PO</span>
                         </button>
@@ -454,26 +454,26 @@ const renderPOCardHtml = (po) => {
     // Status Badge - Selaras Tema Dinamis
     let statusBadge = '';
     if (po.status === 'ordered') {
-        statusBadge = `<span class="px-3 py-1 rounded-full text-[11px] font-black border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-clock mr-1.5"></i>Dipesan</span>`;
+        statusBadge = `<span class="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border whitespace-nowrap inline-flex items-center" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>`;
     } else if (po.status === 'received') {
-        statusBadge = '<span class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[11px] font-black border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1.5"></i>Barang Diterima</span>';
+        statusBadge = '<span class="px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-200 dark:border-emerald-800 whitespace-nowrap inline-flex items-center"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>';
     } else if (po.status === 'completed') {
-        statusBadge = '<span class="px-3 py-1 rounded-full bg-emerald-500 text-white text-[11px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1.5"></i>Selesai &amp; Lunas</span>';
+        statusBadge = '<span class="px-2.5 py-0.5 rounded-lg bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider shadow-2xs whitespace-nowrap inline-flex items-center"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>';
     } else if (po.status === 'cancelled') {
-        statusBadge = '<span class="px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[11px] font-black border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1.5"></i>Dibatalkan</span>';
+        statusBadge = '<span class="px-2.5 py-0.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-wider border border-rose-200 dark:border-rose-800 whitespace-nowrap inline-flex items-center"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>';
     }
 
     // Payment Badge
     let paymentBadge = '';
     if (po.paymentType === 'cash') {
-        paymentBadge = '<span class="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-[11px] font-bold">Tunai / Cash</span>';
+        paymentBadge = '<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap inline-flex items-center">Tunai / Cash</span>';
     } else if (po.paymentType === 'konsinyasi') {
-        paymentBadge = '<span class="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-[11px] font-bold">Konsinyasi</span>';
+        paymentBadge = '<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap inline-flex items-center">Konsinyasi</span>';
     } else {
         if (po.paymentStatus === 'lunas' || unpaid <= 0) {
-            paymentBadge = '<span class="px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-check mr-1"></i>Tempo Lunas</span>';
+            paymentBadge = '<span class="px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-200 dark:border-emerald-800 whitespace-nowrap inline-flex items-center"><i class="fa-solid fa-check mr-1"></i>Tempo Lunas</span>';
         } else {
-            paymentBadge = `<span class="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-[11px] font-bold border border-amber-200 dark:border-amber-800"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Sisa Hutang: ${fCur(unpaid)}</span>`;
+            paymentBadge = `<span class="px-2 py-0.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider border border-amber-200 dark:border-amber-800 whitespace-nowrap inline-flex items-center"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Sisa: ${fCur(unpaid)}</span>`;
         }
     }
 

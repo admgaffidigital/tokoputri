@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-19-3",
+        "version": "v1.19.3",
+        "date": "2026-10-20",
+        "title": "Universal Harmony Engine: Penyelarasan Border Radius Tombol, Badge Anti-Wrap & Anti-Bloat, dan Konsistensi Wadah Ikon (Icon Pods)",
+        "category": "optimization",
+        "badge": "Universal UI Harmony & Consistency Engine v1.19.3",
+        "items": [
+            "Universal Badge Anti-Wrap & Anti-Bloat Engine: Menstandarkan seluruh badge status dan info pill di seluruh aplikasi (Pesanan, Supplier, Kulakan PO, Retur, dan Tempo) dengan white-space: nowrap !important, line-height: 1.15, max-height 26px, dan letter-spacing proporsional, mengeliminasi teks bertumpuk atau mekar menggembung secara tuntas.",
+            "Hierarki Border Radius Tombol Selaras: Mengunci seluruh tombol aksi ke sistem squircle terstandar: Tombol Utama/CTA/Submit (1rem / 16px), Tombol Sekunder/Filter Chiclet/Tab (0.75rem / 12px), Tombol Aksi Kompak (0.75rem / 12px), dan Micro Action/Drag Handle (0.5rem / 8px).",
+            "Standarisasi Wadah Ikon (Icon Pods): Menyelaraskan border radius seluruh wadah ikon berdasarkan dimensi (Large 56-64px ke 16px squircle, Medium 40-48px ke 14px, Compact/Stat 32-36px ke 12px, dan Small 24-28px ke 8px) dengan proteksi aspect-ratio 1:1 anti-gepeng.",
+            "Penyelarasan Template Modul CMS & Storefront: Merapikan seluruh template badge di orders.js, suppliers.js, purchases.js, table.js, tempo.js, dan index.html sehingga bebas dari inkonsistensi rounded-full jomplang.",
+            "Suite Unit Test Baru test-button-badge-icon-harmony.mjs (20 pengujian) 100% Passed dan terintegrasi otomatis ke audit kesehatan sistem.",
+            "Multi-Channel Distribution v1.19.3 (Android versionCode 11903)."
+        ]
+    },
+    {
         "id": "log-1-19-2",
         "version": "v1.19.2",
         "date": "2026-10-20",
@@ -78,21 +94,6 @@ export const DEFAULT_CHANGELOG = [
             "Eliminasi Popstate Race Condition & Stabilitas Preview PDF A4: Menerapkan engine replaceModalHistory di router.js yang mentransisikan state modal secara deterministik dan mengeliminasi tabrakan history.back(), menjamin lembar preview dokumen A4 langsung muncul seketika tanpa tertutup kembali.",
             "Integrasi Toolbar Produk Admin & Universal Router: Menambahkan tombol 'Daftar Harga' berdampingan dengan Stock Opname di toolbar admin produk, terdaftar penuh pada MODAL_ELEMENT_MAP, closeModalByName, allKnownModals, dan gesture engine swipe dismiss.",
             "Multi-Channel Distribution v1.18.12 (Android versionCode 11812)."
-        ]
-    },
-    {
-        "id": "log-1-18-11",
-        "version": "v1.18.11",
-        "date": "2026-10-19",
-        "title": "Audit Komprehensif Sistem, Resolusi Floating-Point Stok Habis, Multi-Unit Keranjang, Dialog Konfirmasi & Presisi GPS",
-        "category": "feature",
-        "badge": "System Audit & Core Logic Resolution v1.18.11",
-        "items": [
-            "Resolusi Dialog Konfirmasi & Modals Proxy: Menyempurnakan showConfirm(...args) di src/core/utils.js untuk meneruskan seluruh 5 parameter secara utuh tanpa pemotongan argumen, menjamin tombol konfirmasi aksi aman (isDanger = false) di retur barang dan master preset tetap beraksen warna tema toko primer tanpa keliru berubah merah.",
-            "Proteksi Floating-Point Stok Depleted & Auto-Deactivate: Menghilangkan residu desimal pada transaksi checkout dan terminal kasir POS dengan batas toleransi stok <= 0.0001 dipatok ke 0, memastikan produk dan varian yang terjual habis otomatis dinonaktifkan secara tepat waktu.",
-            "Validasi Multi-Unit Multiplier Keranjang Belanja: Mengintegrasikan faktor pengali kemasan ci.unitMultiplier pada setCQty dan updCQty, menyelaraskan kuantitas maksimum kemasan (Dus/Karton/Lusin) dengan ketersediaan stok fisik riil di gudang toko.",
-            "Presisi Kalkulasi Jarak GPS Khatulistiwa: Memperbaiki parser koordinat Haversine getDist di src/core/pricing.js dengan validasi isNaN(parseFloat), menjamin titik koordinat lintang 0 (Pontianak / khatulistiwa) terkalkulasi secara akurat tanpa terpotong menjadi 0 km.",
-            "Multi-Channel Distribution v1.18.11 (Android versionCode 11811)."
         ]
     }
 ];
@@ -170,7 +171,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.2';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.3';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.19.2** (Android VersionCode: `11902`)
+* **Versi Rilis**: **v1.19.3** (Android VersionCode: `11903`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.19.3 — Universal Harmony Engine: Penyelarasan Border Radius Tombol, Badge Anti-Wrap & Anti-Bloat, dan Konsistensi Wadah Ikon (Icon Pods) (20 Okt 2026)
+- **Universal Badge Anti-Wrap & Anti-Bloat Engine**: Mengunci seluruh badge status dan info pill di seluruh aplikasi (Pesanan, Supplier, PO Kulakan, Retur, dan Tempo) dengan `white-space: nowrap !important`, `line-height: 1.15`, `max-height: 26px`, dan letter-spacing proporsional, mengeliminasi teks bertumpuk atau mekar menggembung secara tuntas.
+- **Hierarki Border Radius Tombol Selaras**: Mengunci seluruh tombol aksi ke sistem squircle terstandar: Tombol Utama/CTA/Submit (`1rem` / 16px), Tombol Sekunder/Filter Chiclet/Tab (`0.75rem` / 12px), Tombol Aksi Kompak (`0.75rem` / 12px), dan Micro Action/Drag Handle (`0.5rem` / 8px).
+- **Standarisasi Wadah Ikon (Icon Pods)**: Menyelaraskan border radius seluruh wadah ikon berdasarkan dimensi (Large 56-64px ke 16px squircle, Medium 40-48px ke 14px, Compact/Stat 32-36px ke 12px, dan Small 24-28px ke 8px) dengan proteksi `aspect-ratio: 1 / 1 !important` anti-gepeng.
+- **Penyelarasan Template Modul CMS & Storefront**: Merapikan seluruh template badge di `orders.js`, `suppliers.js`, `purchases.js`, `table.js`, `tempo.js`, dan `index.html` sehingga bebas dari inkonsistensi `rounded-full` jomplang.
+- **Unit Test Komprehensif test-button-badge-icon-harmony.mjs**: 20 pengujian terverifikasi 100% Passed dan terintegrasi otomatis ke script audit kesehatan sistem.
+- **Multi-Channel Distribution v1.19.3**: Android VersionCode `11903`, versionName `1.19.3`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.19.2 — Smart Dual-Mode High-Contrast Solid Engine, Eliminasi Warna Belang-Belang & Penajaman Garis Border serta Font Mode Terang (20 Okt 2026)
 - **Smart Dual-Mode High-Contrast Solid Engine**: Mengeliminasi disparitas kontras dan warna pudar di tampilan terang (Light Mode) serta menyelaraskan rasio kontras visual otomatis antara mode terang dan gelap tanpa efek gradasi.

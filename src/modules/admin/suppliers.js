@@ -190,7 +190,7 @@ export const renderSuppliersView = () => {
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="space-y-1.5">
                         <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-2xs whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-truck-field"></i> Mitra Pabrik &amp; Distributor
                             </span>
                         </div>
@@ -203,11 +203,11 @@ export const renderSuppliersView = () => {
                     </div>
 
                     <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="if(window.openAdminTab) window.openAdminTab('purchases');" class="px-4 py-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                        <button onclick="if(window.openAdminTab) window.openAdminTab('purchases');" class="px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                             <i class="fa-solid fa-cart-flatbed" style="color:var(--color-primary)"></i>
                             <span>Order Kulakan</span>
                         </button>
-                        <button onclick="window.openSupplierFormModal()" class="px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openSupplierFormModal()" class="px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Tambah Supplier</span>
                         </button>
@@ -355,8 +355,8 @@ const renderSupplierCardHtml = (s) => {
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${esc(s.name)}</h4>
-                            ${s.code ? `<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${esc(s.code)}</span>` : ''}
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${esc(termLabelMap[s.defaultTerms] || 'Cash')}</span>
+                            ${s.code ? `<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700 whitespace-nowrap inline-flex items-center">${esc(s.code)}</span>` : ''}
+                            <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold border whitespace-nowrap inline-flex items-center" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${esc(termLabelMap[s.defaultTerms] || 'Cash')}</span>
                         </div>
 
                         <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
@@ -394,7 +394,7 @@ const renderSupplierCardHtml = (s) => {
                     <button 
                         type="button"
                         onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${s.id}')" 
-                        class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer" 
+                        class="flex-1 sm:flex-initial h-11 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer" 
                         style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
                         title="Buat Order Kulakan Produk ke Supplier Ini"
                     >
@@ -405,7 +405,7 @@ const renderSupplierCardHtml = (s) => {
                     <button 
                         type="button"
                         onclick="window.openSupplierDetailModal('${s.id}')" 
-                        class="h-11 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                        class="h-11 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
                         title="Lihat Profil Rekanan, Katalog, & Histori PO"
                     >
                         <i class="fa-solid fa-layer-group text-xs" style="color:var(--color-primary)"></i>
@@ -419,7 +419,7 @@ const renderSupplierCardHtml = (s) => {
                         <button 
                             type="button"
                             onclick="event.stopPropagation(); window.openSupplierWhatsApp('${cleanPhone}', '${esc(s.name)}', '${esc(s.salesName || '')}')" 
-                            class="h-11 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
+                            class="h-11 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                             title="Chat WhatsApp Sales"
                             aria-label="WhatsApp Sales"
                         >
@@ -431,7 +431,7 @@ const renderSupplierCardHtml = (s) => {
                     <button 
                         type="button"
                         onclick="event.stopPropagation(); window.openSupplierFormModal('${s.id}')" 
-                        class="h-11 px-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
+                        class="h-11 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                         title="Edit Data Rekanan"
                         aria-label="Edit Data Rekanan"
                     >
@@ -442,7 +442,7 @@ const renderSupplierCardHtml = (s) => {
                     <button 
                         type="button"
                         onclick="event.stopPropagation(); window.deleteSupplier('${s.id}')" 
-                        class="h-11 px-3 rounded-2xl bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
+                        class="h-11 px-3 rounded-xl bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                         title="Hapus Rekanan"
                         aria-label="Hapus Rekanan"
                     >

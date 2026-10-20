@@ -4040,9 +4040,14 @@ button.h-12.w-12 {
 /* Proteksi Anti-Gepeng & Anti-Wrap Badge Status di Seluruh Aplikasi */
 .badge-native,
 .status-pill,
-span[class*="tracking-widest"][class*="rounded-"] {
-    flex-shrink: 0;
-    white-space: nowrap;
+.badge-compact,
+span[class*="tracking-widest"][class*="rounded-"],
+span[class*="tracking-wider"][class*="rounded-"] {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    display: inline-flex !important;
+    align-items: center !important;
 }
 
 /* ============================================================
@@ -5224,7 +5229,7 @@ html.dark .search-clean-input::placeholder {
 }
 
 /* ============================================================
-   FLUID NATIVE VIEW TRANSITIONS ENGINE — TOKO PUTRI v1.19.2
+   FLUID NATIVE VIEW TRANSITIONS ENGINE — TOKO PUTRI v1.19.3
    Menghadirkan sensasi navigasi aplikasi native smartphone:
    1. Forward transition: lembut meluncur dari kanan (+18px) & scale (0.985 -> 1)
    2. Backward transition: lembut meluncur dari kiri (-18px) & scale (0.985 -> 1)
@@ -5834,6 +5839,169 @@ html.dark ::placeholder {
     opacity: 1 !important;
 }
 
+/* ============================================================
+   UNIVERSAL HARMONY ENGINE: BADGE, BUTTON & ICON POD CONSISTENCY — v1.19.3
+   Menyelaraskan seluruh elemen visual di web aplikasi:
+   1. Badge & Status Pill: Anti-wrap, bebas bertumpuk/menggembung,
+      tracking normal, border-radius squircle seragam (0.5rem / 8px).
+   2. Tombol (Buttons): Hierarki border-radius konsisten:
+      - Primary / Submit / CTA: 1rem (16px squircle)
+      - Secondary / Neutral / Filter chiclet: 0.75rem (12px squircle)
+      - Compact Action Icon Buttons (w-8/w-9/w-10/w-11): 0.75rem (12px squircle)
+      - Micro Action Buttons (w-6/w-7, drag handle): 0.5rem (8px squircle)
+   3. Icon Pods & Icon Containers: Border-radius konsisten berdasar dimensi:
+      - Large Pods (w-14 / w-16): 1rem (16px squircle)
+      - Medium Pods (w-10 / w-12): 0.875rem (14px squircle)
+      - Compact / Stat Pods (w-8 / w-9): 0.75rem (12px squircle)
+      - Small Pods (w-6 / w-7): 0.5rem (8px squircle)
+   ============================================================ */
 
+/* ─── 1. UNIVERSAL BADGE & STATUS PILL HARMONY (ANTI-WRAP & ANTI-BLOAT) ─── */
+[class*="badge"],
+.badge-native,
+.status-pill,
+.badge-compact,
+.so-badge,
+.fifo-badge,
+span[class*="rounded-"][class*="text-[7"],
+span[class*="rounded-"][class*="text-[8"],
+span[class*="rounded-"][class*="text-[9"],
+span[class*="rounded-"][class*="text-[10"],
+span[class*="rounded-"][class*="text-[11"],
+span[class*="rounded-"][class*="uppercase"][class*="px-"],
+span[class*="rounded-"][class*="uppercase"][class*="p-"],
+span[class*="tracking-widest"][class*="rounded-"],
+span[class*="tracking-wider"][class*="rounded-"] {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.02em !important; /* Mencegah tracking melebar berlebihan yang membuat teks tumpah */
+    border-radius: 0.5rem !important; /* 8px modern squircle chip */
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
+    max-height: 26px !important;
+}
 
+/* Proteksi seluruh teks dan ikon anak di dalam badge */
+[class*="badge"] *,
+.status-pill *,
+span[class*="rounded-"][class*="text-["] * {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
 
+/* Pengecualian khusus badge hitung bulat angka murni (misal notifikasi keranjang di navbar) */
+#bottom-nav-cart-badge,
+.cart-count-badge,
+.badge-counter-circle {
+    border-radius: 9999px !important;
+    max-height: none !important;
+}
+
+/* ─── 2. UNIVERSAL BUTTON BORDER RADIUS HARMONY ─── */
+/* A. Tombol Utama / Submit / CTA / Action Guard: 1rem (16px squircle) */
+.btn-primary,
+.btn-solid,
+.btn-theme-primary,
+button.primary-bg,
+button[type="submit"],
+button[class*="shadow-glow"] {
+    border-radius: 1rem !important;
+}
+
+/* B. Tombol Sekunder / Neutral / Batal / Filter Chiclet / Tab Chiclet: 0.75rem (12px squircle) */
+.btn-secondary,
+.btn-secondary-neutral,
+.btn-native-action,
+.btn-catalog-action,
+button[class*="border-slate-"],
+button[class*="bg-slate-"]:not([class*="rounded-full"]),
+button[class*="rounded-xl"],
+button[class*="rounded-2xl"]:not(.btn-primary):not([type="submit"]):not([class*="shadow-glow"]):not([class*="h-14"]):not([class*="h-16"]),
+button[class*="rounded-3xl"]:not(.modal-bottom-sheet) {
+    border-radius: 0.75rem !important;
+}
+
+/* C. Tombol Ikon Aksi & Stepper (32px - 44px): 0.75rem (12px squircle) */
+button.h-8.w-8,
+button.h-9.w-9,
+button.h-10.w-10,
+button.h-11.w-11,
+button[class*="w-8"][class*="h-8"],
+button[class*="w-9"][class*="h-9"],
+button[class*="w-10"][class*="h-10"],
+button[class*="w-11"][class*="h-11"] {
+    border-radius: 0.75rem !important;
+    flex-shrink: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    box-sizing: border-box !important;
+}
+
+/* D. Micro Action Buttons (24px - 28px): 0.5rem (8px squircle) */
+button.h-6.w-6,
+button.h-7.w-7,
+button[class*="w-6"][class*="h-6"],
+button[class*="w-7"][class*="h-7"],
+.product-drag-handle {
+    border-radius: 0.5rem !important;
+    flex-shrink: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    box-sizing: border-box !important;
+}
+
+/* ─── 3. UNIVERSAL ICON POD & CONTAINER HARMONY ─── */
+/* A. Large Icon Pods (w-14 / w-16: 56px - 64px) -> 1rem (16px squircle) */
+div[class*="w-14"][class*="h-14"],
+div[class*="w-16"][class*="h-16"],
+button[class*="w-14"][class*="h-14"] > div,
+button[class*="w-16"][class*="h-16"] > div {
+    border-radius: 1rem !important;
+    flex-shrink: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+/* B. Medium Icon Pods (w-10 / w-12: 40px - 48px) -> 0.875rem (14px squircle) */
+div[class*="w-10"][class*="h-10"]:not([class*="rounded-full"]):not(.avatar),
+div[class*="w-12"][class*="h-12"]:not([class*="rounded-full"]):not(.avatar) {
+    border-radius: 0.875rem !important;
+    flex-shrink: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+/* C. Compact Icon Pods & KPI Stat Cards (w-8 / w-9: 32px - 36px) -> 0.75rem (12px squircle) */
+div[class*="w-8"][class*="h-8"]:not([class*="rounded-full"]):not(.avatar),
+div[class*="w-9"][class*="h-9"]:not([class*="rounded-full"]):not(.avatar) {
+    border-radius: 0.75rem !important;
+    flex-shrink: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+/* D. Small Icon Pods & Step Indicators (w-6 / w-7: 24px - 28px) -> 0.5rem (8px squircle) */
+div[class*="w-6"][class*="h-6"]:not([class*="rounded-full"]):not(.avatar),
+div[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar),
+span[class*="w-6"][class*="h-6"]:not([class*="rounded-full"]):not(.avatar),
+span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar) {
+    border-radius: 0.5rem !important;
+    flex-shrink: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}

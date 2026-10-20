@@ -555,10 +555,10 @@ window.rAdmItms = (t, skipStats = false) => {
                         <div class="min-w-0 flex flex-col justify-center">
                             <div class="flex items-center gap-2 flex-wrap">
                                 <h4 class="text-sm sm:text-base font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide leading-tight">${esc(x.name)}</h4>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap inline-flex items-center">
                                     <i class="fa-solid fa-boxes-stacked mr-1 text-[9px] text-[var(--color-primary)]"></i>${totalProd} Produk
                                 </span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)]">
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] whitespace-nowrap inline-flex items-center">
                                     <i class="fa-solid fa-shapes mr-1 text-[9px]"></i>${officialSubs.length} Sub-Kategori
                                 </span>
                             </div>
