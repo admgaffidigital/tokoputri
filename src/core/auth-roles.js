@@ -13,8 +13,22 @@ import { auth, ADMIN_UID } from '../config/firebase.js';
 export const ROLES = {
     OWNER: 'owner',     // Pemilik Toko / Super Admin (Akses Penuh 100%)
     ADMIN: 'admin',     // Admin Operasional Toko (Katalog, Stok, Pesanan, PO)
-    CASHIER: 'cashier'  // Kasir POS (Hanya transaksi & shift kasir fisik)
+    CASHIER: 'cashier', // Kasir POS (Hanya transaksi & shift kasir fisik)
+    STAFF: 'staff'      // Staf Operasional / Gudang / Lapangan
 };
+
+// ─── Standar Jabatan Toko (HR Positions) ─────────────────────
+export const STANDARD_POSITIONS = [
+    { key: 'owner', label: 'Owner / Direktur Utama', defaultRole: 'owner' },
+    { key: 'head_store', label: 'Kepala Toko / Manager', defaultRole: 'admin' },
+    { key: 'admin_ops', label: 'Admin Operasional & Inventori', defaultRole: 'admin' },
+    { key: 'cashier_head', label: 'Kasir Utama', defaultRole: 'cashier' },
+    { key: 'cashier', label: 'Kasir POS', defaultRole: 'cashier' },
+    { key: 'warehouse_head', label: 'Kepala Gudang & Logistik', defaultRole: 'staff' },
+    { key: 'warehouse_staff', label: 'Staf Gudang & Penataan Rak', defaultRole: 'staff' },
+    { key: 'driver', label: 'Driver / Kurir Pengiriman', defaultRole: 'staff' },
+    { key: 'store_helper', label: 'Helper / Pramuniaga Toko', defaultRole: 'staff' }
+];
 
 // ─── Matriks Hak Akses / Permission Definitions ─────────────
 export const PERMISSION_DEFINITIONS = [
@@ -84,6 +98,17 @@ export const ROLE_PRESETS = {
         reviews: true, faqs: true, changelog: true, expenses: true,
         stock_opname: true,
         reports: true, view_reports: true, tax: true, banks: false, settings: false,
+        cashiers: false, backup_sync: false
+    },
+    // 📦 STAF OPERASIONAL / GUDANG: Akses disesuaikan (default: stok fisik & stock opname jika diizinkan)
+    [ROLES.STAFF]: {
+        pos: false, returns: false,
+        orders: false, products: false, suppliers: false, purchases: false,
+        piutang: false, customers: false, categories: false, brands: false,
+        colors: false, vouchers: false, banners: false, rewards: false,
+        reviews: false, faqs: false, changelog: false, expenses: false,
+        stock_opname: true,
+        reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
     // 👑 OWNER: Akses 100% penuh tanpa batasan
@@ -348,6 +373,13 @@ export const getRoleBadgeHtml = (role) => {
                 <i class="fa-solid fa-shield-halved text-[9px]"></i>
                 <span>Admin Toko</span>
             </span>`;
+        case ROLES.STAFF:
+        case 'staff':
+            return `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 shadow-2xs">
+                <i class="fa-solid fa-user-gear text-[9px]"></i>
+                <span>Staf / Gudang</span>
+            </span>`;
         case ROLES.CASHIER:
         default:
             return `
@@ -361,6 +393,7 @@ export const getRoleBadgeHtml = (role) => {
 // ─── Expose ke window untuk akses global ─────────────────────
 if (typeof window !== 'undefined') {
     window.ROLES = ROLES;
+    window.STANDARD_POSITIONS = STANDARD_POSITIONS;
     window.PERMISSION_DEFINITIONS = PERMISSION_DEFINITIONS;
     window.ROLE_PRESETS = ROLE_PRESETS;
     window.getActiveStaff = getActiveStaff;

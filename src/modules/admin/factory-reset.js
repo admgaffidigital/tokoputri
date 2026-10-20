@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * MODUL PUSAT RESET KE SETELAN AWAL & PEMBERSIHAN DATA TOKO (SYSTEM CLEAN SWEEP)
- * Toko Putri v1.18.12 — Managed Whitelabel & Single-Tenant SaaS
+ * Toko Putri v1.19.0 — Managed Whitelabel & Single-Tenant SaaS
  *
  * Fitur Eksekutif Khusus Pemilik Toko (Owner) untuk membersihkan
  * data transaksi uji coba atau mereset total seluruh toko ke setelan

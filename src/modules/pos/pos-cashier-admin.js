@@ -12,35 +12,33 @@
  */
 
 import { auth, db, firebase, ADMIN_UID } from '../../config/firebase.js';
-import { el, setH, esc, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
+import { el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
 import { 
     ROLES, 
+    STANDARD_POSITIONS,
     PERMISSION_DEFINITIONS, 
     ROLE_PRESETS, 
     isOwnerUser, 
     getRoleBadgeHtml 
 } from '../../core/auth-roles.js';
+import { 
+    generateEmployeeId, 
+    getOwnerEmployeeProfile, 
+    normalizeEmployeeProfile, 
+    EMPLOYMENT_STATUSES, 
+    SALARY_PAYMENT_METHODS,
+    verifyOwnerAuthority
+} from '../admin/hr/hr-schema.js';
+import { appData } from '../../core/state.js';
 import { renderAdminShiftReportView } from './pos-shift.js';
+import { renderSalaryAdvancesView } from '../admin/hr/hr-advances.js';
+import { renderAttendanceView } from '../admin/hr/hr-attendance.js';
+import { renderPayrollView } from '../admin/hr/hr-payroll.js';
+
+export { verifyOwnerAuthority };
 
 let _cachedStaffList = [];
 let _activeRoleFilter = 'all'; // 'all' | 'admin' | 'cashier'
-
-/**
- * Helper: Verifikasi apakah pengguna saat ini terotentikasi sebagai Owner Utama (Super Admin)
- * untuk melakukan modifikasi akun atau hak akses staf di Firestore Cloud.
- */
-export const verifyOwnerAuthority = (actionName = 'mengubah data staf') => {
-    const user = auth.currentUser;
-    if (!user) {
-        showToast(`Sesi Belum Terotentikasi: Harap login resmi menggunakan Akun Pemilik Toko (Email Owner) di form login CMS untuk ${actionName}.`, 'warning');
-        return false;
-    }
-    if (user.uid !== ADMIN_UID) {
-        showToast(`Akses Ditolak: Hanya Akun Pemilik Utama (Owner) yang berwenang ${actionName}. Akun staf tidak memiliki izin modifikasi database staf.`, 'error');
-        return false;
-    }
-    return true;
-};
 
 // ─── Render Panel Manajemen Staf & Akses ─────────────────────
 export const renderCashierAccounts = async () => {
@@ -54,6 +52,7 @@ export const renderCashierAccounts = async () => {
     const isOwner = curUser && curUser.uid === ADMIN_UID;
     const isStaff = curUser && curUser.uid !== ADMIN_UID;
     const isUnauth = !curUser;
+    const ownerProfile = getOwnerEmployeeProfile(appData);
 
     let authStatusBadge = '';
     let authBannerHtml = '';
@@ -99,17 +98,32 @@ export const renderCashierAccounts = async () => {
     <div class="space-y-4 max-w-5xl mx-auto pb-16">
         <!-- Native App Sticky Segmented Control Bar -->
         <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xs">
-            <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-md w-full mx-auto grid grid-cols-2 gap-1.5 border border-slate-200/90 dark:border-slate-700/80 shadow-inner">
+            <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-3xl w-full mx-auto grid grid-cols-2 sm:grid-cols-5 gap-1.5 border border-slate-200/90 dark:border-slate-700/80 shadow-inner">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
-                    class="py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
+                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md"
                     style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-users-gear text-white"></i>
-                    <span>Staf &amp; Hak Akses</span>
+                    <span class="truncate">Staf &amp; Akses</span>
+                </button>
+                <button id="tab-btn-cashier-attendance" onclick="window.switchCashierTab('attendance')" 
+                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    <i class="fa-solid fa-clipboard-user"></i>
+                    <span class="truncate">Absensi Tim</span>
+                </button>
+                <button id="tab-btn-cashier-advances" onclick="window.switchCashierTab('advances')" 
+                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <span class="truncate">Buku Kasbon</span>
+                </button>
+                <button id="tab-btn-cashier-payroll" onclick="window.switchCashierTab('payroll')" 
+                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                    <span class="truncate">Gaji &amp; Slip</span>
                 </button>
                 <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" 
-                    class="py-2.5 px-4 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
-                    <span>Laporan Shift Kasir</span>
+                    <span class="truncate">Shift Kasir</span>
                 </button>
             </div>
         </div>
@@ -137,27 +151,38 @@ export const renderCashierAccounts = async () => {
                 </button>
             </div>
 
-            <!-- Kartu Owner Utama Toko (Super Admin Protection) -->
-            <div class="relative overflow-hidden p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-purple-200 dark:border-purple-800/60 bg-gradient-to-br from-purple-500/10 via-slate-50 to-white dark:from-purple-950/40 dark:via-slate-800 dark:to-slate-800 shadow-2xs flex items-start gap-4">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-md bg-gradient-to-tr from-purple-600 to-indigo-500 text-white border border-purple-300 dark:border-purple-700">
-                    <i class="fa-solid fa-crown text-amber-300"></i>
-                </div>
-                <div class="space-y-1.5 min-w-0 flex-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-sm font-black text-slate-900 dark:text-white">Akun Pemilik Utama (Owner)</span>
-                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/70 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-700">
-                            <i class="fa-solid fa-lock text-[9px]"></i> Super Admin Terproteksi
-                        </span>
+            <!-- Kartu Owner Utama Toko (Super Admin & Master HR) -->
+            <div class="relative overflow-hidden p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-purple-200 dark:border-purple-800/60 bg-gradient-to-br from-purple-500/10 via-slate-50 to-white dark:from-purple-950/40 dark:via-slate-800 dark:to-slate-800 shadow-2xs flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div class="flex items-start gap-4 min-w-0">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-md bg-gradient-to-tr from-purple-600 to-indigo-500 text-white border border-purple-300 dark:border-purple-700">
+                        <i class="fa-solid fa-crown text-amber-300"></i>
                     </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                        Akun Owner memiliki akses 100% penuh atas seluruh modul toko, keuangan rahasia, laporan laba rugi, pengaturan rekening bank, serta satu-satunya akun yang berhak mendaftarkan dan mengubah hak akses staf lain.
-                    </p>
-                    <div class="flex items-center gap-3 pt-1 text-[11px] text-purple-700 dark:text-purple-300 font-bold flex-wrap">
-                        ${authStatusBadge}
-                        <span>•</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-key"></i> Hak Akses: 22 Modul Terbuka</span>
+                    <div class="space-y-1.5 min-w-0 flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-sm font-black text-slate-900 dark:text-white">Akun Pemilik Utama (Owner)</span>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/70 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-700">
+                                <i class="fa-solid fa-lock text-[9px]"></i> Super Admin Terproteksi
+                            </span>
+                            <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100/80 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-800">
+                                ${esc(ownerProfile.employeeId || 'OWN-001')}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Jabatan: <strong class="text-slate-900 dark:text-white">${esc(ownerProfile.position || 'Owner / Direktur Utama')}</strong> • Gaji Pokok Direksi: <strong class="text-emerald-600 dark:text-emerald-400">${fCur(ownerProfile.baseSalary || 10000000)}</strong> /bln • Status: Karyawan Tetap
+                        </p>
+                        <div class="flex items-center gap-3 pt-1 text-[11px] text-purple-700 dark:text-purple-300 font-bold flex-wrap">
+                            ${authStatusBadge}
+                            <span>•</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-key"></i> Hak Akses: 22 Modul Terbuka</span>
+                            ${ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? `<span>•</span><span class="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold"><i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(ownerProfile.bankName)}: ${esc(ownerProfile.bankAccount)}</span>` : ''}
+                        </div>
                     </div>
                 </div>
+                <button onclick="window.openOwnerHrModal()"
+                    class="shrink-0 self-end sm:self-start px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/80 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-user-pen text-xs"></i>
+                    <span>Atur Gaji &amp; HR Owner</span>
+                </button>
             </div>
 
             <!-- Filter Kategori Staf -->
@@ -178,6 +203,11 @@ export const renderCashierAccounts = async () => {
                     <i class="fa-solid fa-cash-register text-[10px] text-emerald-500"></i>
                     <span>Kasir POS</span>
                 </button>
+                <button onclick="window.filterStaffRole('staff')" id="staff-filter-staff"
+                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0">
+                    <i class="fa-solid fa-user-gear text-[10px] text-amber-500"></i>
+                    <span>Staf / Gudang</span>
+                </button>
             </div>
 
             <!-- List Staf Terdaftar -->
@@ -186,7 +216,16 @@ export const renderCashierAccounts = async () => {
             </div>
         </div>
 
-        <!-- Panel 2: Laporan Shift Kasir -->
+        <!-- Panel 2: Absensi Shift & Kehadiran Tim -->
+        <div id="cashier-panel-attendance" class="hidden pt-1"></div>
+
+        <!-- Panel 3: Buku Kasbon & Pinjaman Karyawan -->
+        <div id="cashier-panel-advances" class="hidden pt-1"></div>
+
+        <!-- Panel 4: Penggajian (Payroll) & Slip Gaji -->
+        <div id="cashier-panel-payroll" class="hidden pt-1"></div>
+
+        <!-- Panel 5: Laporan Shift Kasir -->
         <div id="cashier-panel-shifts" class="hidden pt-1"></div>
     </div>`);
 
@@ -197,40 +236,75 @@ export const switchCashierTab = (tab) => {
     const sc = document.querySelector('#view-admin .scroll-content');
     if (sc) sc.scrollTop = 0;
 
-    const tabAccounts = el('tab-btn-cashier-accounts');
-    const tabShifts   = el('tab-btn-cashier-shifts');
-    const panelAccounts = el('cashier-panel-accounts');
-    const panelShifts   = el('cashier-panel-shifts');
+    const tabAccounts   = el('tab-btn-cashier-accounts');
+    const tabAttendance = el('tab-btn-cashier-attendance');
+    const tabAdvances   = el('tab-btn-cashier-advances');
+    const tabPayroll    = el('tab-btn-cashier-payroll');
+    const tabShifts     = el('tab-btn-cashier-shifts');
+
+    const panelAccounts   = el('cashier-panel-accounts');
+    const panelAttendance = el('cashier-panel-attendance');
+    const panelAdvances   = el('cashier-panel-advances');
+    const panelPayroll    = el('cashier-panel-payroll');
+    const panelShifts     = el('cashier-panel-shifts');
 
     const applyActive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md';
+        btn.className = 'py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md';
         btn.style.background = 'var(--color-primary)';
         btn.style.boxShadow = '0 4px 14px rgba(var(--color-primary-rgb), 0.35)';
-        btn.innerHTML = `${iconHtml}<span>${label}</span>`;
+        btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
     };
 
     const applyInactive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'py-2.5 px-4 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95';
+        btn.className = 'py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95';
         btn.style.background = 'transparent';
         btn.style.boxShadow = 'none';
-        btn.innerHTML = `${iconHtml}<span>${label}</span>`;
+        btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
     };
 
-    if (tab === 'shifts') {
-        applyInactive(tabAccounts, '<i class="fa-solid fa-users-gear"></i>', 'Staf &amp; Hak Akses');
-        applyActive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar text-white"></i>', 'Laporan Shift Kasir');
-        if (panelAccounts) panelAccounts.classList.add('hidden');
+    // Reset semua tab ke status inactive
+    applyInactive(tabAccounts, '<i class="fa-solid fa-users-gear"></i>', 'Staf &amp; Akses');
+    applyInactive(tabAttendance, '<i class="fa-solid fa-clipboard-user"></i>', 'Absensi Tim');
+    applyInactive(tabAdvances, '<i class="fa-solid fa-hand-holding-dollar"></i>', 'Buku Kasbon');
+    applyInactive(tabPayroll, '<i class="fa-solid fa-money-check-dollar"></i>', 'Gaji &amp; Slip');
+    applyInactive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar"></i>', 'Shift Kasir');
+
+    // Sembunyikan seluruh panel
+    if (panelAccounts) panelAccounts.classList.add('hidden');
+    if (panelAttendance) panelAttendance.classList.add('hidden');
+    if (panelAdvances) panelAdvances.classList.add('hidden');
+    if (panelPayroll) panelPayroll.classList.add('hidden');
+    if (panelShifts) panelShifts.classList.add('hidden');
+
+    if (tab === 'attendance') {
+        applyActive(tabAttendance, '<i class="fa-solid fa-clipboard-user text-white"></i>', 'Absensi Tim');
+        if (panelAttendance) {
+            panelAttendance.classList.remove('hidden');
+            renderAttendanceView(panelAttendance);
+        }
+    } else if (tab === 'advances') {
+        applyActive(tabAdvances, '<i class="fa-solid fa-hand-holding-dollar text-white"></i>', 'Buku Kasbon');
+        if (panelAdvances) {
+            panelAdvances.classList.remove('hidden');
+            renderSalaryAdvancesView(panelAdvances);
+        }
+    } else if (tab === 'payroll') {
+        applyActive(tabPayroll, '<i class="fa-solid fa-money-check-dollar text-white"></i>', 'Gaji &amp; Slip');
+        if (panelPayroll) {
+            panelPayroll.classList.remove('hidden');
+            renderPayrollView(panelPayroll);
+        }
+    } else if (tab === 'shifts') {
+        applyActive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar text-white"></i>', 'Shift Kasir');
         if (panelShifts) {
             panelShifts.classList.remove('hidden');
             renderAdminShiftReportView(panelShifts);
         }
     } else {
-        applyActive(tabAccounts, '<i class="fa-solid fa-users-gear text-white"></i>', 'Staf &amp; Hak Akses');
-        applyInactive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar"></i>', 'Laporan Shift Kasir');
+        applyActive(tabAccounts, '<i class="fa-solid fa-users-gear text-white"></i>', 'Staf &amp; Akses');
         if (panelAccounts) panelAccounts.classList.remove('hidden');
-        if (panelShifts) panelShifts.classList.add('hidden');
     }
 };
 
@@ -267,9 +341,11 @@ const renderStaffListHtml = () => {
 
     let filtered = _cachedStaffList;
     if (_activeRoleFilter === 'admin') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.ADMIN || s.role === ROLES.OWNER);
+        filtered = _cachedStaffList.filter(s => s.role === ROLES.ADMIN || s.role === ROLES.OWNER || s.role === 'admin' || s.role === 'owner');
     } else if (_activeRoleFilter === 'cashier') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.CASHIER || !s.role);
+        filtered = _cachedStaffList.filter(s => s.role === ROLES.CASHIER || s.role === 'cashier' || !s.role);
+    } else if (_activeRoleFilter === 'staff') {
+        filtered = _cachedStaffList.filter(s => s.role === ROLES.STAFF || s.role === 'staff');
     }
 
     if (filtered.length === 0) {
@@ -279,18 +355,22 @@ const renderStaffListHtml = () => {
                 <i class="fa-solid fa-user-slash"></i>
             </div>
             <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum ada akun staf pada kategori ini</p>
-            <p class="text-xs mt-1 text-slate-400">Klik "Tambah Staf" untuk mendaftarkan akun kasir atau admin baru</p>
+            <p class="text-xs mt-1 text-slate-400">Klik "Tambah Staf" untuk mendaftarkan akun kasir, admin atau staf operasional baru</p>
         </div>`;
         return;
     }
 
-    const listHtml = filtered.map(d => {
+    const listHtml = filtered.map((d, idx) => {
         const uid = d.uid;
         const isActive = d.isActive !== false;
-        const dateStr  = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+        const dateStr  = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : (d.hireDate || '-');
         const initials = (d.name || 'Staf').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || 'ST';
         const role = d.role || ROLES.CASHIER;
         const permCount = countStaffPermissions(d);
+        const empId = d.employeeId || `EMP-${String(idx + 1).padStart(3, '0')}`;
+        const position = d.position || (role === ROLES.CASHIER ? 'Kasir POS' : role === ROLES.ADMIN ? 'Admin Operasional' : 'Staf Gudang & Logistik');
+        const baseSalary = parseFloat(d.baseSalary) || 0;
+        const dailyAllowance = parseFloat(d.dailyAllowance) || 0;
 
         return `
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 sm:p-5 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all">
@@ -303,6 +383,9 @@ const renderStaffListHtml = () => {
                     <div class="flex items-center gap-2 flex-wrap">
                         <p class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(d.name || 'Staf')}</p>
                         ${getRoleBadgeHtml(role)}
+                        <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
+                            ${esc(empId)}
+                        </span>
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full ${isActive
                             ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
                             : 'bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600'}">
@@ -310,14 +393,22 @@ const renderStaffListHtml = () => {
                             ${isActive ? 'Aktif' : 'Nonaktif'}
                         </span>
                     </div>
+                    <div class="flex items-center gap-2 mt-1 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
+                        <span class="font-bold text-slate-800 dark:text-slate-100"><i class="fa-solid fa-user-tag text-[10px] text-indigo-500 mr-1"></i>${esc(position)}</span>
+                        <span>•</span>
+                        <span class="font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${fCur(baseSalary)}/bln</span>
+                        ${dailyAllowance > 0 ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+${fCur(dailyAllowance)}/hr)</span>` : ''}
+                    </div>
                     <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
                         <span class="flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${esc(d.email || '')}</span>
+                        ${d.phone ? `<span>•</span><span class="flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400"><i class="fa-brands fa-whatsapp text-[11px]"></i> ${esc(d.phone)}</span>` : ''}
                         <span>•</span>
                         <span class="inline-flex items-center gap-1 font-bold text-[11px] text-[var(--color-primary)]">
-                            <i class="fa-solid fa-key text-[9px]"></i> ${permCount} Modul Diizinkan
+                            <i class="fa-solid fa-key text-[9px]"></i> ${permCount} Modul
                         </span>
+                        ${d.bankAccount && d.bankAccount !== '-' ? `<span>•</span><span class="text-[11px] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(d.bankName)}: ${esc(d.bankAccount)}</span>` : ''}
                         <span>•</span>
-                        <span class="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Terdaftar: ${esc(dateStr)}</span>
+                        <span class="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Masuk: ${esc(dateStr)}</span>
                     </div>
                 </div>
             </div>
@@ -338,7 +429,7 @@ const renderStaffListHtml = () => {
                     <i class="fa-solid ${isActive ? 'fa-ban' : 'fa-circle-check'}"></i>
                 </button>
                 <button onclick="window.openEditStaffModal('${esc(uid)}', '${esc(d.name || '')}', '${esc(d.email || '')}', '${esc(role)}')"
-                    title="Edit Profil Staf"
+                    title="Edit Profil Staf & HR"
                     class="w-10 h-10 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -372,7 +463,13 @@ export const loadStaffList = async () => {
                 .get();
         }
 
-        _cachedStaffList = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+        _cachedStaffList = snap.docs.map((doc, idx) => {
+            const data = doc.data() || {};
+            return {
+                uid: doc.id,
+                ...normalizeEmployeeProfile({ uid: doc.id, ...data }, idx)
+            };
+        });
 
         // Sinkronisasi status hasCashier ke metadata
         const hasActiveCashier = _cachedStaffList.some(s => s.isActive !== false && s.role === ROLES.CASHIER);
@@ -381,6 +478,16 @@ export const loadStaffList = async () => {
             await db.collection('freshmart').doc('cms_data').set({ hasCashier: hasActiveCashier }, { merge: true });
         } catch (_) {}
         if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
+
+        // Ambil data HR Owner jika ada
+        try {
+            const cmsDoc = await db.collection('freshmart').doc('cms_data').get();
+            if (cmsDoc.exists && cmsDoc.data()?.ownerEmployee) {
+                appData.ownerEmployee = cmsDoc.data().ownerEmployee;
+            }
+        } catch (_) {}
+
+        appData.employees = _cachedStaffList.map((s, idx) => normalizeEmployeeProfile(s, idx));
 
         renderStaffListHtml();
 
@@ -404,6 +511,8 @@ export const loadStaffList = async () => {
 // ─── Modal Tambah Staf Baru ──────────────────────────────────
 export const openAddStaffModal = () => {
     if (!verifyOwnerAuthority('mendaftarkan staf baru')) return;
+
+    const autoEmpId = generateEmployeeId(_cachedStaffList, 'EMP');
 
     // Generate permission checkboxes HTML
     const renderPermissionGroup = (groupName, groupTitle, groupIcon) => {
@@ -444,8 +553,8 @@ export const openAddStaffModal = () => {
                         <i class="fa-solid fa-user-plus"></i>
                     </div>
                     <div>
-                        <h3 class="font-black text-sm text-slate-900 dark:text-white">Daftarkan Staf Baru</h3>
-                        <p class="text-[11px] text-slate-400">Buat akun untuk kasir atau administrator toko</p>
+                        <h3 class="font-black text-sm text-slate-900 dark:text-white">Daftarkan Staf &amp; Karyawan Baru</h3>
+                        <p class="text-[11px] text-slate-400">Buat akun untuk kasir, admin, atau staf gudang/operasional</p>
                     </div>
                 </div>
                 <button onclick="window.closeAddStaffModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
@@ -459,9 +568,9 @@ export const openAddStaffModal = () => {
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Lengkap Staf <span class="text-rose-500">*</span></label>
-                        <input id="new-staff-name" type="text" placeholder="Contoh: Rina Kasir / Budi Supervisor"
+                        <input id="new-staff-name" type="text" placeholder="Contoh: Rina Kasir / Budi Gudang"
                             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login <span class="text-rose-500">*</span></label>
@@ -484,10 +593,10 @@ export const openAddStaffModal = () => {
                     </div>
                 </div>
 
-                <!-- Pilihan Role Pokok -->
+                <!-- Pilihan Role Pokok (4 Kolom Responsif) -->
                 <div>
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan / Role Pokok <span class="text-rose-500">*</span></label>
-                    <div class="grid grid-cols-3 gap-2">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Role Pokok Sistem <span class="text-rose-500">*</span></label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 cursor-pointer hover:border-emerald-500 transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.CASHIER}" checked onchange="window.applyNewStaffPreset('${ROLES.CASHIER}')" class="sr-only">
                             <i class="fa-solid fa-cash-register text-lg mb-1 text-emerald-600"></i>
@@ -500,12 +609,98 @@ export const openAddStaffModal = () => {
                             <span class="text-xs font-black">Admin Toko</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Operasional CMS</span>
                         </label>
+                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-amber-500 transition-all text-center">
+                            <input type="radio" name="new_staff_role" value="${ROLES.STAFF}" onchange="window.applyNewStaffPreset('${ROLES.STAFF}')" class="sr-only">
+                            <i class="fa-solid fa-user-gear text-lg mb-1 text-amber-500"></i>
+                            <span class="text-xs font-black">Staf Gudang</span>
+                            <span class="text-[9px] text-slate-400 mt-0.5">Logistik &amp; Bantu</span>
+                        </label>
                         <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-purple-500 transition-all text-center">
                             <input type="radio" name="new_staff_role" value="manager" onchange="window.applyNewStaffPreset('manager')" class="sr-only">
                             <i class="fa-solid fa-user-tie text-lg mb-1 text-purple-500"></i>
                             <span class="text-xs font-black">Manajer</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Akses Luas</span>
                         </label>
+                    </div>
+                </div>
+
+                <!-- Bagian Master Profil & Struktur Kompensasi HR -->
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                                <i class="fa-solid fa-id-card-clip text-[var(--color-primary)]"></i>
+                                <span>Profil Kepegawaian &amp; Struktur Kompensasi</span>
+                            </h4>
+                            <p class="text-[10px] text-slate-400">ID karyawan resmi, jabatan terstandarisasi, gaji pokok &amp; rekening pencairan</p>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800/60">
+                            Master HR
+                        </span>
+                    </div>
+
+                    <!-- Datalist Jabatan Terstandar -->
+                    <datalist id="staff-positions-datalist">
+                        ${STANDARD_POSITIONS.map(p => `<option value="${esc(p.label || p)}"></option>`).join('')}
+                    </datalist>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ID Karyawan</label>
+                            <input id="new-staff-empid" type="text" value="${esc(autoEmpId)}" placeholder="EMP-001"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Jabatan Resmi <span class="text-rose-500">*</span></label>
+                            <input id="new-staff-position" list="staff-positions-datalist" type="text" value="Kasir POS" placeholder="Pilih / ketik jabatan..."
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. WhatsApp / HP</label>
+                            <input id="new-staff-phone" type="tel" placeholder="081234567890"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Gaji Pokok Bulanan (Rp) <span class="text-rose-500">*</span></label>
+                            <input id="new-staff-salary" type="number" min="0" step="50000" value="2500000" placeholder="2500000"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Tunjangan Harian / Uang Makan (Rp/Hari)</label>
+                            <input id="new-staff-allowance" type="number" min="0" step="5000" value="20000" placeholder="20000"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Hubungan Kerja</label>
+                            <select id="new-staff-status" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                ${EMPLOYMENT_STATUSES.map(s => `<option value="${s.key}">${esc(s.label)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Metode Pencairan Gaji</label>
+                            <select id="new-staff-payment-method" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                ${SALARY_PAYMENT_METHODS.map(m => `<option value="${m.key}">${esc(m.label)}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Nomor Rekening Bank</label>
+                            <input id="new-staff-bank-account" type="text" placeholder="Contoh: 1234567890 (atau '-' jika tunai)"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Atas Nama Rekening</label>
+                            <input id="new-staff-bank-holder" type="text" placeholder="Sesuai buku tabungan..."
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        </div>
                     </div>
                 </div>
 
@@ -595,6 +790,16 @@ export const applyNewStaffPreset = (presetKey) => {
             }
         }
     });
+
+    // Sesuaikan jabatan default jika ada input new-staff-position
+    const posInput = el('new-staff-position');
+    const knownLabels = STANDARD_POSITIONS.map(p => p.label || p);
+    if (posInput && (!posInput.value || knownLabels.includes(posInput.value))) {
+        if (presetKey === ROLES.STAFF) posInput.value = 'Staf Gudang & Penataan Rak';
+        else if (presetKey === ROLES.ADMIN) posInput.value = 'Admin Operasional & Inventori';
+        else if (presetKey === 'manager') posInput.value = 'Kepala Toko / Manager';
+        else posInput.value = 'Kasir POS';
+    }
 };
 
 export const setAllNewStaffPerms = (val) => {
@@ -612,7 +817,19 @@ export const saveStaffAccount = async () => {
     const pass  = el('new-staff-pass')?.value || '';
     const roleRadio = document.querySelector('#add-staff-modal input[name="new_staff_role"]:checked');
     const roleValue = roleRadio ? roleRadio.value : ROLES.CASHIER;
-    const finalRole = (roleValue === 'manager' || roleValue === ROLES.ADMIN) ? ROLES.ADMIN : roleValue;
+    const finalRole = roleValue === 'manager' ? ROLES.ADMIN : roleValue;
+
+    // Kumpulkan data profil HRD kompensasi
+    const employeeId = el('new-staff-empid')?.value?.trim() || generateEmployeeId(_cachedStaffList, 'EMP');
+    const position = el('new-staff-position')?.value?.trim() || (finalRole === ROLES.STAFF ? 'Staf Gudang & Logistik' : finalRole === ROLES.ADMIN ? 'Admin Operasional' : 'Kasir POS');
+    const phone = el('new-staff-phone')?.value?.trim() || '';
+    const baseSalary = Math.max(0, parseFloat(el('new-staff-salary')?.value) || 0);
+    const dailyAllowance = Math.max(0, parseFloat(el('new-staff-allowance')?.value) || 0);
+    const employmentStatus = el('new-staff-status')?.value || 'permanent';
+    const paymentMethod = el('new-staff-payment-method')?.value || 'cash';
+    const bankAccount = el('new-staff-bank-account')?.value?.trim() || '-';
+    const bankHolder = el('new-staff-bank-holder')?.value?.trim() || name;
+    const bankName = paymentMethod === 'cash' ? 'Tunai Kas Laci Toko' : (paymentMethod.toUpperCase() || 'Bank');
 
     const errEl = el('add-staff-error');
     const btn   = el('save-staff-btn');
@@ -653,9 +870,19 @@ export const saveStaffAccount = async () => {
         // Simpan dokumen profil staf ke Firestore
         await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).set({
             uid,
+            employeeId,
             name,
             email,
+            phone,
             role: finalRole,
+            position,
+            baseSalary,
+            dailyAllowance,
+            employmentStatus,
+            paymentMethod,
+            bankName,
+            bankAccount,
+            bankHolder,
             permissions,
             isActive: true,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -892,46 +1119,146 @@ export const saveStaffPermissions = async (uid) => {
     }
 };
 
-// ─── Modal Edit Profil Staf (Nama & Role) ────────────────────
+// ─── Modal Edit Profil Staf (Data Akun & HR Kompensasi) ───────
 export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) => {
     if (!verifyOwnerAuthority('mengubah profil staf')) return;
+
+    const staff = _cachedStaffList.find(s => s.uid === uid) || {};
+    const name = currentName || staff.name || '';
+    const email = currentEmail || staff.email || '';
+    const role = currentRole || staff.role || ROLES.CASHIER;
+    const employeeId = staff.employeeId || 'EMP-001';
+    const position = staff.position || (role === ROLES.CASHIER ? 'Kasir POS' : role === ROLES.ADMIN ? 'Admin Operasional' : 'Staf Gudang & Logistik');
+    const phone = staff.phone || '';
+    const baseSalary = staff.baseSalary || 0;
+    const dailyAllowance = staff.dailyAllowance || 0;
+    const employmentStatus = staff.employmentStatus || 'permanent';
+    const paymentMethod = staff.paymentMethod || 'cash';
+    const bankName = staff.bankName || 'BCA';
+    const bankAccount = staff.bankAccount && staff.bankAccount !== '-' ? staff.bankAccount : '';
+    const bankHolder = staff.bankHolder || name;
 
     document.body.insertAdjacentHTML('beforeend', `
     <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeEditStaffModal()">
-        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
+        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-[var(--color-primary)]"></i> Edit Profil Staf
-                </h3>
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
+                        style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>Edit Profil &amp; HR Staf</span>
+                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${esc(employeeId)}</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400">Perbarui data personal, peran, kompensasi &amp; rekening</p>
+                    </div>
+                </div>
                 <button onclick="window.closeEditStaffModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
-            <div class="p-4 sm:p-5 space-y-3.5">
-                <div>
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Staf</label>
-                    <input id="edit-staff-name" type="text" value="${esc(currentName)}"
-                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                        class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
+
+            <div class="p-4 sm:p-5 space-y-3.5 overflow-y-auto flex-1 custom-scrollbar">
+                <!-- Datalist Jabatan Terstandar -->
+                <datalist id="edit-staff-positions-datalist">
+                    ${STANDARD_POSITIONS.map(p => `<option value="${esc(p.label || p)}"></option>`).join('')}
+                </datalist>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Staf <span class="text-rose-500">*</span></label>
+                        <input id="edit-staff-name" type="text" value="${esc(name)}"
+                            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Role Pokok Sistem</label>
+                        <select id="edit-staff-role" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
+                            <option value="${ROLES.CASHIER}" ${role === ROLES.CASHIER ? 'selected' : ''}>Kasir POS (Penjualan)</option>
+                            <option value="${ROLES.ADMIN}" ${role === ROLES.ADMIN ? 'selected' : ''}>Admin Toko (Operasional CMS)</option>
+                            <option value="${ROLES.STAFF}" ${role === ROLES.STAFF ? 'selected' : ''}>Staf Gudang &amp; Logistik</option>
+                            <option value="${ROLES.OWNER}" ${role === ROLES.OWNER ? 'selected' : ''}>Co-Owner / Wakil Owner</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan / Role</label>
-                    <select id="edit-staff-role" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
-                        <option value="${ROLES.CASHIER}" ${currentRole === ROLES.CASHIER ? 'selected' : ''}>Kasir POS</option>
-                        <option value="${ROLES.ADMIN}" ${currentRole === ROLES.ADMIN ? 'selected' : ''}>Admin Toko</option>
-                        <option value="${ROLES.OWNER}" ${currentRole === ROLES.OWNER ? 'selected' : ''}>Co-Owner / Wakil Owner</option>
-                    </select>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ID Karyawan</label>
+                        <input id="edit-staff-empid" type="text" value="${esc(employeeId)}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Jabatan Resmi</label>
+                        <input id="edit-staff-position" list="edit-staff-positions-datalist" type="text" value="${esc(position)}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. WhatsApp / HP</label>
+                        <input id="edit-staff-phone" type="tel" value="${esc(phone)}" placeholder="081234567890"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
                 </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Gaji Pokok Bulanan (Rp)</label>
+                        <input id="edit-staff-salary" type="number" min="0" step="50000" value="${baseSalary}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Tunjangan Harian / Uang Makan (Rp/Hari)</label>
+                        <input id="edit-staff-allowance" type="number" min="0" step="5000" value="${dailyAllowance}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Hubungan Kerja</label>
+                        <select id="edit-staff-status" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            ${EMPLOYMENT_STATUSES.map(s => `<option value="${s.key}" ${employmentStatus === s.key ? 'selected' : ''}>${esc(s.label)}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Metode Bayar Gaji</label>
+                        <select id="edit-staff-payment-method" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            ${SALARY_PAYMENT_METHODS.map(m => `<option value="${m.key}" ${paymentMethod === m.key ? 'selected' : ''}>${esc(m.label)}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Bank</label>
+                        <input id="edit-staff-bank-name" type="text" value="${esc(bankName)}" placeholder="BCA / BRI"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. Rekening</label>
+                        <input id="edit-staff-bank-account" type="text" value="${esc(bankAccount)}" placeholder="1234567890"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Atas Nama Rekening</label>
+                        <input id="edit-staff-bank-holder" type="text" value="${esc(bankHolder)}" placeholder="Nama Pemilik"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                    </div>
+                </div>
+
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login (Permanen)</label>
-                    <input type="email" value="${esc(currentEmail)}" disabled
+                    <input type="email" value="${esc(email)}" disabled
                         class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800/50 text-slate-400 cursor-not-allowed">
                 </div>
                 <div id="edit-staff-error" class="hidden text-xs text-rose-600 font-semibold p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-200 dark:border-rose-800"></div>
             </div>
+
             <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeEditStaffModal()"
                     class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
@@ -940,7 +1267,7 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                 <button onclick="window.updateStaffProfile('${esc(uid)}')" id="update-staff-btn"
                     class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background:var(--color-primary)">
-                    <i class="fa-solid fa-floppy-disk"></i> Simpan
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Profil &amp; HR
                 </button>
             </div>
         </div>
@@ -973,6 +1300,17 @@ export const updateStaffProfile = async (uid) => {
 
     const name = el('edit-staff-name')?.value?.trim() || '';
     const role = el('edit-staff-role')?.value || ROLES.CASHIER;
+    const employeeId = el('edit-staff-empid')?.value?.trim() || 'EMP-001';
+    const position = el('edit-staff-position')?.value?.trim() || 'Staf Toko';
+    const phone = el('edit-staff-phone')?.value?.trim() || '';
+    const baseSalary = Math.max(0, parseFloat(el('edit-staff-salary')?.value) || 0);
+    const dailyAllowance = Math.max(0, parseFloat(el('edit-staff-allowance')?.value) || 0);
+    const employmentStatus = el('edit-staff-status')?.value || 'permanent';
+    const paymentMethod = el('edit-staff-payment-method')?.value || 'cash';
+    const bankName = el('edit-staff-bank-name')?.value?.trim() || (paymentMethod === 'cash' ? 'Tunai Kas Laci Toko' : (paymentMethod.toUpperCase() || 'Bank'));
+    const bankAccount = el('edit-staff-bank-account')?.value?.trim() || '-';
+    const bankHolder = el('edit-staff-bank-holder')?.value?.trim() || name;
+
     const errEl = el('edit-staff-error');
     const btn = el('update-staff-btn');
 
@@ -988,16 +1326,235 @@ export const updateStaffProfile = async (uid) => {
         await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).set({
             name,
             role,
+            employeeId,
+            position,
+            phone,
+            baseSalary,
+            dailyAllowance,
+            employmentStatus,
+            paymentMethod,
+            bankName,
+            bankAccount,
+            bankHolder,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
+
         closeEditStaffModal();
-        showToast('Profil staf berhasil diperbarui!', 'success');
+        showToast('Profil staf & data HR berhasil diperbarui!', 'success');
         await loadStaffList();
     } catch (err) {
         const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
         const msg = isPerm ? 'Izin ditolak oleh Firebase (Khusus Akun Owner).' : err.message;
         if (errEl) { errEl.textContent = 'Gagal memperbarui: ' + msg; errEl.classList.remove('hidden'); }
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan'; }
+    } finally {
+        hLoad();
+    }
+};
+
+// ─── Modal Profil & Gaji HR Owner (Direksi) ─────────────────
+export const openOwnerHrModal = () => {
+    if (!verifyOwnerAuthority('mengatur profil dan gaji owner')) return;
+
+    const ownerProfile = getOwnerEmployeeProfile(appData);
+
+    const existingModal = el('modal-owner-hr');
+    if (existingModal) existingModal.remove();
+
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="modal-owner-hr" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
+        onclick="if(event.target===this) window.closeOwnerHrModal()">
+        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-purple-200 dark:border-purple-800/80" id="owner-hr-modal-box">
+            <!-- Mobile Drag Handle -->
+            <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-purple-100 dark:border-purple-900/40 bg-gradient-to-r from-purple-500/10 via-slate-50 to-white dark:from-purple-950/40 dark:via-slate-800 dark:to-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-md bg-gradient-to-tr from-purple-600 to-indigo-500 text-white border border-purple-300 dark:border-purple-700">
+                        <i class="fa-solid fa-crown text-amber-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>Atur Kompensasi &amp; HR Owner</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 font-bold">OWN-001</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Gaji resmi pemilik toko terpisah dari laba usaha (Tata Kelola Modern)</p>
+                    </div>
+                </div>
+                <button onclick="window.closeOwnerHrModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-5 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
+                <div class="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60 text-xs text-purple-900 dark:text-purple-200 flex items-start gap-2.5">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-sm mt-0.5 shrink-0"></i>
+                    <p class="leading-relaxed">
+                        <strong>Standar Akuntansi &amp; Bisnis Sehat:</strong> Pemilik toko berhak menerima gaji bulanan tetap sebagai pengelola operasional. Biaya ini tercatat resmi di beban operasional dan laporan perpajakan usaha toko.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor ID Karyawan Owner</label>
+                        <input id="owner-hr-empid" type="text" value="${esc(ownerProfile.employeeId || 'OWN-001')}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold cursor-not-allowed" readonly>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Pemilik / Direktur <span class="text-rose-500">*</span></label>
+                        <input id="owner-hr-name" type="text" value="${esc(ownerProfile.name || 'Pemilik Toko')}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white font-bold transition-all shadow-inner">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan Resmi</label>
+                        <input id="owner-hr-position" type="text" value="${esc(ownerProfile.position || 'Owner / Direktur Utama')}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">No. WhatsApp Pribadi</label>
+                        <input id="owner-hr-phone" type="tel" value="${esc(ownerProfile.phone || '')}" placeholder="081234567890"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Gaji Pokok Direksi (Rp/Bulan) <span class="text-rose-500">*</span></label>
+                        <input id="owner-hr-salary" type="number" min="0" step="50000" value="${ownerProfile.baseSalary || 10000000}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white font-bold transition-all shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Tunjangan Bulanan Direksi (Rp)</label>
+                        <input id="owner-hr-allowance" type="number" min="0" step="50000" value="${ownerProfile.dailyAllowance || 0}"
+                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                    </div>
+                </div>
+
+                <!-- Informasi Rekening Bank Owner -->
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-3">
+                    <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-building-columns text-purple-600"></i> Rekening Penerimaan Gaji
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Bank</label>
+                            <input id="owner-hr-bank-name" type="text" value="${esc(ownerProfile.bankName || 'BCA')}" placeholder="BCA / Mandiri / BRI"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor Rekening</label>
+                            <input id="owner-hr-bank-account" type="text" value="${esc(ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? ownerProfile.bankAccount : '')}" placeholder="1234567890"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white font-mono transition-all shadow-inner">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Atas Nama Rekening</label>
+                            <input id="owner-hr-bank-holder" type="text" value="${esc(ownerProfile.bankHolder || ownerProfile.name || '')}" placeholder="Nama Pemilik"
+                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="owner-hr-error" class="hidden text-xs text-rose-600 font-semibold p-3 bg-rose-50 dark:bg-rose-950/40 rounded-2xl border border-rose-200 dark:border-rose-900/50"></div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                <button onclick="window.closeOwnerHrModal()"
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    Batal
+                </button>
+                <button onclick="window.saveOwnerHrProfile()" id="save-owner-hr-btn"
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Kompensasi Owner
+                </button>
+            </div>
+        </div>
+    </div>`);
+
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('ownerHr');
+    }
+
+    setTimeout(() => {
+        const box = el('owner-hr-modal-box');
+        if (box) box.classList.remove('scale-95');
+    }, 10);
+};
+
+export const closeOwnerHrModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('modal-owner-hr');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 200);
+        }
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('ownerHr', fH, doClose);
+    } else {
+        doClose();
+    }
+};
+
+export const saveOwnerHrProfile = async () => {
+    if (!verifyOwnerAuthority('menyimpan kompensasi owner')) return;
+
+    const name = el('owner-hr-name')?.value?.trim() || 'Pemilik Toko';
+    const position = el('owner-hr-position')?.value?.trim() || 'Owner / Direktur Utama';
+    const phone = el('owner-hr-phone')?.value?.trim() || '';
+    const baseSalary = Math.max(0, parseFloat(el('owner-hr-salary')?.value) || 0);
+    const dailyAllowance = Math.max(0, parseFloat(el('owner-hr-allowance')?.value) || 0);
+    const bankName = el('owner-hr-bank-name')?.value?.trim() || 'BCA';
+    const bankAccount = el('owner-hr-bank-account')?.value?.trim() || '-';
+    const bankHolder = el('owner-hr-bank-holder')?.value?.trim() || name;
+
+    const errEl = el('owner-hr-error');
+    const btn = el('save-owner-hr-btn');
+
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan ke Cloud...'; }
+    sLoad('Menyimpan data kompensasi owner...');
+
+    try {
+        const ownerEmployeeData = {
+            employeeId: 'OWN-001',
+            name,
+            position,
+            phone,
+            baseSalary,
+            dailyAllowance,
+            employmentStatus: 'permanent',
+            bankName,
+            bankAccount,
+            bankHolder,
+            role: ROLES.OWNER,
+            isActive: true,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        await db.collection('freshmart').doc('cms_data').set({
+            ownerEmployee: ownerEmployeeData
+        }, { merge: true });
+
+        appData.ownerEmployee = ownerEmployeeData;
+
+        closeOwnerHrModal();
+        showToast('Data kompensasi Owner berhasil diperbarui!', 'success');
+        await renderCashierAccounts();
+
+    } catch (err) {
+        console.error('[OwnerHr] Gagal menyimpan data owner:', err);
+        if (errEl) {
+            errEl.textContent = 'Gagal menyimpan: ' + (err.message || 'Terjadi kesalahan sistem');
+            errEl.classList.remove('hidden');
+        }
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Kompensasi Owner';
+        }
     } finally {
         hLoad();
     }
@@ -1100,6 +1657,9 @@ if (typeof window !== 'undefined') {
     window.openEditStaffModal           = openEditStaffModal;
     window.closeEditStaffModal          = closeEditStaffModal;
     window.updateStaffProfile           = updateStaffProfile;
+    window.openOwnerHrModal             = openOwnerHrModal;
+    window.closeOwnerHrModal            = closeOwnerHrModal;
+    window.saveOwnerHrProfile           = saveOwnerHrProfile;
     window.toggleStaffActive            = toggleStaffActive;
     window.deleteStaffAccount           = deleteStaffAccount;
     window.toggleStaffPassVisibility    = toggleStaffPassVisibility;

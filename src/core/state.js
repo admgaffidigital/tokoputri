@@ -73,6 +73,19 @@ export const defApp = {
     salesReturns: [], vendorReturns: [],
     flashSales: [],
     custom_master_presets: [],
+    // Modul HRD, Karyawan, Kasbon & Payroll Toko Putri
+    employees: [],
+    attendances: [],
+    salaryAdvances: [],
+    payrollRuns: [],
+    ownerEmployee: null,
+    hrSettings: {
+        workDaysPerMonth: 26,
+        overtimeRatePerHour: 20000,
+        latePenaltyPerMinute: 1000,
+        dailyMealRate: 25000,
+        lossDeductionScheme: 'flexible' // 'flexible' | 'equal_split' | 'role_weighted'
+    },
     taxSettings: {
         companyName: "", npwp: "",
         taxScheme: "umkm_final",  // 'umkm_final' | 'badan_normal' | 'custom'

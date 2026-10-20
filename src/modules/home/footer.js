@@ -28,7 +28,7 @@ export const renderFooter = () => {
     const footerCredit = store.footerCredit || 'Seluruh hak cipta dilindungi undang-undang.';
     const currentYear = new Date().getFullYear();
     const latestVer = getLatestVersion(appData);
-    const rawVer = (latestVer || '1.18.12').replace(/^v/i, '');
+    const rawVer = (latestVer || '1.19.0').replace(/^v/i, '');
     const displayVer = 'v' + rawVer;
 
     // Format nomor WhatsApp aman (standar internasional 62...)

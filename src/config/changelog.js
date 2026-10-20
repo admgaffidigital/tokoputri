@@ -16,6 +16,24 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-19-0",
+        "version": "v1.19.0",
+        "date": "2026-10-20",
+        "title": "Sistem HRD & Penggajian (Payroll) Terpadu, Multi-Role Staff, Presensi Kehadiran, Buku Kasbon, Slip Gaji Multi-Format & Beban Operasional",
+        "category": "feature",
+        "badge": "Integrated HRD, Payroll & Staff Compensation Engine v1.19.0",
+        "items": [
+            "Manajemen Staf & Multi-Role Terpadu: Struktur akun komprehensif untuk Pemilik Toko (Owner), Admin Operasional, Kasir POS, dan Staf Gudang/Logistik dengan ID Karyawan baku (EMP-xxx / OWN-001) dan kontrol hak akses granular 22 modul.",
+            "Gaji Direksi Setara dalam Sistem: Profil Pemilik Toko (Owner) menerima gaji resmi direksi yang terpisah dari dividen/laba toko, memastikan transparansi mutlak antara kompensasi kerja dan laba bersih usaha.",
+            "Buku Kasbon Karyawan & Skema Cicilan Fleksibel: Pengajuan kasbon pinjaman staf dengan skema sekali potong gaji atau cicilan multi-bulan (tenor), pelacakan sisa pinjaman otomatis, dan integrasi pengeluaran kas toko.",
+            "Absensi Shift & Presensi Harian: Pencatatan status kehadiran (Hadir, Terlambat, Izin, Sakit, Alpha), 1-klik hadirkan semua staf, integrasi otomatis saat kasir membuka shift POS, serta kalkulasi tunjangan kehadiran.",
+            "Mesin Penggajian (Payroll Engine) & Potongan Selisih Barang Hilang: Formula otomatis Take Home Pay memperhitungkan gaji pokok, tunjangan absensi, bonus/lembur, potongan angsuran kasbon, dan pemotongan selisih barang hilang/stock opname yang disesuaikan jabatan.",
+            "Multi-Format Slip Gaji Resmi: Generator cetak Dokumen A4 PDF resmi, struk thermal kasir 58mm/80mm, serta 1-klik kirim slip gaji via pesan WhatsApp ke nomor HP staf.",
+            "Integrasi Hulu-ke-Hilir ke Buku Kas Operasional (expenses.js): Setiap pembayaran gaji otomatis mencatat beban operasional kategori 'gaji' dan melunasi sisa kasbon staf, menyelaraskan laporan kas, laba rugi, dan perpajakan toko secara riil.",
+            "Multi-Channel Distribution v1.19.0 (Android versionCode 11900)."
+        ]
+    },
+    {
         "id": "log-1-18-12",
         "version": "v1.18.12",
         "date": "2026-10-19",
@@ -74,22 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Eliminasi Kebocoran Layout & Anti Teks Terpotong: Restrukturisasi tata letak baris 'Daftar Barang Flash Sale' menjadi responsif (flex-col di mobile, sm:flex-row di desktop) dan proteksi overflow-x-hidden, melenyapkan total kendala tombol '+ Tambah Produk' terpotong di tepi kanan layar dan scrollbar horizontal liar di smartphone.",
             "Bento Island Empty State & Form Input Touch Target 44px: Menggantikan kotak border-dashed abu-abu datar dengan kartu Bento Empty State interaktif beraksen petir tema toko, serta standardisasi kolom input form dan dropdown select berukuran touch target proporsional (min-h-[44px], font 16px mobile anti-auto-zoom).",
             "Multi-Channel Distribution v1.18.9 (Android versionCode 11809)."
-        ]
-    },
-    {
-        "id": "log-1-18-08",
-        "version": "v1.18.8",
-        "date": "2026-10-19",
-        "title": "Arsitektur Offline PWA Service Worker, Fluid Native View Transitions, Layout Tablet POS Kasir & Screen WakeLock",
-        "category": "feature",
-        "badge": "Offline PWA, View Transitions & POS Tablet v1.18.8",
-        "items": [
-            "Enterprise Offline PWA Service Worker Engine: Implementasi public/sw.js modern dengan strategi caching komprehensif (Network-First dengan 3s timeout & cache fallback untuk navigasi HTML, Stale-While-Revalidate untuk aset statis JS/CSS/WebP, Cache-First untuk Google Fonts & FontAwesome, auto-purge cache lama, dan pengecualian Firestore API) yang memungkinkan aplikasi dibuka dan berfungsi 100% offline seketika (0ms latency).",
-            "PWA 1-Click Install Prompt Capture: Menangkap event beforeinstallprompt pada index.html dan menyediakan handler native window.promptPWAInstall() untuk pengalaman instalasi PWA mulus di Android, Chrome, Edge, dan iOS.",
-            "Fluid Native View Transitions Engine: Transisi layar antar-view berbasis GPU hardware acceleration (translate3d, will-change, scale 0.985 -> 1.0) dengan deteksi arah navigasi maju (viewEnterForward) dan mundur (viewEnterBackward) serta transisi modal scale lift, dilengkapi pematuhan preferensi aksesibilitas prefers-reduced-motion.",
-            "Ergonomi Antarmuka Tablet POS Kasir (Split Workspace): Mengaktifkan tata letak split-screen side-by-side (katalog barang 58% + keranjang belanja 42%) secara langsung pada layar tablet (iPad, Galaxy Tab, dsb. >= 768px), membebaskan kasir dari keharusan membuka drawer berulang kali.",
-            "Screen WakeLock API Controller: Menjaga layar tablet dan smartphone kasir tetap menyala (anti-sleep) secara otomatis saat terminal POS Kasir aktif dan melepaskan lock saat keluar, menjamin kelancaran antrean kasir tanpa gangguan layar mati.",
-            "Multi-Channel Distribution v1.18.8 (Android versionCode 11808)."
         ]
     }
 ];
@@ -167,7 +169,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.18.12';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.0';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

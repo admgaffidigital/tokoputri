@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.18.12** (Android VersionCode: `11812`)
+* **Versi Rilis**: **v1.19.0** (Android VersionCode: `11900`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -270,6 +270,18 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.19.0 — Sistem HRD & Penggajian (Payroll) Terpadu, Multi-Role Staff, Presensi Kehadiran, Buku Kasbon, Slip Gaji Multi-Format & Beban Operasional (20 Okt 2026)
+- **Manajemen Staf & Multi-Role Terpadu**: Struktur akun komprehensif untuk Pemilik Toko (Owner), Admin Operasional, Kasir POS, dan Staf Gudang/Logistik dengan ID Karyawan baku (`EMP-xxx` / `OWN-001`) dan kontrol hak akses granular 22 modul.
+- **Gaji Direksi Setara dalam Sistem**: Profil Pemilik Toko (Owner) menerima gaji resmi direksi yang terpisah dari dividen/laba toko, memastikan transparansi mutlak antara kompensasi kerja dan laba bersih usaha.
+- **Buku Kasbon Karyawan & Skema Cicilan Fleksibel**: Pengajuan kasbon pinjaman staf dengan skema sekali potong gaji atau cicilan multi-bulan (tenor), pelacakan sisa pinjaman otomatis, dan integrasi pengeluaran kas toko (`expenses.js`).
+- **Absensi Shift & Presensi Harian**: Pencatatan status kehadiran (Hadir, Terlambat, Izin, Sakit, Alpha), 1-klik hadirkan semua staf, integrasi otomatis saat kasir membuka shift POS, serta kalkulasi tunjangan kehadiran.
+- **Mesin Penggajian (Payroll Engine) & Potongan Selisih Barang Hilang**: Formula otomatis Take Home Pay memperhitungkan gaji pokok, tunjangan absensi, bonus/lembur, potongan angsuran kasbon, dan pemotongan selisih barang hilang/stock opname yang disesuaikan jabatan.
+- **Multi-Format Slip Gaji Resmi**: Generator cetak Dokumen A4 PDF resmi, struk thermal kasir 58mm/80mm, serta 1-klik kirim slip gaji via pesan WhatsApp ke nomor HP staf.
+- **Integrasi Hulu-ke-Hilir ke Buku Kas Operasional**: Setiap pembayaran gaji otomatis mencatat beban operasional kategori 'gaji' dan melunasi sisa kasbon staf, menyelaraskan laporan kas, laba rugi, dan perpajakan toko secara riil.
+- **Multi-Channel Distribution v1.19.0**: Android VersionCode `11900`, versionName `1.19.0`, kompilasi produksi Vite, aset Capacitor, dan PWA.
+
+---
 
 ### v1.18.12 — Ekspor Brosur & Daftar Harga Cepat Kontraktor & Tukang (1-Klik PDF A4 & WhatsApp), Live Counter & Format Grosir (19 Okt 2026)
 - **Generator Brosur & Daftar Harga Resmi (PDF A4 Multi-Halaman)**: Mengintegrasikan engine cetak A4 presisi di `src/modules/print/documents.js` lengkap dengan kop surat toko, logo resmi, alamat, kontak WhatsApp, nomor dokumen `PL-YYYYMMDD-XXXX`, masa berlaku estimasi, pembagian kategori rapi, kolom harga grosir/proyek, multi-varian, status ketersediaan, dan tanda tangan verifikasi.

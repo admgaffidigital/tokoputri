@@ -645,6 +645,16 @@ export const confirmStartPOSShift = async () => {
     if (typeof window.renderShiftHeaderBadge === 'function') {
         window.renderShiftHeaderBadge();
     }
+
+    // Rekam otomatis absensi kehadiran kasir ke sistem HRD Toko (Fase 2)
+    try {
+        if (typeof window.autoRecordCashierShiftAttendance === 'function') {
+            const curIdentity = getCurrentCashierIdentity();
+            window.autoRecordCashierShiftAttendance(curIdentity, shiftData.startTimeISO);
+        }
+    } catch (attErr) {
+        console.warn('[POS Shift] Non-blocking: Gagal auto-record absensi shift:', attErr);
+    }
 };
 
 // ─── Rekam Transaksi Penjualan ke Shift Aktif ────────────────

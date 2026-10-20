@@ -140,8 +140,10 @@ export const renderWish = () => {
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
-window.updWish = updWish;
-window.rmWish = rmWish;
-window.moveWish = moveWish;
-window.clearWishlist = clearWishlist;
-window.renderWish = renderWish;
+if (typeof window !== 'undefined') {
+    window.updWish = updWish;
+    window.rmWish = rmWish;
+    window.moveWish = moveWish;
+    window.clearWishlist = clearWishlist;
+    window.renderWish = renderWish;
+}

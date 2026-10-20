@@ -510,7 +510,12 @@ export const MODAL_ELEMENT_MAP = {
     deliverySignature: ['modal-delivery-signature', 'delivery-signature-modal'],
     flashSaleForm: ['modal-flash-sale-form', 'flash-sale-form-modal'],
     factoryReset: ['modal-factory-reset', 'factory-reset-modal'],
-    priceListExport: ['modal-pricelist-export', 'pricelist-export-modal']
+    priceListExport: ['modal-pricelist-export', 'pricelist-export-modal'],
+    ownerHr: ['modal-owner-hr', 'owner-hr-modal'],
+    advanceForm: ['modal-salary-advance-form', 'salary-advance-modal'],
+    advanceDetail: ['modal-salary-advance-detail'],
+    payrollItemForm: ['modal-payroll-item-form', 'payroll-item-modal'],
+    payslipPreview: ['modal-payslip-preview', 'payslip-preview-modal']
 };
 
 /**
@@ -694,6 +699,21 @@ export const closeModalByName = (m) => {
             break;
         case 'editStaff':
             if (typeof window.closeEditStaffModal === 'function') { window.closeEditStaffModal(true); return true; }
+            break;
+        case 'ownerHr':
+            if (typeof window.closeOwnerHrModal === 'function') { window.closeOwnerHrModal(true); return true; }
+            break;
+        case 'advanceForm':
+            if (typeof window.closeSalaryAdvanceFormModal === 'function') { window.closeSalaryAdvanceFormModal(true); return true; }
+            break;
+        case 'advanceDetail':
+            if (typeof window.closeAdvanceDetailModal === 'function') { window.closeAdvanceDetailModal(true); return true; }
+            break;
+        case 'payrollItemForm':
+            if (typeof window.closePayrollItemModal === 'function') { window.closePayrollItemModal(true); return true; }
+            break;
+        case 'payslipPreview':
+            if (typeof window.closePayslipPreviewModal === 'function') { window.closePayslipPreviewModal(true); return true; }
             break;
         case 'soFinalize':
             if (typeof window.closeSOFinalizeModal === 'function') { window.closeSOFinalizeModal(true); return true; }
@@ -967,7 +987,9 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',
         'posVariantSheet', 'posLogin', 'posCartDrawer', 'posPayment',
         'posOpenShift', 'posCloseShift', 'posShiftSummary', 'posCashMovement',
-        'thermalPreview', 'htmlPreview', 'addStaff', 'permissions', 'editStaff',
+        'thermalPreview', 'htmlPreview', 'addStaff', 'permissions', 'editStaff', 'ownerHr',
+        'advanceForm', 'advanceDetail',
+        'payrollItemForm', 'payslipPreview',
         'soFinalize', 'soHistory', 'preRestore', 'heroBanner', 'renewal',
         'purchasePayment', 'purchaseDetail', 'purchasePicker', 'purchaseForm',
         'supplierDetail', 'supplierForm', 'posHoldPrompt', 'posHeldModal',

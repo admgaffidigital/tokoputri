@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.18.12';
+    const localVer = getLatestVersion(appData) || 'v1.19.0';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ( Official Store ) ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '19 Okt 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '20 Okt 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '15.8 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,11 +83,11 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.18.12';
+        const fallbackVer = getLatestVersion(appData) || 'v1.19.0';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,
-            publishedAt: '19 Okt 2026',
+            publishedAt: '20 Okt 2026',
             fileSize: '15.8 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
@@ -217,14 +217,14 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.18.12</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.19.0</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
                         <i class="fa-brands fa-android text-emerald-500 text-xs"></i>
                         <span>Kompatibel: Android 7.0 (Nougat) s/d Android 15</span>
                     </span>
-                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 19 Okt 2026</span>
+                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 20 Okt 2026</span>
                 </div>
             </div>
 
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.18.12) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.19.0) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.18.12</span>
+                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.19.0</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,13 +264,13 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Ekspor Brosur &amp; Daftar Harga Kontraktor (v1.18.12):</b> Generator dokumen PDF A4 resmi multi-halaman &amp; salin format WhatsApp 1-klik untuk kontraktor dan tukang lengkap dengan tier harga grosir, varian, dan status stok ketersediaan.
+                            <b>Sistem HRD &amp; Penggajian (Payroll v1.19.0):</b> Mesin kompensasi hulu-ke-hilir untuk seluruh staf &amp; owner direksi dengan ID Karyawan (EMP-xxx/OWN-001), presensi kehadiran, buku kasbon cicilan multi-bulan, potongan barang hilang, dan integrasi otomatis ke beban operasional toko.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Eliminasi Popstate Race Condition &amp; Stabilitas PDF:</b> Transisi modal deterministik yang mengeliminasi tabrakan router history.back(), menjamin pratinjau lembar PDF A4 langsung tampil stabil tanpa tertutup kembali.
+                            <b>Multi-Format Slip Gaji Resmi:</b> Cetak dokumen A4 PDF berstandar akuntansi resmi, struk kasir thermal 58mm/80mm, serta pengiriman slip gaji 1-klik melalui pesan WhatsApp ke nomor HP staf.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
@@ -478,7 +478,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.18.12';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.19.0';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);

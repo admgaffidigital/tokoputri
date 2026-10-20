@@ -458,11 +458,13 @@ export const validateCartToCheckout = () => {
 };
 
 // ─── Expose ke window untuk kompatibilitas onclick di HTML ──────
-window.sanitizeCart = sanitizeCart;
-window.updCart = updCart;
-window.renderCart = renderCart;
-window.setCQty = setCQty;
-window.updCQty = updCQty;
-window.rmCart = rmCart;
-window.clearCart = clearCart;
-window.validateCartToCheckout = validateCartToCheckout;
+if (typeof window !== 'undefined') {
+    window.sanitizeCart = sanitizeCart;
+    window.updCart = updCart;
+    window.renderCart = renderCart;
+    window.setCQty = setCQty;
+    window.updCQty = updCQty;
+    window.rmCart = rmCart;
+    window.clearCart = clearCart;
+    window.validateCartToCheckout = validateCartToCheckout;
+}

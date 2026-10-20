@@ -12,7 +12,7 @@ import { el } from '../../core/utils.js';
 
 // bannerTmr disimpan di window agar bisa diakses dari atribut HTML inline
 // (onmouseenter="clearInterval(bannerTmr)" dll) dan dari modul ini secara serentak.
-if (typeof window.bannerTmr === 'undefined') window.bannerTmr = null;
+if (typeof window !== 'undefined' && typeof window.bannerTmr === 'undefined') window.bannerTmr = null;
 export let bannerScrollDebounce = null;
 
 /**
@@ -225,11 +225,13 @@ export const startBannerAutoSlide = () => {
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
-window.forcePlayBannerVideos = forcePlayBannerVideos;
-window.toggleBannerVideoSound = toggleBannerVideoSound;
-window.updateBannerDots = updateBannerDots;
-window.onBannerScroll = onBannerScroll;
-window.scrollToBanner = scrollToBanner;
-window.scrollBannerPrev = scrollBannerPrev;
-window.scrollBannerNext = scrollBannerNext;
-window.startBannerAutoSlide = startBannerAutoSlide;
+if (typeof window !== 'undefined') {
+    window.forcePlayBannerVideos = forcePlayBannerVideos;
+    window.toggleBannerVideoSound = toggleBannerVideoSound;
+    window.updateBannerDots = updateBannerDots;
+    window.onBannerScroll = onBannerScroll;
+    window.scrollToBanner = scrollToBanner;
+    window.scrollBannerPrev = scrollBannerPrev;
+    window.scrollBannerNext = scrollBannerNext;
+    window.startBannerAutoSlide = startBannerAutoSlide;
+}

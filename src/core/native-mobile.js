@@ -175,6 +175,21 @@ export const closeModalById = (id) => {
         case 'modal-pricelist-export':
             if (typeof window.closePriceListExportModal === 'function') window.closePriceListExportModal();
             break;
+        case 'modal-owner-hr':
+            if (typeof window.closeOwnerHrModal === 'function') window.closeOwnerHrModal();
+            break;
+        case 'modal-salary-advance-form':
+            if (typeof window.closeSalaryAdvanceFormModal === 'function') window.closeSalaryAdvanceFormModal();
+            break;
+        case 'modal-salary-advance-detail':
+            if (typeof window.closeAdvanceDetailModal === 'function') window.closeAdvanceDetailModal();
+            break;
+        case 'modal-payroll-item-form':
+            if (typeof window.closePayrollItemModal === 'function') window.closePayrollItemModal();
+            break;
+        case 'modal-payslip-preview':
+            if (typeof window.closePayslipPreviewModal === 'function') window.closePayslipPreviewModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {

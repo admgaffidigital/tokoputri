@@ -91,6 +91,7 @@ window.aF = aF;
 // Kategori Standar Beban Operasional Toko
 export const EXPENSE_CATEGORIES = [
     { key: 'gaji', label: 'Gaji & Tunjangan Staf', icon: 'fa-user-tie', color: 'blue' },
+    { key: 'kasbon', label: 'Kasbon & Pinjaman Karyawan', icon: 'fa-hand-holding-dollar', color: 'indigo' },
     { key: 'listrik', label: 'Listrik, Air & Wifi Toko', icon: 'fa-bolt', color: 'amber' },
     { key: 'sewa', label: 'Sewa Ruko / Tempat Usaha', icon: 'fa-shop', color: 'purple' },
     { key: 'transport', label: 'Bensin & Transportasi', icon: 'fa-van-shuttle', color: 'emerald' },
