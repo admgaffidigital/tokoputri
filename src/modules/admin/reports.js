@@ -845,7 +845,7 @@ export const renderExecutiveSummaryTab = () => {
                 <!-- Container SVG Chart -->
                 <div class="relative w-full overflow-hidden pt-1">
                     ${renderTwelveMonthPerformanceSvg(reportYear)}
-                    <div id="chart-tooltip-box" class="hidden absolute pointer-events-none z-20 px-3 py-2 rounded-xl bg-slate-900/95 text-white text-[10px] font-bold shadow-2xl border border-slate-700 transition-all backdrop-blur-sm"></div>
+                    <div id="chart-tooltip-box" class="hidden absolute pointer-events-none z-20 px-3 py-2 rounded-xl bg-slate-900 text-white text-[10px] font-bold shadow-xs border border-slate-700 transition-all"></div>
                 </div>
             </div>
 

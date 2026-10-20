@@ -374,14 +374,14 @@
         </div>
         <div class="p-4 sm:p-5 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/60 dark:bg-[#0b1121]">
           <!-- Feature Card: Unduh Aplikasi Android (Play Store Bento Tile) -->
-          <button class="flex w-full items-center gap-3.5 rounded-2xl border border-[var(--color-primary)]/40 bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.06)] to-transparent p-3.5 text-left font-bold text-slate-800 transition-all hover:border-[var(--color-primary)]/60 hover:bg-[rgba(var(--color-primary-rgb),0.18)] active:scale-[0.98] dark:border-[var(--color-primary)]/30 dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:text-white shadow-2xs cursor-pointer" onclick="navigateFromQuickMenu(openAppDownloadModal)">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white shadow-md shadow-[rgba(var(--color-primary-rgb),0.3)] shrink-0">
+          <button class="flex w-full items-center gap-3.5 rounded-2xl border border-[var(--color-primary)]/40 bg-[rgba(var(--color-primary-rgb),0.08)] p-3.5 text-left font-bold text-slate-800 transition-all hover:border-[var(--color-primary)]/60 hover:bg-[rgba(var(--color-primary-rgb),0.15)] active:scale-[0.98] dark:border-[var(--color-primary)]/30 dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:text-white shadow-xs cursor-pointer" onclick="navigateFromQuickMenu(openAppDownloadModal)">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white shadow-xs shrink-0">
               <i class="fa-brands fa-google-play text-lg"></i>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <h4 class="text-xs sm:text-sm leading-tight text-slate-900 dark:text-slate-100 font-extrabold">Unduh Aplikasi Android</h4>
-                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-[var(--color-primary)] text-white shadow-2xs">APK Resmi</span>
+                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-[var(--color-primary)] text-white shadow-xs">APK Resmi</span>
               </div>
               <p class="mt-0.5 text-[9.5px] font-semibold text-slate-500 dark:text-slate-400 truncate">Unduh &amp; instal aplikasi Toko Putri langsung di HP</p>
             </div>
@@ -390,8 +390,8 @@
           <!-- 2-Column Bento Grid (Centered Bento Shortcut Tiles) -->
           <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
             <!-- 1. Halaman Utama -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-catalog')">
-              <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-catalog')">
+              <div class="w-12 h-12 rounded-2xl bg-[var(--color-primary)] text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-house"></i>
               </div>
               <div class="w-full text-center">
@@ -401,8 +401,8 @@
             </button>
 
             <!-- 2. Keranjang Belanja -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-cart')">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-rose-500 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-cart')">
+              <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-bag-shopping"></i>
               </div>
               <div class="w-full text-center">
@@ -412,9 +412,9 @@
             </button>
 
             <!-- 3. Kartu Member VIP -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-amber-300/80 dark:border-amber-700/60 bg-gradient-to-br from-amber-50/80 to-yellow-50/40 dark:from-slate-900 dark:to-amber-950/20 hover:border-amber-400 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(openMemberModal)">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-amber-300/80 dark:border-amber-700/60 bg-amber-50/60 dark:bg-slate-900 hover:border-amber-400 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(openMemberModal)">
               <span class="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase bg-amber-500 text-white shadow-xs">VIP</span>
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-600 via-amber-500 to-amber-700 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+              <div class="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-id-card"></i>
               </div>
               <div class="w-full text-center">
@@ -424,9 +424,9 @@
             </button>
 
             <!-- 4. Produk Favorit -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-rose-400 hover:bg-rose-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-wishlist')">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-rose-400 hover:bg-rose-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-wishlist')">
               <span id="wishlist-badge" class="absolute top-2.5 right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-900 px-1 text-[8.5px] font-bold text-white scale-0 transition-transform dark:bg-white dark:text-slate-900 shadow-xs">0</span>
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+              <div class="w-12 h-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-heart"></i>
               </div>
               <div class="w-full text-center">
@@ -436,8 +436,8 @@
             </button>
 
             <!-- 5. Riwayat Pesanan -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-orders')">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-orders')">
+              <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-receipt"></i>
               </div>
               <div class="w-full text-center">
@@ -447,8 +447,8 @@
             </button>
 
             <!-- 6. Tanya Jawab (Q&A) -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-purple-400 hover:bg-purple-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-faq')">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-indigo-400 hover:bg-indigo-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu('view-faq')">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-circle-question"></i>
               </div>
               <div class="w-full text-center">
@@ -458,9 +458,9 @@
             </button>
 
             <!-- 7. Panduan Toko & SOP -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-teal-400 hover:bg-teal-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(() => openShoppingGuideModal('customer'))">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-teal-400 hover:bg-teal-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(() => openShoppingGuideModal('customer'))">
               <span class="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300">SOP</span>
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+              <div class="w-12 h-12 rounded-2xl bg-teal-600 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-book-open-reader"></i>
               </div>
               <div class="w-full text-center">
@@ -470,9 +470,9 @@
             </button>
 
             <!-- 8. Log Update -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(openChangelogModal)">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(openChangelogModal)">
               <span class="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase primary-bg text-white shadow-xs">Update</span>
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+              <div class="w-12 h-12 rounded-2xl bg-sky-600 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-clock-rotate-left"></i>
               </div>
               <div class="w-full text-center">
@@ -482,8 +482,8 @@
             </button>
 
             <!-- 9. Kalkulator Estimator Bahan Bangunan -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(() => openMaterialEstimatorModal('storefront'))">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(() => openMaterialEstimatorModal('storefront'))">
+              <div class="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-calculator"></i>
               </div>
               <div class="w-full text-center">
@@ -493,8 +493,8 @@
             </button>
 
             <!-- 10. Akses Seller -->
-            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-2xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(checkAdminAccess)">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center text-base sm:text-lg shadow-sm group-hover:scale-110 transition-transform mb-2.5 shrink-0">
+            <button class="relative p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800 transition-all active:scale-95 text-center flex flex-col items-center justify-center shadow-xs cursor-pointer group overflow-hidden" onclick="navigateFromQuickMenu(checkAdminAccess)">
+              <div class="w-12 h-12 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-110 transition-transform mb-2.5 shrink-0">
                 <i class="fa-solid fa-shield-halved"></i>
               </div>
               <div class="w-full text-center">
@@ -504,9 +504,9 @@
             </button>
 
             <!-- 11. Mode Tampilan -->
-            <button class="col-span-2 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 flex items-center justify-between px-3.5 sm:px-4 shadow-2xs cursor-pointer group" onclick="if(typeof toggleTheme==='function') toggleTheme();">
+            <button class="col-span-2 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-[var(--color-primary)]/50 hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all active:scale-95 flex items-center justify-between px-3.5 sm:px-4 shadow-xs cursor-pointer group" onclick="if(typeof toggleTheme==='function') toggleTheme();">
               <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 text-purple-200 flex items-center justify-center text-base shadow-sm group-hover:scale-110 transition-transform shrink-0">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-base shadow-xs group-hover:scale-110 transition-transform shrink-0">
                   <i class="fa-solid fa-moon" id="icon-theme"></i>
                 </div>
                 <div class="text-left">
@@ -610,7 +610,7 @@
               </div>
               <!-- Fitur Swatch Warna Cat -->
               <div class="pl-8 pt-1.5">
-                <div class="p-3 rounded-xl bg-gradient-to-r from-rose-50 to-amber-50 dark:from-rose-950/30 dark:to-amber-950/30 border border-rose-200/80 dark:border-rose-900/50 text-xs">
+                <div class="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 text-xs">
                   <b class="text-rose-700 dark:text-rose-400 flex items-center gap-1.5 mb-1"><i class="fa-solid fa-palette text-rose-500"></i> Katalog Swatch Kartu Warna Cat (Paint Swatch Fan Deck):</b>
                   Khusus produk cat tembok &amp; kayu, nikmati pengalaman memilih warna seperti membuka katalog fisik: panggung sorotan warna aktif (<i>Spotlight Bar</i>), kartu swatch berefek kilau satin 3D, filter keluarga warna (Putih, Abu-abu, Merah, Biru, Hijau, dll), dan pencarian instan nama atau kode warna HEX.
                 </div>
@@ -699,7 +699,7 @@
                 Setelah klik <b>"Proses Pesanan"</b>, sistem otomatis menghubungkan pesanan ke WhatsApp resmi Toko Putri untuk verifikasi seketika. Pantau perjalanan pesanan di menu <b>Riwayat Pesanan</b>.
               </p>
               <div class="pl-8 pt-1 space-y-2">
-                <div class="p-3 rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/30 border border-purple-200 dark:border-purple-800/60 text-xs">
+                <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 text-xs">
                   <b class="text-purple-700 dark:text-purple-400 flex items-center gap-1.5 mb-1"><i class="fa-solid fa-wallet text-purple-600"></i> Kartu Member Digital 3D (VIP Loyalty Pass):</b>
                   Buka kartu keanggotaan digital interaktif berpenampilan kartu perbankan modern: lengkap dengan Smart Chip EMV emas, barcode identitas, tingkatan tier resmi (<b>Bronze, Silver, Gold, Platinum VIP</b>), fitur <i>Balik Kartu 3D</i> untuk membaca hak istimewa, tombol <i>Simpan ke Galeri Foto HP</i>, serta penukaran saldo poin menjadi diskon belanja langsung maupun hadiah katalog tanpa undian.
                 </div>
@@ -1456,19 +1456,19 @@
       </div>
     </div>
     <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="product-modal" onclick="if (event.target === this) closeProductModal();">
-      <div class="modal-bottom-sheet custom-scrollbar relative flex max-h-[92dvh] w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-y-auto border-t border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 rounded-t-3xl sm:translate-y-10 sm:rounded-3xl sm:border" id="product-modal-content">
+      <div class="modal-bottom-sheet custom-scrollbar relative flex max-h-[92dvh] w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-y-auto border-t border-slate-200/90 bg-white shadow-sm transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 rounded-t-3xl sm:translate-y-10 sm:rounded-3xl sm:border" id="product-modal-content">
         <div class="absolute left-1/2 top-2.5 z-30 h-1 w-10 -translate-x-1/2 rounded-full bg-slate-300/80 dark:bg-slate-600 sm:hidden"></div>
         <div class="absolute right-3 top-3 z-20 flex gap-1.5">
-          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/90 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white active:scale-90 cursor-pointer" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
-          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/90 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:border-rose-500 hover:bg-rose-500 hover:text-white active:scale-90 cursor-pointer" onclick="closeProductModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
+          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 shadow-xs transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white active:scale-90 cursor-pointer" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
+          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 shadow-xs transition-all hover:border-rose-500 hover:bg-rose-500 hover:text-white active:scale-90 cursor-pointer" onclick="closeProductModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
         <div class="group relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-950 sm:rounded-t-3xl">
           <img alt="Product" class="h-full w-full cursor-zoom-in object-cover transition-transform duration-500 hover:scale-105" id="product-modal-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="previewProductImage()" onerror="this.style.display='none'; const cp = document.getElementById('product-modal-cover-placeholder'); if(cp) cp.classList.remove('hidden');" />
           <div id="product-modal-cover-placeholder" class="absolute inset-0 hidden w-full h-full flex items-center justify-center"></div>
-          <div class="pointer-events-none absolute bottom-3 right-3 z-10 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-[9px] font-bold text-white opacity-70 shadow-sm transition-opacity group-hover:opacity-100 dark:bg-slate-900/80 sm:opacity-0" id="zoom-indicator"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</div>
+          <div class="pointer-events-none absolute bottom-3 right-3 z-10 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-[9px] font-bold text-white opacity-70 shadow-xs transition-opacity group-hover:opacity-100 dark:bg-slate-900/80 sm:opacity-0" id="zoom-indicator"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</div>
           <div id="product-modal-video-container" class="absolute inset-0 flex hidden items-center justify-center bg-black"></div>
-          <button id="slide-prev" class="absolute left-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/90 text-slate-600 shadow transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800/90 dark:text-slate-200" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-          <button id="slide-next" class="absolute right-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/90 text-slate-600 shadow transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800/90 dark:text-slate-200" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+          <button id="slide-prev" class="absolute left-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white text-slate-600 shadow-xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800 dark:text-slate-200" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+          <button id="slide-next" class="absolute right-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white text-slate-600 shadow-xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800 dark:text-slate-200" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
           <div id="slide-dots" class="absolute bottom-3 left-1/2 z-10 flex hidden -translate-x-1/2 transform gap-1.5"></div>
         </div>
         <div class="flex-1 bg-white p-6 dark:bg-slate-900 sm:p-7">
@@ -1570,7 +1570,7 @@
               <i class="fa-solid fa-cart-plus text-base"></i>
               <span>+ Keranjang</span>
             </button>
-            <button onclick="buyNowProduct()" class="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[var(--color-primary-light,#e1b858)] via-[var(--color-primary)] to-[var(--color-primary-dark)] text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-lg shadow-[rgba(var(--color-primary-rgb),0.35)] hover:brightness-105">
+            <button onclick="buyNowProduct()" class="flex-1 h-12 rounded-2xl bg-[var(--color-primary)] text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-xs hover:brightness-105">
               <span>Beli Sekarang</span>
               <i class="fa-solid fa-bolt-lightning text-white/90 text-xs"></i>
             </button>
@@ -1652,21 +1652,21 @@
           <button id="quick-variant-btn-cart" onclick="quickVariantAddToCart(this)" class="flex-1 h-12 rounded-2xl border-2 border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] text-xs sm:text-sm font-extrabold tracking-wide transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-xs">
             <i class="fa-solid fa-cart-plus text-base"></i> <span>+ Keranjang</span>
           </button>
-          <button id="quick-variant-btn-buy" onclick="quickVariantBuyNow()" class="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[var(--color-primary-light,#e1b858)] via-[var(--color-primary)] to-[var(--color-primary-dark)] text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-lg shadow-[rgba(var(--color-primary-rgb),0.35)] hover:brightness-105">
+          <button id="quick-variant-btn-buy" onclick="quickVariantBuyNow()" class="flex-1 h-12 rounded-2xl bg-[var(--color-primary)] text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs hover:brightness-105">
             <span>Beli Sekarang</span> <i class="fa-solid fa-bolt-lightning text-white/90 text-xs"></i>
           </button>
         </div>
       </div>
     </div>
     <div class="fixed inset-0 z-[80] flex hidden items-end sm:items-center justify-center bg-slate-900/80 p-0 sm:p-4 opacity-0 transition-opacity duration-300" id="admin-modal" onclick="if (event.target === this) closeAdminModal();">
-      <div class="modal-bottom-sheet custom-scrollbar relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl transform translate-y-full sm:translate-y-10 scale-100 flex-col rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 overflow-hidden" id="admin-modal-box">
+      <div class="modal-bottom-sheet custom-scrollbar relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl transform translate-y-full sm:translate-y-10 scale-100 flex-col rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 overflow-hidden" id="admin-modal-box">
         <!-- DRAG PULL INDICATOR MOBILE -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
           <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
         </div>
-        <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md px-5 sm:px-6 py-3.5 sm:py-4" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+        <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-5 sm:px-6 py-3.5 sm:py-4">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary);">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-xs shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary);">
               <i class="fa-solid fa-pen-to-square"></i>
             </div>
             <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-none" id="admin-modal-title">Form Data</h3>
@@ -1674,20 +1674,20 @@
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-rose-900/30 active:scale-95 cursor-pointer" onclick="closeAdminModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
         <div class="custom-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-slate-800 sm:p-6 lg:p-8" id="admin-modal-form"></div>
-        <div class="sticky bottom-0 z-20 rounded-b-none sm:rounded-b-3xl border-t border-slate-100 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 sm:p-5 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.03)] dark:border-slate-700/60 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
-          <button class="btn-primary w-full min-h-[44px] py-3.5 rounded-2xl font-bold uppercase tracking-wider text-xs sm:text-sm shadow-glow flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all" onclick="submitAdminForm()"><i class="fa-solid fa-floppy-disk text-base"></i> Simpan Data</button>
+        <div class="sticky bottom-0 z-20 rounded-b-none sm:rounded-b-3xl border-t border-slate-200 bg-white dark:bg-slate-800 p-4 sm:p-5 dark:border-slate-700 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+          <button class="btn-primary w-full min-h-[44px] py-3.5 rounded-2xl font-bold uppercase tracking-wider text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all" onclick="submitAdminForm()"><i class="fa-solid fa-floppy-disk text-base"></i> Simpan Data</button>
         </div>
       </div>
     </div>
     <div class="fixed inset-0 z-[100] flex hidden items-end sm:items-center justify-center bg-slate-900/80 p-0 sm:p-4 opacity-0 transition-opacity duration-300" id="admin-order-modal" onclick="if (event.target === this) closeOrderDetailModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl transform translate-y-full sm:translate-y-10 scale-100 flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="admin-order-modal-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl transform translate-y-full sm:translate-y-10 scale-100 flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="admin-order-modal-box">
         <!-- DRAG PULL INDICATOR MOBILE -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
           <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
         </div>
-        <div class="shrink-0 flex items-center justify-between border-b border-slate-200 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md px-5 sm:px-6 py-3.5 sm:py-4 dark:border-slate-700" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+        <div class="shrink-0 flex items-center justify-between border-b border-slate-200 bg-slate-50 dark:bg-slate-800 px-5 sm:px-6 py-3.5 sm:py-4 dark:border-slate-700">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary);">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-xs shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary);">
               <i class="fa-solid fa-file-invoice"></i>
             </div>
             <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-none">Detail Pesanan</h3>
@@ -1695,7 +1695,7 @@
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-rose-900/30 active:scale-95 cursor-pointer" onclick="closeOrderDetailModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
         <div class="custom-scrollbar flex-1 overflow-y-auto space-y-4 bg-slate-50 p-5 dark:bg-slate-900 sm:p-6 lg:p-8" id="admin-order-modal-content"></div>
-        <div class="shrink-0 flex flex-col gap-3 rounded-b-none sm:rounded-b-3xl border-t border-slate-100 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 sm:p-5 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-700/50 lg:px-8" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+        <div class="shrink-0 flex flex-col gap-3 rounded-b-none sm:rounded-b-3xl border-t border-slate-200 bg-white dark:bg-slate-800 p-4 sm:p-5 dark:border-slate-700 lg:px-8" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
           <div class="flex w-full gap-2.5">
             <button class="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50 hover:bg-slate-100 dark:border-slate-700/80 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 min-h-[40px] py-2.5 sm:py-3 text-xs font-bold shadow-2xs transition-all active:scale-95 cursor-pointer" onclick="checkProPrint()"><i class="fa-solid fa-print" style="color:var(--color-primary)"></i> Struk</button>
             <button class="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50 hover:bg-slate-100 dark:border-slate-700/80 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 min-h-[40px] py-2.5 sm:py-3 text-xs font-bold shadow-2xs transition-all active:scale-95 cursor-pointer" onclick="openDocPreview('invoice')"><i class="fa-solid fa-file-invoice-dollar text-blue-500"></i> Invoice</button>
@@ -1743,14 +1743,14 @@
       </div>
     </div>    <!-- Modal Pengaturan Perangkat Universal & Printer POS -->
     <div class="fixed inset-0 z-[120] flex hidden items-end sm:items-center justify-center bg-slate-900/80 p-0 sm:p-4 opacity-0 transition-opacity duration-300" id="printer-settings-modal" onclick="if (event.target === this) closePrinterSettingsModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-lg scale-95 sm:scale-100 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="printer-settings-modal-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-lg scale-95 sm:scale-100 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="printer-settings-modal-box">
         <!-- DRAG PULL INDICATOR MOBILE -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
           <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
         </div>
-        <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md px-5 py-3.5 sm:py-4 dark:border-slate-700" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+        <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-slate-50 dark:bg-slate-800 px-5 py-3.5 sm:py-4 dark:border-slate-700">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-xs shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
               <i class="fa-solid fa-print"></i>
             </div>
             <div>
@@ -1960,16 +1960,16 @@
           </div>
         </div>
 
-        <div class="z-20 border-t border-slate-200 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 dark:border-slate-700 flex gap-2.5 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+        <div class="z-20 border-t border-slate-200 bg-white dark:bg-slate-800 p-4 dark:border-slate-700 flex gap-2.5 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
           <button type="button" class="flex-1 min-h-[44px] py-3.5 px-4 rounded-2xl border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="executeTestPrint()"><i class="fa-solid fa-receipt"></i> Tes Cetak</button>
-          <button type="button" class="flex-1 min-h-[44px] py-3.5 px-4 rounded-2xl btn-primary text-xs font-bold shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="savePrinterSettingsFromModal()"><i class="fa-solid fa-check"></i> Simpan Setelan</button>
+          <button type="button" class="flex-1 min-h-[44px] py-3.5 px-4 rounded-2xl btn-primary text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="savePrinterSettingsFromModal()"><i class="fa-solid fa-check"></i> Simpan Setelan</button>
         </div>
       </div>
     </div>
 
     <!-- Modal Konfirmasi Keluar Aplikasi (Exit Confirmation Dialog) -->
     <div class="fixed inset-0 z-[150] flex hidden items-center justify-center bg-slate-900/80 p-4 opacity-0 transition-all duration-300" id="exit-confirm-modal" onclick="if (event.target === this) closeExitConfirmModal();">
-      <div class="relative w-full max-w-[380px] sm:max-w-[420px] scale-95 transform overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white p-7 sm:p-8 text-center shadow-2xl transition-all duration-300 dark:border-slate-700/80 dark:bg-slate-800" id="exit-confirm-modal-box">
+      <div class="relative w-full max-w-[380px] sm:max-w-[420px] scale-95 transform overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white p-7 sm:p-8 text-center shadow-sm transition-all duration-300 dark:border-slate-700/80 dark:bg-slate-800" id="exit-confirm-modal-box">
         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
           <i class="fa-solid fa-door-open text-2xl"></i>
         </div>
@@ -2057,14 +2057,14 @@
             <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
               <!-- MATERIAL ESTIMATOR QUICK ACCESS -->
               <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('storefront')"
-                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white transition-all hover:bg-black/60 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
                 title="Kalkulator Estimasi Bahan Bangunan (Cat, Keramik, Semen, Dinding, Atap & Seng)">
                 <i class="fa-solid fa-calculator text-xs sm:text-sm"></i>
               </button>
               <!-- POS KASIR TOGGLE -->
               <button id="pos-cashier-header-btn"
                 onclick="window.openPOSCashierMode && window.openPOSCashierMode()"
-                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+                class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white transition-all hover:bg-black/60 hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
                 title="Mode Kasir POS">
                 <i class="fa-solid fa-cash-register text-xs sm:text-sm"></i>
                 <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-white"></span>
@@ -2078,10 +2078,10 @@
                 } catch(e) {}
               </script>
               <!-- DESKTOP ADMIN / SELLER SHORTCUT -->
-              <button onclick="checkAdminAccess()" class="hidden sm:flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" title="Panel Kontrol Admin / Seller">
+              <button onclick="checkAdminAccess()" class="hidden sm:flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white transition-all hover:bg-black/60 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" title="Panel Kontrol Admin / Seller">
                 <i class="fa-solid fa-shield-halved text-xs sm:text-sm"></i>
               </button>
-              <button class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 backdrop-blur-xs text-white transition-all hover:bg-black/35 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" onclick="openQuickMenuModal()" title="Tautan Cepat">
+              <button class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white transition-all hover:bg-black/60 hover:scale-105 active:scale-95 cursor-pointer shadow-xs" onclick="openQuickMenuModal()" title="Tautan Cepat">
                 <i class="fa-solid fa-bars text-xs sm:text-sm"></i>
               </button>
             </div>
@@ -2122,7 +2122,7 @@
             <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
               <div class="mb-3 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-2.5 dark:border-slate-700/50">
                 <div class="flex items-center gap-2.5">
-                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.2)]"><i class="fa-solid fa-layer-group text-xs"></i></div>
+                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-primary)] text-white shadow-xs"><i class="fa-solid fa-layer-group text-xs"></i></div>
                   <h3 class="text-xs font-extrabold uppercase tracking-tight text-slate-800 dark:text-white sm:text-sm">KATEGORI MATERIAL &amp; ALAT TEKNIK</h3>
                 </div>
                 <button class="rounded-lg border border-[rgba(var(--color-primary-rgb),0.15)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 cursor-pointer" onclick="openCategoryModal()">Lihat Semua</button>
@@ -2139,7 +2139,7 @@
             <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
               <div class="mb-3 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-2.5 dark:border-slate-700/50">
                 <div class="flex items-center gap-2.5">
-                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.2)]"><i class="fa-solid fa-copyright text-xs"></i></div>
+                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-primary)] text-white shadow-xs"><i class="fa-solid fa-copyright text-xs"></i></div>
                   <h3 class="text-xs font-extrabold uppercase tracking-tight text-slate-800 dark:text-white sm:text-sm">BRAND RESMI &amp; PRODUSEN TERPERCAYA</h3>
                 </div>
                 <button class="rounded-lg border border-[rgba(var(--color-primary-rgb),0.15)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 cursor-pointer" onclick="openBrandModal()">Lihat Semua</button>
@@ -2295,14 +2295,11 @@
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(8rem+env(safe-area-inset-bottom))] pt-6">
           <div class="mx-auto hidden w-full max-w-md px-4 py-8" id="cart-empty-state">
-            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-lg transition-all duration-300">
-              <!-- Ambient Subtle Theme Glow Inside Card -->
-              <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
-              
-              <!-- Squircle Icon Badge with Theme Gradient -->
-              <div class="relative mx-auto mb-6 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl shadow-xl ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] transition-transform duration-300 hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
-                <i class="fa-solid fa-basket-shopping text-4xl sm:text-5xl text-white drop-shadow-md"></i>
-                <div class="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-md border border-slate-100 dark:border-slate-800">
+            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-xs transition-all duration-300">
+              <!-- Squircle Icon Badge Solid Theme -->
+              <div class="relative mx-auto mb-6 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl bg-[var(--color-primary)] text-white shadow-xs transition-transform duration-300 hover:scale-105">
+                <i class="fa-solid fa-basket-shopping text-4xl sm:text-5xl text-white"></i>
+                <div class="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-xs border border-slate-100 dark:border-slate-800">
                   <i class="fa-solid fa-heart text-xs text-rose-500"></i>
                 </div>
               </div>
@@ -2314,7 +2311,7 @@
               </p>
 
               <!-- Action Button -->
-              <button class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-2xl px-8 py-3.5 text-xs sm:text-sm font-black tracking-wide uppercase shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)] transition-all hover:shadow-xl active:scale-95 cursor-pointer" onclick="changeView('view-catalog')">
+              <button class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-2xl px-8 py-3.5 text-xs sm:text-sm font-black tracking-wide uppercase shadow-xs transition-all active:scale-95 cursor-pointer" onclick="changeView('view-catalog')">
                 <i class="fa-solid fa-layer-group text-sm"></i>
                 <span>Jelajahi Katalog Material</span>
               </button>
@@ -2326,7 +2323,7 @@
           
           <!-- KARTU PENAWARAN PROYEK RESMI (SPH) -->
           <div class="mx-auto mt-5 mb-2 w-full max-w-full px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] hidden" id="cart-sph-card">
-            <div class="rounded-2xl border border-dashed border-amber-300/80 dark:border-amber-700/60 bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-transparent dark:bg-slate-800/80 p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 transition-all">
+            <div class="rounded-2xl border border-dashed border-amber-300/80 dark:border-amber-700/60 bg-amber-50/60 dark:bg-slate-800 p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 transition-all">
               <div class="flex items-start sm:items-center gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20 text-lg shadow-inner">
                   <i class="fa-solid fa-file-invoice"></i>
@@ -2856,14 +2853,13 @@
           </div>
 
           <div class="mx-auto hidden w-full max-w-md px-4 py-8" id="orders-empty-state">
-            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-lg transition-all duration-300">
-              <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
-              <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl shadow-lg ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] text-white" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
-                <i class="fa-solid fa-clock-rotate-left text-3xl sm:text-4xl text-white drop-shadow-md"></i>
+            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-xs transition-all duration-300">
+              <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-[var(--color-primary)] text-white shadow-xs">
+                <i class="fa-solid fa-clock-rotate-left text-3xl sm:text-4xl text-white"></i>
               </div>
               <h3 class="mb-2 text-lg sm:text-xl font-black text-slate-900 dark:text-white">Belum Ada Riwayat Pesanan</h3>
               <p class="mx-auto mb-6 max-w-xs text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">Pesanan Anda akan tersimpan rapi di sini, atau Anda dapat melacak langsung menggunakan ID Pesanan di atas.</p>
-              <button type="button" onclick="changeView('view-catalog')" class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all">
+              <button type="button" onclick="changeView('view-catalog')" class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-xs active:scale-95 transition-all">
                 <i class="fa-solid fa-bag-shopping"></i> Mulai Belanja Sekarang
               </button>
             </div>
@@ -2874,22 +2870,21 @@
       <div class="view-section fade-in flex hidden flex-col" id="view-wishlist">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center pb-2.5 sm:pb-3">
           <div class="mx-auto flex w-full items-center justify-between px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
-            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
             <h1 class="text-base font-bold tracking-tight text-white drop-shadow-sm">Favorit Saya</h1>
-            <button class="flex hidden h-10 w-10 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-500 shadow-sm transition-all hover:bg-rose-100 active:scale-95 dark:border-rose-800 dark:bg-rose-900/20" id="btn-clear-wishlist" onclick="clearWishlist()"><i class="fa-solid fa-trash-can text-sm"></i></button>
+            <button class="flex hidden h-10 w-10 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-500 shadow-xs transition-all hover:bg-rose-100 active:scale-95 dark:border-rose-800 dark:bg-rose-900/20" id="btn-clear-wishlist" onclick="clearWishlist()"><i class="fa-solid fa-trash-can text-sm"></i></button>
             <div class="hidden w-10" id="spacer-wishlist"></div>
           </div>
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-6">
           <div class="mx-auto hidden w-full max-w-md px-4 py-8" id="wishlist-empty-state">
-            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-lg transition-all duration-300">
-              <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, #f43f5e 0%, transparent 70%);"></div>
-              <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl shadow-lg ring-4 ring-rose-500/20 text-white bg-gradient-to-br from-rose-400 via-rose-500 to-rose-600">
-                <i class="fa-solid fa-heart text-3xl sm:text-4xl text-white drop-shadow-md"></i>
+            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-xs transition-all duration-300">
+              <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-rose-500 text-white shadow-xs">
+                <i class="fa-solid fa-heart text-3xl sm:text-4xl text-white"></i>
               </div>
               <h3 class="mb-2 text-lg sm:text-xl font-black text-slate-900 dark:text-white">Belum Ada Favorit</h3>
               <p class="mx-auto mb-6 max-w-xs text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">Kumpulkan produk impian dan simpan produk incaran Anda di sini.</p>
-              <button type="button" onclick="changeView('view-catalog')" class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all">
+              <button type="button" onclick="changeView('view-catalog')" class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-xs active:scale-95 transition-all">
                 <i class="fa-solid fa-magnifying-glass"></i> Cari Produk Favorit
               </button>
             </div>
@@ -2902,24 +2897,24 @@
       <div class="view-section fade-in flex hidden flex-col" id="view-faq">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center pb-2.5 sm:pb-3">
           <div class="mx-auto flex w-full items-center justify-between px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
-            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
             <h1 class="text-base font-bold tracking-tight text-white drop-shadow-sm">Tanya Jawab (Q&amp;A)</h1>
-            <button class="flex h-9 items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 text-xs font-bold text-white shadow-sm transition-all hover:bg-white/30 active:scale-95" onclick="openAskQuestionModal()"><i class="fa-solid fa-circle-question text-amber-300"></i> Tanya</button>
+            <button class="flex h-9 items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 text-xs font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95" onclick="openAskQuestionModal()"><i class="fa-solid fa-circle-question text-amber-300"></i> Tanya</button>
           </div>
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] pt-5">
           <div class="mx-auto w-full max-w-full space-y-5 px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px]">
-            <!-- Header Banner Q&A (Harmonis dengan Tema Toko) -->
-            <div class="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary-dark)] to-[var(--color-primary-dark)] p-6 sm:p-7 text-white shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)]">
+            <!-- Header Banner Q&A (Harmonis dengan Tema Toko Solid) -->
+            <div class="relative overflow-hidden rounded-[1.75rem] bg-[var(--color-primary)] p-6 sm:p-7 text-white shadow-xs">
               <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
                 <div class="space-y-1.5">
                   <span class="inline-flex items-center gap-1.5 rounded-xl bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white border border-white/20">
                     <i class="fa-solid fa-circle-question text-amber-300"></i> Pusat Bantuan &amp; FAQ
                   </span>
-                  <h2 class="text-xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-2xl">Ada Pertanyaan Mengenai Toko Kami?</h2>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white sm:text-2xl">Ada Pertanyaan Mengenai Toko Kami?</h2>
                   <p class="text-xs font-medium text-white/90 max-w-md leading-relaxed">Temukan jawaban cepat atau ajukan pertanyaan langsung kepada tim admin kami.</p>
                 </div>
-                <button class="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-xs font-bold text-[var(--color-primary-dark)] shadow-md transition-all hover:bg-slate-50 active:scale-95 shrink-0" onclick="openAskQuestionModal()"><i class="fa-solid fa-paper-plane"></i> Ajukan Pertanyaan</button>
+                <button class="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-xs font-bold text-[var(--color-primary-dark)] shadow-xs transition-all hover:bg-slate-50 active:scale-95 shrink-0" onclick="openAskQuestionModal()"><i class="fa-solid fa-paper-plane"></i> Ajukan Pertanyaan</button>
               </div>
             </div>
 
@@ -2958,16 +2953,16 @@
       <div class="view-section fade-in relative z-50 flex hidden min-h-[100dvh] items-center justify-center p-4 sm:p-6" id="view-admin-login">
         <div class="relative z-10 w-full max-w-sm">
           <!-- Main Bento Luxury Card -->
-          <div class="relative flex flex-col items-center overflow-hidden rounded-[2.25rem] border border-slate-200/90 bg-white p-7 pt-8 text-center shadow-2xl shadow-slate-300/40 transition-all dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-black/60">
-            <!-- Top Gradient Accent Line -->
-            <div class="absolute top-0 left-0 right-0 h-1.5" style="background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-primary-light,#e1b858), var(--color-primary), transparent);"></div>
+          <div class="relative flex flex-col items-center overflow-hidden rounded-[2.25rem] border border-slate-200/90 bg-white p-7 pt-8 text-center shadow-sm transition-all dark:border-slate-800 dark:bg-slate-900">
+            <!-- Top Solid Accent Line -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-[var(--color-primary)]"></div>
 
             <!-- Close / Back Button -->
             <button type="button" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 active:scale-95 cursor-pointer" onclick="handleAppBackButton()" title="Kembali ke Beranda"><i class="fa-solid fa-xmark text-sm"></i></button>
 
             <!-- Store Logo Squircle -->
             <div class="relative mb-4 mt-1">
-              <div class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[1.5rem] border-2 bg-slate-50 p-2.5 shadow-lg ring-4 dark:bg-slate-800" style="border-color: rgba(var(--color-primary-rgb),0.35); ring-color: rgba(var(--color-primary-rgb),0.12);">
+              <div class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[1.5rem] border-2 bg-slate-50 p-2.5 shadow-xs ring-4 dark:bg-slate-800" style="border-color: rgba(var(--color-primary-rgb),0.35); ring-color: rgba(var(--color-primary-rgb),0.12);">
                 <img id="login-store-logo-img" alt="Logo Toko Putri" class="hidden h-full w-full object-contain" />
                 <i id="login-store-logo-icon" class="fa-solid fa-store text-3xl text-[var(--color-primary)]"></i>
               </div>
@@ -2997,7 +2992,7 @@
 
               <!-- Submit Button -->
               <div class="pt-2">
-                <button class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl font-black text-sm text-white transition-all active:scale-[0.98] cursor-pointer hover:brightness-105" style="background: linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%); box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb,197,155,39),0.45);" onclick="processAdminLogin()" type="button">
+                <button class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl font-black text-sm text-white transition-all active:scale-[0.98] cursor-pointer hover:brightness-105 shadow-xs" style="background: var(--color-primary);" onclick="processAdminLogin()" type="button">
                   <span>Masuk ke Panel Kontrol</span>
                   <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
                 </button>
@@ -3067,123 +3062,123 @@
               </div>
               <div class="grid grid-cols-2 gap-3 pb-8 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                 <!-- 1. PESANAN (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('orders')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clipboard-list text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/50 hover:bg-amber-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('orders')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-clipboard-list text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Pesanan</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Kelola Transaksi</span></div>
                 </button>
                 <!-- 2. PRODUK (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/50 hover:bg-blue-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('products')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-box-open text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/50 hover:bg-blue-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('products')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-box-open text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Produk</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Katalog Barang</span></div>
                 </button>
                 <!-- 3. SUPPLIER (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('suppliers')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-truck-fast text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/50 hover:bg-emerald-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('suppliers')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-truck-fast text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Supplier</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Data Rekanan &amp; Asal</span></div>
                 </button>
                 <!-- 4. KULAKAN PO (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('purchases')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-cart-flatbed text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-purple-400/50 hover:bg-purple-50/20 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('purchases')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-purple-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-cart-flatbed text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Kulakan PO</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Order &amp; Hutang Rekanan</span></div>
                 </button>
                 <!-- 5. BIAYA OPERASIONAL (Buku Kas & Pengeluaran Toko) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-[rgba(var(--color-primary-rgb),0.5)] hover:bg-[rgba(var(--color-primary-rgb),0.05)] hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-expenses-btn" onclick="openAdminTab('expenses')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-md transition-all duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"><i class="fa-solid fa-money-bill-transfer text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(var(--color-primary-rgb),0.5)] hover:bg-[rgba(var(--color-primary-rgb),0.05)] dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" id="admin-menu-expenses-btn" onclick="openAdminTab('expenses')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-xs transition-all duration-300 group-hover:scale-105 bg-[var(--color-primary)]"><i class="fa-solid fa-money-bill-transfer text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Biaya Operasional</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Buku Kas &amp; Beban Toko</span></div>
                 </button>
                 <!-- 5B. STOCK OPNAME (Audit Fisik Stok & Rak) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-[rgba(var(--color-primary-rgb),0.5)] hover:bg-[rgba(var(--color-primary-rgb),0.05)] hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-stock-opname-btn" onclick="openAdminTab('stock_opname')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-md transition-all duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"><i class="fa-solid fa-clipboard-check text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(var(--color-primary-rgb),0.5)] hover:bg-[rgba(var(--color-primary-rgb),0.05)] dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" id="admin-menu-stock-opname-btn" onclick="openAdminTab('stock_opname')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-xs transition-all duration-300 group-hover:scale-105 bg-[var(--color-primary)]"><i class="fa-solid fa-clipboard-check text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Stock Opname</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Audit Fisik &amp; Selisih Rak</span></div>
                 </button>
                 <!-- 5C. RETUR & RMA (Manajemen Retur Penjualan & Supplier) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-indigo-400/50 hover:bg-indigo-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-returns-btn" onclick="openAdminTab('returns')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-md transition-all duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, #4f46e5, #3730a3); box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);"><i class="fa-solid fa-right-left text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/50 hover:bg-indigo-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" id="admin-menu-returns-btn" onclick="openAdminTab('returns')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-xs transition-all duration-300 group-hover:scale-105 bg-indigo-600"><i class="fa-solid fa-right-left text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Retur Barang</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">RMA Customer &amp; Supplier</span></div>
                 </button>
                 <!-- 5D. FLASH SALE (Promo Kilat Berbatas Waktu & Kuota) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-rose-400/50 hover:bg-rose-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-flashsale-btn" onclick="openAdminTab('flash_sale')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 via-red-600 to-amber-500 text-white shadow-md transition-all duration-300 group-hover:scale-110 shadow-rose-600/30"><i class="fa-solid fa-bolt text-2xl sm:text-3xl animate-pulse"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-rose-400/50 hover:bg-rose-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" id="admin-menu-flashsale-btn" onclick="openAdminTab('flash_sale')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-rose-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-bolt text-2xl sm:text-3xl animate-pulse"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Flash Sale</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Promo Kilat &amp; Kuota</span></div>
                 </button>
                 <!-- 6. PUSAT LAPORAN TERPADU (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-reports-btn" onclick="openAdminTab('reports')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-yellow-500 to-amber-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-chart-pie text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/50 hover:bg-amber-50/20 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" id="admin-menu-reports-btn" onclick="openAdminTab('reports')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-chart-pie text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Laporan Terpadu</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Penjualan, Stok, Pajak &amp; Utang</span></div>
                 </button>
                 <!-- 6. PENGATURAN (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('settings')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-gear text-2xl transition-transform duration-500 group-hover:rotate-90 sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-slate-400/50 hover:bg-slate-100/40 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('settings')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-slate-700 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-gear text-2xl transition-transform duration-500 group-hover:rotate-90 sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Pengaturan</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Sistem Toko</span></div>
                 </button>
                 <!-- 6. KATEGORI (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-400/50 hover:bg-orange-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('categories')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-tags text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-orange-400/50 hover:bg-orange-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('categories')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-orange-500 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-tags text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Kategori</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Grup Etalase</span></div>
                 </button>
                 <!-- 7. MEREK (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-indigo-400/50 hover:bg-indigo-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('brands')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-certificate text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/50 hover:bg-indigo-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('brands')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-certificate text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Merek</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Brand Ternama</span></div>
                 </button>
                 <!-- 8. DATABASE BERSAMA: MASTER PRODUK & MULTI-VARIAN (Screen 4 Flagship) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-violet-400/50 hover:bg-violet-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('colors')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-boxes-stacked text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/50 hover:bg-violet-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('colors')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-purple-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-boxes-stacked text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Database Bersama</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Master Produk &amp; Varian</span></div>
                 </button>
                 <!-- PIUTANG TEMPO -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('piutang')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/50 hover:bg-cyan-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('piutang')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-cyan-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Piutang Tempo</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Laporan Hutang Pelanggan</span></div>
                 </button>
                 <!-- VOUCHER -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('vouchers')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-ticket-simple -rotate-45 text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-pink-400/50 hover:bg-pink-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('vouchers')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-pink-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-ticket-simple -rotate-45 text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Voucher</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Diskon &amp; Promo</span></div>
                 </button>
                 <!-- PELANGGAN -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('customers')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-address-book text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/50 hover:bg-teal-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('customers')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-teal-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-address-book text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Pelanggan</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Database Member</span></div>
                 </button>
                 <!-- HADIAH -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('rewards')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-gift text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/50 hover:bg-amber-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('rewards')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-gift text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Hadiah</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Tukar Poin Member</span></div>
                 </button>
                 <!-- REKENING -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banks')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-building-columns text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/50 hover:bg-cyan-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banks')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-building-columns text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Rekening</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Metode Transfer</span></div>
                 </button>
                 <!-- BANNER -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-pink-400/50 hover:bg-pink-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banners')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-images text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-pink-400/50 hover:bg-pink-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banners')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-rose-500 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-images text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Banner</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Slider Promosi</span></div>
                 </button>
                 <!-- ULASAN -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('reviews')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-star text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/50 hover:bg-amber-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('reviews')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-star text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Ulasan</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Testimoni Pelanggan</span></div>
                 </button>
                 <!-- Q&A / FAQ -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('faqs')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-circle-question text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-purple-400/50 hover:bg-purple-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('faqs')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-circle-question text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Q&amp;A / FAQ</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Kelola Tanya Jawab</span></div>
                 </button>
                 <!-- STAF & HAK AKSES -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('cashiers')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-users-gear text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/50 hover:bg-teal-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('cashiers')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-teal-700 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-users-gear text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Staf &amp; Hak Akses</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Kelola Kasir &amp; Izin</span></div>
                 </button>
                 <!-- PANDUAN SISTEM (MANUAL & SOP) -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openShoppingGuideModal('admin')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-book-bookmark text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/50 hover:bg-emerald-50/20 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openShoppingGuideModal('admin')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-book-bookmark text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Panduan Sistem</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Manual SOP &amp; Operasional</span></div>
                 </button>
                 <!-- CHANGELOG -->
-                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('changelog')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
+                <button class="bento-island-card card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-slate-400/50 hover:bg-slate-100/40 dark:hover:bg-slate-800/60 rounded-[1.5rem] sm:rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('changelog')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-slate-600 text-white shadow-xs transition-all duration-300 group-hover:scale-105"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-900 dark:text-white sm:text-[11px]">Changelog</span><span class="mt-0.5 block text-[9px] font-semibold text-slate-600 dark:text-slate-400">Log Pembaruan Sistem</span></div>
                 </button>
               </div>
@@ -3241,14 +3236,14 @@
 
     <!-- Modal Customer Ask Question -->
     <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-ask-question" onclick="if(event.target===this) closeAskQuestionModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 sm:translate-y-10" id="modal-ask-question-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-sm transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 sm:translate-y-10" id="modal-ask-question-box">
         <!-- DRAG PULL INDICATOR MOBILE -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
           <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
         </div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800 bg-slate-50 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-md shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-circle-question text-base"></i></div>
+            <div class="flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-xs shrink-0 bg-[var(--color-primary)]"><i class="fa-solid fa-circle-question text-base"></i></div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight">Ajukan Pertanyaan</h3>
               <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Tim admin kami akan menjawabnya segera</p>
@@ -3276,22 +3271,22 @@
             <textarea id="ask-question-text" rows="4" placeholder="Tuliskan pertanyaan Anda mengenai produk atau toko..." class="w-full min-h-[88px] rounded-2xl border border-slate-200 bg-slate-50 p-3 text-[16px] sm:text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white transition-all"></textarea>
           </div>
         </div>
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
-          <button class="w-full min-h-[44px] py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-white flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-lg hover:brightness-105" style="background: var(--color-primary); box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.35);" onclick="submitCustomerQuestion()"><i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan</button>
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+          <button class="w-full min-h-[44px] py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-white flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-xs hover:brightness-105 bg-[var(--color-primary)]" onclick="submitCustomerQuestion()"><i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan</button>
         </div>
       </div>
     </div>
 
     <!-- Modal Admin Q&A Editor -->
     <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-admin-faq" onclick="if(event.target===this) closeAdminFAQModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 sm:translate-y-10" id="modal-admin-faq-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-sm transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 sm:translate-y-10" id="modal-admin-faq-box">
         <!-- DRAG PULL INDICATOR MOBILE -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
           <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
         </div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800 bg-slate-50 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-md shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"><i class="fa-solid fa-pen-to-square text-base"></i></div>
+            <div class="flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-xs shrink-0 bg-[var(--color-primary)]"><i class="fa-solid fa-pen-to-square text-base"></i></div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight" id="admin-faq-modal-title">Kelola Q&amp;A</h3>
               <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Sunting pertanyaan &amp; jawaban publik</p>
@@ -3332,8 +3327,8 @@
             </select>
           </div>
         </div>
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
-          <button class="w-full min-h-[44px] py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-white flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-lg hover:brightness-105" style="background: var(--color-primary); box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.35);" onclick="saveAdminFAQ()"><i class="fa-solid fa-floppy-disk"></i> Simpan Q&amp;A</button>
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+          <button class="w-full min-h-[44px] py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-white flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-xs hover:brightness-105 bg-[var(--color-primary)]" onclick="saveAdminFAQ()"><i class="fa-solid fa-floppy-disk"></i> Simpan Q&amp;A</button>
         </div>
       </div>
     </div>

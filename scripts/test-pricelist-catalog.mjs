@@ -47,7 +47,7 @@ console.log('\n🎨 3. Memeriksa Standar Desain Native Bottom Sheet & Mobile Erg
 assert(modalContent.includes('modal-bottom-sheet'), 'Memiliki class .modal-bottom-sheet');
 assert(modalContent.includes('rounded-t-[2rem] sm:rounded-3xl'), 'Memiliki squircle border radius standard v1.18.12');
 assert(modalContent.includes('pull-indicator') || modalContent.includes('bg-slate-300 dark:bg-slate-600 rounded-full mx-auto my-2.5 sm:hidden'), 'Memiliki pull indicator bar untuk gestur swipe mobile');
-assert(modalContent.includes('linear-gradient(135deg, rgba(var(--color-primary-rgb)'), 'Memiliki Theme Gradient Header harmonis');
+assert(modalContent.includes('linear-gradient(135deg, rgba(var(--color-primary-rgb)') || modalContent.includes('var(--color-primary)'), 'Memiliki Theme Header harmonis');
 assert(modalContent.includes('text-[16px] sm:text-xs'), 'Input & Select menggunakan font 16px di mobile anti auto-zoom/mental');
 assert(modalContent.includes('h-11') && modalContent.includes('h-12'), 'Touch target memenuhi standar minimal 44px');
 

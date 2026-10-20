@@ -21,12 +21,12 @@ export const ensurePriceListExportModal = () => {
         m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closePriceListExportModal?.(); };
         m.innerHTML = `
-            <div id="modal-pricelist-export-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+            <div id="modal-pricelist-export-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-transform duration-300">
                 <!-- Pull Indicator Pill for Mobile Swipe -->
                 <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto my-2.5 sm:hidden shrink-0"></div>
 
-                <!-- Header Modal with Dynamic Theme Gradient -->
-                <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+                <!-- Header Modal Solid Clean -->
+                <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50 dark:bg-slate-800">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs" style="background: var(--color-primary);">
                             <i class="fa-solid fa-file-pdf text-lg"></i>
@@ -105,7 +105,7 @@ export const ensurePriceListExportModal = () => {
                 <!-- Footer Modal with 2 Primary Action Buttons -->
                 <div class="p-4 sm:p-5 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 flex flex-col sm:flex-row gap-2.5 shrink-0">
                     <!-- Button WhatsApp -->
-                    <button onclick="window.executePriceListExport('wa')" type="button" class="flex-1 h-12 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 active:scale-95 transition-all shadow-md cursor-pointer" title="Salin teks daftar harga rapi untuk WhatsApp">
+                    <button onclick="window.executePriceListExport('wa')" type="button" class="flex-1 h-12 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 active:scale-95 transition-all shadow-xs cursor-pointer" title="Salin teks daftar harga rapi untuk WhatsApp">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <div class="text-left">
                             <div class="leading-tight">Salin Teks WhatsApp</div>
@@ -114,7 +114,7 @@ export const ensurePriceListExportModal = () => {
                     </button>
 
                     <!-- Button PDF A4 -->
-                    <button onclick="window.executePriceListExport('pdf')" type="button" class="flex-1 h-12 px-4 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 active:scale-95 transition-all shadow-md cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);" title="Buka preview cetak A4 resmi dengan kop surat toko">
+                    <button onclick="window.executePriceListExport('pdf')" type="button" class="flex-1 h-12 px-4 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 active:scale-95 transition-all shadow-xs cursor-pointer" style="background: var(--color-primary);" title="Buka preview cetak A4 resmi dengan kop surat toko">
                         <i class="fa-solid fa-file-pdf text-lg"></i>
                         <div class="text-left">
                             <div class="leading-tight">Preview &amp; Cetak PDF</div>

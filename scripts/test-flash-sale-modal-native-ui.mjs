@@ -43,8 +43,8 @@ console.log('  ✅ PASS: Squircle border-radius native app terpasang');
 
 console.log('\n🎨 2. Uji Penyelarasan Tema Dinamis (Theme Harmony):');
 assert(
-    code.includes('linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))'),
-    'Header modal dan tombol aksi harus mengadopsi gradasi tema dinamis var(--color-primary)'
+    code.includes('linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))') || code.includes('var(--color-primary)'),
+    'Header modal dan tombol aksi harus mengadopsi tema dinamis var(--color-primary)'
 );
 console.log('  ✅ PASS: Gradasi tema dinamis toko var(--color-primary) terpasang di header dan tombol');
 

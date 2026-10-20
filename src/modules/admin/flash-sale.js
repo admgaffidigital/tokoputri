@@ -118,7 +118,7 @@ export const renderFlashSaleAdminView = () => {
                         <!-- Aksi Tombol -->
                         <div class="flex items-center gap-1.5 shrink-0">
                             ${status === 'ended' ? `
-                            <button onclick="window.reactivateFlashSaleSession('${esc(sess.id)}', 4)" title="Naikkan kembali ke Flash Sale sekarang (+4 Jam)" class="btn-native-action px-2.5 py-1.5 rounded-xl text-white text-[11px] font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                            <button onclick="window.reactivateFlashSaleSession('${esc(sess.id)}', 4)" title="Naikkan kembali ke Flash Sale sekarang (+4 Jam)" class="btn-native-action px-2.5 py-1.5 rounded-xl text-white text-[11px] font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs" style="background: var(--color-primary);">
                                 <i class="fa-solid fa-bolt text-amber-300"></i>
                                 <span>Naikkan Lagi</span>
                             </button>` : ''}
@@ -309,15 +309,15 @@ export const openFlashSaleModal = (sessionId = null) => {
     if (existingModal) existingModal.remove();
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="modal-flash-sale-form" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 backdrop-blur-xs transition-opacity duration-300 opacity-0 overflow-hidden" onclick="if(event.target===this) window.closeFlashSaleModal()">
-        <div id="modal-flash-sale-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-8 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
+    <div id="modal-flash-sale-form" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 transition-opacity duration-300 opacity-0 overflow-hidden" onclick="if(event.target===this) window.closeFlashSaleModal()">
+        <div id="modal-flash-sale-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-8 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-transform duration-300" onclick="event.stopPropagation()">
             <!-- Pull Indicator for Mobile Bottom Sheet -->
             <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px; width: 44px; height: 5px; border-radius: 9999px; background: rgba(148, 163, 184, 0.4);"></div>
 
             <!-- Modal Header -->
             <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl text-white flex items-center justify-center text-base sm:text-lg shrink-0 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl text-white flex items-center justify-center text-base sm:text-lg shrink-0 shadow-xs" style="background: var(--color-primary);">
                         <i class="fa-solid fa-bolt text-amber-300"></i>
                     </div>
                     <div>
@@ -437,7 +437,7 @@ export const openFlashSaleModal = (sessionId = null) => {
                                 <i class="fa-solid fa-rotate-left text-amber-500"></i>
                                 <span>Reset Kuota</span>
                             </button>` : ''}
-                            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action h-9 sm:h-10 px-4 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action h-9 sm:h-10 px-4 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs" style="background: var(--color-primary);">
                                 <i class="fa-solid fa-plus text-xs"></i>
                                 <span>Tambah Produk</span>
                             </button>
@@ -456,7 +456,7 @@ export const openFlashSaleModal = (sessionId = null) => {
                 <button type="button" onclick="window.closeFlashSaleModal()" class="h-10 sm:h-11 px-5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="button" onclick="window.saveFlashSaleSession()" class="btn-native-action h-10 sm:h-11 px-6 rounded-xl text-white font-black text-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2 shadow-md hover:opacity-95" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="window.saveFlashSaleSession()" class="btn-native-action h-10 sm:h-11 px-6 rounded-xl text-white font-black text-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2 shadow-xs hover:opacity-95" style="background: var(--color-primary);">
                     <i class="fa-solid fa-floppy-disk text-xs"></i>
                     <span>Simpan Sesi Flash Sale</span>
                 </button>
