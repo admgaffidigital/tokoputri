@@ -19,15 +19,15 @@ export const DEFAULT_CHANGELOG = [
         "id": "log-1-19-2",
         "version": "v1.19.2",
         "date": "2026-10-20",
-        "title": "Smart Dual-Mode High-Contrast Solid Engine, Eliminasi Warna Belang-Belang & Penajaman Garis Border serta Font Mode Terang",
-        "category": "optimization",
-        "badge": "Smart Dual-Mode High-Contrast Solid Engine v1.19.2",
+        "title": "Smart Dual-Mode High-Contrast Solid Engine, Eliminasi Total Kebocoran Warna Putih Dark Mode & Widget Arus Kas Harian",
+        "category": "feature",
+        "badge": "Smart Dual-Mode & Daily Cash Flow Hub v1.19.2",
         "items": [
-            "Smart Dual-Mode High-Contrast Solid Engine: Mengeliminasi disparitas kontras dan warna pudar di tampilan terang (Light Mode) serta menyelaraskan rasio kontras visual otomatis antara mode terang dan gelap tanpa efek gradasi.",
-            "Penajaman Garis Pembatas (Border) & Divider: Meningkatkan hairline border kartu bento, panel CMS, modal, input form, dan pembagi (hr/divide) ke #cbd5e1 (Slate-300) di Light Mode dan #334155 di Dark Mode, menghadirkan batas elemen yang tegas, rapi, dan tidak kabur.",
-            "Penajaman Font, Teks Sekunder & Ikon: Mengoptimalkan seluruh teks sekunder (text-slate-400 / text-slate-500) ke #475569 (Slate-600) dan #334155 (Slate-700) di Light Mode, melampaui standar aksesibilitas WCAG AA (5.7:1) & AAA (9.3:1) sehingga subtitle, SKU, catatan, dan ikon terbaca tajam dan tidak samar.",
-            "Solid Fallback Anti-Transparansi & Anti White-on-White: Menyediakan pemetaan warna solid murni berbobot (Emerald #059669, Amber #d97706, Rose #e11d48, Blue #2563eb, Slate #0f172a, Primary var(--color-primary)) untuk seluruh elemen eks-gradasi, menjamin teks putih tidak hilang di atas latar terang.",
-            "Uniform Solid Canvas & Flat Hairline Elevation: Menyeragamkan latar kanvas seluruh tema ke #f1f5f9 (Light) dan #0b1120 (Dark), mengeliminasi warna belang-belang dengan elevasi flat presisi (0 1px 3px rgba(15,23,42,0.08)).",
+            "Eliminasi Kebocoran Warna Putih di Dark Mode: Mengunci seluruh aturan warna putih (.bg-white/*) khusus ke html:not(.dark) dan menegakkan solid dark slate (#1e293b / #0f172a) pada seluruh kartu KPI, tombol sekunder, dan kartu utama di modul Supplier, Katalog Produk, PO Kulakan, Retur, dan Modal, mengeliminasi tampilan belang-belang secara tuntas.",
+            "Widget Ringkasan Arus Kas Harian (Daily Cash Flow Hub): Menghadirkan 4 kartu bento likuiditas harian di Dashboard Utama CMS Owner (Kas Tunai Laci Hari Ini, Masuk Bank & QRIS Hari Ini, Pengeluaran Toko Hari Ini, dan Estimasi Arus Kas Bersih Masuk) dengan navigasi 1-klik dan proteksi privasi RBAC.",
+            "Penajaman Garis Pembatas (Border) & Divider: Mengunci hairline border kartu bento, panel CMS, modal, dan pembagi ke solid #cbd5e1 (Slate-300) di Light Mode dan #334155 di Dark Mode, menghadirkan batas elemen yang tegas, rapi, dan tidak kabur.",
+            "Penajaman Font, Teks Sekunder & Ikon: Mengoptimalkan seluruh teks sekunder ke #475569 (Slate-600) di Light Mode dan #94a3b8 / #cbd5e1 di Dark Mode, menjamin seluruh angka, label, dan subtitle terbaca tajam dan tidak samar.",
+            "Solid Fallback Anti-Transparansi & Anti White-on-White: Menyediakan pemetaan warna solid murni berbobot untuk seluruh elemen eks-gradasi, menjamin teks putih tidak hilang di atas latar terang.",
             "Multi-Channel Distribution v1.19.2 (Android versionCode 11902)."
         ]
     },
