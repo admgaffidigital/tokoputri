@@ -215,6 +215,13 @@ html.dark #view-admin-login {
     }
 }
 
+@media (min-width: 768px) {
+    .pos-catalog-grid-mode,
+    .pos-catalog-list-mode {
+        padding-bottom: 2rem !important;
+    }
+}
+
 @media (min-width: 1024px) {
     .pos-catalog-grid-mode {
         grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)) !important;
@@ -226,7 +233,7 @@ html.dark #view-admin-login {
     .pos-catalog-grid-mode {
         grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)) !important;
         gap: 16px !important;
-        padding-bottom: 3rem !important;
+        padding-bottom: 2rem !important;
     }
 }
 
@@ -250,7 +257,7 @@ html.dark #view-admin-login {
 
 @media (min-width: 1280px) {
     .pos-catalog-list-mode {
-        padding-bottom: 3rem !important;
+        padding-bottom: 2rem !important;
     }
 }
 
@@ -6120,32 +6127,62 @@ span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar):not(.
     display: none !important;
 }
 
-@media (max-width: 639.98px) {
-    .sm\:hidden {
-        display: none !important;
-    }
-    .hidden:not(.sm\:inline):not(.sm\:block):not(.sm\:flex):not(.sm\:inline-flex) {
-        display: none !important;
-    }
+/* Pemulihan Display Responsif Tailwind pada Breakpoints (Memungkinkan hidden sm:*, hidden md:*, hidden lg:*, dll.) */
+@media (min-width: 640px) {
+    .sm\:flex { display: flex !important; }
+    .sm\:inline-flex { display: inline-flex !important; }
+    .sm\:block { display: block !important; }
+    .sm\:inline { display: inline !important; }
+    .sm\:inline-block { display: inline-block !important; }
+    .sm\:grid { display: grid !important; }
+    .sm\:hidden { display: none !important; }
 }
 
-@media (max-width: 1279.98px) {
-    .pos-network-status-badge.hidden,
-    #pos-live-clock.hidden,
-    .hidden[class*="xl:inline-flex"],
-    .hidden[class*="xl:flex"],
-    .hidden[class*="xl:inline-block"],
-    .hidden[class*="xl:inline"],
-    .hidden[class*="xl:block"] {
-        display: none !important;
-    }
+@media (min-width: 768px) {
+    .md\:flex { display: flex !important; }
+    .md\:inline-flex { display: inline-flex !important; }
+    .md\:block { display: block !important; }
+    .md\:inline { display: inline !important; }
+    .md\:inline-block { display: inline-block !important; }
+    .md\:grid { display: grid !important; }
+    .md\:hidden { display: none !important; }
 }
 
-@media (max-width: 1535.98px) {
-    .hidden[class*="2xl:inline-flex"],
-    .hidden[class*="2xl:flex"],
-    .hidden[class*="2xl:inline"],
-    .hidden[class*="2xl:block"] {
+@media (min-width: 1024px) {
+    .lg\:flex { display: flex !important; }
+    .lg\:inline-flex { display: inline-flex !important; }
+    .lg\:block { display: block !important; }
+    .lg\:inline { display: inline !important; }
+    .lg\:inline-block { display: inline-block !important; }
+    .lg\:grid { display: grid !important; }
+    .lg\:hidden { display: none !important; }
+}
+
+@media (min-width: 1280px) {
+    .xl\:flex { display: flex !important; }
+    .xl\:inline-flex { display: inline-flex !important; }
+    .xl\:block { display: block !important; }
+    .xl\:inline { display: inline !important; }
+    .xl\:inline-block { display: inline-block !important; }
+    .xl\:grid { display: grid !important; }
+    .xl\:hidden { display: none !important; }
+}
+
+@media (min-width: 1536px) {
+    .\32 xl\:flex { display: flex !important; }
+    .\32 xl\:inline-flex { display: inline-flex !important; }
+    .\32 xl\:block { display: block !important; }
+    .\32 xl\:inline { display: inline !important; }
+    .\32 xl\:inline-block { display: inline-block !important; }
+    .\32 xl\:grid { display: grid !important; }
+    .\32 xl\:hidden { display: none !important; }
+}
+
+/* Proteksi Mutlak Layar HP (< 768px): Elemen Dekstop Tidak Boleh Bocor */
+@media (max-width: 767.98px) {
+    .pos-network-status-badge,
+    #pos-live-clock,
+    .pos-scanner-status-badge {
         display: none !important;
     }
 }
