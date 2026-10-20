@@ -198,7 +198,7 @@ export const renderPayrollView = async (container) => {
 
     container.innerHTML = `
     <div class="text-center py-16">
-        <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-500"></i>
+        <i class="fa-solid fa-spinner fa-spin text-3xl" style="color: var(--color-primary)"></i>
         <p class="text-xs text-slate-400 mt-2 font-medium">Memuat data payroll &amp; rekap kehadiran tim...</p>
     </div>`;
 
@@ -234,7 +234,7 @@ export const renderPayrollView = async (container) => {
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <div>
                 <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                    <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)]" style="background: rgba(var(--color-primary-rgb), 0.08)">
                         <i class="fa-solid fa-money-check-dollar"></i>
                     </span>
                     <span>Penggajian (Payroll) &amp; Slip Gaji</span>
@@ -289,9 +289,9 @@ export const renderPayrollView = async (container) => {
             <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
                 <div class="flex items-center justify-between text-slate-400 mb-1">
                     <span class="text-[11px] font-bold">Potongan Kasbon</span>
-                    <i class="fa-solid fa-hand-holding-dollar text-indigo-500 text-xs"></i>
+                    <i class="fa-solid fa-hand-holding-dollar text-xs" style="color: var(--color-primary)"></i>
                 </div>
-                <div class="text-sm sm:text-base font-black text-indigo-600 dark:text-indigo-400 font-mono truncate">
+                <div class="text-sm sm:text-base font-black text-[var(--color-primary)] font-mono truncate">
                     Rp ${fCur(totalAdvanceDeducted)}
                 </div>
                 <div class="text-[10px] text-slate-400 mt-0.5">Otomatis potong saldo pinjaman</div>
@@ -318,8 +318,9 @@ export const renderPayrollView = async (container) => {
                 <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border ${isPaid ? 'border-emerald-200 dark:border-emerald-800/60' : 'border-slate-200/90 dark:border-slate-700'} shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
                     <!-- Info Karyawan -->
                     <div class="flex items-start gap-3.5 min-w-0 flex-1">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border ${isOwner ? 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300' : 'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-400'}">
-                            ${isOwner ? '<i class="fa-solid fa-crown text-amber-400"></i>' : (item.employeeName?.charAt(0)?.toUpperCase() || 'K')}
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border ${isOwner ? 'text-[var(--color-primary)] border-[rgba(var(--color-primary-rgb),0.3)]' : 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/60 dark:text-slate-200 dark:border-slate-700'}"
+                            style="${isOwner ? 'background: rgba(var(--color-primary-rgb), 0.12)' : ''}">
+                            ${isOwner ? '<i class="fa-solid fa-crown text-amber-500"></i>' : (item.employeeName?.charAt(0)?.toUpperCase() || 'K')}
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2 flex-wrap">
@@ -338,11 +339,11 @@ export const renderPayrollView = async (container) => {
                                 <span>Absensi: <strong>${item.totalAttendanceDays || 0} Hari Masuk</strong></span>
                                 <span>•</span>
                                 <span>Gaji Pokok: <strong>Rp ${fCur(item.baseSalary)}</strong></span>
-                                ${item.attendanceAllowance > 0 ? `<span>•</span><span>Tunjangan: <strong class="text-indigo-600 dark:text-indigo-400">+${fCur(item.attendanceAllowance)}</strong></span>` : ''}
+                                ${item.attendanceAllowance > 0 ? `<span>•</span><span>Tunjangan: <strong class="text-[var(--color-primary)] font-bold">+${fCur(item.attendanceAllowance)}</strong></span>` : ''}
                             </div>
                             <!-- Rincian Potongan -->
                             <div class="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 flex-wrap">
-                                ${item.advanceDeduction > 0 ? `<span class="text-indigo-600 dark:text-indigo-400 font-medium"><i class="fa-solid fa-hand-holding-dollar mr-0.5"></i> Potong Kasbon: -${fCur(item.advanceDeduction)}</span><span>•</span>` : ''}
+                                ${item.advanceDeduction > 0 ? `<span class="text-[var(--color-primary)] font-bold"><i class="fa-solid fa-hand-holding-dollar mr-0.5"></i> Potong Kasbon: -${fCur(item.advanceDeduction)}</span><span>•</span>` : ''}
                                 ${item.lostItemDeduction > 0 ? `<span class="text-rose-500 font-medium"><i class="fa-solid fa-triangle-exclamation mr-0.5"></i> Potong Hilang: -${fCur(item.lostItemDeduction)}</span><span>•</span>` : ''}
                                 <span>Metode: <strong class="text-slate-600 dark:text-slate-300">${esc(item.paymentMethod?.toUpperCase())}</strong></span>
                                 ${item.bankAccount && item.bankAccount !== '-' ? `<span>(${esc(item.bankName)}: ${esc(item.bankAccount)})</span>` : ''}
@@ -362,7 +363,7 @@ export const renderPayrollView = async (container) => {
                             <button onclick="window.openPayslipPreviewModal('${esc(item.payrollId || item.id)}', '${esc(item.employeeId)}')"
                                 title="Lihat & Cetak Slip Gaji"
                                 class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
-                                <i class="fa-solid fa-receipt text-indigo-500"></i>
+                                <i class="fa-solid fa-receipt" style="color: var(--color-primary)"></i>
                                 <span>Slip Gaji</span>
                             </button>
                             <button onclick="window.openPayrollItemModal('${esc(item.employeeId)}', '${_activePayrollPeriod}')"
@@ -474,14 +475,16 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
             <!-- Modal Body Scrollable -->
             <div class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 custom-scrollbar text-xs">
                 <!-- Info Status Presensi Bulan Berjalan -->
-                <div class="p-3.5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800/60 flex items-center justify-between gap-3 flex-wrap">
+                <div class="p-3.5 rounded-2xl border flex items-center justify-between gap-3 flex-wrap"
+                    style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.18)">
                     <div>
-                        <span class="font-black text-indigo-900 dark:text-indigo-200 block">Presensi Kehadiran (${monthLabel}):</span>
-                        <span class="text-indigo-700 dark:text-indigo-300 text-[11px]">
+                        <span class="font-black text-slate-900 dark:text-white block">Presensi Kehadiran (${monthLabel}):</span>
+                        <span class="text-slate-600 dark:text-slate-300 text-[11px]">
                             Hadir: <strong>${draft.presentDays}</strong> • Terlambat: <strong>${draft.lateDays}</strong> • Izin: <strong>${draft.permitDays}</strong> • Sakit: <strong>${draft.sickDays}</strong> • Alpha: <strong>${draft.alphaDays}</strong>
                         </span>
                     </div>
-                    <span class="font-mono font-bold text-xs px-2.5 py-1 rounded-xl bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400">
+                    <span class="font-mono font-bold text-xs px-2.5 py-1 rounded-xl bg-white dark:bg-slate-800 border"
+                        style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary)">
                         Total Masuk: ${draft.totalAttendanceDays} Hari
                     </span>
                 </div>
@@ -497,7 +500,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                             <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Gaji Pokok (Rp)</label>
                             <input type="number" id="pay-base-salary" value="${draft.baseSalary}" min="0" step="50000"
                                 oninput="window.recalculatePayrollItem()"
-                                class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                         </div>
                         <div>
                             <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">
@@ -505,7 +508,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                             </label>
                             <input type="number" id="pay-attendance-allowance" value="${draft.attendanceAllowance}" min="0" step="5000"
                                 oninput="window.recalculatePayrollItem()"
-                                class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             <span class="text-[10px] text-slate-400 mt-0.5 block">Hitungan otomatis: ${draft.totalAttendanceDays} hari x ${fCur(draft.dailyAllowanceRate)}</span>
                         </div>
                         <div>
@@ -513,14 +516,14 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                             <input type="number" id="pay-bonus" value="${draft.bonus || 0}" min="0" step="25000"
                                 oninput="window.recalculatePayrollItem()"
                                 placeholder="0"
-                                class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                         </div>
                         <div>
                             <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Uang Lembur / Tambahan (Rp)</label>
                             <input type="number" id="pay-overtime" value="${draft.overtimePay || 0}" min="0" step="25000"
                                 oninput="window.recalculatePayrollItem()"
                                 placeholder="0"
-                                class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                         </div>
                     </div>
                 </div>
@@ -538,9 +541,9 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                             </label>
                             <input type="number" id="pay-advance-deduction" value="${draft.advanceDeduction || 0}" min="0" step="10000"
                                 oninput="window.recalculatePayrollItem()"
-                                class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             ${draft.advanceId ? `
-                                <span class="text-[10px] text-indigo-500 dark:text-indigo-400 mt-0.5 block font-medium">
+                                <span class="text-[10px] text-[var(--color-primary)] mt-0.5 block font-medium">
                                     Terkoneksi #${draft.advanceId} (Sisa saldo kasbon: Rp ${fCur(draft.advanceRemainingBefore)})
                                 </span>
                             ` : `<span class="text-[10px] text-slate-400 mt-0.5 block">Tidak ada kasbon aktif</span>`}
@@ -552,7 +555,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                             <input type="number" id="pay-lost-item-deduction" value="${draft.lostItemDeduction || 0}" min="0" step="5000"
                                 oninput="window.recalculatePayrollItem()"
                                 placeholder="0"
-                                class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             <span class="text-[10px] text-slate-400 mt-0.5 block">Disesuaikan jabatan &amp; tanggung jawab staf</span>
                         </div>
                     </div>
@@ -561,7 +564,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                         <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Keterangan Pemotongan Barang Hilang / Catatan</label>
                         <input type="text" id="pay-lost-item-notes" value="${esc(draft.lostItemNotes || '')}"
                             placeholder="Contoh: Selisih opname toko 1 sak semen & 2 kran air"
-                            class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                     </div>
                 </div>
 
@@ -592,7 +595,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                     <div>
                         <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Metode Pembayaran</label>
                         <select id="pay-payment-method"
-                            class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             <option value="transfer" ${draft.paymentMethod === 'transfer' ? 'selected' : ''}>Transfer Bank / Rekening</option>
                             <option value="cash" ${draft.paymentMethod === 'cash' ? 'selected' : ''}>Tunai Langsung (Kas Toko)</option>
                         </select>
@@ -601,33 +604,38 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                         <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Rekening Karyawan</label>
                         <input type="text" id="pay-bank-account" value="${esc(draft.bankAccount !== '-' ? `${draft.bankName}: ${draft.bankAccount}` : 'Tunai / Kas Toko')}"
                             readonly
-                            class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono text-xs">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono">
                     </div>
                 </div>
 
                 <!-- Opsi Integrasi Buku Kas Toko -->
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-2.5">
-                    <input type="checkbox" id="pay-sync-expense" checked
-                        class="w-4 h-4 mt-0.5 text-emerald-600 rounded cursor-pointer">
-                    <label for="pay-sync-expense" class="text-xs text-slate-600 dark:text-slate-300 cursor-pointer">
-                        <strong>Catat otomatis ke Buku Kas Beban Operasional Toko:</strong> Memasukkan pengeluaran gaji ini ke kategori <em>'gaji'</em> di buku kas pengeluaran toko sehingga neraca laba rugi terpotong secara riil.
+                <div class="p-3.5 rounded-2xl border" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.2)">
+                    <label class="flex items-start gap-2.5 cursor-pointer">
+                        <input type="checkbox" id="pay-sync-expense" checked
+                            class="w-4 h-4 mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 cursor-pointer">
+                        <div class="text-xs">
+                            <strong class="text-slate-900 dark:text-white block font-black">Catat otomatis ke Buku Kas Beban Operasional Toko:</strong>
+                            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
+                                Memasukkan pengeluaran gaji ini ke kategori <em>'gaji'</em> di buku kas pengeluaran toko sehingga neraca laba rugi terpotong secara riil.
+                            </p>
+                        </div>
                     </label>
                 </div>
             </div>
 
             <!-- Modal Footer Buttons -->
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50/70 dark:bg-slate-800/40 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closePayrollItemModal()" 
-                    class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="min-h-[44px] px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <div class="flex items-center gap-2">
                     <button onclick="window.savePayrollItem('${esc(emp.employeeId || emp.uid)}', '${periodStr}', 'draft')"
-                        class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                        class="min-h-[44px] px-5 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                         Simpan Draf
                     </button>
                     <button onclick="window.savePayrollItem('${esc(emp.employeeId || emp.uid)}', '${periodStr}', 'paid')"
-                        class="px-5 py-2.5 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                        class="min-h-[44px] px-6 py-2.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-2"
                         style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                         <i class="fa-solid fa-check"></i>
                         <span>Bayar &amp; Terbitkan Slip</span>
@@ -895,7 +903,8 @@ export const openPayslipPreviewModal = (payrollId, employeeId) => {
                     <div class="text-center pb-3 border-b border-dashed border-slate-300 dark:border-slate-600 space-y-1">
                         <h4 class="font-black text-base text-slate-900 dark:text-white tracking-wide uppercase">${esc(store.name || 'TOKO PUTRI')}</h4>
                         <p class="text-[10px] text-slate-500 dark:text-slate-400">${esc(store.address || 'Penyedia Bahan Bangunan & Alat Teknik')}</p>
-                        <div class="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px] font-black uppercase tracking-wider mt-1 border border-indigo-200 dark:border-indigo-800">
+                        <div class="inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 border"
+                            style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary)">
                             SLIP GAJI RESMI • ${esc(item.periodLabel)}
                         </div>
                     </div>
@@ -999,24 +1008,24 @@ export const openPayslipPreviewModal = (payrollId, employeeId) => {
             </div>
 
             <!-- Modal Footer (3 Tombol Aksi Cetak & Share) -->
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-slate-50/70 dark:bg-slate-800/40 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closePayslipPreviewModal()" 
-                    class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Tutup
                 </button>
                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
                     <button onclick="window.sendPayslipWhatsApp('${esc(item.payrollId || item.id)}')"
-                        class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl text-white font-black text-xs transition-all active:scale-95 cursor-pointer shadow-sm flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700">
+                        class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-white font-black text-xs transition-all active:scale-95 cursor-pointer shadow-sm flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700">
                         <i class="fa-brands fa-whatsapp text-sm"></i>
                         <span>Kirim WA</span>
                     </button>
                     <button onclick="window.printPayslipThermal('${esc(item.payrollId || item.id)}')"
-                        class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
+                        class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-receipt text-xs"></i>
                         <span>Struk Thermal</span>
                     </button>
                     <button onclick="window.printPayslipA4('${esc(item.payrollId || item.id)}')"
-                        class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                        class="flex-1 sm:flex-initial min-h-[44px] px-5 py-2.5 rounded-2xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                         style="background: var(--color-primary);">
                         <i class="fa-solid fa-print text-xs"></i>
                         <span>Cetak A4 PDF</span>

@@ -98,30 +98,30 @@ export const renderCashierAccounts = async () => {
     <div class="space-y-4 max-w-5xl mx-auto pb-16">
         <!-- Native App Sticky Segmented Control Bar -->
         <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xs">
-            <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-3xl w-full mx-auto grid grid-cols-2 sm:grid-cols-5 gap-1.5 border border-slate-200/90 dark:border-slate-700/80 shadow-inner">
+            <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-4xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar border border-slate-200/90 dark:border-slate-700/80 shadow-inner sm:grid sm:grid-cols-5">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
-                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md"
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
                     style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-users-gear text-white"></i>
                     <span class="truncate">Staf &amp; Akses</span>
                 </button>
                 <button id="tab-btn-cashier-attendance" onclick="window.switchCashierTab('attendance')" 
-                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-clipboard-user"></i>
                     <span class="truncate">Absensi Tim</span>
                 </button>
                 <button id="tab-btn-cashier-advances" onclick="window.switchCashierTab('advances')" 
-                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-hand-holding-dollar"></i>
                     <span class="truncate">Buku Kasbon</span>
                 </button>
                 <button id="tab-btn-cashier-payroll" onclick="window.switchCashierTab('payroll')" 
-                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-money-check-dollar"></i>
                     <span class="truncate">Gaji &amp; Slip</span>
                 </button>
                 <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" 
-                    class="py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span class="truncate">Shift Kasir</span>
                 </button>
@@ -152,34 +152,39 @@ export const renderCashierAccounts = async () => {
             </div>
 
             <!-- Kartu Owner Utama Toko (Super Admin & Master HR) -->
-            <div class="relative overflow-hidden p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-purple-200 dark:border-purple-800/60 bg-gradient-to-br from-purple-500/10 via-slate-50 to-white dark:from-purple-950/40 dark:via-slate-800 dark:to-slate-800 shadow-2xs flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div class="relative overflow-hidden p-4 sm:p-5 rounded-2xl sm:rounded-3xl border shadow-2xs flex flex-col sm:flex-row sm:items-start justify-between gap-4"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%); border-color: rgba(var(--color-primary-rgb), 0.25)">
                 <div class="flex items-start gap-4 min-w-0">
-                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-md bg-gradient-to-tr from-purple-600 to-indigo-500 text-white border border-purple-300 dark:border-purple-700">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-md text-white"
+                        style="background: var(--color-primary)">
                         <i class="fa-solid fa-crown text-amber-300"></i>
                     </div>
                     <div class="space-y-1.5 min-w-0 flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-sm font-black text-slate-900 dark:text-white">Akun Pemilik Utama (Owner)</span>
-                            <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/70 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-700">
+                            <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full"
+                                style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25)">
                                 <i class="fa-solid fa-lock text-[9px]"></i> Super Admin Terproteksi
                             </span>
-                            <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100/80 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-800">
+                            <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md"
+                                style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.2)">
                                 ${esc(ownerProfile.employeeId || 'OWN-001')}
                             </span>
                         </div>
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                             Jabatan: <strong class="text-slate-900 dark:text-white">${esc(ownerProfile.position || 'Owner / Direktur Utama')}</strong> • Gaji Pokok Direksi: <strong class="text-emerald-600 dark:text-emerald-400">${fCur(ownerProfile.baseSalary || 10000000)}</strong> /bln • Status: Karyawan Tetap
                         </p>
-                        <div class="flex items-center gap-3 pt-1 text-[11px] text-purple-700 dark:text-purple-300 font-bold flex-wrap">
+                        <div class="flex items-center gap-3 pt-1 text-[11px] text-slate-600 dark:text-slate-300 font-bold flex-wrap">
                             ${authStatusBadge}
                             <span>•</span>
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-key"></i> Hak Akses: 22 Modul Terbuka</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-key" style="color: var(--color-primary)"></i> Hak Akses: 22 Modul Terbuka</span>
                             ${ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? `<span>•</span><span class="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold"><i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(ownerProfile.bankName)}: ${esc(ownerProfile.bankAccount)}</span>` : ''}
                         </div>
                     </div>
                 </div>
                 <button onclick="window.openOwnerHrModal()"
-                    class="shrink-0 self-end sm:self-start px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/80 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95">
+                    class="shrink-0 self-end sm:self-start min-h-[44px] px-4 py-2.5 rounded-2xl text-xs font-bold bg-white dark:bg-slate-800 border transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95"
+                    style="color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25)">
                     <i class="fa-solid fa-user-pen text-xs"></i>
                     <span>Atur Gaji &amp; HR Owner</span>
                 </button>
@@ -250,7 +255,7 @@ export const switchCashierTab = (tab) => {
 
     const applyActive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md';
+        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
         btn.style.background = 'var(--color-primary)';
         btn.style.boxShadow = '0 4px 14px rgba(var(--color-primary-rgb), 0.35)';
         btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
@@ -258,7 +263,7 @@ export const switchCashierTab = (tab) => {
 
     const applyInactive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'py-2.5 px-2 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95';
+        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
         btn.style.background = 'transparent';
         btn.style.boxShadow = 'none';
         btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
@@ -394,7 +399,7 @@ const renderStaffListHtml = () => {
                         </span>
                     </div>
                     <div class="flex items-center gap-2 mt-1 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
-                        <span class="font-bold text-slate-800 dark:text-slate-100"><i class="fa-solid fa-user-tag text-[10px] text-indigo-500 mr-1"></i>${esc(position)}</span>
+                        <span class="font-bold text-slate-800 dark:text-slate-100"><i class="fa-solid fa-user-tag text-[10px] mr-1" style="color: var(--color-primary)"></i>${esc(position)}</span>
                         <span>•</span>
                         <span class="font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${fCur(baseSalary)}/bln</span>
                         ${dailyAllowance > 0 ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+${fCur(dailyAllowance)}/hr)</span>` : ''}
@@ -416,7 +421,8 @@ const renderStaffListHtml = () => {
             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center border-t sm:border-t-0 pt-2.5 sm:pt-0 border-slate-100 dark:border-slate-700/60 w-full sm:w-auto justify-end">
                 <button onclick="window.openPermissionsModal('${esc(uid)}')"
                     title="Atur Hak Akses Modul"
-                    class="flex-1 sm:flex-initial h-10 px-3.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 border border-purple-200 dark:border-purple-800/60 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300">
+                    class="flex-1 sm:flex-initial h-10 px-3.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 border"
+                    style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary)">
                     <i class="fa-solid fa-sliders text-[10px]"></i>
                     <span>Hak Akses</span>
                 </button>
@@ -546,7 +552,8 @@ export const openAddStaffModal = () => {
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
                         style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
@@ -615,9 +622,9 @@ export const openAddStaffModal = () => {
                             <span class="text-xs font-black">Staf Gudang</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Logistik &amp; Bantu</span>
                         </label>
-                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-purple-500 transition-all text-center">
+                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-[var(--color-primary)] transition-all text-center">
                             <input type="radio" name="new_staff_role" value="manager" onchange="window.applyNewStaffPreset('manager')" class="sr-only">
-                            <i class="fa-solid fa-user-tie text-lg mb-1 text-purple-500"></i>
+                            <i class="fa-solid fa-user-tie text-lg mb-1" style="color: var(--color-primary)"></i>
                             <span class="text-xs font-black">Manajer</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Akses Luas</span>
                         </label>
@@ -973,14 +980,16 @@ export const openPermissionsModal = (uid) => {
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-300">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs text-white"
+                        style="background: var(--color-primary)">
                         <i class="fa-solid fa-sliders"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white">Atur Hak Akses: ${esc(staff.name || 'Staf')}</h3>
-                        <p class="text-[11px] text-slate-400">Sesuaikan modul yang boleh dibuka oleh akun ini</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Sesuaikan modul yang boleh dibuka oleh akun ini</p>
                     </div>
                 </div>
                 <button onclick="window.closePermissionsModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
@@ -1009,8 +1018,8 @@ export const openPermissionsModal = (uid) => {
                             <i class="fa-solid fa-shield-halved text-[11px] text-blue-500"></i>
                             <span>Admin Ops</span>
                         </button>
-                        <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-purple-500 hover:text-purple-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-user-tie text-[11px] text-purple-500"></i>
+                        <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-user-tie text-[11px]" style="color: var(--color-primary)"></i>
                             <span>Manajer</span>
                         </button>
                         <button type="button" onclick="window.applyEditStaffPreset('${ROLES.OWNER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
@@ -1144,7 +1153,8 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
                         style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
@@ -1364,19 +1374,22 @@ export const openOwnerHrModal = () => {
     document.body.insertAdjacentHTML('beforeend', `
     <div id="modal-owner-hr" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeOwnerHrModal()">
-        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-purple-200 dark:border-purple-800/80" id="owner-hr-modal-box">
+        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="owner-hr-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-purple-100 dark:border-purple-900/40 bg-gradient-to-r from-purple-500/10 via-slate-50 to-white dark:from-purple-950/40 dark:via-slate-800 dark:to-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-md bg-gradient-to-tr from-purple-600 to-indigo-500 text-white border border-purple-300 dark:border-purple-700">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-md text-white"
+                        style="background: var(--color-primary)">
                         <i class="fa-solid fa-crown text-amber-300"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
                             <span>Atur Kompensasi &amp; HR Owner</span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 font-bold">OWN-001</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-md font-bold"
+                                style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">OWN-001</span>
                         </h3>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">Gaji resmi pemilik toko terpisah dari laba usaha (Tata Kelola Modern)</p>
                     </div>
@@ -1388,7 +1401,8 @@ export const openOwnerHrModal = () => {
 
             <!-- Modal Body (Scrollable) -->
             <div class="p-5 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
-                <div class="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60 text-xs text-purple-900 dark:text-purple-200 flex items-start gap-2.5">
+                <div class="p-3.5 rounded-2xl text-xs flex items-start gap-2.5 text-slate-800 dark:text-slate-200"
+                    style="background: rgba(var(--color-primary-rgb), 0.06); border: 1px solid rgba(var(--color-primary-rgb), 0.2);">
                     <i class="fa-solid fa-lightbulb text-amber-500 text-sm mt-0.5 shrink-0"></i>
                     <p class="leading-relaxed">
                         <strong>Standar Akuntansi &amp; Bisnis Sehat:</strong> Pemilik toko berhak menerima gaji bulanan tetap sebagai pengelola operasional. Biaya ini tercatat resmi di beban operasional dan laporan perpajakan usaha toko.
@@ -1399,12 +1413,12 @@ export const openOwnerHrModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor ID Karyawan Owner</label>
                         <input id="owner-hr-empid" type="text" value="${esc(ownerProfile.employeeId || 'OWN-001')}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold cursor-not-allowed" readonly>
+                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold cursor-not-allowed" readonly>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Pemilik / Direktur <span class="text-rose-500">*</span></label>
                         <input id="owner-hr-name" type="text" value="${esc(ownerProfile.name || 'Pemilik Toko')}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white font-bold transition-all shadow-inner">
+                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-inner">
                     </div>
                 </div>
 
@@ -1412,12 +1426,12 @@ export const openOwnerHrModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan Resmi</label>
                         <input id="owner-hr-position" type="text" value="${esc(ownerProfile.position || 'Owner / Direktur Utama')}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">No. WhatsApp Pribadi</label>
                         <input id="owner-hr-phone" type="tel" value="${esc(ownerProfile.phone || '')}" placeholder="081234567890"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
                     </div>
                 </div>
 
@@ -1425,35 +1439,35 @@ export const openOwnerHrModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Gaji Pokok Direksi (Rp/Bulan) <span class="text-rose-500">*</span></label>
                         <input id="owner-hr-salary" type="number" min="0" step="50000" value="${ownerProfile.baseSalary || 10000000}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white font-bold transition-all shadow-inner">
+                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-inner">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Tunjangan Bulanan Direksi (Rp)</label>
                         <input id="owner-hr-allowance" type="number" min="0" step="50000" value="${ownerProfile.dailyAllowance || 0}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
                     </div>
                 </div>
 
                 <!-- Informasi Rekening Bank Owner -->
                 <div class="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-3">
                     <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
-                        <i class="fa-solid fa-building-columns text-purple-600"></i> Rekening Penerimaan Gaji
+                        <i class="fa-solid fa-building-columns text-[var(--color-primary)]"></i> Rekening Penerimaan Gaji
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Bank</label>
                             <input id="owner-hr-bank-name" type="text" value="${esc(ownerProfile.bankName || 'BCA')}" placeholder="BCA / Mandiri / BRI"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                                class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor Rekening</label>
                             <input id="owner-hr-bank-account" type="text" value="${esc(ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? ownerProfile.bankAccount : '')}" placeholder="1234567890"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white font-mono transition-all shadow-inner">
+                                class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-mono transition-all shadow-inner">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Atas Nama Rekening</label>
                             <input id="owner-hr-bank-holder" type="text" value="${esc(ownerProfile.bankHolder || ownerProfile.name || '')}" placeholder="Nama Pemilik"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-purple-500 text-slate-900 dark:text-white transition-all shadow-inner">
+                                class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
                         </div>
                     </div>
                 </div>
@@ -1468,7 +1482,8 @@ export const openOwnerHrModal = () => {
                     Batal
                 </button>
                 <button onclick="window.saveOwnerHrProfile()" id="save-owner-hr-btn"
-                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95">
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Kompensasi Owner
                 </button>
             </div>

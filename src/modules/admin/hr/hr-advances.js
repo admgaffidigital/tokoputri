@@ -138,7 +138,7 @@ export const renderSalaryAdvancesView = async (container) => {
             </div>
             <div class="p-4 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
                 <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Potongan Payroll Bln Ini</span>
-                <p class="text-base sm:text-lg font-black text-indigo-600 dark:text-indigo-400">${fCur(totalMonthlyDeduction)}</p>
+                <p class="text-base sm:text-lg font-black text-[var(--color-primary)]">${fCur(totalMonthlyDeduction)}</p>
                 <span class="text-[10px] text-slate-400 mt-0.5 block">Otomatis dipotong gaji</span>
             </div>
             <div class="p-4 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
@@ -258,7 +258,7 @@ const renderAdvanceCardsHtml = (list) => {
                         <span>•</span>
                         <span>Sisa: <strong class="${isPaid ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${fCur(remaining)}</strong></span>
                         <span>•</span>
-                        <span>Potongan: <strong class="text-indigo-600 dark:text-indigo-400">${fCur(adv.monthlyInstallment)}/bln</strong></span>
+                        <span>Potongan: <strong class="text-[var(--color-primary)] font-bold">${fCur(adv.monthlyInstallment)}/bln</strong></span>
                     </div>
 
                     <!-- Progress Bar Cicilan -->
@@ -268,7 +268,7 @@ const renderAdvanceCardsHtml = (list) => {
                             <span class="font-bold text-slate-600 dark:text-slate-300">${pct}% Lunas</span>
                         </div>
                         <div class="w-full bg-slate-100 dark:bg-slate-700/80 rounded-full h-1.5 overflow-hidden">
-                            <div class="h-full rounded-full transition-all duration-500 ${isPaid ? 'bg-emerald-500' : 'bg-indigo-500'}" style="width: ${pct}%"></div>
+                            <div class="h-full rounded-full transition-all duration-500 ${isPaid ? 'bg-emerald-500' : ''}" style="width: ${pct}%; ${isPaid ? '' : 'background: var(--color-primary)'}"></div>
                         </div>
                     </div>
 
@@ -285,7 +285,7 @@ const renderAdvanceCardsHtml = (list) => {
             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center border-t sm:border-t-0 pt-2.5 sm:pt-0 border-slate-100 dark:border-slate-700/60 w-full sm:w-auto justify-end">
                 <button onclick="window.openAdvanceDetailModal('${esc(adv.advanceId || adv.id)}')"
                     class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
-                    <i class="fa-solid fa-file-invoice text-[10px] text-indigo-500"></i>
+                    <i class="fa-solid fa-file-invoice text-[10px]" style="color: var(--color-primary)"></i>
                     <span>Riwayat &amp; Rincian</span>
                 </button>
                 ${!isPaid ? `
@@ -330,18 +330,19 @@ export const openSalaryAdvanceFormModal = () => {
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
-                        style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs text-white"
+                        style="background: var(--color-primary)">
                         <i class="fa-solid fa-hand-holding-dollar"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
                             <span>Form Pengajuan Kasbon Karyawan</span>
-                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${esc(autoAdvanceId)}</span>
+                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${esc(autoAdvanceId)}</span>
                         </h3>
-                        <p class="text-[11px] text-slate-400">Pencatatan pinjaman operasional staf toko</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Pencatatan pinjaman operasional staf toko</p>
                     </div>
                 </div>
                 <button onclick="window.closeSalaryAdvanceFormModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
@@ -354,7 +355,7 @@ export const openSalaryAdvanceFormModal = () => {
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Pilih Karyawan Peminjam <span class="text-rose-500">*</span></label>
                     <select id="adv-employee-select" onchange="window.onAdvanceEmployeeChange()"
-                        class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                         ${employees.map(e => `
                             <option value="${esc(e.uid || e.employeeId)}" data-empid="${esc(e.employeeId)}" data-name="${esc(e.name)}" data-role="${esc(e.role)}" data-position="${esc(e.position)}" data-salary="${e.baseSalary || 0}">
                                 ${esc(e.name)} — ${esc(e.position)} (${esc(e.employeeId)}) [Gaji: ${fCur(e.baseSalary || 0)}]
@@ -367,13 +368,13 @@ export const openSalaryAdvanceFormModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Tanggal Pencairan <span class="text-rose-500">*</span></label>
                         <input id="adv-request-date" type="date" value="${todayStr}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nominal Kasbon (Rp) <span class="text-rose-500">*</span></label>
                         <input id="adv-amount" type="number" min="10000" step="50000" placeholder="Contoh: 500000"
                             oninput="window.calculateAdvanceInstallment()"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 font-black focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 font-black focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                     </div>
                 </div>
 
@@ -381,7 +382,7 @@ export const openSalaryAdvanceFormModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Skema Tenor Potongan Gaji</label>
                         <select id="adv-tenor-select" onchange="window.calculateAdvanceInstallment()"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             <option value="1">1 Bulan (Lunas Sekali Potong)</option>
                             <option value="2">2 Bulan (Cicilan 2x)</option>
                             <option value="3">3 Bulan (Cicilan 3x)</option>
@@ -392,7 +393,7 @@ export const openSalaryAdvanceFormModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Potongan Tiap Bulan (Rp)</label>
                         <input id="adv-installment" type="number" min="0" step="10000"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-black focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-[var(--color-primary)] font-black focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                     </div>
                 </div>
 
@@ -400,7 +401,7 @@ export const openSalaryAdvanceFormModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Sumber Dana Pencairan</label>
                         <select id="adv-disbursement-source"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             <option value="cash">Kas Laci Toko (Tunai)</option>
                             <option value="bank">Transfer Rekening Bank Toko</option>
                             <option value="owner">Dana Pribadi / Talangan Owner</option>
@@ -409,17 +410,17 @@ export const openSalaryAdvanceFormModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Keperluan / Alasan Pinjaman</label>
                         <input id="adv-reason" type="text" placeholder="Contoh: Kebutuhan darurat / biaya keluarga"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                     </div>
                 </div>
 
                 <!-- Opsi Integrasi Buku Kas Toko -->
-                <div class="p-3.5 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60">
+                <div class="p-3.5 rounded-2xl border" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.2)">
                     <label class="flex items-start gap-2.5 cursor-pointer">
-                        <input id="adv-sync-expense" type="checkbox" checked class="mt-0.5 rounded border-indigo-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
+                        <input id="adv-sync-expense" type="checkbox" checked class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
                         <div class="text-xs">
-                            <span class="font-black text-indigo-950 dark:text-indigo-200">Catat Otomatis ke Buku Kas Pengeluaran Toko (expenses.js)</span>
-                            <p class="text-[11px] text-indigo-800/80 dark:text-indigo-300/80 mt-0.5 leading-relaxed">
+                            <span class="font-black text-slate-900 dark:text-white">Catat Otomatis ke Buku Kas Pengeluaran Toko (expenses.js)</span>
+                            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
                                 Dana kasbon yang dicairkan langsung memotong saldo kas toko dan masuk ke laporan beban kas operasional kategori "Kasbon &amp; Pinjaman Karyawan".
                             </p>
                         </div>
@@ -630,17 +631,19 @@ export const openAdvanceDetailModal = (advanceId) => {
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
+                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs ${isPaid ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-indigo-50 text-indigo-600 border border-indigo-200'}">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs ${isPaid ? 'bg-emerald-500 text-white' : 'text-white'}"
+                        style="${isPaid ? '' : 'background: var(--color-primary)'}">
                         <i class="fa-solid fa-file-invoice"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
                             <span>Detail Kasbon: ${esc(adv.employeeName)}</span>
-                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${esc(adv.advanceId || adv.id)}</span>
+                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${esc(adv.advanceId || adv.id)}</span>
                         </h3>
-                        <p class="text-[11px] text-slate-400">${esc(adv.position)} • ID: ${esc(adv.employeeId)}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">${esc(adv.position)} • ID: ${esc(adv.employeeId)}</p>
                     </div>
                 </div>
                 <button onclick="window.closeAdvanceDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
@@ -671,7 +674,7 @@ export const openAdvanceDetailModal = (advanceId) => {
                         </div>
                     </div>
                     <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden mt-2">
-                        <div class="h-full rounded-full ${isPaid ? 'bg-emerald-500' : 'bg-indigo-500'}" style="width: ${pct}%"></div>
+                        <div class="h-full rounded-full transition-all duration-500 ${isPaid ? 'bg-emerald-500' : ''}" style="width: ${pct}%; ${isPaid ? '' : 'background: var(--color-primary)'}"></div>
                     </div>
                     <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
                         <span>Potongan: <strong>${fCur(adv.monthlyInstallment)} / bln</strong></span>
@@ -682,7 +685,7 @@ export const openAdvanceDetailModal = (advanceId) => {
                 <!-- Riwayat Pembayaran / Pemotongan -->
                 <div>
                     <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5 mb-2">
-                        <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Riwayat Angsuran &amp; Pemotongan
+                        <i class="fa-solid fa-clock-rotate-left" style="color: var(--color-primary)"></i> Riwayat Angsuran &amp; Pemotongan
                     </h4>
                     ${repayments.length === 0 ? `
                         <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-center text-xs text-slate-400">
@@ -704,9 +707,9 @@ export const openAdvanceDetailModal = (advanceId) => {
             </div>
 
             <!-- Footer -->
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end shrink-0">
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeAdvanceDetailModal()"
-                    class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="min-h-[44px] px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Tutup
                 </button>
             </div>
