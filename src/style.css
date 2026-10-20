@@ -69,14 +69,14 @@ input, textarea, [contenteditable="true"] {
 @tailwind components;
 @tailwind utilities;
 
-/* Clean Enterprise Solid Canvas (Zero Blur, Zero Radial Glow, Zero Glassmorphism) */
+/* Clean Enterprise Solid Canvas (Smart Dual-Mode High-Contrast Foundation) */
 body, #app-container {
-  background-color: #f8fafc; /* Clean Solid Light Canvas Default (Slate-50) */
+  background-color: #f1f5f9; /* Clean Solid Light Canvas (Slate-100 lembut & nyaman di mata) */
   background-image: none;
 }
 .dark body, .dark #app-container,
 html.dark body, html.dark #app-container {
-  background-color: #0f172a; /* Clean Solid Dark Canvas Default (Slate-900) */
+  background-color: #0b1120; /* Clean Solid Dark Canvas (Slate-950 pekat & bersih) */
   background-image: none;
 }
 
@@ -93,7 +93,7 @@ html.dark .view-section:not(#view-admin-login):not(#view-admin) {
 /* Latar Belakang Solid Murni untuk Panel Admin CMS & Login (Bebas Efek Kaca & Bebas Blur) */
 #view-admin,
 #view-admin-login {
-  background-color: #f8fafc !important;
+  background-color: #f1f5f9 !important;
   background-image: none !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -105,7 +105,7 @@ html.dark .view-section:not(#view-admin-login):not(#view-admin) {
 html.dark #view-admin,
 .dark #view-admin-login,
 html.dark #view-admin-login {
-  background-color: #0f172a !important;
+  background-color: #0b1120 !important;
   background-image: none !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -3041,47 +3041,44 @@ html.dark #app-container[data-has-custom-bg="true"] {
 /* ─── 1. MINIMALIS (Studio Clean / Polos Bersih Elegan) ─── */
 [data-bg-style="minimalist"],
 [data-bg-style="minimalist"] #app-container {
-    background-color: #f8fafc !important;
+    background-color: #f1f5f9 !important;
     background-image: none !important;
 }
 html.dark[data-bg-style="minimalist"],
 html.dark[data-bg-style="minimalist"] #app-container,
 .dark[data-bg-style="minimalist"],
 .dark[data-bg-style="minimalist"] #app-container {
-    background-color: #0f172a !important;
+    background-color: #0b1120 !important;
     background-image: none !important;
 }
 [data-bg-style="minimalist"] #view-catalog .glass-header {
     background: var(--color-primary) !important;
     border-radius: 0 !important;
     padding-bottom: 0.75rem !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
     box-shadow: none !important;
 }
 html.dark[data-bg-style="minimalist"] #view-catalog .glass-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
 }
 [data-bg-style="minimalist"] .view-section:not(#view-catalog) .glass-header {
     background: var(--color-primary) !important;
     border-radius: 0 !important;
     padding-bottom: 0.75rem !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-[data-bg-style="minimalist"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.16) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
 /* ─── 2. HERO ARCH (Super-App / Kanopi Dome Lengkung Khas) ─── */
 [data-bg-style="hero_arch"],
 [data-bg-style="hero_arch"] #app-container {
-    background-color: #f5f2ec !important;
+    background-color: #f1f5f9 !important;
     background-image: none !important;
 }
 html.dark[data-bg-style="hero_arch"],
 html.dark[data-bg-style="hero_arch"] #app-container,
 .dark[data-bg-style="hero_arch"],
 .dark[data-bg-style="hero_arch"] #app-container {
-    background-color: #0a0f1d !important;
+    background-color: #0b1120 !important;
     background-image: none !important;
 }
 [data-bg-style="hero_arch"] #view-catalog .glass-header {
@@ -3097,23 +3094,20 @@ html.dark[data-bg-style="hero_arch"] #app-container,
     padding-bottom: 0.75rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
-[data-bg-style="hero_arch"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.22) !important;
-}
 
 /* ─── 3. AURORA GLOW (Modern iOS / Rounded Sudut Halus & Dual-Tone) ─── */
 [data-bg-style="aurora_glow"],
 [data-bg-style="aurora_glow"] #app-container,
 [data-bg-style="dual_tone"],
 [data-bg-style="dual_tone"] #app-container {
-    background-color: #f4eff6 !important;
+    background-color: #f1f5f9 !important;
     background-image: none !important;
 }
 html.dark[data-bg-style="aurora_glow"],
 html.dark[data-bg-style="aurora_glow"] #app-container,
 .dark[data-bg-style="aurora_glow"],
 .dark[data-bg-style="aurora_glow"] #app-container {
-    background-color: #080c16 !important;
+    background-color: #0b1120 !important;
     background-image: none !important;
 }
 [data-bg-style="aurora_glow"] #view-catalog .glass-header,
@@ -3131,23 +3125,20 @@ html.dark[data-bg-style="aurora_glow"] #app-container,
     padding-bottom: 0.75rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
-[data-bg-style="aurora_glow"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
-}
 
 /* ─── 4. TECH GRID (Pro Teknik / Arsitektur Presisi & Micro Blueprint Grid) ─── */
 [data-bg-style="tech_grid"],
 [data-bg-style="tech_grid"] #app-container,
 [data-bg-style="geometric_3d"],
 [data-bg-style="geometric_3d"] #app-container {
-    background-color: #ebf0f5 !important;
+    background-color: #f1f5f9 !important;
     background-image: none !important;
 }
 html.dark[data-bg-style="tech_grid"],
 html.dark[data-bg-style="tech_grid"] #app-container,
 .dark[data-bg-style="tech_grid"],
 .dark[data-bg-style="tech_grid"] #app-container {
-    background-color: #0a0e17 !important;
+    background-color: #0b1120 !important;
     background-image: none !important;
 }
 [data-bg-style="tech_grid"] #view-catalog .glass-header,
@@ -3165,21 +3156,18 @@ html.dark[data-bg-style="tech_grid"] #app-container,
     padding-bottom: 0.75rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
-[data-bg-style="tech_grid"] .bento-island-card {
-    border-color: rgba(var(--color-primary-rgb), 0.22) !important;
-}
 
 /* ─── 5. INDUSTRIAL (Heavy-Duty Toko Bangunan & Teknik / Concrete Slate) ─── */
 [data-bg-style="industrial"],
 [data-bg-style="industrial"] #app-container {
-    background-color: #dfe5ec !important;
+    background-color: #f1f5f9 !important;
     background-image: none !important;
 }
 html.dark[data-bg-style="industrial"],
 html.dark[data-bg-style="industrial"] #app-container,
 .dark[data-bg-style="industrial"],
 .dark[data-bg-style="industrial"] #app-container {
-    background-color: #101622 !important;
+    background-color: #0b1120 !important;
     background-image: none !important;
 }
 [data-bg-style="industrial"] #view-catalog .glass-header {
@@ -3195,19 +3183,13 @@ html.dark[data-bg-style="industrial"] #app-container,
     padding-bottom: 0.75rem !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
 }
-[data-bg-style="industrial"] .bento-island-card {
-    border-color: #94a3b8 !important;
-}
-html.dark[data-bg-style="industrial"] .bento-island-card {
-    border-color: #334155 !important;
-}
 
 /* Bottom Navigation Bar Solid & Bebas Kaca */
 .glass-nav,
 #bottom-nav-bar {
     background-color: #ffffff !important;
-    border-top: 1px solid #e2e8f0 !important;
-    box-shadow: none !important;
+    border-top: 1px solid #cbd5e1 !important;
+    box-shadow: 0 -1px 3px rgba(15, 23, 42, 0.05) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -3218,19 +3200,19 @@ html.dark #bottom-nav-bar,
 .dark #bottom-nav-bar {
     background-color: #0f172a !important;
     border-top: 1px solid #334155 !important;
-    box-shadow: none !important;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.4) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
 
-/* ─── SOLID CLEAN CARDS & BENTO BOXES (100% Solid Opacity, Anti-Kaca) ─── */
+/* ─── SMART DUAL-MODE SOLID CLEAN CARDS & BENTO BOXES ─── */
 .card-modern,
 .card-native,
 .bento-island-card,
 [data-bg-style] .bento-island-card {
     background-color: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -3244,7 +3226,7 @@ html.dark .bento-island-card,
 html.dark[data-bg-style] .bento-island-card {
     background-color: #1e293b !important;
     border: 1px solid #334155 !important;
-    box-shadow: none !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -5404,8 +5386,9 @@ button.active\:scale-90:active {
 #owner-hr-modal-box,
 #pricelist-export-modal-box,
 #modal-flash-sale-box {
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1) !important;
-    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
+    border: 1px solid #cbd5e1 !important;
+    background-color: #ffffff !important;
 }
 
 .dark .modal-bottom-sheet,
@@ -5428,9 +5411,175 @@ button.active\:scale-90:active {
 .dark #modal-flash-sale-box {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
     border: 1px solid #334155 !important;
+    background-color: #1e293b !important;
 }
 
-/* 3. Eliminasi Total Background Gradient (Solid Colors Only) */
+/* 3. SMART DUAL-MODE SOLID ENGINE: FALLBACK UNTUK SELURUH KELAS GRADIENT */
+/* Primary Theme Gradients */
+[class*="bg-gradient-"][class*="from-\[var\(--color-primary\)\]"],
+[class*="bg-gradient-"][class*="from-primary-"] {
+    background-color: var(--color-primary) !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+[class*="bg-gradient-"][class*="from-\[rgba\(var\(--color-primary-rgb\)"] {
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
+    background-image: none !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-\[rgba\(var\(--color-primary-rgb\)"] {
+    background-color: rgba(var(--color-primary-rgb), 0.16) !important;
+    background-image: none !important;
+}
+
+/* Emerald / Green / Teal Gradients */
+[class*="bg-gradient-"][class*="from-emerald-500"],
+[class*="bg-gradient-"][class*="from-emerald-600"],
+[class*="bg-gradient-"][class*="from-green-500"],
+[class*="bg-gradient-"][class*="from-green-600"],
+[class*="bg-gradient-"][class*="from-teal-500"],
+[class*="bg-gradient-"][class*="from-teal-600"] {
+    background-color: #059669 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+[class*="bg-gradient-"][class*="from-emerald-50"],
+[class*="bg-gradient-"][class*="from-teal-50"],
+[class*="bg-gradient-"][class*="from-green-50"] {
+    background-color: #ecfdf5 !important;
+    background-image: none !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-emerald-50"],
+html.dark [class*="bg-gradient-"][class*="from-teal-50"],
+html.dark [class*="bg-gradient-"][class*="from-green-50"],
+html.dark [class*="bg-gradient-"][class*="from-emerald-950"],
+html.dark [class*="bg-gradient-"][class*="from-teal-950"] {
+    background-color: rgba(6, 78, 59, 0.3) !important;
+    background-image: none !important;
+}
+
+/* Amber / Yellow / Orange Gradients */
+[class*="bg-gradient-"][class*="from-amber-"],
+[class*="bg-gradient-"][class*="from-yellow-"],
+[class*="bg-gradient-"][class*="from-orange-"] {
+    background-color: #d97706 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+[class*="bg-gradient-"][class*="from-amber-50"],
+[class*="bg-gradient-"][class*="from-orange-50"],
+[class*="bg-gradient-"][class*="from-yellow-50"] {
+    background-color: #fffbeb !important;
+    background-image: none !important;
+    color: inherit !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-amber-50"],
+html.dark [class*="bg-gradient-"][class*="from-orange-50"],
+html.dark [class*="bg-gradient-"][class*="from-yellow-50"],
+html.dark [class*="bg-gradient-"][class*="from-amber-950"] {
+    background-color: rgba(120, 53, 15, 0.3) !important;
+    background-image: none !important;
+}
+
+/* Rose / Red Gradients */
+[class*="bg-gradient-"][class*="from-rose-"],
+[class*="bg-gradient-"][class*="from-red-"] {
+    background-color: #e11d48 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+[class*="bg-gradient-"][class*="from-rose-50"],
+[class*="bg-gradient-"][class*="from-red-50"] {
+    background-color: #fff1f2 !important;
+    background-image: none !important;
+    color: inherit !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-rose-50"],
+html.dark [class*="bg-gradient-"][class*="from-red-50"],
+html.dark [class*="bg-gradient-"][class*="from-rose-950"] {
+    background-color: rgba(136, 19, 55, 0.3) !important;
+    background-image: none !important;
+}
+
+/* Blue / Sky / Indigo / Purple Gradients */
+[class*="bg-gradient-"][class*="from-blue-"],
+[class*="bg-gradient-"][class*="from-sky-"],
+[class*="bg-gradient-"][class*="from-cyan-"] {
+    background-color: #2563eb !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+[class*="bg-gradient-"][class*="from-blue-50"],
+[class*="bg-gradient-"][class*="from-sky-50"],
+[class*="bg-gradient-"][class*="from-cyan-50"] {
+    background-color: #f0f9ff !important;
+    background-image: none !important;
+    color: inherit !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-blue-50"],
+html.dark [class*="bg-gradient-"][class*="from-sky-50"],
+html.dark [class*="bg-gradient-"][class*="from-blue-950"] {
+    background-color: rgba(30, 58, 138, 0.3) !important;
+    background-image: none !important;
+}
+
+[class*="bg-gradient-"][class*="from-indigo-"],
+[class*="bg-gradient-"][class*="from-purple-"],
+[class*="bg-gradient-"][class*="from-violet-"] {
+    background-color: #4f46e5 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+/* Dark Slate / Black Gradients */
+[class*="bg-gradient-"][class*="from-slate-900"],
+[class*="bg-gradient-"][class*="from-slate-950"],
+[class*="bg-gradient-"][class*="from-black"] {
+    background-color: #0f172a !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+/* Light Slate / White Gradients */
+[class*="bg-gradient-"][class*="from-slate-50"],
+[class*="bg-gradient-"][class*="from-slate-100"] {
+    background-color: #f8fafc !important;
+    background-image: none !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-slate-50"],
+html.dark [class*="bg-gradient-"][class*="from-slate-100"],
+html.dark [class*="bg-gradient-"][class*="from-slate-800"],
+html.dark [class*="bg-gradient-"][class*="from-slate-900"] {
+    background-color: #1e293b !important;
+    background-image: none !important;
+}
+
+[class*="bg-gradient-"][class*="from-white"] {
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+html.dark [class*="bg-gradient-"][class*="from-white"] {
+    background-color: #1e293b !important;
+    background-image: none !important;
+}
+
+/* Pastikan elemen berteks putih tidak menjadi putih di atas putih */
+[class*="bg-gradient-"].text-white:not([class*="from-"]):not([class*="bg-"]) {
+    background-color: var(--color-primary) !important;
+}
+
+/* Eliminasi background image sisa dari Tailwind gradient utility */
 .bg-gradient-to-r,
 .bg-gradient-to-l,
 .bg-gradient-to-t,
@@ -5443,9 +5592,9 @@ button.active\:scale-90:active {
     background-image: none !important;
 }
 
-/* Hilangkan orba/halo dekorasi radial gradient */
+/* Hilangkan orba/halo dekorasi radial gradient tanpa menghilangkan elemen dari DOM */
 [style*="radial-gradient"] {
-    display: none !important;
+    background-image: none !important;
 }
 
 /* Netralkan seluruh inline linear-gradient menjadi solid (kecuali repeating barcode struk kasir) */
@@ -5512,5 +5661,95 @@ button.active\:scale-90:active {
 .paint-swatch-glaze {
     background-image: none !important;
 }
+
+/* ============================================================
+   SMART DUAL-MODE HIGH-CONTRAST ENHANCER (LIGHT & DARK MODES)
+   Menjamin font, garis pembatas (border), divider, ikon dan placeholder
+   memiliki rasio kontras tinggi, tegas, tajam, dan tidak pudar/belang-belang
+   ============================================================ */
+
+/* ─── LIGHT MODE HIGH-CONTRAST ENHANCEMENTS (html:not(.dark)) ─── */
+html:not(.dark) .border-slate-100,
+html:not(.dark) .border-slate-200,
+html:not(.dark) .border-slate-200\/80,
+html:not(.dark) .border-slate-200\/60,
+html:not(.dark) .border-gray-100,
+html:not(.dark) .border-gray-200 {
+    border-color: #cbd5e1 !important; /* Slate-300: Garis pembatas kartu/panel tegas & nyata */
+}
+
+html:not(.dark) .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) hr {
+    border-color: #cbd5e1 !important;
+}
+
+/* Teks dan Ikon Sekunder di Light Mode dipertajam (Slate-600 & Slate-700) */
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-gray-400 {
+    color: #475569 !important; /* Slate-600: Kontras tajam ~5.7:1 (Lolos WCAG AA) */
+}
+
+html:not(.dark) .text-slate-500,
+html:not(.dark) .text-gray-500 {
+    color: #334155 !important; /* Slate-700: Sangat kontras & tegas ~9.3:1 (WCAG AAA) */
+}
+
+/* Form input, select, textarea border & placeholder di Light Mode */
+html:not(.dark) .admin-input,
+html:not(.dark) .pos-input,
+html:not(.dark) .form-input-bento,
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html:not(.dark) select,
+html:not(.dark) textarea {
+    border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) ::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
+}
+
+/* ─── DARK MODE HIGH-CONTRAST ENHANCEMENTS (html.dark) ─── */
+html.dark .border-slate-700,
+html.dark .border-slate-800,
+html.dark .border-slate-800\/60,
+html.dark .border-gray-700,
+html.dark .border-gray-800 {
+    border-color: #334155 !important; /* Slate-700: Garis pembatas kartu/panel rapi di latar gelap */
+}
+
+html.dark .divide-slate-700 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+html.dark hr {
+    border-color: #334155 !important;
+}
+
+html.dark .text-slate-400,
+html.dark .text-gray-400 {
+    color: #94a3b8 !important; /* Slate-400 jelas di Dark Mode */
+}
+
+html.dark .text-slate-500,
+html.dark .text-gray-500 {
+    color: #cbd5e1 !important; /* Slate-300 jelas di Dark Mode */
+}
+
+html.dark .admin-input,
+html.dark .pos-input,
+html.dark .form-input-bento,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.dark select,
+html.dark textarea {
+    border-color: #334155 !important;
+}
+
+html.dark ::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+}
+
 
 
