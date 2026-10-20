@@ -15,6 +15,7 @@
  * ============================================================
  */
 
+import { db } from '../../../config/firebase.js';
 import { appData } from '../../../core/state.js';
 import { saveApp } from '../../../services/storage.js';
 import { setH, esc, sLoad, hLoad, showToast, showConfirm, el, fCur } from '../../../core/utils.js';
@@ -715,13 +716,13 @@ export const renderMasterCatalogView = () => {
                         <p class="text-[10px] text-slate-400 mt-1">Aktif di etalase &amp; Kasir POS</p>
                     </div>
 
-                    <div class="bento-island-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-2xs">
+                    <div class="bento-island-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-2xs ${readyToImportCount > 0 ? 'cursor-pointer hover:border-[var(--color-primary)] transition-all group/impcard' : ''}" ${readyToImportCount > 0 ? 'onclick="window.confirmImportAllMasterPresets()" title="Klik untuk menyalin semua template yang tersedia ke toko Anda"' : ''}>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tersedia utk Diimpor</span>
-                            <div class="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                            <div class="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs group-hover/impcard:scale-110 transition-transform"><i class="fa-solid fa-cloud-arrow-down"></i></div>
                         </div>
                         <div class="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">${readyToImportCount} <span class="text-xs font-semibold text-slate-400">Produk</span></div>
-                        <p class="text-[10px] text-slate-400 mt-1">Siap disalin kapan saja</p>
+                        <p class="text-[10px] text-slate-400 mt-1">${readyToImportCount > 0 ? '<span class="text-[var(--color-primary)] font-bold">⚡ Salin semua sekaligus &rarr;</span>' : 'Semua template sudah ada di toko'}</p>
                     </div>
                 </div>
 
@@ -734,6 +735,12 @@ export const renderMasterCatalogView = () => {
                             <button type="button" id="master-search-clear-btn" onclick="window.clearMasterSearch()" class="${masterSearchQuery ? '' : 'hidden'} absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-xl transition-all cursor-pointer active:scale-90"><i class="fa-solid fa-circle-xmark text-sm"></i></button>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
+                            ${readyToImportCount > 0 ? `
+                                <button type="button" onclick="window.confirmImportAllMasterPresets()" class="h-12 min-h-[44px] px-4 rounded-2xl primary-bg text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs hover:opacity-95 active:scale-95 transition-all cursor-pointer shrink-0" title="Salin semua ${readyToImportCount} template master sekaligus ke etalase & kasir toko">
+                                    <i class="fa-solid fa-cloud-arrow-down text-white"></i>
+                                    <span>Salin Semua ke Toko (${readyToImportCount})</span>
+                                </button>
+                            ` : ''}
                             ${deletedCount > 0 ? `
                                 <button type="button" onclick="window.restoreDeletedMasterPresets()" class="h-12 min-h-[44px] px-3.5 sm:px-4 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" title="Pulihkan semua template master bawaan yang pernah dihapus">
                                     <i class="fa-solid fa-clock-rotate-left text-amber-600 dark:text-amber-400"></i>
@@ -1126,8 +1133,8 @@ window.toggleAllImportVariants = (checked) => {
     checkboxes.forEach(cb => { cb.checked = !!checked; });
 };
 
-// ─── Eksekusi Impor Produk ke Katalog Toko ───────────────────────────────────
-window.confirmExecuteMasterProductImport = async (presetId) => {
+// ─── Eksekusi Impor Produk Tunggal ke Katalog Toko (Anti-Hilang Saat Reload) ──
+export const confirmExecuteMasterProductImport = async (presetId) => {
     const allPresets = getAllMasterPresets();
     const preset = allPresets.find(p => p.id === presetId);
     if (!preset) {
@@ -1166,9 +1173,11 @@ window.confirmExecuteMasterProductImport = async (presetId) => {
 
     // Cek apakah produk dengan nama yang sama sudah ada di toko
     const existingIndex = appData.products.findIndex(p => (p.name || '').trim().toLowerCase() === preset.name.trim().toLowerCase());
+    const prodId = existingIndex > -1 ? appData.products[existingIndex].id : Date.now();
+    const prodIdStr = String(prodId);
 
     const importedProduct = {
-        id: existingIndex > -1 ? appData.products[existingIndex].id : Date.now(),
+        id: prodId,
         name: preset.name,
         brand: preset.brand || '',
         category: preset.category || 'Bahan Bangunan',
@@ -1206,20 +1215,247 @@ window.confirmExecuteMasterProductImport = async (presetId) => {
         appData.brands.push({ id: Date.now() + 2, name: preset.brand, img: '' });
     }
 
+    // Pastikan ID produk terdaftar di susunan urutan produk (productOrder)
+    if (!appData.productOrder) appData.productOrder = [];
+    if (!appData.productOrder.includes(prodIdStr)) {
+        appData.productOrder.unshift(prodIdStr);
+    }
+
     window._closeColorFloatModal();
-    sLoad('Menyalin produk ke katalog toko...');
+    sLoad('Menyimpan produk ke database toko...');
 
     try {
-        await saveApp(['products', 'categories', 'brands']);
-        showToast(`✅ "${preset.name}" berhasil ditambahkan ke katalog toko Anda!`);
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+
+        // 1. TULIS LANGSUNG KE SUB-KOLEKSI FIRESTORE PRODUCTS (Proteksi Anti-Hilang saat Reload)
+        if (_db) {
+            await _db.collection("freshmart").doc("cms_data").collection("products").doc(prodIdStr).set(importedProduct);
+        }
+
+        // 2. BROADCAST KE CMS_DATA & SIMPAN PENGATURAN TOKO (productOrder, categories, brands)
+        await saveApp(['productOrder', 'categories', 'brands'], {
+            updateType: 'product_single',
+            updatedProductIds: [prodIdStr]
+        });
+
+        // 3. PERBARUI CACHE LOKAL SEGERA
+        try {
+            localStorage.setItem('freshmart_products', JSON.stringify(appData.products));
+        } catch (_) {}
+
+        // 4. REFRESH KATALOG KASIR POS & STOREFRONT REALTIME
+        if (typeof window.refreshPOSCatalog === 'function') window.refreshPOSCatalog();
+        if (typeof window.rDyn === 'function') window.rDyn();
+        if (typeof window.rCat === 'function') window.rCat();
+
+        showToast(`✅ "${preset.name}" berhasil ditambahkan ke katalog toko Anda! Data tersimpan permanen.`);
         renderMasterCatalogView();
     } catch (e) {
         console.error('[Master Preset] Gagal menyimpan:', e);
-        showToast('Gagal menyimpan produk ke katalog toko.');
+        showToast('Gagal menyimpan produk ke katalog toko: ' + (e.message || ''));
     } finally {
         hLoad();
     }
 };
+
+// ─── Fitur Salin Semua Produk Master ke Toko (Batch Import All) ───────────────
+/**
+ * Tampilkan dialog konfirmasi untuk menyalin semua template master sekaligus
+ */
+export const confirmImportAllMasterPresets = () => {
+    const allPresets = getAllMasterPresets();
+    const unimported = allPresets.filter(p => !checkPresetStoreStatus(p).isImported);
+    if (unimported.length === 0) {
+        showToast('Semua template produk dari Database Bersama sudah ada di katalog toko Anda!');
+        return;
+    }
+
+    const totalVariants = unimported.reduce((acc, p) => acc + (p.variants?.length || 1), 0);
+    const uniqueCategories = [...new Set(unimported.map(p => p.category).filter(Boolean))];
+
+    const modalHtml = `
+        <div class="p-5 sm:p-7 max-w-lg">
+            <!-- HEADER MODAL -->
+            <div class="flex items-start justify-between gap-3 mb-5 pb-3 border-b border-slate-100 dark:border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl primary-bg-soft text-[var(--color-primary)] flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-black text-slate-800 dark:text-white leading-tight">
+                            Salin Semua ke Toko
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Impor massal template master produk langsung ke etalase &amp; kasir POS.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="window._closeColorFloatModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center cursor-pointer transition-all active:scale-95"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- RINGKASAN IMPOR MASSAL -->
+            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 mb-5 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Total Produk Disalin:</span>
+                    <span class="text-sm font-black text-[var(--color-primary)]">${unimported.length} Produk Master</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <span>Total Varian Terbawa:</span>
+                    <span class="font-bold text-slate-700 dark:text-slate-200">${totalVariants} Varian Lengkap</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <span>Cakupan Kategori:</span>
+                    <span class="font-bold text-slate-700 dark:text-slate-200">${uniqueCategories.length} Sektor (${uniqueCategories.slice(0, 3).join(', ')}${uniqueCategories.length > 3 ? '...' : ''})</span>
+                </div>
+            </div>
+
+            <!-- FORM PENGATURAN CEPAT -->
+            <div class="mb-5">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Stok Awal per Varian di Toko</label>
+                <input type="number" id="imp-all-default-stock" value="10" min="0" class="w-full h-12 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[16px] sm:text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-2xs" placeholder="Contoh: 10">
+                <p class="text-[10px] text-slate-400 mt-1">Stok ini otomatis dialokasikan ke masing-masing varian yang disalin.</p>
+            </div>
+
+            <!-- PROTEKSI KEAMANAN CLOUD & LOKAL -->
+            <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-[10.5px] leading-relaxed mb-6 flex items-start gap-2.5">
+                <i class="fa-solid fa-cloud-check text-base shrink-0 text-emerald-500 mt-0.5"></i>
+                <span><b>Penyimpanan Permanen (Anti-Hilang):</b> Seluruh produk akan disimpan ke Cloud Firestore sub-koleksi dan Cache Lokal. Data tetap utuh dan tersimpan bahkan setelah halaman di-reload.</span>
+            </div>
+
+            <!-- TOMBOL AKSI -->
+            <div class="flex gap-3">
+                <button type="button" onclick="window._closeColorFloatModal()" class="flex-1 h-12 min-h-[48px] rounded-2xl border border-slate-200 dark:border-slate-700 font-bold text-slate-600 dark:text-slate-300 text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
+                    Batal
+                </button>
+                <button type="button" onclick="window.executeImportAllMasterPresets()" class="flex-1 h-12 min-h-[48px] rounded-2xl primary-bg text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-95 cursor-pointer transition-all">
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                    <span>Salin Semua (${unimported.length})</span>
+                </button>
+            </div>
+        </div>
+    `;
+
+    window._openColorFloatModal(modalHtml);
+};
+
+/**
+ * Eksekusi Impor Massal Seluruh Preset Master ke Katalog Toko
+ */
+export const executeImportAllMasterPresets = async () => {
+    const allPresets = getAllMasterPresets();
+    const unimported = allPresets.filter(p => !checkPresetStoreStatus(p).isImported);
+    if (unimported.length === 0) {
+        window._closeColorFloatModal?.();
+        showToast('Semua template produk dari Database Bersama sudah ada di toko Anda!');
+        return;
+    }
+
+    const defaultStock = Math.max(0, parseInt(el('imp-all-default-stock')?.value || '10', 10) || 10);
+    window._closeColorFloatModal?.();
+    sLoad(`Menyimpan ${unimported.length} produk master ke database toko...`);
+
+    try {
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+
+        if (!appData.products) appData.products = [];
+        if (!appData.categories) appData.categories = [];
+        if (!appData.brands) appData.brands = [];
+        if (!appData.productOrder) appData.productOrder = [];
+
+        const newProducts = [];
+        const updatedProductIds = [];
+        const baseTimestamp = Date.now();
+
+        unimported.forEach((preset, idx) => {
+            const newId = baseTimestamp + idx;
+            const newIdStr = String(newId);
+
+            const variants = (preset.variants || []).map(v => ({
+                ...v,
+                stock: defaultStock,
+                storeStock: defaultStock,
+                warehouseStock: 0,
+                isActive: true
+            }));
+
+            const importedProd = {
+                id: newId,
+                name: preset.name,
+                brand: preset.brand || '',
+                category: preset.category || 'Bahan Bangunan',
+                subCategory: preset.subCategory || '',
+                unit: preset.unit || 'Unit',
+                desc: preset.desc || '',
+                img: preset.img || '',
+                specTable: preset.specTable || [],
+                price: preset.price || variants[0]?.price || 0,
+                priceNormal: preset.priceNormal || 0,
+                hpp: preset.hpp || variants[0]?.hpp || 0,
+                stock: defaultStock * (variants.length || 1),
+                storeStock: defaultStock * (variants.length || 1),
+                warehouseStock: 0,
+                poin: 5,
+                tag: preset.tag || '',
+                isActive: true,
+                variants: variants
+            };
+
+            newProducts.push(importedProd);
+            appData.products.unshift(importedProd);
+            updatedProductIds.push(newIdStr);
+            appData.productOrder.unshift(newIdStr);
+
+            // Tambahkan kategori jika belum ada
+            if (preset.category && !appData.categories.some(c => (c.name || '').trim().toLowerCase() === preset.category.trim().toLowerCase())) {
+                appData.categories.push({ id: baseTimestamp + 1000 + idx, name: preset.category, subCategories: [] });
+            }
+            // Tambahkan brand jika belum ada
+            if (preset.brand && !appData.brands.some(b => (b.name || '').trim().toLowerCase() === preset.brand.trim().toLowerCase())) {
+                appData.brands.push({ id: baseTimestamp + 2000 + idx, name: preset.brand, img: '' });
+            }
+        });
+
+        // 1. TULIS KE FIRESTORE SUB-KOLEKSI MENGGUNAKAN BATCH (Maks 450 per batch write)
+        if (_db) {
+            const CHUNK_SIZE = 450;
+            for (let i = 0; i < newProducts.length; i += CHUNK_SIZE) {
+                const chunk = newProducts.slice(i, i + CHUNK_SIZE);
+                const batch = _db.batch();
+                chunk.forEach(prod => {
+                    const docRef = _db.collection("freshmart").doc("cms_data").collection("products").doc(prod.id.toString());
+                    batch.set(docRef, prod);
+                });
+                await batch.commit();
+            }
+        }
+
+        // 2. BROADCAST KE CMS_DATA & SIMPAN PENGATURAN TOKO
+        await saveApp(['productOrder', 'categories', 'brands'], {
+            updateType: 'product_bulk',
+            updatedProductIds
+        });
+
+        // 3. SIMPAN CACHE LOKAL SEGERA
+        try {
+            localStorage.setItem('freshmart_products', JSON.stringify(appData.products));
+        } catch (_) {}
+
+        // 4. REFRESH KATALOG KASIR POS & STOREFRONT REALTIME
+        if (typeof window.refreshPOSCatalog === 'function') window.refreshPOSCatalog();
+        if (typeof window.rDyn === 'function') window.rDyn();
+        if (typeof window.rCat === 'function') window.rCat();
+
+        showToast(`✅ Berhasil menyalin ${newProducts.length} produk ke katalog toko! Data tersimpan permanen.`);
+        renderMasterCatalogView();
+    } catch (err) {
+        console.error('[MasterPreset] Gagal impor semua produk:', err);
+        showToast('Gagal menyalin semua produk: ' + (err.message || ''));
+    } finally {
+        hLoad();
+    }
+};
+
+window.confirmExecuteMasterProductImport = confirmExecuteMasterProductImport;
+window.confirmImportAllMasterPresets = confirmImportAllMasterPresets;
+window.executeImportAllMasterPresets = executeImportAllMasterPresets;
 
 // ─── Modal Ekspor Produk Toko ke Pustaka Master (Two-Way Sharing) ──────────────
 window.openExportStoreProductPicker = () => {
@@ -1499,3 +1735,5 @@ window.renderMasterCatalogView = renderMasterCatalogView;
 window.confirmDeleteMasterPreset = confirmDeleteMasterPreset;
 window.executeDeleteMasterPreset = executeDeleteMasterPreset;
 window.restoreDeletedMasterPresets = restoreDeletedMasterPresets;
+window.confirmImportAllMasterPresets = confirmImportAllMasterPresets;
+window.executeImportAllMasterPresets = executeImportAllMasterPresets;

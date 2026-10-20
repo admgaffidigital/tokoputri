@@ -121,6 +121,29 @@ assert(presetsCode.includes('fa-trash-can'), 'Tombol hapus menggunakan ikon fa-t
 assert(presetsCode.includes('Pulihkan Template'), 'Tombol pulihkan template disematkan saat ada preset terhapus');
 assert(presetsCode.includes('deleted_master_preset_ids'), 'Menyaring dan menyimpan status ID preset bawaan yang dihapus');
 
+// 9. Uji Persistensi Firestore Sub-Koleksi & Proteksi Anti-Hilang saat Reload
+console.log('\n🛡️ 9. Uji Persistensi Firestore Sub-Koleksi (Anti-Hilang saat Reload):');
+assert(presetsCode.includes("import { db } from '../../../config/firebase.js';"), 'master-presets.js mengimpor koneksi db Firestore');
+assert(presetsCode.includes('.collection("products").doc(prodIdStr).set(importedProduct)'), 'Impor satuan menulis langsung ke sub-koleksi products Firestore');
+assert(presetsCode.includes('appData.productOrder.unshift(prodIdStr)'), 'ID produk baru didaftarkan ke productOrder');
+assert(presetsCode.includes("updateType: 'product_single'"), 'Penyimpanan satuan menyiarkan sinyal product_single');
+assert(presetsCode.includes("localStorage.setItem('freshmart_products', JSON.stringify(appData.products))"), 'Cache lokal freshmart_products diperbarui seketika');
+
+const storagePath = path.join(rootDir, 'src', 'services', 'storage.js');
+const storageCode = fs.readFileSync(storagePath, 'utf-8');
+assert(storageCode.includes("k !== 'products'"), 'saveApp memfilter array produk dari dokumen utama cms_data');
+assert(storageCode.includes("const hasProductsKey = changedKeys.includes('products');"), 'saveApp mendeteksi hasProductsKey dengan aman');
+
+// 10. Uji Fitur Salin Semua ke Toko (Batch Import All)
+console.log('\n⚡ 10. Uji Fitur Salin Semua ke Toko (Batch Import All):');
+assert(presetsCode.includes('confirmImportAllMasterPresets'), 'Tersedia dialog konfirmasi confirmImportAllMasterPresets');
+assert(presetsCode.includes('executeImportAllMasterPresets'), 'Tersedia engine executeImportAllMasterPresets');
+assert(presetsCode.includes('_db.batch()') && presetsCode.includes('batch.commit()'), 'Batch import menggunakan Firestore batch write');
+assert(presetsCode.includes("updateType: 'product_bulk'"), 'Batch import menyiarkan sinyal product_bulk');
+assert(presetsCode.includes('Salin Semua ke Toko'), 'Tombol Salin Semua ke Toko terpasang di toolbar header');
+assert(presetsCode.includes('window.confirmImportAllMasterPresets = confirmImportAllMasterPresets;'), 'window.confirmImportAllMasterPresets diekspos');
+assert(presetsCode.includes('window.executeImportAllMasterPresets = executeImportAllMasterPresets;'), 'window.executeImportAllMasterPresets diekspos');
+
 console.log('\n============================================================');
 console.log(`🎯 HASIL UJI COBA: ${passedTests} Passed, ${failedTests} Failed`);
 if (failedTests === 0) {

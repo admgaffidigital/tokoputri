@@ -374,8 +374,37 @@ export const saveApp = async (changedKeys = null, updateMeta = null) => {
     try {
         if (Array.isArray(changedKeys)) {
             // Pisahkan key publik (→ cms_data) dan key sensitif (→ cms_private)
-            const publicKeys = changedKeys.filter(k => k && !PRIVATE_APP_KEYS.has(k));
+            // CATATAN KRITIS: 'products' TIDAK BOLEH ditulis ke dokumen utama cms_data (karena memiliki sub-koleksi sendiri).
+            const hasProductsKey = changedKeys.includes('products');
+            const publicKeys = changedKeys.filter(k => k && !PRIVATE_APP_KEYS.has(k) && k !== 'products');
             const privateKeys = changedKeys.filter(k => k && PRIVATE_APP_KEYS.has(k));
+
+            // Sinkronisasi produk ke Firestore sub-koleksi jika dipanggil via saveApp(['products'], ...)
+            if (hasProductsKey) {
+                try {
+                    const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+                    if (_db) {
+                        const targetIds = (updateMeta?.updatedProductIds && Array.isArray(updateMeta.updatedProductIds))
+                            ? updateMeta.updatedProductIds
+                            : null;
+                        if (targetIds && targetIds.length > 0) {
+                            const batch = _db.batch();
+                            let bCount = 0;
+                            targetIds.forEach(pid => {
+                                const prod = (appData.products || []).find(p => String(p.id) === String(pid));
+                                if (prod) {
+                                    const prodRef = _db.collection("freshmart").doc("cms_data").collection("products").doc(prod.id.toString());
+                                    batch.set(prodRef, prod);
+                                    bCount++;
+                                }
+                            });
+                            if (bCount > 0) await batch.commit();
+                        }
+                    }
+                } catch (pErr) {
+                    console.warn('[saveApp] Gagal sinkron sub-koleksi produk ke Firestore:', pErr);
+                }
+            }
 
             // 1. SIMPAN SEGERA KE CACHE LOKAL (Offline-First & Anti-Data-Loss)
             if (privateKeys.length > 0) {
