@@ -1991,7 +1991,7 @@ export const renderCatalog = (isLoadMore = false) => {
                             <!-- Line 4: Harga & Action Button -->
                             <div class="flex items-center justify-between pt-0.5">
                                 <div class="flex items-baseline gap-1.5 min-w-0">
-                                    <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
+                                    <p class="text-[var(--color-primary)] dark:text-rose-300 font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                     ${priceNormalHtml ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
                                 </div>
@@ -2037,7 +2037,7 @@ export const renderCatalog = (isLoadMore = false) => {
                                     ${priceNormalHtml}
                                 </div>
                                 <div class="flex items-baseline gap-0.5">
-                                    <p class="pos-card-price text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-tight tracking-tight break-words">${displayPriceHtml}</p>
+                                    <p class="pos-card-price text-[var(--color-primary)] dark:text-rose-300 font-black text-xs sm:text-[14px] lg:text-[15px] leading-tight tracking-tight break-words">${displayPriceHtml}</p>
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                 </div>
                             </div>
@@ -4568,7 +4568,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             </button>
                         </div>
                         <!-- Tombol Scan Barcode Kamera HP / Laptop (F9) -->
-                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border border-[rgba(var(--color-primary-rgb),0.25)] shrink-0 cursor-pointer shadow-2xs" title="Scan Barcode Kamera (F9)">
+                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-rose-950/40 hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] dark:text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 shrink-0 cursor-pointer shadow-2xs" title="Scan Barcode Kamera (F9)">
                             <i class="fa-solid fa-camera text-xs shrink-0"></i>
                             <span class="hidden sm:inline whitespace-nowrap">Scan (F9)</span>
                         </button>
@@ -4679,7 +4679,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex justify-between items-center pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
                         <div>
                             <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Total Akhir</p>
-                            <p class="pos-total-target text-2xl font-black font-mono tracking-tight" style="color:var(--color-primary)">Rp 0</p>
+                            <p class="pos-total-target text-2xl font-black font-mono tracking-tight text-[var(--color-primary)] dark:text-rose-300">Rp 0</p>
                         </div>
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Bayar

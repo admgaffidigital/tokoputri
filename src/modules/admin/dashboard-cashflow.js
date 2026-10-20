@@ -152,7 +152,7 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
             <!-- Header Widget Arus Kas (Anti-Wrap, Anti-Tumpuk & Seimbang di Segala Resolusi) -->
             <div class="flex items-center justify-between gap-2 px-1">
                 <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold border shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold border shadow-2xs shrink-0 border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400">
                         <i class="fa-solid fa-vault"></i>
                     </div>
                     <div class="min-w-0">
@@ -168,7 +168,7 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                         <i class="fa-solid fa-arrows-rotate text-xs shrink-0 text-slate-500 dark:text-slate-400" id="dashboard-cashflow-refresh-icon"></i>
                         <span class="text-[11px] whitespace-nowrap">Segarkan</span>
                     </button>
-                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="h-8 px-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1 shrink-0 whitespace-nowrap shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Pusat Laporan Keuangan Lengkap">
+                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="h-8 px-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1 shrink-0 whitespace-nowrap shadow-2xs border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/40 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 hover:brightness-110" title="Buka Pusat Laporan Keuangan Lengkap">
                         <span class="text-[11px] whitespace-nowrap">Laporan P&amp;L</span>
                         <i class="fa-solid fa-chevron-right text-[9px] shrink-0"></i>
                     </button>
@@ -240,7 +240,7 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                         <p class="text-lg sm:text-xl font-black tracking-tight truncate ${netColorClass}">${fCur(data.netCashFlowToday)}</p>
                         <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400 gap-1">
                             <span class="truncate">(Kas + Bank) − Beban</span>
-                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="hover:opacity-80 hover:underline cursor-pointer whitespace-nowrap shrink-0" style="color:var(--color-primary)">Analisis &rarr;</button>
+                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="hover:opacity-80 hover:underline cursor-pointer whitespace-nowrap shrink-0 font-bold text-[var(--color-primary)] dark:text-rose-300" title="Buka Laporan Keuangan">Analisis &rarr;</button>
                         </div>
                     </div>
                 </div>

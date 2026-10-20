@@ -6187,3 +6187,29 @@ span[class*="w-7"][class*="h-7"]:not([class*="rounded-full"]):not(.avatar):not(.
     }
 }
 
+/* ============================================================
+   UNIVERSAL DARK-MODE CONTRAST ENGINE (WCAG HIGH-CONTRAST)
+   Menjamin elemen teks, harga, badge, dan link yang menggunakan
+   warna tema toko gelap (misal Maroon / Red / Dark Violet) otomatis
+   terbaca sangat terang, tajam, dan kontras di latar belakang gelap.
+   ============================================================ */
+html.dark .pos-card-price,
+html.dark .pos-total-target {
+    color: #fda4af !important; /* Rose-300 cerah kontras tinggi untuk harga & total kasir */
+}
+
+html.dark .pos-badge-poin,
+html.dark .pos-badge-subcat {
+    color: #fda4af !important;
+    border-color: rgba(251, 113, 133, 0.4) !important;
+    background: rgba(225, 29, 72, 0.18) !important;
+}
+
+html.dark #sec-categories button[onclick*="openCategoryModal"],
+html.dark #sec-brands button[onclick*="openBrandModal"] {
+    color: #fda4af !important;
+    border-color: rgba(251, 113, 133, 0.35) !important;
+    background: rgba(225, 29, 72, 0.15) !important;
+}
+
+
