@@ -235,6 +235,47 @@ assert(
     'Wadah ikon empty state kasir tidak lagi menggunakan linear-gradient'
 );
 
+// ─── 10. Verifikasi Widget Arus Kas di dashboard-cashflow.js ───────────────
+console.log('\n💰 10. Memeriksa Widget Arus Kas di src/modules/admin/dashboard-cashflow.js...');
+const cashflowJsPath = path.join(rootDir, 'src', 'modules', 'admin', 'dashboard-cashflow.js');
+const cashflowContent = fs.readFileSync(cashflowJsPath, 'utf-8');
+
+assert(
+    cashflowContent.includes('Arus Kas Hari Ini') &&
+    cashflowContent.includes('whitespace-nowrap'),
+    'Judul Arus Kas Hari Ini menggunakan whitespace-nowrap anti-wrap'
+);
+
+assert(
+    cashflowContent.includes('hidden sm:inline text-[10px] font-bold text-slate-400 normal-case whitespace-nowrap') &&
+    cashflowContent.includes('${data.todayStr}'),
+    'Tanggal widget arus kas terproteksi whitespace-nowrap dan disembunyikan di mobile sempit'
+);
+
+assert(
+    cashflowContent.includes('Laporan P&amp;L') &&
+    cashflowContent.includes('whitespace-nowrap'),
+    'Tombol Laporan P&L terproteksi whitespace-nowrap dan shrink-0'
+);
+
+// ─── 11. Verifikasi Header Kasir & Search Bar di pos.js ────────────────────
+console.log('\n🖥️ 11. Memeriksa Header Kasir & Search Bar di src/modules/pos/pos.js...');
+assert(
+    posContent.includes('min-w-[130px] sm:min-w-[160px] flex-1') &&
+    posContent.includes('STOREFRONT POS HEADER'),
+    'Sisi kiri header storefront POS memiliki proteksi min-w-[130px] sm:min-w-[160px] flex-1 anti-gepeng'
+);
+
+assert(
+    posContent.includes('placeholder="Cari produk / barcode..."'),
+    'Search input POS kasir menggunakan placeholder ringkas anti-terpotong'
+);
+
+assert(
+    posContent.includes('hidden xl:inline whitespace-nowrap">Scan (F9)</span>'),
+    'Tombol kamera di search bar POS hemat ruang di tablet/mobile'
+);
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passedTests} Passed, ${totalTests - passedTests} Failed`);
 if (passedTests === totalTests) {

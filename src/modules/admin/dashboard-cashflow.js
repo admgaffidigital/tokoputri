@@ -149,28 +149,28 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
 
     slot.innerHTML = `
         <div class="mb-7 space-y-3">
-            <!-- Header Widget Arus Kas -->
-            <div class="flex items-center justify-between px-1">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+            <!-- Header Widget Arus Kas (Anti-Wrap, Anti-Tumpuk & Seimbang di Segala Resolusi) -->
+            <div class="flex items-center justify-between gap-2 px-1">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold border shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                         <i class="fa-solid fa-vault"></i>
                     </div>
-                    <div>
-                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-                            Arus Kas Hari Ini
-                            <span class="text-[10px] font-bold text-slate-400 normal-case">(${data.todayStr})</span>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 whitespace-nowrap">
+                            <span>Arus Kas Hari Ini</span>
+                            <span class="hidden sm:inline text-[10px] font-bold text-slate-400 normal-case whitespace-nowrap">(${data.todayStr})</span>
                         </h3>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="window.refreshDashboardCashflow()" class="h-8 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-2xs" title="Perbarui Ringkasan Kas Hari Ini">
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+                    <button type="button" onclick="window.refreshDashboardCashflow()" class="h-8 px-2 sm:px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap shadow-2xs" title="Perbarui Ringkasan Kas Hari Ini">
                         <i class="fa-solid fa-rotate text-[11px]" id="dashboard-cashflow-refresh-icon"></i>
-                        <span class="hidden sm:inline text-[11px]">Segarkan</span>
+                        <span class="hidden sm:inline text-[11px] whitespace-nowrap">Segarkan</span>
                     </button>
-                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="h-8 px-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95 cursor-pointer flex items-center gap-1 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Pusat Laporan Keuangan Lengkap">
-                        <span class="text-[11px]">Laporan P&amp;L</span>
-                        <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="h-8 px-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95 cursor-pointer inline-flex items-center gap-1 shrink-0 whitespace-nowrap shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Pusat Laporan Keuangan Lengkap">
+                        <span class="text-[11px] whitespace-nowrap">Laporan P&amp;L</span>
+                        <i class="fa-solid fa-chevron-right text-[9px] shrink-0"></i>
                     </button>
                 </div>
             </div>
@@ -180,16 +180,16 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                 <!-- 1. KAS TUNAI HARI INI -->
                 <div class="bento-island-card card-modern p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between transition-all hover:-translate-y-0.5">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kas Tunai (Laci)</span>
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap truncate">Kas Tunai (Laci)</span>
                         <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
                             <i class="fa-solid fa-money-bill-wave"></i>
                         </div>
                     </div>
                     <div>
                         <p class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight truncate">${fCur(data.totalCashToday)}</p>
-                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400">
-                            <span>Pembayaran Tunai</span>
-                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('pos')" class="hover:text-emerald-500 hover:underline cursor-pointer">Buka POS &rarr;</button>
+                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400 gap-1">
+                            <span class="truncate">Pembayaran Tunai</span>
+                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('pos')" class="hover:text-emerald-500 hover:underline cursor-pointer whitespace-nowrap shrink-0">Buka POS &rarr;</button>
                         </div>
                     </div>
                 </div>
@@ -197,16 +197,16 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                 <!-- 2. TRANSFER BANK & QRIS HARI INI -->
                 <div class="bento-island-card card-modern p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between transition-all hover:-translate-y-0.5">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Bank &amp; QRIS</span>
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap truncate">Bank &amp; QRIS</span>
                         <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
                             <i class="fa-solid fa-building-columns"></i>
                         </div>
                     </div>
                     <div>
                         <p class="text-lg sm:text-xl font-black text-blue-600 dark:text-sky-400 tracking-tight truncate">${fCur(data.totalBankToday)}</p>
-                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400">
-                            <span>Rekening Riil Toko</span>
-                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('orders')" class="hover:text-blue-500 hover:underline cursor-pointer">Pesanan &rarr;</button>
+                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400 gap-1">
+                            <span class="truncate">Rekening Riil Toko</span>
+                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('orders')" class="hover:text-blue-500 hover:underline cursor-pointer whitespace-nowrap shrink-0">Pesanan &rarr;</button>
                         </div>
                     </div>
                 </div>
@@ -214,16 +214,16 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                 <!-- 3. PENGELUARAN TOKO HARI INI -->
                 <div class="bento-island-card card-modern p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between transition-all hover:-translate-y-0.5">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Pengeluaran</span>
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap truncate">Pengeluaran</span>
                         <div class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                     </div>
                     <div>
                         <p class="text-lg sm:text-xl font-black text-rose-600 dark:text-rose-400 tracking-tight truncate">${fCur(data.totalExpenseToday)}</p>
-                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400">
-                            <span>${data.expenseCountToday} beban hari ini</span>
-                            <button type="button" onclick="if(window.openExpenseModal) window.openExpenseModal(); else if(window.openAdminTab) window.openAdminTab('expenses')" class="hover:text-rose-500 hover:underline cursor-pointer">+ Catat &rarr;</button>
+                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400 gap-1">
+                            <span class="truncate">${data.expenseCountToday} beban hari ini</span>
+                            <button type="button" onclick="if(window.openExpenseModal) window.openExpenseModal(); else if(window.openAdminTab) window.openAdminTab('expenses')" class="hover:text-rose-500 hover:underline cursor-pointer whitespace-nowrap shrink-0">+ Catat &rarr;</button>
                         </div>
                     </div>
                 </div>
@@ -231,16 +231,16 @@ export const renderDashboardCashflowWidget = async (forceRefresh = false) => {
                 <!-- 4. ARUS KAS BERSIH HARI INI -->
                 <div class="bento-island-card card-modern p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between transition-all hover:-translate-y-0.5">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Arus Kas Bersih</span>
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap truncate">Arus Kas Bersih</span>
                         <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background: var(--color-primary)">
                             <i class="fa-solid fa-scale-balanced"></i>
                         </div>
                     </div>
                     <div>
                         <p class="text-lg sm:text-xl font-black tracking-tight truncate ${netColorClass}">${fCur(data.netCashFlowToday)}</p>
-                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400">
-                            <span>(Kas + Bank) − Beban</span>
-                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="hover:opacity-80 hover:underline cursor-pointer" style="color:var(--color-primary)">Analisis &rarr;</button>
+                        <div class="flex items-center justify-between mt-1 text-[10px] font-bold text-slate-400 gap-1">
+                            <span class="truncate">(Kas + Bank) − Beban</span>
+                            <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('reports')" class="hover:opacity-80 hover:underline cursor-pointer whitespace-nowrap shrink-0" style="color:var(--color-primary)">Analisis &rarr;</button>
                         </div>
                     </div>
                 </div>
