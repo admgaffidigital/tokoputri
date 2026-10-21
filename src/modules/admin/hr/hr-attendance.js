@@ -783,47 +783,58 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
 
     modal = document.createElement('div');
     modal.id = 'modal-attendance-rekap';
-    modal.className = 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200';
+    modal.className = 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 transition-opacity duration-200';
     modal.style.opacity = '0';
 
     modal.innerHTML = `
-    <div id="attendance-rekap-modal-box" class="w-full sm:max-w-4xl bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden transform transition-all duration-200 scale-95">
+    <div id="attendance-rekap-modal-box" class="modal-bottom-sheet w-full sm:max-w-4xl bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden transform transition-all duration-200 scale-95">
         
         <!-- Pull Indicator (Mobile Native Bottom Sheet) -->
-        <div class="w-full pt-2.5 pb-1 flex justify-center sm:hidden shrink-0">
-            <div class="w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-        </div>
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto mt-2.5 mb-1 sm:hidden shrink-0"></div>
 
-        <!-- Modal Header -->
-        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0"
-            style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
-            <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs"
-                    style="background: var(--color-primary)">
-                    <i class="fa-solid fa-clipboard-user text-base"></i>
+        <!-- Modal Header (Solid Clean & Anti-Truncate) -->
+        <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 shrink-0">
+            <div class="flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                        style="background: var(--color-primary)">
+                        <i class="fa-solid fa-clipboard-user text-base"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
+                            Rekapitulasi Presensi Tim
+                        </h3>
+                        <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                            ${esc(store.name || 'Toko Putri')} • <strong class="text-slate-700 dark:text-slate-200">${esc(recap.periodLabel)}</strong>
+                        </p>
+                    </div>
                 </div>
-                <div class="min-w-0">
-                    <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white truncate">
-                        Rekapitulasi Presensi &amp; Kedisiplinan Tim
-                    </h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
-                        ${esc(store.name || 'Toko Putri')} • <strong class="text-slate-700 dark:text-slate-200">${esc(recap.periodLabel)}</strong>
-                    </p>
+
+                <!-- Desktop Period Picker & Close Button -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="hidden sm:flex items-center gap-1.5 bg-white dark:bg-slate-800 py-1 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                        <i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i>
+                        <input type="month" id="att-rekap-period-picker-desktop" value="${yearMonth}"
+                            onchange="window.openMonthlyAttendanceRecapModal(this.value)"
+                            class="bg-transparent text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
+                    </div>
+                    <button onclick="window.closeMonthlyAttendanceRecapModal()" 
+                        class="w-8 h-8 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-base flex items-center justify-center transition-all cursor-pointer"
+                        title="Tutup">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
             </div>
 
-            <!-- Month Navigator & Close Button -->
-            <div class="flex items-center gap-2 shrink-0">
-                <div class="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
-                    <input type="month" id="att-rekap-period-picker" value="${yearMonth}"
-                        onchange="window.openMonthlyAttendanceRecapModal(this.value)"
-                        class="px-2 py-0.5 bg-transparent text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
-                </div>
-                <button onclick="window.closeMonthlyAttendanceRecapModal()" 
-                    class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
-                    title="Tutup">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
+            <!-- Mobile Period Selector Bar (Lega & Tidak Menghimpit Judul Modal) -->
+            <div class="sm:hidden mt-2.5 flex items-center justify-between gap-2 p-1.5 px-3 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-2xs">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-days text-[var(--color-primary)] text-xs"></i>
+                    <span>Pilih Periode Bulan:</span>
+                </span>
+                <input type="month" id="att-rekap-period-picker" value="${yearMonth}"
+                    onchange="window.openMonthlyAttendanceRecapModal(this.value)"
+                    class="px-2 py-1 bg-slate-100 dark:bg-slate-700/60 rounded-lg text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
             </div>
         </div>
 
@@ -872,21 +883,21 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
                             <i class="fa-solid fa-hand-holding-dollar"></i>
                         </div>
                     </div>
-                    <p class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono tracking-tight">${fCur(recap.totalTeamAllowance)}</p>
+                    <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${fCur(recap.totalTeamAllowance)}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-0.5">Siap ditarik ke Payroll</p>
                 </div>
             </div>
 
             <!-- Realtime Search Bar Staf -->
-            <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center justify-between gap-2.5">
                 <div class="relative flex-1">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" id="att-rekap-search" placeholder="Cari nama karyawan atau jabatan..."
                         oninput="window.filterAttendanceRecapTable(this.value)"
-                        class="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full h-10 min-h-[40px] pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
-                <span class="text-xs font-bold text-slate-400 shrink-0">
-                    Total: <strong class="text-slate-700 dark:text-slate-200">${recap.totalMembers} Staf</strong>
+                <span class="px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
+                    Total: <strong class="text-slate-800 dark:text-slate-200">${recap.totalMembers} Staf</strong>
                 </span>
             </div>
 
@@ -970,25 +981,24 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
             </div>
         </div>
 
-        <!-- Modal Footer -->
-        <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-slate-50/70 dark:bg-slate-800/40 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <!-- Modal Footer (Single Clean Responsive Action Bar) -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 shrink-0 bg-white dark:bg-slate-900 pb-[max(0.875rem,env(safe-area-inset-bottom))]">
             <button onclick="window.closeMonthlyAttendanceRecapModal()" 
-                class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                class="min-h-[44px] px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer shrink-0">
                 Tutup
             </button>
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button onclick="window.exportMonthlyAttendanceCSV('${yearMonth}')"
-                    class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-file-excel text-emerald-600 text-xs"></i>
-                    <span>Ekspor CSV</span>
-                </button>
-                <button onclick="window.printMonthlyAttendanceA4('${yearMonth}')"
-                    class="flex-1 sm:flex-initial min-h-[44px] px-5 py-2.5 rounded-2xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                    style="background: var(--color-primary)">
-                    <i class="fa-solid fa-print text-xs"></i>
-                    <span>Cetak Rekap A4</span>
-                </button>
-            </div>
+            <button onclick="window.exportMonthlyAttendanceCSV('${yearMonth}')"
+                class="flex-1 min-h-[44px] px-3 sm:px-4 rounded-xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 whitespace-nowrap">
+                <i class="fa-solid fa-file-excel text-emerald-600 text-xs"></i>
+                <span>Ekspor CSV</span>
+            </button>
+            <button onclick="window.printMonthlyAttendanceA4('${yearMonth}')"
+                class="btn-native-action flex-1 min-h-[44px] px-3.5 sm:px-5 rounded-xl text-white font-black text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
+                style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <i class="fa-solid fa-print text-xs"></i>
+                <span class="hidden sm:inline">Cetak Rekap A4</span>
+                <span class="sm:hidden">Cetak A4</span>
+            </button>
         </div>
     </div>`;
 

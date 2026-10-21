@@ -144,6 +144,17 @@ test('Modal Cetak Label Barcode anti-wrap pada SKU dan responsif pada mobile', (
     assert(styleCss.includes('#modal-product-barcode-label .font-mono'), 'CSS anti-wrap font-mono terpasang di style.css');
 });
 
+const ATTENDANCE_JS_PATH = path.join(ROOT_DIR, 'src', 'modules', 'admin', 'hr', 'hr-attendance.js');
+assert(fs.existsSync(ATTENDANCE_JS_PATH), 'hr-attendance.js harus tersedia');
+const attJs = fs.readFileSync(ATTENDANCE_JS_PATH, 'utf-8');
+
+test('Modal Rekapitulasi Presensi Tim memiliki header anti-truncate, pull-indicator, dan footer proporsional', () => {
+    assert(attJs.includes('pull-indicator w-12 h-1.5'), 'Pull indicator handle terpasang di modal rekap presensi');
+    assert(attJs.includes('modal-bottom-sheet'), 'Menggunakan modal-bottom-sheet');
+    assert(attJs.includes('att-rekap-period-picker-desktop') && attJs.includes('att-rekap-period-picker'), 'Selector bulan responsif desktop-mobile');
+    assert(attJs.includes('min-h-[44px] px-4 rounded-xl') && attJs.includes('min-h-[44px] px-3 sm:px-4 rounded-xl'), 'Tombol footer berderet proporsional dalam 1 baris');
+});
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passCount} Passed, 0 Failed`);
 console.log('✨ SELURUH APLIKASI SUDAH 100% NATIVE APP HARMONY & PROPOSIONAL! ✅');
