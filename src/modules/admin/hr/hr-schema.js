@@ -30,6 +30,22 @@ export const SALARY_PAYMENT_METHODS = [
 ];
 
 /**
+ * Format label nama bulan Indonesia dari format 'YYYY-MM'
+ * @param {string} periodStr Contoh: '2026-10'
+ * @returns {string} Contoh: 'Oktober 2026'
+ */
+export const getPeriodMonthLabel = (periodStr) => {
+    if (!periodStr) return '-';
+    const [year, month] = periodStr.split('-');
+    const monthNames = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    const mIdx = parseInt(month, 10) - 1;
+    return `${monthNames[mIdx] || month} ${year}`;
+};
+
+/**
  * Generator Otomatis ID Karyawan Unik (Contoh: EMP-001, EMP-002)
  * @param {Array} existingList Daftar karyawan atau akun staf yang ada
  * @param {string} prefix Awalan ID ('EMP' atau 'OWN')

@@ -24,7 +24,10 @@ import {
 import { 
     generateAttendanceId, 
     ATTENDANCE_STATUSES, 
-    calculateMonthlyAttendanceSummary 
+    calculateMonthlyAttendanceSummary,
+    calculateMonthlyTeamAttendanceRecap,
+    exportMonthlyAttendanceCSV,
+    printMonthlyAttendanceA4
 } from '../src/modules/admin/hr/hr-attendance.js';
 
 import { appData } from '../src/core/state.js';
@@ -207,6 +210,67 @@ describe('HR Advances & Attendance Unit Tests (Fase 2)', () => {
         assert.ok(storageCode.includes('appData.attendances'), 'storage.js harus menginisialisasi appData.attendances');
         assert.ok(storageCode.includes('appData.salaryAdvances'), 'storage.js harus menginisialisasi appData.salaryAdvances');
         assert.ok(storageCode.includes('appData.payrollRuns'), 'storage.js harus menginisialisasi appData.payrollRuns');
+    });
+
+    it('11. calculateMonthlyTeamAttendanceRecap harus mengakumulasikan matriks presensi bulanan seluruh staf', () => {
+        appData.employees = [
+            { employeeId: 'EMP-001', name: 'Budi Santoso', position: 'Kasir POS', role: 'cashier', dailyAllowance: 20000, isActive: true },
+            { employeeId: 'EMP-002', name: 'Siti Aminah', position: 'Admin Gudang', role: 'admin', dailyAllowance: 25000, isActive: true }
+        ];
+
+        appData.attendances = [
+            { date: '2026-10-01', employeeId: 'EMP-001', status: 'present', allowanceEarned: 20000 },
+            { date: '2026-10-02', employeeId: 'EMP-001', status: 'present', allowanceEarned: 20000 },
+            { date: '2026-10-03', employeeId: 'EMP-001', status: 'late',    allowanceEarned: 20000 },
+            { date: '2026-10-04', employeeId: 'EMP-001', status: 'sick',    allowanceEarned: 0 },
+            { date: '2026-10-01', employeeId: 'EMP-002', status: 'present', allowanceEarned: 25000 },
+            { date: '2026-10-02', employeeId: 'EMP-002', status: 'permit',  allowanceEarned: 0 },
+            { date: '2026-10-03', employeeId: 'EMP-002', status: 'alpha',   allowanceEarned: 0 }
+        ];
+
+        const recap = calculateMonthlyTeamAttendanceRecap('2026-10');
+        assert.ok(recap, 'Hasil rekap harus berupa object');
+        assert.equal(recap.period, '2026-10');
+        assert.equal(recap.periodLabel, 'Oktober 2026');
+        assert.ok(recap.items.length >= 3, 'Harus mencakup minimal 2 karyawan + 1 owner');
+
+        const budi = recap.items.find(i => i.employeeId === 'EMP-001');
+        assert.ok(budi, 'Budi Santoso harus terdaftar di item rekap');
+        assert.equal(budi.presentDays, 2);
+        assert.equal(budi.lateDays, 1);
+        assert.equal(budi.sickDays, 1);
+        assert.equal(budi.totalWorkDays, 3);
+        assert.equal(budi.totalAllowance, 60000); // 3 hari masuk * 20.000
+
+        const siti = recap.items.find(i => i.employeeId === 'EMP-002');
+        assert.ok(siti, 'Siti Aminah harus terdaftar di item rekap');
+        assert.equal(siti.presentDays, 1);
+        assert.equal(siti.permitDays, 1);
+        assert.equal(siti.alphaDays, 1);
+        assert.equal(siti.totalWorkDays, 1);
+        assert.equal(siti.totalAllowance, 25000);
+    });
+
+    it('12. hr-attendance.js harus mengekspor fungsi rekapitulasi, cetak A4, ekspor CSV dan pencarian', async () => {
+        const fs = await import('fs');
+        const attCode = fs.readFileSync('src/modules/admin/hr/hr-attendance.js', 'utf8');
+
+        assert.ok(attCode.includes('calculateMonthlyTeamAttendanceRecap'), 'Harus mengekspor calculateMonthlyTeamAttendanceRecap');
+        assert.ok(attCode.includes('openMonthlyAttendanceRecapModal'), 'Harus mengekspor openMonthlyAttendanceRecapModal');
+        assert.ok(attCode.includes('closeMonthlyAttendanceRecapModal'), 'Harus mengekspor closeMonthlyAttendanceRecapModal');
+        assert.ok(attCode.includes('exportMonthlyAttendanceCSV'), 'Harus mengekspor exportMonthlyAttendanceCSV');
+        assert.ok(attCode.includes('printMonthlyAttendanceA4'), 'Harus mengekspor printMonthlyAttendanceA4');
+        assert.ok(attCode.includes('filterAttendanceRecapTable'), 'Harus mengekspor filterAttendanceRecapTable');
+    });
+
+    it('13. router.js & native-mobile.js harus mendaftarkan attendanceRecap modal secara presisi', async () => {
+        const fs = await import('fs');
+        const routerCode = fs.readFileSync('src/core/router.js', 'utf8');
+        const nativeCode = fs.readFileSync('src/core/native-mobile.js', 'utf8');
+
+        assert.ok(routerCode.includes("attendanceRecap: ['modal-attendance-rekap'"), 'MODAL_ELEMENT_MAP harus mendaftarkan attendanceRecap');
+        assert.ok(routerCode.includes("case 'attendanceRecap':"), 'closeModalByName harus memiliki case attendanceRecap');
+        assert.ok(nativeCode.includes("case 'modal-attendance-rekap':"), 'native-mobile.js harus memiliki case modal-attendance-rekap');
     });
 });
 

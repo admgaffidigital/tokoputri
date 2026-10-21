@@ -515,7 +515,8 @@ export const MODAL_ELEMENT_MAP = {
     advanceForm: ['modal-salary-advance-form', 'salary-advance-modal'],
     advanceDetail: ['modal-salary-advance-detail'],
     payrollItemForm: ['modal-payroll-item-form', 'payroll-item-modal'],
-    payslipPreview: ['modal-payslip-preview', 'payslip-preview-modal']
+    payslipPreview: ['modal-payslip-preview', 'payslip-preview-modal'],
+    attendanceRecap: ['modal-attendance-rekap', 'attendance-rekap-modal']
 };
 
 /**
@@ -815,6 +816,9 @@ export const closeModalByName = (m) => {
         case 'priceListExport':
             if (typeof window.closePriceListExportModal === 'function') { window.closePriceListExportModal(true); return true; }
             break;
+        case 'attendanceRecap':
+            if (typeof window.closeMonthlyAttendanceRecapModal === 'function') { window.closeMonthlyAttendanceRecapModal(true); return true; }
+            break;
         default:
             break;
     }
@@ -976,6 +980,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
         'variantPreview', 'quickVariant', 'product',
+        'attendanceRecap',
         'priceListExport',
         'factoryReset',
         'flashSaleForm',

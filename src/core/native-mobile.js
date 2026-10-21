@@ -190,6 +190,9 @@ export const closeModalById = (id) => {
         case 'modal-payslip-preview':
             if (typeof window.closePayslipPreviewModal === 'function') window.closePayslipPreviewModal();
             break;
+        case 'modal-attendance-rekap':
+            if (typeof window.closeMonthlyAttendanceRecapModal === 'function') window.closeMonthlyAttendanceRecapModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {

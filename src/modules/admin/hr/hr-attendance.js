@@ -17,7 +17,7 @@ import {
     el, esc, fCur, showToast, showConfirm, sLoad, hLoad 
 } from '../../../core/utils.js';
 import { getAllStoreEmployees } from './hr-advances.js';
-import { verifyOwnerAuthority } from './hr-schema.js';
+import { verifyOwnerAuthority, getPeriodMonthLabel } from './hr-schema.js';
 
 let _selectedAttendanceDate = new Date().toISOString().split('T')[0];
 let _cachedAttendances = []; // Data absensi tanggal terpilih
@@ -160,6 +160,12 @@ export const renderAttendanceView = async (container) => {
             </div>
 
             <div class="flex items-center gap-2">
+                <button onclick="window.openMonthlyAttendanceRecapModal('${_selectedAttendanceDate.slice(0, 7)}')"
+                    class="h-9 px-3.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-600 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    title="Rekapitulasi Presensi & Kedisiplinan Tim">
+                    <i class="fa-solid fa-chart-pie" style="color: var(--color-primary)"></i>
+                    <span>Rekap Bulanan</span>
+                </button>
                 <button onclick="window.bulkMarkAllPresent()"
                     class="h-9 px-4 rounded-xl text-xs font-black text-white shadow-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2 hover:opacity-95"
                     style="background: var(--color-primary)">
@@ -620,11 +626,740 @@ export const calculateMonthlyAttendanceSummary = (allAttendances = [], yearMonth
     };
 };
 
+/**
+ * ─── Hitung Rekapitulasi Presensi Seluruh Tim Toko untuk 1 Bulan ───
+ * @param {string} yearMonth Format 'YYYY-MM'
+ * @returns {Object} Agregasi data & matriks per karyawan
+ */
+export const calculateMonthlyTeamAttendanceRecap = (yearMonth = new Date().toISOString().slice(0, 7)) => {
+    const allAtts = Array.isArray(appData.attendances) ? appData.attendances : [];
+    const employees = getAllStoreEmployees();
+    const periodLabel = getPeriodMonthLabel(yearMonth);
+
+    let totalTeamAllowance = 0;
+    let totalPresentDays = 0;
+    let totalLateDays = 0;
+    let totalPermitDays = 0;
+    let totalSickDays = 0;
+    let totalAlphaDays = 0;
+
+    const items = employees.map(emp => {
+        const empId = emp.employeeId || emp.uid;
+        const summary = calculateMonthlyAttendanceSummary(allAtts, yearMonth, empId);
+        
+        const presentDays = summary.presentDays || 0;
+        const lateDays = summary.lateDays || 0;
+        const permitDays = summary.permitDays || 0;
+        const sickDays = summary.sickDays || 0;
+        const alphaDays = summary.alphaDays || 0;
+        const totalWorkDays = presentDays + lateDays;
+        const totalLoggedDays = summary.totalRecords || (totalWorkDays + permitDays + sickDays + alphaDays);
+        const totalAllowance = summary.totalAllowance || 0;
+
+        // Persentase kedisiplinan: hadir + bobot late (90%) dibagi hari tercatat (min 1)
+        const rate = totalLoggedDays > 0 
+            ? Math.min(100, Math.round(((presentDays + (lateDays * 0.9)) / totalLoggedDays) * 1000) / 10)
+            : 0;
+
+        totalTeamAllowance += totalAllowance;
+        totalPresentDays += presentDays;
+        totalLateDays += lateDays;
+        totalPermitDays += permitDays;
+        totalSickDays += sickDays;
+        totalAlphaDays += alphaDays;
+
+        return {
+            employeeId: empId,
+            employeeUid: emp.uid || '',
+            name: emp.name || 'Karyawan',
+            position: emp.position || 'Staf Toko',
+            role: emp.role || 'staff',
+            dailyAllowanceRate: parseFloat(emp.dailyAllowance) || 0,
+            presentDays,
+            lateDays,
+            permitDays,
+            sickDays,
+            alphaDays,
+            totalWorkDays,
+            totalLoggedDays,
+            attendanceRate: rate,
+            totalAllowance
+        };
+    });
+
+    const totalWorkDays = totalPresentDays + totalLateDays;
+    const totalAllLogged = totalWorkDays + totalPermitDays + totalSickDays + totalAlphaDays;
+    const avgAttendanceRate = totalAllLogged > 0
+        ? Math.min(100, Math.round(((totalPresentDays + (totalLateDays * 0.9)) / totalAllLogged) * 1000) / 10)
+        : 0;
+
+    return {
+        period: yearMonth,
+        periodLabel,
+        items,
+        totalMembers: employees.length,
+        totalPresentDays,
+        totalLateDays,
+        totalPermitDays,
+        totalSickDays,
+        totalAlphaDays,
+        totalWorkDays,
+        totalTeamAllowance,
+        avgAttendanceRate
+    };
+};
+
+/**
+ * Muat data absensi sebulan penuh dari cloud/lokal
+ */
+export const loadAttendancesForMonth = async (yearMonth = new Date().toISOString().slice(0, 7)) => {
+    try {
+        let allLocal = Array.isArray(appData.attendances) ? appData.attendances : [];
+        if (allLocal.length === 0) {
+            try {
+                allLocal = JSON.parse(localStorage.getItem('freshmart_attendances') || '[]');
+                if (Array.isArray(allLocal) && allLocal.length > 0) appData.attendances = allLocal;
+            } catch (_) {}
+        }
+
+        try {
+            const startDate = `${yearMonth}-01`;
+            const endDate = `${yearMonth}-31\uf8ff`;
+            const snap = await db.collection('freshmart').doc('cms_data')
+                .collection('attendances')
+                .where('date', '>=', startDate)
+                .where('date', '<=', endDate)
+                .get();
+
+            if (snap && !snap.empty) {
+                const cloudAtts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                if (!Array.isArray(appData.attendances)) appData.attendances = [];
+                cloudAtts.forEach(ca => {
+                    const cId = ca.attendanceId || ca.id;
+                    const idx = appData.attendances.findIndex(a => (a.attendanceId || a.id) === cId);
+                    if (idx >= 0) {
+                        appData.attendances[idx] = { ...appData.attendances[idx], ...ca };
+                    } else {
+                        appData.attendances.push(ca);
+                    }
+                });
+                try {
+                    localStorage.setItem('freshmart_attendances', JSON.stringify(appData.attendances));
+                } catch (_) {}
+            }
+        } catch (err) {
+            console.warn('[HR Attendance] Fallback offline untuk rekap bulan:', yearMonth, err.message);
+        }
+
+        return calculateMonthlyTeamAttendanceRecap(yearMonth);
+    } catch (err) {
+        console.error('[HR Attendance] Gagal memuat absensi bulanan:', err);
+        return calculateMonthlyTeamAttendanceRecap(yearMonth);
+    }
+};
+
+/**
+ * ─── Modal Native Bottom Sheet: Rekapitulasi Presensi & Kedisiplinan Tim ───
+ */
+export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAttendanceDate || new Date().toISOString().split('T')[0]).slice(0, 7)) => {
+    let modal = el('modal-attendance-rekap');
+    if (modal) modal.remove();
+
+    sLoad();
+    await loadAttendancesForMonth(yearMonth);
+    hLoad();
+
+    const recap = calculateMonthlyTeamAttendanceRecap(yearMonth);
+    const store = appData.store || { name: 'TOKO PUTRI UTAMA TEKNIK' };
+
+    modal = document.createElement('div');
+    modal.id = 'modal-attendance-rekap';
+    modal.className = 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200';
+    modal.style.opacity = '0';
+
+    modal.innerHTML = `
+    <div id="attendance-rekap-modal-box" class="w-full sm:max-w-4xl bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden transform transition-all duration-200 scale-95">
+        
+        <!-- Pull Indicator (Mobile Native Bottom Sheet) -->
+        <div class="w-full pt-2.5 pb-1 flex justify-center sm:hidden shrink-0">
+            <div class="w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+        </div>
+
+        <!-- Modal Header -->
+        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0"
+            style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                    style="background: var(--color-primary)">
+                    <i class="fa-solid fa-clipboard-user text-base"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white truncate">
+                        Rekapitulasi Presensi &amp; Kedisiplinan Tim
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        ${esc(store.name || 'Toko Putri')} • <strong class="text-slate-700 dark:text-slate-200">${esc(recap.periodLabel)}</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Month Navigator & Close Button -->
+            <div class="flex items-center gap-2 shrink-0">
+                <div class="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                    <input type="month" id="att-rekap-period-picker" value="${yearMonth}"
+                        onchange="window.openMonthlyAttendanceRecapModal(this.value)"
+                        class="px-2 py-0.5 bg-transparent text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
+                </div>
+                <button onclick="window.closeMonthlyAttendanceRecapModal()" 
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                    title="Tutup">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 custom-scrollbar text-xs">
+            
+            <!-- 4 Bento KPI Kehadiran Bulanan -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Rata-Rata Disiplin</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${recap.avgAttendanceRate}%</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Tingkat kehadiran tim</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Hari Hadir</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${recap.totalWorkDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${recap.totalPresentDays} Tepat, ${recap.totalLateDays} Terlambat</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Izin, Sakit &amp; Alpha</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                            <i class="fa-solid fa-user-clock"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${recap.totalPermitDays + recap.totalSickDays + recap.totalAlphaDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${recap.totalPermitDays} Izin, ${recap.totalSickDays} Sakit, ${recap.totalAlphaDays} Alpha</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Hak Uang Makan</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                    </div>
+                    <p class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono tracking-tight">${fCur(recap.totalTeamAllowance)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Siap ditarik ke Payroll</p>
+                </div>
+            </div>
+
+            <!-- Realtime Search Bar Staf -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="att-rekap-search" placeholder="Cari nama karyawan atau jabatan..."
+                        oninput="window.filterAttendanceRecapTable(this.value)"
+                        class="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <span class="text-xs font-bold text-slate-400 shrink-0">
+                    Total: <strong class="text-slate-700 dark:text-slate-200">${recap.totalMembers} Staf</strong>
+                </span>
+            </div>
+
+            <!-- Matriks Tabel Presensi Karyawan -->
+            <div class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-2xs bg-white dark:bg-slate-800/60">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs whitespace-nowrap">
+                        <thead class="bg-slate-50 dark:bg-slate-800/90 text-slate-500 dark:text-slate-400 font-black uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="py-3 px-3 text-center w-10">No</th>
+                                <th class="py-3 px-3">Karyawan</th>
+                                <th class="py-3 px-2 text-center text-emerald-600">Hadir</th>
+                                <th class="py-3 px-2 text-center text-amber-500">Terlambat</th>
+                                <th class="py-3 px-2 text-center text-blue-500">Izin</th>
+                                <th class="py-3 px-2 text-center text-purple-500">Sakit</th>
+                                <th class="py-3 px-2 text-center text-rose-500">Alpha</th>
+                                <th class="py-3 px-3 text-center">Total Masuk</th>
+                                <th class="py-3 px-3 text-center">% Disiplin</th>
+                                <th class="py-3 px-3 text-right">Hak Tunjangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="att-rekap-tbody" class="divide-y divide-slate-100 dark:divide-slate-700/60">
+                            ${recap.items.map((it, idx) => {
+                                const rateClass = it.attendanceRate >= 95 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-300' : (it.attendanceRate >= 80 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-300');
+                                const initials = (it.name || 'ST').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+                                return `
+                                <tr class="att-rekap-row hover:bg-slate-50/70 dark:hover:bg-slate-700/40 transition-colors" data-name="${esc(it.name.toLowerCase())}" data-pos="${esc(it.position.toLowerCase())}">
+                                    <td class="py-2.5 px-3 text-center font-mono text-slate-400">${idx + 1}</td>
+                                    <td class="py-2.5 px-3">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-[10px] shrink-0 border border-[rgba(var(--color-primary-rgb),0.25)]"
+                                                style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
+                                                ${initials}
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-black text-slate-800 dark:text-white truncate">${esc(it.name)}</div>
+                                                <div class="text-[10px] text-slate-400 flex items-center gap-1.5">
+                                                    <span class="font-mono">${esc(it.employeeId)}</span>
+                                                    <span>•</span>
+                                                    <span class="truncate">${esc(it.position)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-emerald-600 dark:text-emerald-400">${it.presentDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-amber-500">${it.lateDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono text-slate-500">${it.permitDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono text-slate-500">${it.sickDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-rose-500">${it.alphaDays}</td>
+                                    <td class="py-2.5 px-3 text-center font-mono font-black text-slate-800 dark:text-white">${it.totalWorkDays} Hari</td>
+                                    <td class="py-2.5 px-3 text-center">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border ${rateClass}">
+                                            ${it.attendanceRate}%
+                                        </span>
+                                    </td>
+                                    <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-600 dark:text-emerald-400">${fCur(it.totalAllowance)}</td>
+                                </tr>`;
+                            }).join('')}
+                        </tbody>
+                        <tfoot class="bg-slate-50 dark:bg-slate-800/90 font-black text-slate-800 dark:text-white border-t-2 border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <td colspan="2" class="py-3 px-3 text-right">TOTAL TIM (${recap.totalMembers} Staf):</td>
+                                <td class="py-3 px-2 text-center font-mono text-emerald-600">${recap.totalPresentDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-amber-500">${recap.totalLateDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-slate-500">${recap.totalPermitDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-slate-500">${recap.totalSickDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-rose-500">${recap.totalAlphaDays}</td>
+                                <td class="py-3 px-3 text-center font-mono">${recap.totalWorkDays} Hari</td>
+                                <td class="py-3 px-3 text-center">
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border bg-emerald-100 text-emerald-800 border-emerald-300">
+                                        ${recap.avgAttendanceRate}%
+                                    </span>
+                                </td>
+                                <td class="py-3 px-3 text-right font-mono text-emerald-600">${fCur(recap.totalTeamAllowance)}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-slate-50/70 dark:bg-slate-800/40 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <button onclick="window.closeMonthlyAttendanceRecapModal()" 
+                class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                Tutup
+            </button>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="window.exportMonthlyAttendanceCSV('${yearMonth}')"
+                    class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-excel text-emerald-600 text-xs"></i>
+                    <span>Ekspor CSV</span>
+                </button>
+                <button onclick="window.printMonthlyAttendanceA4('${yearMonth}')"
+                    class="flex-1 sm:flex-initial min-h-[44px] px-5 py-2.5 rounded-2xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    style="background: var(--color-primary)">
+                    <i class="fa-solid fa-print text-xs"></i>
+                    <span>Cetak Rekap A4</span>
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.appendChild(modal);
+
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('attendanceRecap');
+    }
+
+    setTimeout(() => {
+        modal.style.opacity = '1';
+        const box = el('attendance-rekap-modal-box');
+        if (box) box.classList.remove('scale-95');
+    }, 10);
+};
+
+export const closeMonthlyAttendanceRecapModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('modal-attendance-rekap');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 200);
+        }
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('attendanceRecap', fH, doClose);
+    } else {
+        doClose();
+    }
+};
+
+export const filterAttendanceRecapTable = (query = '') => {
+    const q = (query || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('.att-rekap-row');
+    rows.forEach(r => {
+        const name = r.getAttribute('data-name') || '';
+        const pos = r.getAttribute('data-pos') || '';
+        if (!q || name.includes(q) || pos.includes(q)) {
+            r.classList.remove('hidden');
+        } else {
+            r.classList.add('hidden');
+        }
+    });
+};
+
+/**
+ * ─── 1-Klik Ekspor Rekapitulasi Presensi ke Format CSV / Excel ───
+ */
+export const exportMonthlyAttendanceCSV = (yearMonth = new Date().toISOString().slice(0, 7)) => {
+    const recap = calculateMonthlyTeamAttendanceRecap(yearMonth);
+    const storeName = appData.store?.name || 'TOKO PUTRI UTAMA TEKNIK';
+
+    const header = [
+        'No',
+        'ID Karyawan',
+        'Nama Karyawan',
+        'Jabatan',
+        'Role',
+        'Hadir (Hari)',
+        'Terlambat (Hari)',
+        'Izin (Hari)',
+        'Sakit (Hari)',
+        'Alpha (Hari)',
+        'Total Masuk (Hari)',
+        'Disiplin Kehadiran (%)',
+        'Total Uang Makan / Tunjangan (Rp)'
+    ];
+
+    const rows = recap.items.map((it, idx) => [
+        idx + 1,
+        `"${it.employeeId}"`,
+        `"${(it.name || '').replace(/"/g, '""')}"`,
+        `"${(it.position || '').replace(/"/g, '""')}"`,
+        `"${it.role}"`,
+        it.presentDays,
+        it.lateDays,
+        it.permitDays,
+        it.sickDays,
+        it.alphaDays,
+        it.totalWorkDays,
+        `"${it.attendanceRate}%"`,
+        it.totalAllowance
+    ]);
+
+    // Total Row
+    rows.push([
+        '',
+        '"TOTAL"',
+        `"${recap.totalMembers} Staf"`,
+        '""',
+        '""',
+        recap.totalPresentDays,
+        recap.totalLateDays,
+        recap.totalPermitDays,
+        recap.totalSickDays,
+        recap.totalAlphaDays,
+        recap.totalWorkDays,
+        `"${recap.avgAttendanceRate}%"`,
+        recap.totalTeamAllowance
+    ]);
+
+    const csvContent = '\uFEFF' + [
+        `"REKAPITULASI PRESENSI & KEDISIPLINAN KARYAWAN"`,
+        `"Toko: ${storeName.replace(/"/g, '""')}"`,
+        `"Periode: ${recap.periodLabel}"`,
+        `"Tanggal Ekspor: ${new Date().toLocaleDateString('id-ID')}"`,
+        '',
+        header.join(','),
+        ...rows.map(r => r.join(','))
+    ].join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const cleanStore = storeName.replace(/[^a-zA-Z0-9]/g, '_');
+    a.download = `Rekap_Presensi_${cleanStore}_${yearMonth}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(`Rekap presensi periode ${recap.periodLabel} berhasil diekspor ke CSV!`, 'success');
+};
+
+/**
+ * ─── Cetak Dokumen Rekapitulasi Presensi Standar A4 Landscape ───
+ */
+export const printMonthlyAttendanceA4 = (yearMonth = new Date().toISOString().slice(0, 7)) => {
+    const recap = calculateMonthlyTeamAttendanceRecap(yearMonth);
+    const store = appData.store || { name: 'TOKO PUTRI UTAMA TEKNIK' };
+    const datePrinted = new Date().toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+
+    const html = `<!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <title>Rekap Presensi - ${esc(recap.periodLabel)} - ${esc(store.name || 'Toko Putri')}</title>
+        <style>
+            @page {
+                size: A4 landscape;
+                margin: 12mm 15mm;
+            }
+            * { box-sizing: border-box; }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                color: #0f172a;
+                background: #fff;
+                font-size: 11px;
+                line-height: 1.4;
+            }
+            .kop {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                border-bottom: 2px solid #0f172a;
+                padding-bottom: 12px;
+                margin-bottom: 16px;
+            }
+            .kop-title {
+                font-size: 18px;
+                font-weight: 900;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: #0f172a;
+            }
+            .kop-sub {
+                font-size: 11px;
+                color: #475569;
+                margin-top: 2px;
+            }
+            .doc-badge {
+                display: inline-block;
+                padding: 4px 12px;
+                border: 1.5px solid #0f172a;
+                font-weight: 900;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                border-radius: 6px;
+                margin-bottom: 4px;
+            }
+            .kpi-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .kpi-card {
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+                padding: 10px 14px;
+                background: #f8fafc;
+            }
+            .kpi-label {
+                font-size: 9.5px;
+                font-weight: 800;
+                text-transform: uppercase;
+                color: #64748b;
+            }
+            .kpi-val {
+                font-size: 16px;
+                font-weight: 900;
+                margin-top: 2px;
+                color: #0f172a;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            th {
+                background: #f1f5f9;
+                border: 1px solid #cbd5e1;
+                padding: 8px 10px;
+                font-size: 10px;
+                font-weight: 800;
+                text-transform: uppercase;
+                text-align: center;
+            }
+            td {
+                border: 1px solid #cbd5e1;
+                padding: 7px 10px;
+                font-size: 10.5px;
+            }
+            .text-left { text-align: left; }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+            .badge-rate {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: 800;
+                font-size: 10px;
+            }
+            .rate-green { background: #dcfce7; color: #166534; }
+            .rate-amber { background: #fef3c7; color: #92400e; }
+            .rate-rose { background: #ffe4e6; color: #9f1239; }
+            .sign-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                text-align: center;
+                margin-top: 30px;
+                page-break-inside: avoid;
+            }
+            .sign-line {
+                border-bottom: 1px solid #94a3b8;
+                width: 60%;
+                margin: 50px auto 6px auto;
+            }
+            @media print {
+                body { padding: 0; }
+                .no-print { display: none; }
+            }
+        </style>
+    </head>
+    <body onload="window.print();">
+        <div class="kop">
+            <div>
+                <div class="kop-title">${esc(store.name || 'TOKO PUTRI UTAMA TEKNIK')}</div>
+                <div class="kop-sub">${esc(store.address || 'Pusat Bahan Bangunan & Alat Teknik')}</div>
+                <div class="kop-sub">WhatsApp: ${esc(store.phone || store.wa || '-')}</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="doc-badge">REKAPITULASI PRESENSI KARYAWAN</div>
+                <div style="font-size: 11px; color: #475569;">Periode: <strong>${esc(recap.periodLabel)}</strong></div>
+                <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Dicetak: ${datePrinted}</div>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Rata-Rata Disiplin Kehadiran</div>
+                <div class="kpi-val" style="color: #059669;">${recap.avgAttendanceRate}%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Total Hari Masuk Tim</div>
+                <div class="kpi-val">${recap.totalWorkDays} Hari Kerja</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Total Izin / Sakit / Alpha</div>
+                <div class="kpi-val" style="color: #475569;">${recap.totalPermitDays} / ${recap.totalSickDays} / ${recap.totalAlphaDays}</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Akumulasi Uang Makan / Tunjangan</div>
+                <div class="kpi-val font-mono" style="color: #059669;">${fCur(recap.totalTeamAllowance)}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 35px;">No</th>
+                    <th class="text-left">Karyawan</th>
+                    <th class="text-left">Jabatan</th>
+                    <th>Hadir</th>
+                    <th>Terlambat</th>
+                    <th>Izin</th>
+                    <th>Sakit</th>
+                    <th>Alpha</th>
+                    <th>Total Masuk</th>
+                    <th>% Kehadiran</th>
+                    <th class="text-right">Hak Tunjangan (Rp)</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${recap.items.map((it, idx) => {
+                    const rateClass = it.attendanceRate >= 95 ? 'rate-green' : (it.attendanceRate >= 80 ? 'rate-amber' : 'rate-rose');
+                    return `
+                    <tr>
+                        <td class="text-center font-mono">${idx + 1}</td>
+                        <td class="text-left font-bold">
+                            ${esc(it.name)}
+                            <span style="font-size: 9.5px; color: #64748b; font-weight: normal; margin-left: 4px;">(${esc(it.employeeId)})</span>
+                        </td>
+                        <td class="text-left text-slate-600">${esc(it.position)}</td>
+                        <td class="text-center font-bold" style="color: #16a34a;">${it.presentDays}</td>
+                        <td class="text-center font-bold" style="color: #d97706;">${it.lateDays}</td>
+                        <td class="text-center text-slate-600">${it.permitDays}</td>
+                        <td class="text-center text-slate-600">${it.sickDays}</td>
+                        <td class="text-center font-bold" style="color: #e11d48;">${it.alphaDays}</td>
+                        <td class="text-center font-bold font-mono">${it.totalWorkDays} Hari</td>
+                        <td class="text-center">
+                            <span class="badge-rate ${rateClass}">${it.attendanceRate}%</span>
+                        </td>
+                        <td class="text-right font-bold font-mono">${fCur(it.totalAllowance)}</td>
+                    </tr>`;
+                }).join('')}
+                <tr style="background: #f8fafc; font-weight: 900; border-top: 2px solid #94a3b8;">
+                    <td colspan="3" class="text-right" style="padding: 10px;">TOTAL TIM (${recap.totalMembers} Staf):</td>
+                    <td class="text-center font-mono" style="color: #16a34a;">${recap.totalPresentDays}</td>
+                    <td class="text-center font-mono" style="color: #d97706;">${recap.totalLateDays}</td>
+                    <td class="text-center font-mono">${recap.totalPermitDays}</td>
+                    <td class="text-center font-mono">${recap.totalSickDays}</td>
+                    <td class="text-center font-mono" style="color: #e11d48;">${recap.totalAlphaDays}</td>
+                    <td class="text-center font-mono">${recap.totalWorkDays} Hari</td>
+                    <td class="text-center">
+                        <span class="badge-rate ${recap.avgAttendanceRate >= 95 ? 'rate-green' : 'rate-amber'}">${recap.avgAttendanceRate}%</span>
+                    </td>
+                    <td class="text-right font-mono" style="color: #059669;">${fCur(recap.totalTeamAllowance)}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="sign-grid">
+            <div>
+                <div>Dibuat oleh (Pengelola HR / Kasir Kepala):</div>
+                <div class="sign-line"></div>
+                <div style="font-weight: 800;">Staf Administrasi & HR</div>
+                <div style="font-size: 10.5px; color: #64748b;">${esc(store.name || 'Toko Putri')}</div>
+            </div>
+            <div>
+                <div>Mengetahui & Disetujui oleh:</div>
+                <div class="sign-line"></div>
+                <div style="font-weight: 800;">Direksi / Pemilik Toko</div>
+                <div style="font-size: 10.5px; color: #64748b;">${esc(store.name || 'Toko Putri')}</div>
+            </div>
+        </div>
+    </body>
+    </html>`;
+
+    const pWin = window.open('', '_blank');
+    if (pWin) {
+        pWin.document.write(html);
+        pWin.document.close();
+    }
+};
+
 // ─── Expose Global Window ────────────────────────────────────
 if (typeof window !== 'undefined') {
     window.ATTENDANCE_STATUSES              = ATTENDANCE_STATUSES;
     window.generateAttendanceId             = generateAttendanceId;
     window.loadAttendancesForDate           = loadAttendancesForDate;
+    window.loadAttendancesForMonth          = loadAttendancesForMonth;
     window.renderAttendanceView             = renderAttendanceView;
     window.navigateAttendanceDate           = navigateAttendanceDate;
     window.onAttendanceDateChanged          = onAttendanceDateChanged;
@@ -633,4 +1368,11 @@ if (typeof window !== 'undefined') {
     window.bulkMarkAllPresent               = bulkMarkAllPresent;
     window.autoRecordCashierShiftAttendance = autoRecordCashierShiftAttendance;
     window.calculateMonthlyAttendanceSummary = calculateMonthlyAttendanceSummary;
+    window.calculateMonthlyTeamAttendanceRecap = calculateMonthlyTeamAttendanceRecap;
+    window.openMonthlyAttendanceRecapModal  = openMonthlyAttendanceRecapModal;
+    window.closeMonthlyAttendanceRecapModal = closeMonthlyAttendanceRecapModal;
+    window.filterAttendanceRecapTable       = filterAttendanceRecapTable;
+    window.exportMonthlyAttendanceCSV       = exportMonthlyAttendanceCSV;
+    window.printMonthlyAttendanceA4         = printMonthlyAttendanceA4;
 }
+

@@ -1,9 +1,9 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./module-pos-WEjenQzn.js","./module-print-DKmlc1zN.js","./vendor-firebase-core-D2OF5R23.js","./vendor-firebase-db-BIUZcnOd.js","./module-member-DnTn5AUG.js","./module-faq-BipBiFX7.js"])))=>i.map(i=>d[i]);
-import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,_ as ne,bj as U,bk as ie,J as he,b as Ue,bl as Q,bm as ze}from"./module-print-DKmlc1zN.js";import{V as We}from"./module-pos-WEjenQzn.js";import{f as D}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-DnTn5AUG.js";import"./module-faq-BipBiFX7.js";const de=[{key:"permanent",label:"Karyawan Tetap",badgeColor:"emerald"},{key:"contract",label:"Kontrak (PKWT)",badgeColor:"blue"},{key:"probation",label:"Masa Percobaan (3 Bulan)",badgeColor:"amber"},{key:"daily",label:"Staf Harian Lepas",badgeColor:"purple"}],ce=[{key:"bca",label:"BCA (Bank Central Asia)"},{key:"bri",label:"BRI (Bank Rakyat Indonesia)"},{key:"mandiri",label:"Bank Mandiri"},{key:"bni",label:"BNI (Bank Negara Indonesia)"},{key:"bsi",label:"BSI (Bank Syariah Indonesia)"},{key:"jatim",label:"Bank Jatim"},{key:"cash",label:"Tunai Kas Laci Toko (Cash)"},{key:"other",label:"Bank Lainnya / E-Wallet"}],pe=(a=[],e="EMP")=>{if(!Array.isArray(a)||a.length===0)return`${e}-001`;let t=0;const s=new RegExp(`^${e}-(\\d+)`,"i");a.forEach(i=>{const o=String(i?.employeeId||i?.nik||"").trim().match(s);if(o&&o[1]){const x=parseInt(o[1],10);!isNaN(x)&&x>t&&(t=x)}});const r=t+1;return`${e}-${String(r).padStart(3,"0")}`},Z=a=>a&&a.ownerEmployee&&typeof a.ownerEmployee=="object"?{employeeId:"OWN-001",role:u.OWNER,position:"Owner / Direktur Utama",baseSalary:1e7,dailyAllowance:0,employmentStatus:"permanent",bankName:"BCA / Rekening Toko",bankAccount:"-",bankHolder:"Pemilik Toko",isActive:!0,...a.ownerEmployee}:{employeeId:"OWN-001",name:a?.store?.name?`Pemilik ${a.store.name}`:"Pemilik Toko",email:a?.subscription?.clientEmail||"owner@tokoputri.com",phone:a?.store?.wa||"",role:u.OWNER,position:"Owner / Direktur Utama",baseSalary:1e7,dailyAllowance:0,employmentStatus:"permanent",bankName:"BCA / Rekening Toko",bankAccount:"-",bankHolder:"Pemilik Toko",hireDate:"2024-01-01",isActive:!0,notes:"Gaji resmi direksi / pemilik toko terpisah dari laba usaha toko."},te=(a={},e=0)=>{const t=a.role===u.OWNER||a.role==="owner",s=t?"OWN":"EMP",r=(a.employeeId||a.nik||`${s}-${String(e+1).padStart(3,"0")}`).trim();let i=a.position||"";return i||(t?i="Owner / Direktur Utama":a.role===u.ADMIN?i="Admin Operasional Toko":a.role===u.CASHIER?i="Kasir POS":i="Staf Operasional / Gudang"),{uid:a.uid||a.id||`emp_${Date.now()}_${e}`,employeeId:r,name:String(a.name||"Karyawan").trim(),email:String(a.email||"").trim(),phone:String(a.phone||"").trim(),role:a.role||u.CASHIER,position:i,employmentStatus:a.employmentStatus||"permanent",hireDate:a.hireDate||new Date().toISOString().split("T")[0],baseSalary:Math.max(0,parseFloat(a.baseSalary)||0),dailyAllowance:Math.max(0,parseFloat(a.dailyAllowance)||0),bankName:a.bankName||"cash",bankAccount:String(a.bankAccount||"").trim(),bankHolder:String(a.bankHolder||a.name||"").trim(),nikKtp:String(a.nikKtp||"").trim(),npwp:String(a.npwp||"").trim(),isActive:a.isActive!==!1,notes:String(a.notes||"").trim()}},Je=(a=[],e={})=>{const t=Array.isArray(e?.employees)?e.employees:[],s=new Map;return t.forEach(r=>{r.uid&&s.set(r.uid,r),r.email&&s.set(r.email.toLowerCase(),r),r.employeeId&&s.set(r.employeeId,r)}),a.map((r,i)=>{const c=s.get(r.uid)||s.get(r.email?.toLowerCase())||{};return te({...c,...r,uid:r.uid,email:r.email,name:r.name||c.name,role:r.role||c.role,isActive:r.isActive!==!1},i)})},M=(a="mengubah data staf")=>{try{if(typeof window<"u"&&window.auth&&window.ADMIN_UID){const e=window.auth.currentUser;return e?e.uid!==window.ADMIN_UID?(typeof window.showToast=="function"&&window.showToast(`Akses Ditolak: Hanya Akun Pemilik Utama (Owner) yang berwenang ${a}. Akun staf tidak memiliki izin modifikasi database staf.`,"error"),!1):!0:(typeof window.showToast=="function"&&window.showToast(`Sesi Belum Terotentikasi: Harap login resmi menggunakan Akun Pemilik Toko (Email Owner) di form login CMS untuk ${a}.`,"warning"),!1)}}catch{}return!0};typeof window<"u"&&(window.EMPLOYMENT_STATUSES=de,window.SALARY_PAYMENT_METHODS=ce,window.generateEmployeeId=pe,window.getOwnerEmployeeProfile=Z,window.normalizeEmployeeProfile=te,window.mergeStaffWithHrProfiles=Je,window.verifyOwnerAuthority=M);const se=async()=>{try{if(typeof window<"u"&&typeof window.saveApp=="function")return await window.saveApp();const a=await ne(()=>import("./module-pos-WEjenQzn.js").then(e=>e.W),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url);if(typeof a?.saveApp=="function")return await a.saveApp()}catch{}};let K="active",C=[];const Se=(a=[])=>{const e=new Date().getFullYear(),t=`KSB-${e}`;let s=0;const r=new RegExp(`^KSB-${e}-(\\d+)`,"i");a.forEach(c=>{const x=String(c?.advanceId||c?.id||"").trim().match(r);if(x&&x[1]){const d=parseInt(x[1],10);!isNaN(d)&&d>s&&(s=d)}});const i=s+1;return`${t}-${String(i).padStart(3,"0")}`},J=()=>{const a=Array.isArray(m.employees)?[...m.employees]:[],e=Z(m);return a.some(s=>s.employeeId==="OWN-001"||s.role==="owner")||a.unshift(e),a.filter(s=>s.isActive!==!1)},$e=async()=>{try{let a=[];try{const e=await $.collection("freshmart").doc("cms_data").collection("salary_advances").orderBy("createdAt","desc").get();e&&!e.empty&&(a=e.docs.map(t=>({id:t.id,...t.data()})))}catch{}if(!a||a.length===0){let e=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[];if(e.length===0)try{e=JSON.parse(localStorage.getItem("freshmart_salary_advances")||"[]"),Array.isArray(e)&&e.length>0&&(m.salaryAdvances=e)}catch{}a=e}return C=a,m.salaryAdvances=a,a}catch(a){return console.error("[HR Advances] Gagal memuat data kasbon:",a),C=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[],C}},V=async a=>{if(!a)return;a.innerHTML=`
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./module-pos-Bw3FogP4.js","./module-print-CL0Q7Kxh.js","./vendor-firebase-core-D2OF5R23.js","./vendor-firebase-db-BIUZcnOd.js","./module-member-6jlm-92J.js","./module-faq-ziMeGJrK.js"])))=>i.map(i=>d[i]);
+import{R as u,f,a as m,q as P,i as l,e as d,k as $,l as L,A as Z,n as K,H as Se,_ as ie,bj as U,bk as de,J as Ae,b as We,bl as X,bm as Je}from"./module-print-CL0Q7Kxh.js";import{V as qe}from"./module-pos-Bw3FogP4.js";import{f as H}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-6jlm-92J.js";import"./module-faq-ziMeGJrK.js";const ce=[{key:"permanent",label:"Karyawan Tetap",badgeColor:"emerald"},{key:"contract",label:"Kontrak (PKWT)",badgeColor:"blue"},{key:"probation",label:"Masa Percobaan (3 Bulan)",badgeColor:"amber"},{key:"daily",label:"Staf Harian Lepas",badgeColor:"purple"}],pe=[{key:"bca",label:"BCA (Bank Central Asia)"},{key:"bri",label:"BRI (Bank Rakyat Indonesia)"},{key:"mandiri",label:"Bank Mandiri"},{key:"bni",label:"BNI (Bank Negara Indonesia)"},{key:"bsi",label:"BSI (Bank Syariah Indonesia)"},{key:"jatim",label:"Bank Jatim"},{key:"cash",label:"Tunai Kas Laci Toko (Cash)"},{key:"other",label:"Bank Lainnya / E-Wallet"}],Ve=t=>{if(!t)return"-";const[e,a]=t.split("-"),s=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],r=parseInt(a,10)-1;return`${s[r]||a} ${e}`},xe=(t=[],e="EMP")=>{if(!Array.isArray(t)||t.length===0)return`${e}-001`;let a=0;const s=new RegExp(`^${e}-(\\d+)`,"i");t.forEach(i=>{const o=String(i?.employeeId||i?.nik||"").trim().match(s);if(o&&o[1]){const x=parseInt(o[1],10);!isNaN(x)&&x>a&&(a=x)}});const r=a+1;return`${e}-${String(r).padStart(3,"0")}`},ee=t=>t&&t.ownerEmployee&&typeof t.ownerEmployee=="object"?{employeeId:"OWN-001",role:u.OWNER,position:"Owner / Direktur Utama",baseSalary:1e7,dailyAllowance:0,employmentStatus:"permanent",bankName:"BCA / Rekening Toko",bankAccount:"-",bankHolder:"Pemilik Toko",isActive:!0,...t.ownerEmployee}:{employeeId:"OWN-001",name:t?.store?.name?`Pemilik ${t.store.name}`:"Pemilik Toko",email:t?.subscription?.clientEmail||"owner@tokoputri.com",phone:t?.store?.wa||"",role:u.OWNER,position:"Owner / Direktur Utama",baseSalary:1e7,dailyAllowance:0,employmentStatus:"permanent",bankName:"BCA / Rekening Toko",bankAccount:"-",bankHolder:"Pemilik Toko",hireDate:"2024-01-01",isActive:!0,notes:"Gaji resmi direksi / pemilik toko terpisah dari laba usaha toko."},se=(t={},e=0)=>{const a=t.role===u.OWNER||t.role==="owner",s=a?"OWN":"EMP",r=(t.employeeId||t.nik||`${s}-${String(e+1).padStart(3,"0")}`).trim();let i=t.position||"";return i||(a?i="Owner / Direktur Utama":t.role===u.ADMIN?i="Admin Operasional Toko":t.role===u.CASHIER?i="Kasir POS":i="Staf Operasional / Gudang"),{uid:t.uid||t.id||`emp_${Date.now()}_${e}`,employeeId:r,name:String(t.name||"Karyawan").trim(),email:String(t.email||"").trim(),phone:String(t.phone||"").trim(),role:t.role||u.CASHIER,position:i,employmentStatus:t.employmentStatus||"permanent",hireDate:t.hireDate||new Date().toISOString().split("T")[0],baseSalary:Math.max(0,parseFloat(t.baseSalary)||0),dailyAllowance:Math.max(0,parseFloat(t.dailyAllowance)||0),bankName:t.bankName||"cash",bankAccount:String(t.bankAccount||"").trim(),bankHolder:String(t.bankHolder||t.name||"").trim(),nikKtp:String(t.nikKtp||"").trim(),npwp:String(t.npwp||"").trim(),isActive:t.isActive!==!1,notes:String(t.notes||"").trim()}},Ye=(t=[],e={})=>{const a=Array.isArray(e?.employees)?e.employees:[],s=new Map;return a.forEach(r=>{r.uid&&s.set(r.uid,r),r.email&&s.set(r.email.toLowerCase(),r),r.employeeId&&s.set(r.employeeId,r)}),t.map((r,i)=>{const n=s.get(r.uid)||s.get(r.email?.toLowerCase())||{};return se({...n,...r,uid:r.uid,email:r.email,name:r.name||n.name,role:r.role||n.role,isActive:r.isActive!==!1},i)})},D=(t="mengubah data staf")=>{try{if(typeof window<"u"&&window.auth&&window.ADMIN_UID){const e=window.auth.currentUser;return e?e.uid!==window.ADMIN_UID?(typeof window.showToast=="function"&&window.showToast(`Akses Ditolak: Hanya Akun Pemilik Utama (Owner) yang berwenang ${t}. Akun staf tidak memiliki izin modifikasi database staf.`,"error"),!1):!0:(typeof window.showToast=="function"&&window.showToast(`Sesi Belum Terotentikasi: Harap login resmi menggunakan Akun Pemilik Toko (Email Owner) di form login CMS untuk ${t}.`,"warning"),!1)}}catch{}return!0};typeof window<"u"&&(window.EMPLOYMENT_STATUSES=ce,window.SALARY_PAYMENT_METHODS=pe,window.generateEmployeeId=xe,window.getOwnerEmployeeProfile=ee,window.normalizeEmployeeProfile=se,window.mergeStaffWithHrProfiles=Ye,window.verifyOwnerAuthority=D);const re=async()=>{try{if(typeof window<"u"&&typeof window.saveApp=="function")return await window.saveApp();const t=await ie(()=>import("./module-pos-Bw3FogP4.js").then(e=>e.W),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url);if(typeof t?.saveApp=="function")return await t.saveApp()}catch{}};let B="active",N=[];const Pe=(t=[])=>{const e=new Date().getFullYear(),a=`KSB-${e}`;let s=0;const r=new RegExp(`^KSB-${e}-(\\d+)`,"i");t.forEach(n=>{const x=String(n?.advanceId||n?.id||"").trim().match(r);if(x&&x[1]){const c=parseInt(x[1],10);!isNaN(c)&&c>s&&(s=c)}});const i=s+1;return`${a}-${String(i).padStart(3,"0")}`},z=()=>{const t=Array.isArray(m.employees)?[...m.employees]:[],e=ee(m);return t.some(s=>s.employeeId==="OWN-001"||s.role==="owner")||t.unshift(e),t.filter(s=>s.isActive!==!1)},Me=async()=>{try{let t=[];try{const e=await P.collection("freshmart").doc("cms_data").collection("salary_advances").orderBy("createdAt","desc").get();e&&!e.empty&&(t=e.docs.map(a=>({id:a.id,...a.data()})))}catch{}if(!t||t.length===0){let e=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[];if(e.length===0)try{e=JSON.parse(localStorage.getItem("freshmart_salary_advances")||"[]"),Array.isArray(e)&&e.length>0&&(m.salaryAdvances=e)}catch{}t=e}return N=t,m.salaryAdvances=t,t}catch(t){return console.error("[HR Advances] Gagal memuat data kasbon:",t),N=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[],N}},Q=async t=>{if(!t)return;t.innerHTML=`
     <div class="text-center py-16">
         <i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i>
         <p class="text-xs text-slate-400 mt-2">Memuat buku kasbon karyawan...</p>
-    </div>`,await $e();const e=C,t=e.filter(o=>o.status==="active"&&(parseFloat(o.remainingAmount)||0)>0),s=t.reduce((o,x)=>o+(parseFloat(x.remainingAmount)||0),0),r=new Set(t.map(o=>o.employeeId||o.employeeName)).size,i=t.reduce((o,x)=>o+Math.min(parseFloat(x.monthlyInstallment)||0,parseFloat(x.remainingAmount)||0),0);let c=e;K==="active"?c=e.filter(o=>o.status==="active"&&(parseFloat(o.remainingAmount)||0)>0):K==="paid"&&(c=e.filter(o=>o.status==="paid"||(parseFloat(o.remainingAmount)||0)<=0)),a.innerHTML=`
+    </div>`,await Me();const e=N,a=e.filter(o=>o.status==="active"&&(parseFloat(o.remainingAmount)||0)>0),s=a.reduce((o,x)=>o+(parseFloat(x.remainingAmount)||0),0),r=new Set(a.map(o=>o.employeeId||o.employeeName)).size,i=a.reduce((o,x)=>o+Math.min(parseFloat(x.monthlyInstallment)||0,parseFloat(x.remainingAmount)||0),0);let n=e;B==="active"?n=e.filter(o=>o.status==="active"&&(parseFloat(o.remainingAmount)||0)>0):B==="paid"&&(n=e.filter(o=>o.status==="paid"||(parseFloat(o.remainingAmount)||0)<=0)),t.innerHTML=`
     <div class="space-y-4">
         <!-- Bento Summary Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -33,20 +33,20 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <div class="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar">
                 <button onclick="window.filterAdvanceStatus('active')" 
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 ${K==="active"?"text-white shadow-xs":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"}"
-                    style="${K==="active"?"background: var(--color-primary); color: #fff;":""}">
+                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 ${B==="active"?"text-white shadow-xs":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"}"
+                    style="${B==="active"?"background: var(--color-primary); color: #fff;":""}">
                     <i class="fa-solid fa-clock-rotate-left text-[10px]"></i>
-                    <span>Kasbon Aktif (${t.length})</span>
+                    <span>Kasbon Aktif (${a.length})</span>
                 </button>
                 <button onclick="window.filterAdvanceStatus('paid')" 
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 ${K==="paid"?"text-white shadow-xs":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"}"
-                    style="${K==="paid"?"background: var(--color-primary); color: #fff;":""}">
+                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 ${B==="paid"?"text-white shadow-xs":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"}"
+                    style="${B==="paid"?"background: var(--color-primary); color: #fff;":""}">
                     <i class="fa-solid fa-circle-check text-[10px] text-emerald-500"></i>
                     <span>Sudah Lunas</span>
                 </button>
                 <button onclick="window.filterAdvanceStatus('all')" 
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 ${K==="all"?"text-white shadow-xs":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"}"
-                    style="${K==="all"?"background: var(--color-primary); color: #fff;":""}">
+                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 ${B==="all"?"text-white shadow-xs":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"}"
+                    style="${B==="all"?"background: var(--color-primary); color: #fff;":""}">
                     <i class="fa-solid fa-list text-[10px]"></i>
                     <span>Semua Catatan (${e.length})</span>
                 </button>
@@ -62,20 +62,20 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
         <!-- List Kasbon Cards -->
         <div id="salary-advances-list" class="space-y-3">
-            ${Ve(c)}
+            ${Ze(n)}
         </div>
-    </div>`},qe=a=>{K=a;const e=n("cashier-panel-advances");e&&V(e)},Ve=a=>!a||a.length===0?`
+    </div>`},Qe=t=>{B=t;const e=d("cashier-panel-advances");e&&Q(e)},Ze=t=>!t||t.length===0?`
         <div class="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600 bg-white dark:bg-slate-800/60 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-8 text-center">
             <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl mb-3 text-slate-400">
                 <i class="fa-solid fa-receipt"></i>
             </div>
             <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Tidak ada catatan kasbon pada filter ini</p>
             <p class="text-xs mt-1 text-slate-400">Klik "+ Ajukan Kasbon Baru" untuk mencatat pinjaman staf toko</p>
-        </div>`:a.map(e=>{const t=Math.max(0,parseFloat(e.remainingAmount)||0),s=Math.max(1,parseFloat(e.amount)||1),r=Math.max(0,s-t),i=Math.min(100,Math.round(r/s*100)),c=t<=0||e.status==="paid",o=e.disbursementSource==="bank"?"Transfer Bank":e.disbursementSource==="owner"?"Dana Owner":"Kas Toko (Tunai)",x=e.requestDate||"-";return`
+        </div>`:t.map(e=>{const a=Math.max(0,parseFloat(e.remainingAmount)||0),s=Math.max(1,parseFloat(e.amount)||1),r=Math.max(0,s-a),i=Math.min(100,Math.round(r/s*100)),n=a<=0||e.status==="paid",o=e.disbursementSource==="bank"?"Transfer Bank":e.disbursementSource==="owner"?"Dana Owner":"Kas Toko (Tunai)",x=e.requestDate||"-";return`
         <div class="p-4 sm:p-5 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-start gap-3.5 min-w-0 flex-1">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-base shrink-0 shadow-2xs font-black ${c?"bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200 dark:border-emerald-800":"bg-rose-50 dark:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-800"}">
-                    <i class="fa-solid ${c?"fa-circle-check":"fa-hand-holding-dollar"}"></i>
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-base shrink-0 shadow-2xs font-black ${n?"bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200 dark:border-emerald-800":"bg-rose-50 dark:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-800"}">
+                    <i class="fa-solid ${n?"fa-circle-check":"fa-hand-holding-dollar"}"></i>
                 </div>
                 <div class="min-w-0 flex-1 space-y-1.5">
                     <div class="flex items-center gap-2 flex-wrap">
@@ -84,9 +84,9 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                             ${l(e.employeeId||"EMP")}
                         </span>
                         <span class="font-mono text-[10px] text-slate-400">#${l(e.advanceId||e.id)}</span>
-                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full ${c?"bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200":"bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200"}">
-                            <span class="w-1.5 h-1.5 rounded-full ${c?"bg-emerald-500":"bg-amber-500 animate-pulse"}"></span>
-                            ${c?"Lunas":"Belum Lunas"}
+                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full ${n?"bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200":"bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200"}">
+                            <span class="w-1.5 h-1.5 rounded-full ${n?"bg-emerald-500":"bg-amber-500 animate-pulse"}"></span>
+                            ${n?"Lunas":"Belum Lunas"}
                         </span>
                     </div>
 
@@ -95,7 +95,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <span>•</span>
                         <span>Pinjaman: <strong class="text-slate-900 dark:text-white">${f(e.amount)}</strong></span>
                         <span>•</span>
-                        <span>Sisa: <strong class="${c?"text-emerald-600 dark:text-emerald-400":"text-rose-600 dark:text-rose-400"}">${f(t)}</strong></span>
+                        <span>Sisa: <strong class="${n?"text-emerald-600 dark:text-emerald-400":"text-rose-600 dark:text-rose-400"}">${f(a)}</strong></span>
                         <span>•</span>
                         <span>Potongan: <strong class="text-[var(--color-primary)] font-bold">${f(e.monthlyInstallment)}/bln</strong></span>
                     </div>
@@ -107,7 +107,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                             <span class="font-bold text-slate-600 dark:text-slate-300">${i}% Lunas</span>
                         </div>
                         <div class="w-full bg-slate-100 dark:bg-slate-700/80 rounded-full h-1.5 overflow-hidden">
-                            <div class="h-full rounded-full transition-all duration-500 ${c?"bg-emerald-500":""}" style="width: ${i}%; ${c?"":"background: var(--color-primary)"}"></div>
+                            <div class="h-full rounded-full transition-all duration-500 ${n?"bg-emerald-500":""}" style="width: ${i}%; ${n?"":"background: var(--color-primary)"}"></div>
                         </div>
                     </div>
 
@@ -127,8 +127,8 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-file-invoice text-[10px]" style="color: var(--color-primary)"></i>
                     <span>Riwayat &amp; Rincian</span>
                 </button>
-                ${c?"":`
-                <button onclick="window.promptManualRepayment('${l(e.advanceId||e.id)}', ${t})"
+                ${n?"":`
+                <button onclick="window.promptManualRepayment('${l(e.advanceId||e.id)}', ${a})"
                     class="px-3.5 py-2 rounded-xl text-xs font-black text-white transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5"
                     style="background: var(--color-primary)">
                     <i class="fa-solid fa-money-bill-transfer text-[10px]"></i>
@@ -140,7 +140,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
-        </div>`}).join(""),Ye=()=>{if(!M("mencatat kasbon karyawan"))return;const a=J();if(a.length===0){S("Belum ada staf terdaftar di toko. Tambahkan staf terlebih dahulu.","warning");return}const e=new Date().toISOString().split("T")[0],t=Se(C),s=n("modal-salary-advance-form");s&&s.remove(),document.body.insertAdjacentHTML("beforeend",`
+        </div>`}).join(""),Xe=()=>{if(!D("mencatat kasbon karyawan"))return;const t=z();if(t.length===0){$("Belum ada staf terdaftar di toko. Tambahkan staf terlebih dahulu.","warning");return}const e=new Date().toISOString().split("T")[0],a=Pe(N),s=d("modal-salary-advance-form");s&&s.remove(),document.body.insertAdjacentHTML("beforeend",`
     <div id="modal-salary-advance-form" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeSalaryAdvanceFormModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-lg flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="salary-advance-modal-box">
@@ -156,7 +156,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
                             <span>Form Pengajuan Kasbon Karyawan</span>
-                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${l(t)}</span>
+                            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${l(a)}</span>
                         </h3>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">Pencatatan pinjaman operasional staf toko</p>
                     </div>
@@ -172,7 +172,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Pilih Karyawan Peminjam <span class="text-rose-500">*</span></label>
                     <select id="adv-employee-select" onchange="window.onAdvanceEmployeeChange()"
                         class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
-                        ${a.map(r=>`
+                        ${t.map(r=>`
                             <option value="${l(r.uid||r.employeeId)}" data-empid="${l(r.employeeId)}" data-name="${l(r.name)}" data-role="${l(r.role)}" data-position="${l(r.position)}" data-salary="${r.baseSalary||0}">
                                 ${l(r.name)} — ${l(r.position)} (${l(r.employeeId)}) [Gaji: ${f(r.baseSalary||0)}]
                             </option>
@@ -259,7 +259,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </button>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("advanceForm"),setTimeout(()=>{const r=n("salary-advance-modal-box");r&&r.classList.remove("scale-95");const i=n("adv-amount");i&&i.focus()},10)},Pe=(a=!1)=>{const e=()=>{const t=n("modal-salary-advance-form");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("advanceForm",a,e):e()},Me=()=>{const a=parseFloat(n("adv-amount")?.value)||0,e=parseInt(n("adv-tenor-select")?.value,10)||1,t=n("adv-installment");t&&a>0&&(t.value=Math.ceil(a/e))},Qe=()=>{Me()},Ze=async()=>{if(!M("mencatat kasbon karyawan"))return;const a=n("adv-employee-select"),e=a?.options[a.selectedIndex];if(!e){S("Pilih karyawan terlebih dahulu","warning");return}const t=a.value,s=e.getAttribute("data-empid")||"EMP-001",r=e.getAttribute("data-name")||"Karyawan",i=e.getAttribute("data-role")||"staff",c=e.getAttribute("data-position")||"Staf Toko",o=n("adv-request-date")?.value||new Date().toISOString().split("T")[0],x=Math.max(0,parseFloat(n("adv-amount")?.value)||0),d=parseInt(n("adv-tenor-select")?.value,10)||1,b=Math.max(0,parseFloat(n("adv-installment")?.value)||Math.ceil(x/d)),p=n("adv-disbursement-source")?.value||"cash",k=n("adv-reason")?.value?.trim()||"Kasbon Operasional Karyawan",y=n("adv-sync-expense")?.checked!==!1,g=n("adv-form-error"),v=n("save-adv-btn");if(x<1e4){g&&(g.textContent="Nominal kasbon minimal Rp 10.000.",g.classList.remove("hidden"));return}v&&(v.disabled=!0,v.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),O("Mencatat kasbon karyawan...");try{const w=Se(C);let A=null;if(y){A="exp_adv_"+Date.now();const E={id:A,date:o,category:"kasbon",amount:x,desc:`Pencairan Kasbon: ${r} (${s}) - ${k}`,source:p,recipient:r,receiptUrl:"",advanceId:w,createdAt:new Date().toISOString()};Array.isArray(m.expenses)||(m.expenses=[]),m.expenses.unshift(E);try{await se()}catch{}}const h={advanceId:w,employeeUid:t,employeeId:s,employeeName:r,employeeRole:i,position:c,requestDate:o,amount:x,monthlyInstallment:b,totalTenorMonths:d,remainingAmount:x,reason:k,status:"active",disbursementSource:p,expenseId:A,repayments:[],createdAt:D.firestore.FieldValue.serverTimestamp(),createdBy:Y.currentUser?.uid||"owner"};try{await $.collection("freshmart").doc("cms_data").collection("salary_advances").doc(w).set(h)}catch{}Array.isArray(m.salaryAdvances)||(m.salaryAdvances=[]),m.salaryAdvances.unshift({id:w,...h}),C=m.salaryAdvances;try{localStorage.setItem("freshmart_salary_advances",JSON.stringify(m.salaryAdvances)),await se()}catch{}Pe(),S(`Kasbon ${f(x)} untuk ${r} berhasil dicatat!`,"success");const j=n("cashier-panel-advances");j&&V(j)}catch(w){console.error("[HR Advances] Gagal menyimpan kasbon:",w),g&&(g.textContent="Gagal menyimpan kasbon: "+(w.message||"Kesalahan sistem"),g.classList.remove("hidden")),v&&(v.disabled=!1,v.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan &amp; Cairkan Kasbon')}finally{L()}},Xe=a=>{const e=C.find(d=>(d.advanceId||d.id)===a);if(!e){S("Data kasbon tidak ditemukan","warning");return}const t=Math.max(0,parseFloat(e.remainingAmount)||0),s=Math.max(1,parseFloat(e.amount)||1),r=Math.max(0,s-t),i=Math.min(100,Math.round(r/s*100)),c=t<=0||e.status==="paid",o=Array.isArray(e.repayments)?e.repayments:[],x=n("modal-salary-advance-detail");x&&x.remove(),document.body.insertAdjacentHTML("beforeend",`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("advanceForm"),setTimeout(()=>{const r=d("salary-advance-modal-box");r&&r.classList.remove("scale-95");const i=d("adv-amount");i&&i.focus()},10)},Te=(t=!1)=>{const e=()=>{const a=d("modal-salary-advance-form");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("advanceForm",t,e):e()},Ie=()=>{const t=parseFloat(d("adv-amount")?.value)||0,e=parseInt(d("adv-tenor-select")?.value,10)||1,a=d("adv-installment");a&&t>0&&(a.value=Math.ceil(t/e))},et=()=>{Ie()},tt=async()=>{if(!D("mencatat kasbon karyawan"))return;const t=d("adv-employee-select"),e=t?.options[t.selectedIndex];if(!e){$("Pilih karyawan terlebih dahulu","warning");return}const a=t.value,s=e.getAttribute("data-empid")||"EMP-001",r=e.getAttribute("data-name")||"Karyawan",i=e.getAttribute("data-role")||"staff",n=e.getAttribute("data-position")||"Staf Toko",o=d("adv-request-date")?.value||new Date().toISOString().split("T")[0],x=Math.max(0,parseFloat(d("adv-amount")?.value)||0),c=parseInt(d("adv-tenor-select")?.value,10)||1,p=Math.max(0,parseFloat(d("adv-installment")?.value)||Math.ceil(x/c)),b=d("adv-disbursement-source")?.value||"cash",k=d("adv-reason")?.value?.trim()||"Kasbon Operasional Karyawan",w=d("adv-sync-expense")?.checked!==!1,g=d("adv-form-error"),v=d("save-adv-btn");if(x<1e4){g&&(g.textContent="Nominal kasbon minimal Rp 10.000.",g.classList.remove("hidden"));return}v&&(v.disabled=!0,v.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),L("Mencatat kasbon karyawan...");try{const y=Pe(N);let A=null;if(w){A="exp_adv_"+Date.now();const R={id:A,date:o,category:"kasbon",amount:x,desc:`Pencairan Kasbon: ${r} (${s}) - ${k}`,source:b,recipient:r,receiptUrl:"",advanceId:y,createdAt:new Date().toISOString()};Array.isArray(m.expenses)||(m.expenses=[]),m.expenses.unshift(R);try{await re()}catch{}}const h={advanceId:y,employeeUid:a,employeeId:s,employeeName:r,employeeRole:i,position:n,requestDate:o,amount:x,monthlyInstallment:p,totalTenorMonths:c,remainingAmount:x,reason:k,status:"active",disbursementSource:b,expenseId:A,repayments:[],createdAt:H.firestore.FieldValue.serverTimestamp(),createdBy:Z.currentUser?.uid||"owner"};try{await P.collection("freshmart").doc("cms_data").collection("salary_advances").doc(y).set(h)}catch{}Array.isArray(m.salaryAdvances)||(m.salaryAdvances=[]),m.salaryAdvances.unshift({id:y,...h}),N=m.salaryAdvances;try{localStorage.setItem("freshmart_salary_advances",JSON.stringify(m.salaryAdvances)),await re()}catch{}Te(),$(`Kasbon ${f(x)} untuk ${r} berhasil dicatat!`,"success");const M=d("cashier-panel-advances");M&&Q(M)}catch(y){console.error("[HR Advances] Gagal menyimpan kasbon:",y),g&&(g.textContent="Gagal menyimpan kasbon: "+(y.message||"Kesalahan sistem"),g.classList.remove("hidden")),v&&(v.disabled=!1,v.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan &amp; Cairkan Kasbon')}finally{K()}},at=t=>{const e=N.find(c=>(c.advanceId||c.id)===t);if(!e){$("Data kasbon tidak ditemukan","warning");return}const a=Math.max(0,parseFloat(e.remainingAmount)||0),s=Math.max(1,parseFloat(e.amount)||1),r=Math.max(0,s-a),i=Math.min(100,Math.round(r/s*100)),n=a<=0||e.status==="paid",o=Array.isArray(e.repayments)?e.repayments:[],x=d("modal-salary-advance-detail");x&&x.remove(),document.body.insertAdjacentHTML("beforeend",`
     <div id="modal-salary-advance-detail" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeAdvanceDetailModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-lg flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="salary-advance-detail-modal-box">
@@ -268,8 +268,8 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
             <!-- Header -->
             <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs ${c?"bg-emerald-500 text-white":"text-white"}"
-                        style="${c?"":"background: var(--color-primary)"}">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs ${n?"bg-emerald-500 text-white":"text-white"}"
+                        style="${n?"":"background: var(--color-primary)"}">
                         <i class="fa-solid fa-file-invoice"></i>
                     </div>
                     <div>
@@ -291,9 +291,9 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 space-y-2.5">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-500">Status Pelunasan:</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-black px-3 py-1 rounded-full ${c?"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300":"bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"}">
-                            <span class="w-2 h-2 rounded-full ${c?"bg-emerald-500":"bg-rose-500 animate-pulse"}"></span>
-                            ${c?"Lunas Sepenuhnya":"Masih Berjalan (Belum Lunas)"}
+                        <span class="inline-flex items-center gap-1.5 text-xs font-black px-3 py-1 rounded-full ${n?"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300":"bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"}">
+                            <span class="w-2 h-2 rounded-full ${n?"bg-emerald-500":"bg-rose-500 animate-pulse"}"></span>
+                            ${n?"Lunas Sepenuhnya":"Masih Berjalan (Belum Lunas)"}
                         </span>
                     </div>
                     <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
@@ -303,11 +303,11 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         </div>
                         <div>
                             <span class="text-[10px] font-bold uppercase text-slate-400 block">Sisa Pinjaman</span>
-                            <span class="text-sm font-black ${c?"text-emerald-600":"text-rose-600"}">${f(t)}</span>
+                            <span class="text-sm font-black ${n?"text-emerald-600":"text-rose-600"}">${f(a)}</span>
                         </div>
                     </div>
                     <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden mt-2">
-                        <div class="h-full rounded-full transition-all duration-500 ${c?"bg-emerald-500":""}" style="width: ${i}%; ${c?"":"background: var(--color-primary)"}"></div>
+                        <div class="h-full rounded-full transition-all duration-500 ${n?"bg-emerald-500":""}" style="width: ${i}%; ${n?"":"background: var(--color-primary)"}"></div>
                     </div>
                     <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
                         <span>Potongan: <strong>${f(e.monthlyInstallment)} / bln</strong></span>
@@ -326,13 +326,13 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         </div>
                     `:`
                         <div class="space-y-2">
-                            ${o.map((d,b)=>`
+                            ${o.map((c,p)=>`
                             <div class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
                                 <div>
-                                    <span class="font-bold text-slate-800 dark:text-white block">Angsuran #${b+1}: ${f(d.amount)}</span>
-                                    <span class="text-[10px] text-slate-400">${l(d.date||"-")} • ${l(d.notes||"Potongan Payroll")}</span>
+                                    <span class="font-bold text-slate-800 dark:text-white block">Angsuran #${p+1}: ${f(c.amount)}</span>
+                                    <span class="text-[10px] text-slate-400">${l(c.date||"-")} • ${l(c.notes||"Potongan Payroll")}</span>
                                 </div>
-                                <span class="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">-${f(d.amount)}</span>
+                                <span class="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">-${f(c.amount)}</span>
                             </div>`).join("")}
                         </div>
                     `}
@@ -347,12 +347,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </button>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("advanceDetail"),setTimeout(()=>{const d=n("salary-advance-detail-modal-box");d&&d.classList.remove("scale-95")},10)},ea=(a=!1)=>{const e=()=>{const t=n("modal-salary-advance-detail");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("advanceDetail",a,e):e()},aa=(a,e)=>{if(!M("mencatat pembayaran kasbon"))return;const t=C.find(i=>(i.advanceId||i.id)===a);if(!t)return;const s=prompt(`Masukkan nominal pembayaran angsuran kasbon untuk "${t.employeeName}":
-(Sisa pinjaman saat ini: ${f(e)})`,e);if(s===null)return;const r=Math.max(0,parseFloat(s.replace(/[^0-9]/g,""))||0);if(r<=0){S("Nominal pembayaran tidak valid","warning");return}be(a,r,"Pembayaran manual / tunai staf")},be=async(a,e,t="Potongan gaji payroll")=>{const s=C.find(d=>(d.advanceId||d.id)===a);if(!s)return!1;const r=Math.max(0,parseFloat(s.remainingAmount)||0),i=Math.min(r,e),c=Math.max(0,r-i),o=c<=0,x={date:new Date().toISOString().split("T")[0],amount:i,remainingAfter:c,notes:t,recordedAt:new Date().toISOString()};O("Memperbarui catatan kasbon...");try{const d={remainingAmount:c,status:o?"paid":"active",repayments:D.firestore.FieldValue.arrayUnion(x),updatedAt:D.firestore.FieldValue.serverTimestamp()};try{await $.collection("freshmart").doc("cms_data").collection("salary_advances").doc(a).update(d)}catch{}s.remainingAmount=c,s.status=o?"paid":"active",Array.isArray(s.repayments)||(s.repayments=[]),s.repayments.push(x);try{localStorage.setItem("freshmart_salary_advances",JSON.stringify(m.salaryAdvances)),await se()}catch{}S(`Pembayaran kasbon ${f(i)} berhasil dicatat! Sisa: ${f(c)}`,"success");const b=n("cashier-panel-advances");return b&&V(b),!0}catch(d){return console.error("[HR Advances] Gagal mencatat pembayaran:",d),S("Gagal mencatat pembayaran: "+d.message,"error"),!1}finally{L()}},ta=(a,e)=>{M("menghapus data kasbon")&&Ae("Hapus Catatan Kasbon",`Yakin hapus data kasbon "${e}" (#${a})? Tindakan ini tidak dapat dibatalkan.`,async()=>{O("Menghapus catatan kasbon...");try{try{await $.collection("freshmart").doc("cms_data").collection("salary_advances").doc(a).delete()}catch(s){console.warn("[HR Advances] Cloud delete terkendala hak akses/offline:",s)}C=C.filter(s=>(s.advanceId||s.id)!==a),m.salaryAdvances=C;try{localStorage.setItem("freshmart_salary_advances",JSON.stringify(m.salaryAdvances)),await se()}catch{}S(`Catatan kasbon "${e}" berhasil dihapus`,"success");const t=n("cashier-panel-advances");t&&V(t)}catch(t){console.error("[HR Advances] Gagal menghapus kasbon:",t),S("Gagal menghapus: "+t.message,"error")}finally{L()}},"Ya, Hapus",!0)};typeof window<"u"&&(window.loadSalaryAdvances=$e,window.renderSalaryAdvancesView=V,window.filterAdvanceStatus=qe,window.openSalaryAdvanceFormModal=Ye,window.closeSalaryAdvanceFormModal=Pe,window.calculateAdvanceInstallment=Me,window.onAdvanceEmployeeChange=Qe,window.saveSalaryAdvance=Ze,window.openAdvanceDetailModal=Xe,window.closeAdvanceDetailModal=ea,window.promptManualRepayment=aa,window.recordAdvanceRepayment=be,window.deleteSalaryAdvance=ta);let N=new Date().toISOString().split("T")[0],G=[];const Ie=async()=>{try{if(typeof window<"u"&&typeof window.saveApp=="function")return await window.saveApp();const a=await ne(()=>import("./module-pos-WEjenQzn.js").then(e=>e.W),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url);if(typeof a?.saveApp=="function")return await a.saveApp()}catch{}},xe=[{key:"present",label:"Hadir",badgeClass:"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200",icon:"fa-check"},{key:"late",label:"Terlambat",badgeClass:"bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-200",icon:"fa-clock"},{key:"permit",label:"Izin",badgeClass:"bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border-blue-200",icon:"fa-envelope-open-text"},{key:"sick",label:"Sakit",badgeClass:"bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border-purple-200",icon:"fa-notes-medical"},{key:"alpha",label:"Alpha",badgeClass:"bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-200",icon:"fa-xmark"}],re=(a,e)=>`ATT-${a}-${e.replace(/[^a-zA-Z0-9]/g,"")}`,je=async(a=N)=>{N=a;try{let e=[],t=!1;try{const s=await $.collection("freshmart").doc("cms_data").collection("attendances").where("date","==",a).get();s&&!s.empty&&(e=s.docs.map(r=>({id:r.id,...r.data()})),t=!0)}catch{}if(!t||e.length===0){let s=Array.isArray(m.attendances)?m.attendances:[];if(s.length===0)try{s=JSON.parse(localStorage.getItem("freshmart_attendances")||"[]"),Array.isArray(s)&&s.length>0&&(m.attendances=s)}catch{}const r=s.filter(i=>i.date===a);r.length>0&&(e=r)}return G=e,e}catch(e){return console.error("[HR Attendance] Gagal memuat absensi tanggal:",a,e),G=(Array.isArray(m.attendances)?m.attendances:[]).filter(s=>s.date===a),G}},X=async a=>{if(!a)return;a.innerHTML=`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("advanceDetail"),setTimeout(()=>{const c=d("salary-advance-detail-modal-box");c&&c.classList.remove("scale-95")},10)},st=(t=!1)=>{const e=()=>{const a=d("modal-salary-advance-detail");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("advanceDetail",t,e):e()},rt=(t,e)=>{if(!D("mencatat pembayaran kasbon"))return;const a=N.find(i=>(i.advanceId||i.id)===t);if(!a)return;const s=prompt(`Masukkan nominal pembayaran angsuran kasbon untuk "${a.employeeName}":
+(Sisa pinjaman saat ini: ${f(e)})`,e);if(s===null)return;const r=Math.max(0,parseFloat(s.replace(/[^0-9]/g,""))||0);if(r<=0){$("Nominal pembayaran tidak valid","warning");return}be(t,r,"Pembayaran manual / tunai staf")},be=async(t,e,a="Potongan gaji payroll")=>{const s=N.find(c=>(c.advanceId||c.id)===t);if(!s)return!1;const r=Math.max(0,parseFloat(s.remainingAmount)||0),i=Math.min(r,e),n=Math.max(0,r-i),o=n<=0,x={date:new Date().toISOString().split("T")[0],amount:i,remainingAfter:n,notes:a,recordedAt:new Date().toISOString()};L("Memperbarui catatan kasbon...");try{const c={remainingAmount:n,status:o?"paid":"active",repayments:H.firestore.FieldValue.arrayUnion(x),updatedAt:H.firestore.FieldValue.serverTimestamp()};try{await P.collection("freshmart").doc("cms_data").collection("salary_advances").doc(t).update(c)}catch{}s.remainingAmount=n,s.status=o?"paid":"active",Array.isArray(s.repayments)||(s.repayments=[]),s.repayments.push(x);try{localStorage.setItem("freshmart_salary_advances",JSON.stringify(m.salaryAdvances)),await re()}catch{}$(`Pembayaran kasbon ${f(i)} berhasil dicatat! Sisa: ${f(n)}`,"success");const p=d("cashier-panel-advances");return p&&Q(p),!0}catch(c){return console.error("[HR Advances] Gagal mencatat pembayaran:",c),$("Gagal mencatat pembayaran: "+c.message,"error"),!1}finally{K()}},lt=(t,e)=>{D("menghapus data kasbon")&&Se("Hapus Catatan Kasbon",`Yakin hapus data kasbon "${e}" (#${t})? Tindakan ini tidak dapat dibatalkan.`,async()=>{L("Menghapus catatan kasbon...");try{try{await P.collection("freshmart").doc("cms_data").collection("salary_advances").doc(t).delete()}catch(s){console.warn("[HR Advances] Cloud delete terkendala hak akses/offline:",s)}N=N.filter(s=>(s.advanceId||s.id)!==t),m.salaryAdvances=N;try{localStorage.setItem("freshmart_salary_advances",JSON.stringify(m.salaryAdvances)),await re()}catch{}$(`Catatan kasbon "${e}" berhasil dihapus`,"success");const a=d("cashier-panel-advances");a&&Q(a)}catch(a){console.error("[HR Advances] Gagal menghapus kasbon:",a),$("Gagal menghapus: "+a.message,"error")}finally{K()}},"Ya, Hapus",!0)};typeof window<"u"&&(window.loadSalaryAdvances=Me,window.renderSalaryAdvancesView=Q,window.filterAdvanceStatus=Qe,window.openSalaryAdvanceFormModal=Xe,window.closeSalaryAdvanceFormModal=Te,window.calculateAdvanceInstallment=Ie,window.onAdvanceEmployeeChange=et,window.saveSalaryAdvance=tt,window.openAdvanceDetailModal=at,window.closeAdvanceDetailModal=st,window.promptManualRepayment=rt,window.recordAdvanceRepayment=be,window.deleteSalaryAdvance=lt);let C=new Date().toISOString().split("T")[0],G=[];const je=async()=>{try{if(typeof window<"u"&&typeof window.saveApp=="function")return await window.saveApp();const t=await ie(()=>import("./module-pos-Bw3FogP4.js").then(e=>e.W),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url);if(typeof t?.saveApp=="function")return await t.saveApp()}catch{}},me=[{key:"present",label:"Hadir",badgeClass:"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200",icon:"fa-check"},{key:"late",label:"Terlambat",badgeClass:"bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-200",icon:"fa-clock"},{key:"permit",label:"Izin",badgeClass:"bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border-blue-200",icon:"fa-envelope-open-text"},{key:"sick",label:"Sakit",badgeClass:"bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border-purple-200",icon:"fa-notes-medical"},{key:"alpha",label:"Alpha",badgeClass:"bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-200",icon:"fa-xmark"}],le=(t,e)=>`ATT-${t}-${e.replace(/[^a-zA-Z0-9]/g,"")}`,De=async(t=C)=>{C=t;try{let e=[],a=!1;try{const s=await P.collection("freshmart").doc("cms_data").collection("attendances").where("date","==",t).get();s&&!s.empty&&(e=s.docs.map(r=>({id:r.id,...r.data()})),a=!0)}catch{}if(!a||e.length===0){let s=Array.isArray(m.attendances)?m.attendances:[];if(s.length===0)try{s=JSON.parse(localStorage.getItem("freshmart_attendances")||"[]"),Array.isArray(s)&&s.length>0&&(m.attendances=s)}catch{}const r=s.filter(i=>i.date===t);r.length>0&&(e=r)}return G=e,e}catch(e){return console.error("[HR Attendance] Gagal memuat absensi tanggal:",t,e),G=(Array.isArray(m.attendances)?m.attendances:[]).filter(s=>s.date===t),G}},te=async t=>{if(!t)return;t.innerHTML=`
     <div class="text-center py-16">
         <i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i>
         <p class="text-xs text-slate-400 mt-2">Memuat lembar presensi tim...</p>
-    </div>`,await je(N);const e=J(),t=new Map;G.forEach(d=>{t.set(d.employeeId||d.employeeUid,d)});let s=0,r=0,i=0,c=0,o=0;e.forEach(d=>{const b=t.get(d.employeeId)||t.get(d.uid),p=b?b.status:"unrecorded";p==="present"?(s++,o+=parseFloat(b.allowanceEarned)||parseFloat(d.dailyAllowance)||0):p==="late"?(r++,o+=parseFloat(b.allowanceEarned)||parseFloat(d.dailyAllowance)||0):p==="permit"||p==="sick"?i++:p==="alpha"&&c++});const x=N===new Date().toISOString().split("T")[0];a.innerHTML=`
+    </div>`,await De(C);const e=z(),a=new Map;G.forEach(c=>{a.set(c.employeeId||c.employeeUid,c)});let s=0,r=0,i=0,n=0,o=0;e.forEach(c=>{const p=a.get(c.employeeId)||a.get(c.uid),b=p?p.status:"unrecorded";b==="present"?(s++,o+=parseFloat(p.allowanceEarned)||parseFloat(c.dailyAllowance)||0):b==="late"?(r++,o+=parseFloat(p.allowanceEarned)||parseFloat(c.dailyAllowance)||0):b==="permit"||b==="sick"?i++:b==="alpha"&&n++});const x=C===new Date().toISOString().split("T")[0];t.innerHTML=`
     <div class="space-y-4">
         <!-- Date Selector & Quick Controls -->
         <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -364,7 +364,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <button onclick="window.navigateAttendanceDate(-1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700" title="Hari Sebelumnya">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <input id="att-date-picker" type="date" value="${N}" onchange="window.onAttendanceDateChanged(this.value)"
+                <input id="att-date-picker" type="date" value="${C}" onchange="window.onAttendanceDateChanged(this.value)"
                     class="h-9 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 <button onclick="window.navigateAttendanceDate(1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700" title="Hari Berikutnya">
                     <i class="fa-solid fa-chevron-right"></i>
@@ -377,6 +377,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
             </div>
 
             <div class="flex items-center gap-2">
+                <button onclick="window.openMonthlyAttendanceRecapModal('${C.slice(0,7)}')"
+                    class="h-9 px-3.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-600 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    title="Rekapitulasi Presensi & Kedisiplinan Tim">
+                    <i class="fa-solid fa-chart-pie" style="color: var(--color-primary)"></i>
+                    <span>Rekap Bulanan</span>
+                </button>
                 <button onclick="window.bulkMarkAllPresent()"
                     class="h-9 px-4 rounded-xl text-xs font-black text-white shadow-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2 hover:opacity-95"
                     style="background: var(--color-primary)">
@@ -425,25 +431,25 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <i class="fa-solid fa-user-xmark"></i>
                     </div>
                 </div>
-                <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${c+(e.length-s-r-i-c)} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Staf</span></p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${n+(e.length-s-r-i-n)} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Staf</span></p>
                 <p class="text-[10px] font-bold text-rose-500 mt-0.5">Uang makan Rp 0</p>
             </div>
         </div>
 
         <!-- Daftar Kehadiran Staf -->
         <div class="space-y-2.5">
-            ${e.map(d=>{const b=t.get(d.employeeId)||t.get(d.uid),p=b?b.status:"present",k=!!b,y=b?.clockIn||"08:00",g=b?.clockOut||"17:00";b?.notes;const v=parseFloat(d.dailyAllowance)||0;return k?parseFloat(b?.allowanceEarned):v>0,`
+            ${e.map(c=>{const p=a.get(c.employeeId)||a.get(c.uid),b=p?p.status:"present",k=!!p,w=p?.clockIn||"08:00",g=p?.clockOut||"17:00";p?.notes;const v=parseFloat(c.dailyAllowance)||0;return k?parseFloat(p?.allowanceEarned):v>0,`
                 <div class="p-4 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
                     <div class="flex items-center gap-3.5 min-w-0">
                         <div class="w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
                             style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                            ${(d.name||"ST").trim().split(/\s+/).slice(0,2).map(A=>A[0]).join("").toUpperCase()}
+                            ${(c.name||"ST").trim().split(/\s+/).slice(0,2).map(A=>A[0]).join("").toUpperCase()}
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white">${l(d.name)}</span>
+                                <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white">${l(c.name)}</span>
                                 <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                                    ${l(d.employeeId)}
+                                    ${l(c.employeeId)}
                                 </span>
                                 ${k?`
                                     <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
@@ -456,10 +462,10 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                                 `}
                             </div>
                             <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
-                                <span class="font-semibold text-slate-700 dark:text-slate-300">${l(d.position)}</span>
+                                <span class="font-semibold text-slate-700 dark:text-slate-300">${l(c.position)}</span>
                                 <span>•</span>
                                 <span>Uang Makan Harian: <strong class="text-emerald-600 dark:text-emerald-400">${f(v)}</strong></span>
-                                ${b?.source==="pos_shift"?'<span>•</span><span class="text-[10px] text-blue-500 font-bold"><i class="fa-solid fa-cash-register mr-1"></i>Otomatis Buka Shift</span>':""}
+                                ${p?.source==="pos_shift"?'<span>•</span><span class="text-[10px] text-blue-500 font-bold"><i class="fa-solid fa-cash-register mr-1"></i>Otomatis Buka Shift</span>':""}
                             </div>
                         </div>
                     </div>
@@ -468,12 +474,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
                         <!-- Status Chips -->
                         <div class="grid grid-cols-5 gap-1 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
-                            ${xe.map(A=>{const h=p===A.key;let j="bg-slate-800 text-white";return A.key==="present"?j="bg-emerald-600 text-white shadow-2xs font-black":A.key==="late"?j="bg-amber-500 text-white shadow-2xs font-black":A.key==="permit"?j="bg-blue-600 text-white shadow-2xs font-black":A.key==="sick"?j="bg-purple-600 text-white shadow-2xs font-black":A.key==="alpha"&&(j="bg-rose-600 text-white shadow-2xs font-black"),`
-                                <button type="button" onclick="window.setQuickAttendanceStatus('${l(d.employeeId)}', '${A.key}')"
-                                    id="btn-att-status-${l(d.employeeId)}-${A.key}"
+                            ${me.map(A=>{const h=b===A.key;let M="bg-slate-800 text-white";return A.key==="present"?M="bg-emerald-600 text-white shadow-2xs font-black":A.key==="late"?M="bg-amber-500 text-white shadow-2xs font-black":A.key==="permit"?M="bg-blue-600 text-white shadow-2xs font-black":A.key==="sick"?M="bg-purple-600 text-white shadow-2xs font-black":A.key==="alpha"&&(M="bg-rose-600 text-white shadow-2xs font-black"),`
+                                <button type="button" onclick="window.setQuickAttendanceStatus('${l(c.employeeId)}', '${A.key}')"
+                                    id="btn-att-status-${l(c.employeeId)}-${A.key}"
                                     data-status="${A.key}"
                                     data-selected="${h?"true":"false"}"
-                                    class="att-status-btn-${l(d.employeeId)} px-2.5 py-1.5 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${h?j:"text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60"}">
+                                    class="att-status-btn-${l(c.employeeId)} px-2.5 py-1.5 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${h?M:"text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60"}">
                                     <i class="fa-solid ${A.icon} text-[9px]"></i>
                                     <span>${A.label}</span>
                                 </button>
@@ -482,16 +488,16 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
                         <!-- Jam Masuk & Keluar -->
                         <div class="flex items-center gap-1 text-xs">
-                            <input id="att-in-${l(d.employeeId)}" type="time" value="${y}" title="Jam Masuk"
+                            <input id="att-in-${l(c.employeeId)}" type="time" value="${w}" title="Jam Masuk"
                                 class="w-[96px] sm:w-[104px] min-w-[96px] h-9 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-center text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                             <span class="text-slate-400 font-bold">-</span>
-                            <input id="att-out-${l(d.employeeId)}" type="time" value="${g}" title="Jam Pulang"
+                            <input id="att-out-${l(c.employeeId)}" type="time" value="${g}" title="Jam Pulang"
                                 class="w-[96px] sm:w-[104px] min-w-[96px] h-9 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-center text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                         </div>
 
                         <!-- Tombol Simpan Row -->
-                        <button onclick="window.saveSingleAttendance('${l(d.employeeId)}', '${l(d.uid||d.employeeId)}', '${l(d.name)}', '${l(d.position)}', '${l(d.role)}', ${v})"
-                            id="btn-save-att-${l(d.employeeId)}"
+                        <button onclick="window.saveSingleAttendance('${l(c.employeeId)}', '${l(c.uid||c.employeeId)}', '${l(c.name)}', '${l(c.position)}', '${l(c.role)}', ${v})"
+                            id="btn-save-att-${l(c.employeeId)}"
                             class="h-9 px-4 rounded-xl text-xs font-black text-white transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1.5 hover:opacity-95"
                             style="background: var(--color-primary)">
                             <i class="fa-solid fa-floppy-disk text-[10px]"></i>
@@ -500,11 +506,437 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     </div>
                 </div>`}).join("")}
         </div>
-    </div>`},sa=a=>{const e=new Date(N);e.setDate(e.getDate()+a),N=e.toISOString().split("T")[0];const t=n("cashier-panel-attendance");t&&X(t)},ra=a=>{N=a;const e=n("cashier-panel-attendance");e&&X(e)},la=(a,e)=>{document.querySelectorAll(`.att-status-btn-${a}`).forEach(s=>{s.className=`att-status-btn-${a} px-2.5 py-1.5 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60`,s.setAttribute("data-selected","false")});const t=n(`btn-att-status-${a}-${e}`);if(t){let s="bg-slate-800 text-white";e==="present"?s="bg-emerald-600 text-white shadow-2xs font-black":e==="late"?s="bg-amber-500 text-white shadow-2xs font-black":e==="permit"?s="bg-blue-600 text-white shadow-2xs font-black":e==="sick"?s="bg-purple-600 text-white shadow-2xs font-black":e==="alpha"&&(s="bg-rose-600 text-white shadow-2xs font-black"),t.className=`att-status-btn-${a} px-2.5 py-1.5 rounded-xl text-[10px] font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${s}`,t.setAttribute("data-selected","true"),t.setAttribute("data-selected-status",e)}},oa=async(a,e,t,s,r,i)=>{if(!M("mencatat absensi karyawan"))return;let c="present";xe.forEach(v=>{const w=n(`btn-att-status-${a}-${v.key}`);w&&(w.getAttribute("data-selected")==="true"||w.getAttribute("data-selected-status")===v.key||w.classList.contains("bg-emerald-600")||w.classList.contains("bg-amber-500")||w.classList.contains("bg-blue-600")||w.classList.contains("bg-purple-600")||w.classList.contains("bg-rose-600")||w.classList.contains("bg-white")||w.classList.contains("dark:bg-slate-800"))&&(c=v.key)});const o=n(`att-in-${a}`)?.value||"08:00",x=n(`att-out-${a}`)?.value||"17:00",d=c==="present"||c==="late"?i:0,b=re(N,a),p={attendanceId:b,date:N,employeeUid:e,employeeId:a,employeeName:t,position:s,role:r,status:c,clockIn:o,clockOut:x,allowanceEarned:d,notes:"",source:"manual",updatedAt:D.firestore.FieldValue.serverTimestamp(),recordedBy:Y.currentUser?.uid||"owner"},k=n(`btn-save-att-${a}`);k&&(k.disabled=!0,k.innerHTML='<i class="fa-solid fa-spinner fa-spin text-[10px]"></i>');const y=G.findIndex(v=>v.attendanceId===b);y>-1?G[y]={id:b,...p}:G.push({id:b,...p}),Array.isArray(m.attendances)||(m.attendances=[]);const g=m.attendances.findIndex(v=>v.attendanceId===b);g>-1?m.attendances[g]={id:b,...p}:m.attendances.push({id:b,...p});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}try{await $.collection("freshmart").doc("cms_data").collection("attendances").doc(b).set(p,{merge:!0})}catch(v){console.warn("[HR Attendance] Cloud sync terkendala hak akses/offline, presensi tetap tersimpan di lokal:",v)}try{await Ie()}catch{}S(`Presensi ${t} (${c.toUpperCase()}) tersimpan!`,"success"),k&&(k.disabled=!1,k.innerHTML='<i class="fa-solid fa-check text-[10px]"></i><span>Tersimpan</span>')},na=async()=>{if(!M("mencatat presensi massal"))return;const a=J();if(a.length!==0){O("Mencatat kehadiran seluruh staf...");try{const e=[];for(const s of a){const r=s.employeeId||"EMP-001",i=re(N,r),c=parseFloat(s.dailyAllowance)||0,o={attendanceId:i,date:N,employeeUid:s.uid||r,employeeId:r,employeeName:s.name||"Karyawan",position:s.position||"Staf Toko",role:s.role||"staff",status:"present",clockIn:"08:00",clockOut:"17:00",allowanceEarned:c,notes:"Hadir massal 1-klik",source:"bulk",updatedAt:D.firestore.FieldValue.serverTimestamp(),recordedBy:Y.currentUser?.uid||"owner"};e.push({id:i,...o})}G=e,Array.isArray(m.attendances)||(m.attendances=[]),e.forEach(s=>{const r=m.attendances.findIndex(i=>i.attendanceId===s.attendanceId);r>-1?m.attendances[r]=s:m.attendances.push(s)});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}try{const s=$.batch();for(const r of e){const i=$.collection("freshmart").doc("cms_data").collection("attendances").doc(r.attendanceId);s.set(i,r,{merge:!0})}await s.commit()}catch(s){console.warn("[HR Attendance] Cloud batch presensi massal terkendala hak akses/offline, tetap tersimpan lokal:",s)}try{await Ie()}catch{}S(`Presensi seluruh ${a.length} staf berhasil dicatat sebagai HADIR!`,"success");const t=n("cashier-panel-attendance");t&&X(t)}catch(e){console.error("[HR Attendance] Gagal presensi massal:",e),S("Gagal presensi massal: "+e.message,"error")}finally{L()}}},ia=async(a,e)=>{try{if(!a)return;const t=new Date().toISOString().split("T")[0],s=a.employeeId||"EMP-001",r=re(t,s);if(Array.isArray(m.attendances)||(m.attendances=[]),m.attendances.some(p=>p.attendanceId===r))return;const c=String(e?.getHours?e.getHours():new Date().getHours()).padStart(2,"0"),o=String(e?.getMinutes?e.getMinutes():new Date().getMinutes()).padStart(2,"0"),x=`${c}:${o}`,d=parseFloat(a.dailyAllowance)||2e4,b={attendanceId:r,date:t,employeeUid:a.uid||s,employeeId:s,employeeName:a.name||"Kasir POS",position:a.position||"Kasir POS",role:a.role||"cashier",status:"present",clockIn:x,clockOut:"17:00",allowanceEarned:d,notes:"Absensi otomatis dari Buka Shift Kasir",source:"pos_shift",createdAt:D.firestore.FieldValue.serverTimestamp()};m.attendances.push({id:r,...b});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}try{const p=$.collection("freshmart").doc("cms_data").collection("attendances").doc(r);(await p.get()).exists||await p.set(b)}catch{}console.log("[HR Attendance] Presensi kasir tercatat otomatis dari shift:",s,x)}catch(t){console.warn("[HR Attendance] Gagal auto-record shift attendance:",t.message)}},Te=(a=[],e,t)=>{const s=a.filter(b=>{const p=b.date&&b.date.startsWith(e),k=t?b.employeeId===t||b.employeeUid===t:!0;return p&&k});let r=0,i=0,c=0,o=0,x=0,d=0;return s.forEach(b=>{b.status==="present"?(r++,d+=parseFloat(b.allowanceEarned)||0):b.status==="late"?(i++,d+=parseFloat(b.allowanceEarned)||0):b.status==="permit"?c++:b.status==="sick"?o++:b.status==="alpha"&&x++}),{totalRecords:s.length,presentDays:r,lateDays:i,permitDays:c,sickDays:o,alphaDays:x,totalAllowance:d}};typeof window<"u"&&(window.ATTENDANCE_STATUSES=xe,window.generateAttendanceId=re,window.loadAttendancesForDate=je,window.renderAttendanceView=X,window.navigateAttendanceDate=sa,window.onAttendanceDateChanged=ra,window.setQuickAttendanceStatus=la,window.saveSingleAttendance=oa,window.bulkMarkAllPresent=na,window.autoRecordCashierShiftAttendance=ia,window.calculateMonthlyAttendanceSummary=Te);let R=new Date().toISOString().slice(0,7),_=[],le=null;const we=async()=>{try{if(typeof window<"u"&&typeof window.saveApp=="function")return await window.saveApp();const a=await ne(()=>import("./module-pos-WEjenQzn.js").then(e=>e.W),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url);if(typeof a?.saveApp=="function")return await a.saveApp()}catch{}},me=(a,e)=>{const t=(a||new Date().toISOString().slice(0,7)).replace(/[^0-9]/g,""),s=(e||"STAFF").replace(/[^a-zA-Z0-9]/g,"");return`PAY-${t}-${s}`},F=a=>{if(!a)return"-";const[e,t]=a.split("-"),s=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],r=parseInt(t,10)-1;return`${s[r]||t} ${e}`},He=async(a=R)=>{try{let e=[];try{const t=await $.collection("freshmart").doc("cms_data").collection("salary_payrolls").where("period","==",a).get();t&&!t.empty&&(e=t.docs.map(s=>({id:s.id,...s.data()})))}catch{}if(!e||e.length===0){let t=Array.isArray(m.payrollRuns)?m.payrollRuns:[];if(t.length===0)try{t=JSON.parse(localStorage.getItem("freshmart_payroll_runs")||"[]"),Array.isArray(t)&&t.length>0&&(m.payrollRuns=t)}catch{}e=t.filter(s=>s.period===a)}return _=e,e}catch(e){return console.error("[HR Payroll] Gagal memuat payroll:",e),_=(Array.isArray(m.payrollRuns)?m.payrollRuns:[]).filter(s=>s.period===a),_}},oe=(a,e,t=[],s=[])=>{const r=a.employeeId||a.uid,i=parseFloat(a.baseSalary)||0,c=parseFloat(a.dailyAllowance)||0,o=Te(t,e,r),x=o.presentDays||0,d=o.lateDays||0,b=x+d;let p=o.totalAllowance;p<=0&&c>0&&b>0&&(p=b*c);const k=s.find(H=>(H.employeeId===r||H.employeeUid===a.uid)&&H.status==="active"&&parseFloat(H.remainingAmount)>0);let y=0,g="",v=0;if(k){g=k.advanceId||k.id,v=parseFloat(k.remainingAmount)||0;const H=parseFloat(k.monthlyInstallment)||v;y=Math.min(v,H)}const w=0,A=0,h=0,j=0,E=i+p+w+A,I=y+h+j,T=Math.max(0,E-I);return{payrollId:me(e,r),period:e,periodLabel:F(e),employeeUid:a.uid||"",employeeId:r,employeeName:a.name||"Karyawan",employeeRole:a.role||"staff",position:a.position||"Staf Toko",phone:a.phone||"",status:"draft",baseSalary:i,dailyAllowanceRate:c,presentDays:x,lateDays:d,permitDays:o.permitDays||0,sickDays:o.sickDays||0,alphaDays:o.alphaDays||0,totalAttendanceDays:b,attendanceAllowance:p,bonus:w,overtimePay:A,totalEarnings:E,advanceDeduction:y,advanceId:g,advanceRemainingBefore:v,lostItemDeduction:h,lostItemNotes:"",otherDeductions:j,totalDeductions:I,netSalary:T,paymentMethod:a.paymentMethod||"transfer",bankName:a.bankName||"BCA",bankAccount:a.bankAccount||"-",notes:`Gaji periode ${F(e)}`,createdAt:new Date().toISOString()}},ee=async a=>{if(!a)return;a.innerHTML=`
+    </div>`},ot=t=>{const e=new Date(C);e.setDate(e.getDate()+t),C=e.toISOString().split("T")[0];const a=d("cashier-panel-attendance");a&&te(a)},nt=t=>{C=t;const e=d("cashier-panel-attendance");e&&te(e)},it=(t,e)=>{document.querySelectorAll(`.att-status-btn-${t}`).forEach(s=>{s.className=`att-status-btn-${t} px-2.5 py-1.5 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60`,s.setAttribute("data-selected","false")});const a=d(`btn-att-status-${t}-${e}`);if(a){let s="bg-slate-800 text-white";e==="present"?s="bg-emerald-600 text-white shadow-2xs font-black":e==="late"?s="bg-amber-500 text-white shadow-2xs font-black":e==="permit"?s="bg-blue-600 text-white shadow-2xs font-black":e==="sick"?s="bg-purple-600 text-white shadow-2xs font-black":e==="alpha"&&(s="bg-rose-600 text-white shadow-2xs font-black"),a.className=`att-status-btn-${t} px-2.5 py-1.5 rounded-xl text-[10px] font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${s}`,a.setAttribute("data-selected","true"),a.setAttribute("data-selected-status",e)}},dt=async(t,e,a,s,r,i)=>{if(!D("mencatat absensi karyawan"))return;let n="present";me.forEach(v=>{const y=d(`btn-att-status-${t}-${v.key}`);y&&(y.getAttribute("data-selected")==="true"||y.getAttribute("data-selected-status")===v.key||y.classList.contains("bg-emerald-600")||y.classList.contains("bg-amber-500")||y.classList.contains("bg-blue-600")||y.classList.contains("bg-purple-600")||y.classList.contains("bg-rose-600")||y.classList.contains("bg-white")||y.classList.contains("dark:bg-slate-800"))&&(n=v.key)});const o=d(`att-in-${t}`)?.value||"08:00",x=d(`att-out-${t}`)?.value||"17:00",c=n==="present"||n==="late"?i:0,p=le(C,t),b={attendanceId:p,date:C,employeeUid:e,employeeId:t,employeeName:a,position:s,role:r,status:n,clockIn:o,clockOut:x,allowanceEarned:c,notes:"",source:"manual",updatedAt:H.firestore.FieldValue.serverTimestamp(),recordedBy:Z.currentUser?.uid||"owner"},k=d(`btn-save-att-${t}`);k&&(k.disabled=!0,k.innerHTML='<i class="fa-solid fa-spinner fa-spin text-[10px]"></i>');const w=G.findIndex(v=>v.attendanceId===p);w>-1?G[w]={id:p,...b}:G.push({id:p,...b}),Array.isArray(m.attendances)||(m.attendances=[]);const g=m.attendances.findIndex(v=>v.attendanceId===p);g>-1?m.attendances[g]={id:p,...b}:m.attendances.push({id:p,...b});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}try{await P.collection("freshmart").doc("cms_data").collection("attendances").doc(p).set(b,{merge:!0})}catch(v){console.warn("[HR Attendance] Cloud sync terkendala hak akses/offline, presensi tetap tersimpan di lokal:",v)}try{await je()}catch{}$(`Presensi ${a} (${n.toUpperCase()}) tersimpan!`,"success"),k&&(k.disabled=!1,k.innerHTML='<i class="fa-solid fa-check text-[10px]"></i><span>Tersimpan</span>')},ct=async()=>{if(!D("mencatat presensi massal"))return;const t=z();if(t.length!==0){L("Mencatat kehadiran seluruh staf...");try{const e=[];for(const s of t){const r=s.employeeId||"EMP-001",i=le(C,r),n=parseFloat(s.dailyAllowance)||0,o={attendanceId:i,date:C,employeeUid:s.uid||r,employeeId:r,employeeName:s.name||"Karyawan",position:s.position||"Staf Toko",role:s.role||"staff",status:"present",clockIn:"08:00",clockOut:"17:00",allowanceEarned:n,notes:"Hadir massal 1-klik",source:"bulk",updatedAt:H.firestore.FieldValue.serverTimestamp(),recordedBy:Z.currentUser?.uid||"owner"};e.push({id:i,...o})}G=e,Array.isArray(m.attendances)||(m.attendances=[]),e.forEach(s=>{const r=m.attendances.findIndex(i=>i.attendanceId===s.attendanceId);r>-1?m.attendances[r]=s:m.attendances.push(s)});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}try{const s=P.batch();for(const r of e){const i=P.collection("freshmart").doc("cms_data").collection("attendances").doc(r.attendanceId);s.set(i,r,{merge:!0})}await s.commit()}catch(s){console.warn("[HR Attendance] Cloud batch presensi massal terkendala hak akses/offline, tetap tersimpan lokal:",s)}try{await je()}catch{}$(`Presensi seluruh ${t.length} staf berhasil dicatat sebagai HADIR!`,"success");const a=d("cashier-panel-attendance");a&&te(a)}catch(e){console.error("[HR Attendance] Gagal presensi massal:",e),$("Gagal presensi massal: "+e.message,"error")}finally{K()}}},pt=async(t,e)=>{try{if(!t)return;const a=new Date().toISOString().split("T")[0],s=t.employeeId||"EMP-001",r=le(a,s);if(Array.isArray(m.attendances)||(m.attendances=[]),m.attendances.some(b=>b.attendanceId===r))return;const n=String(e?.getHours?e.getHours():new Date().getHours()).padStart(2,"0"),o=String(e?.getMinutes?e.getMinutes():new Date().getMinutes()).padStart(2,"0"),x=`${n}:${o}`,c=parseFloat(t.dailyAllowance)||2e4,p={attendanceId:r,date:a,employeeUid:t.uid||s,employeeId:s,employeeName:t.name||"Kasir POS",position:t.position||"Kasir POS",role:t.role||"cashier",status:"present",clockIn:x,clockOut:"17:00",allowanceEarned:c,notes:"Absensi otomatis dari Buka Shift Kasir",source:"pos_shift",createdAt:H.firestore.FieldValue.serverTimestamp()};m.attendances.push({id:r,...p});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}try{const b=P.collection("freshmart").doc("cms_data").collection("attendances").doc(r);(await b.get()).exists||await b.set(p)}catch{}console.log("[HR Attendance] Presensi kasir tercatat otomatis dari shift:",s,x)}catch(a){console.warn("[HR Attendance] Gagal auto-record shift attendance:",a.message)}},fe=(t=[],e,a)=>{const s=t.filter(p=>{const b=p.date&&p.date.startsWith(e),k=a?p.employeeId===a||p.employeeUid===a:!0;return b&&k});let r=0,i=0,n=0,o=0,x=0,c=0;return s.forEach(p=>{p.status==="present"?(r++,c+=parseFloat(p.allowanceEarned)||0):p.status==="late"?(i++,c+=parseFloat(p.allowanceEarned)||0):p.status==="permit"?n++:p.status==="sick"?o++:p.status==="alpha"&&x++}),{totalRecords:s.length,presentDays:r,lateDays:i,permitDays:n,sickDays:o,alphaDays:x,totalAllowance:c}},Y=(t=new Date().toISOString().slice(0,7))=>{const e=Array.isArray(m.attendances)?m.attendances:[],a=z(),s=Ve(t);let r=0,i=0,n=0,o=0,x=0,c=0;const p=a.map(g=>{const v=g.employeeId||g.uid,y=fe(e,t,v),A=y.presentDays||0,h=y.lateDays||0,M=y.permitDays||0,R=y.sickDays||0,S=y.alphaDays||0,I=A+h,j=y.totalRecords||I+M+R+S,E=y.totalAllowance||0,q=j>0?Math.min(100,Math.round((A+h*.9)/j*1e3)/10):0;return r+=E,i+=A,n+=h,o+=M,x+=R,c+=S,{employeeId:v,employeeUid:g.uid||"",name:g.name||"Karyawan",position:g.position||"Staf Toko",role:g.role||"staff",dailyAllowanceRate:parseFloat(g.dailyAllowance)||0,presentDays:A,lateDays:h,permitDays:M,sickDays:R,alphaDays:S,totalWorkDays:I,totalLoggedDays:j,attendanceRate:q,totalAllowance:E}}),b=i+n,k=b+o+x+c,w=k>0?Math.min(100,Math.round((i+n*.9)/k*1e3)/10):0;return{period:t,periodLabel:s,items:p,totalMembers:a.length,totalPresentDays:i,totalLateDays:n,totalPermitDays:o,totalSickDays:x,totalAlphaDays:c,totalWorkDays:b,totalTeamAllowance:r,avgAttendanceRate:w}},Re=async(t=new Date().toISOString().slice(0,7))=>{try{let e=Array.isArray(m.attendances)?m.attendances:[];if(e.length===0)try{e=JSON.parse(localStorage.getItem("freshmart_attendances")||"[]"),Array.isArray(e)&&e.length>0&&(m.attendances=e)}catch{}try{const a=`${t}-01`,s=`${t}-31`,r=await P.collection("freshmart").doc("cms_data").collection("attendances").where("date",">=",a).where("date","<=",s).get();if(r&&!r.empty){const i=r.docs.map(n=>({id:n.id,...n.data()}));Array.isArray(m.attendances)||(m.attendances=[]),i.forEach(n=>{const o=n.attendanceId||n.id,x=m.attendances.findIndex(c=>(c.attendanceId||c.id)===o);x>=0?m.attendances[x]={...m.attendances[x],...n}:m.attendances.push(n)});try{localStorage.setItem("freshmart_attendances",JSON.stringify(m.attendances))}catch{}}}catch(a){console.warn("[HR Attendance] Fallback offline untuk rekap bulan:",t,a.message)}return Y(t)}catch(e){return console.error("[HR Attendance] Gagal memuat absensi bulanan:",e),Y(t)}},xt=async(t=(C||new Date().toISOString().split("T")[0]).slice(0,7))=>{let e=d("modal-attendance-rekap");e&&e.remove(),L(),await Re(t),K();const a=Y(t),s=m.store||{name:"TOKO PUTRI UTAMA TEKNIK"};e=document.createElement("div"),e.id="modal-attendance-rekap",e.className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200",e.style.opacity="0",e.innerHTML=`
+    <div id="attendance-rekap-modal-box" class="w-full sm:max-w-4xl bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden transform transition-all duration-200 scale-95">
+        
+        <!-- Pull Indicator (Mobile Native Bottom Sheet) -->
+        <div class="w-full pt-2.5 pb-1 flex justify-center sm:hidden shrink-0">
+            <div class="w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+        </div>
+
+        <!-- Modal Header -->
+        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0"
+            style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                    style="background: var(--color-primary)">
+                    <i class="fa-solid fa-clipboard-user text-base"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white truncate">
+                        Rekapitulasi Presensi &amp; Kedisiplinan Tim
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        ${l(s.name||"Toko Putri")} • <strong class="text-slate-700 dark:text-slate-200">${l(a.periodLabel)}</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Month Navigator & Close Button -->
+            <div class="flex items-center gap-2 shrink-0">
+                <div class="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                    <input type="month" id="att-rekap-period-picker" value="${t}"
+                        onchange="window.openMonthlyAttendanceRecapModal(this.value)"
+                        class="px-2 py-0.5 bg-transparent text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
+                </div>
+                <button onclick="window.closeMonthlyAttendanceRecapModal()" 
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                    title="Tutup">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 custom-scrollbar text-xs">
+            
+            <!-- 4 Bento KPI Kehadiran Bulanan -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Rata-Rata Disiplin</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${a.avgAttendanceRate}%</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Tingkat kehadiran tim</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Hari Hadir</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${a.totalWorkDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${a.totalPresentDays} Tepat, ${a.totalLateDays} Terlambat</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Izin, Sakit &amp; Alpha</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                            <i class="fa-solid fa-user-clock"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${a.totalPermitDays+a.totalSickDays+a.totalAlphaDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${a.totalPermitDays} Izin, ${a.totalSickDays} Sakit, ${a.totalAlphaDays} Alpha</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Hak Uang Makan</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                    </div>
+                    <p class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono tracking-tight">${f(a.totalTeamAllowance)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Siap ditarik ke Payroll</p>
+                </div>
+            </div>
+
+            <!-- Realtime Search Bar Staf -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="att-rekap-search" placeholder="Cari nama karyawan atau jabatan..."
+                        oninput="window.filterAttendanceRecapTable(this.value)"
+                        class="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                </div>
+                <span class="text-xs font-bold text-slate-400 shrink-0">
+                    Total: <strong class="text-slate-700 dark:text-slate-200">${a.totalMembers} Staf</strong>
+                </span>
+            </div>
+
+            <!-- Matriks Tabel Presensi Karyawan -->
+            <div class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-2xs bg-white dark:bg-slate-800/60">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs whitespace-nowrap">
+                        <thead class="bg-slate-50 dark:bg-slate-800/90 text-slate-500 dark:text-slate-400 font-black uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="py-3 px-3 text-center w-10">No</th>
+                                <th class="py-3 px-3">Karyawan</th>
+                                <th class="py-3 px-2 text-center text-emerald-600">Hadir</th>
+                                <th class="py-3 px-2 text-center text-amber-500">Terlambat</th>
+                                <th class="py-3 px-2 text-center text-blue-500">Izin</th>
+                                <th class="py-3 px-2 text-center text-purple-500">Sakit</th>
+                                <th class="py-3 px-2 text-center text-rose-500">Alpha</th>
+                                <th class="py-3 px-3 text-center">Total Masuk</th>
+                                <th class="py-3 px-3 text-center">% Disiplin</th>
+                                <th class="py-3 px-3 text-right">Hak Tunjangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="att-rekap-tbody" class="divide-y divide-slate-100 dark:divide-slate-700/60">
+                            ${a.items.map((r,i)=>{const n=r.attendanceRate>=95?"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-300":r.attendanceRate>=80?"bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300":"bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-300",o=(r.name||"ST").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase();return`
+                                <tr class="att-rekap-row hover:bg-slate-50/70 dark:hover:bg-slate-700/40 transition-colors" data-name="${l(r.name.toLowerCase())}" data-pos="${l(r.position.toLowerCase())}">
+                                    <td class="py-2.5 px-3 text-center font-mono text-slate-400">${i+1}</td>
+                                    <td class="py-2.5 px-3">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-[10px] shrink-0 border border-[rgba(var(--color-primary-rgb),0.25)]"
+                                                style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
+                                                ${o}
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-black text-slate-800 dark:text-white truncate">${l(r.name)}</div>
+                                                <div class="text-[10px] text-slate-400 flex items-center gap-1.5">
+                                                    <span class="font-mono">${l(r.employeeId)}</span>
+                                                    <span>•</span>
+                                                    <span class="truncate">${l(r.position)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-emerald-600 dark:text-emerald-400">${r.presentDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-amber-500">${r.lateDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono text-slate-500">${r.permitDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono text-slate-500">${r.sickDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-rose-500">${r.alphaDays}</td>
+                                    <td class="py-2.5 px-3 text-center font-mono font-black text-slate-800 dark:text-white">${r.totalWorkDays} Hari</td>
+                                    <td class="py-2.5 px-3 text-center">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border ${n}">
+                                            ${r.attendanceRate}%
+                                        </span>
+                                    </td>
+                                    <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-600 dark:text-emerald-400">${f(r.totalAllowance)}</td>
+                                </tr>`}).join("")}
+                        </tbody>
+                        <tfoot class="bg-slate-50 dark:bg-slate-800/90 font-black text-slate-800 dark:text-white border-t-2 border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <td colspan="2" class="py-3 px-3 text-right">TOTAL TIM (${a.totalMembers} Staf):</td>
+                                <td class="py-3 px-2 text-center font-mono text-emerald-600">${a.totalPresentDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-amber-500">${a.totalLateDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-slate-500">${a.totalPermitDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-slate-500">${a.totalSickDays}</td>
+                                <td class="py-3 px-2 text-center font-mono text-rose-500">${a.totalAlphaDays}</td>
+                                <td class="py-3 px-3 text-center font-mono">${a.totalWorkDays} Hari</td>
+                                <td class="py-3 px-3 text-center">
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border bg-emerald-100 text-emerald-800 border-emerald-300">
+                                        ${a.avgAttendanceRate}%
+                                    </span>
+                                </td>
+                                <td class="py-3 px-3 text-right font-mono text-emerald-600">${f(a.totalTeamAllowance)}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-slate-50/70 dark:bg-slate-800/40 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <button onclick="window.closeMonthlyAttendanceRecapModal()" 
+                class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                Tutup
+            </button>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="window.exportMonthlyAttendanceCSV('${t}')"
+                    class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-excel text-emerald-600 text-xs"></i>
+                    <span>Ekspor CSV</span>
+                </button>
+                <button onclick="window.printMonthlyAttendanceA4('${t}')"
+                    class="flex-1 sm:flex-initial min-h-[44px] px-5 py-2.5 rounded-2xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    style="background: var(--color-primary)">
+                    <i class="fa-solid fa-print text-xs"></i>
+                    <span>Cetak Rekap A4</span>
+                </button>
+            </div>
+        </div>
+    </div>`,document.body.appendChild(e),typeof window.pushModalHistory=="function"&&window.pushModalHistory("attendanceRecap"),setTimeout(()=>{e.style.opacity="1";const r=d("attendance-rekap-modal-box");r&&r.classList.remove("scale-95")},10)},bt=(t=!1)=>{const e=()=>{const a=d("modal-attendance-rekap");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("attendanceRecap",t,e):e()},mt=(t="")=>{const e=(t||"").toLowerCase().trim();document.querySelectorAll(".att-rekap-row").forEach(s=>{const r=s.getAttribute("data-name")||"",i=s.getAttribute("data-pos")||"";!e||r.includes(e)||i.includes(e)?s.classList.remove("hidden"):s.classList.add("hidden")})},ft=(t=new Date().toISOString().slice(0,7))=>{const e=Y(t),a=m.store?.name||"TOKO PUTRI UTAMA TEKNIK",s=["No","ID Karyawan","Nama Karyawan","Jabatan","Role","Hadir (Hari)","Terlambat (Hari)","Izin (Hari)","Sakit (Hari)","Alpha (Hari)","Total Masuk (Hari)","Disiplin Kehadiran (%)","Total Uang Makan / Tunjangan (Rp)"],r=e.items.map((p,b)=>[b+1,`"${p.employeeId}"`,`"${(p.name||"").replace(/"/g,'""')}"`,`"${(p.position||"").replace(/"/g,'""')}"`,`"${p.role}"`,p.presentDays,p.lateDays,p.permitDays,p.sickDays,p.alphaDays,p.totalWorkDays,`"${p.attendanceRate}%"`,p.totalAllowance]);r.push(["",'"TOTAL"',`"${e.totalMembers} Staf"`,'""','""',e.totalPresentDays,e.totalLateDays,e.totalPermitDays,e.totalSickDays,e.totalAlphaDays,e.totalWorkDays,`"${e.avgAttendanceRate}%"`,e.totalTeamAllowance]);const i="\uFEFF"+['"REKAPITULASI PRESENSI & KEDISIPLINAN KARYAWAN"',`"Toko: ${a.replace(/"/g,'""')}"`,`"Periode: ${e.periodLabel}"`,`"Tanggal Ekspor: ${new Date().toLocaleDateString("id-ID")}"`,"",s.join(","),...r.map(p=>p.join(","))].join(`\r
+`),n=new Blob([i],{type:"text/csv;charset=utf-8;"}),o=URL.createObjectURL(n),x=document.createElement("a");x.href=o;const c=a.replace(/[^a-zA-Z0-9]/g,"_");x.download=`Rekap_Presensi_${c}_${t}.csv`,document.body.appendChild(x),x.click(),document.body.removeChild(x),URL.revokeObjectURL(o),$(`Rekap presensi periode ${e.periodLabel} berhasil diekspor ke CSV!`,"success")},ut=(t=new Date().toISOString().slice(0,7))=>{const e=Y(t),a=m.store||{name:"TOKO PUTRI UTAMA TEKNIK"},s=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}),r=`<!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <title>Rekap Presensi - ${l(e.periodLabel)} - ${l(a.name||"Toko Putri")}</title>
+        <style>
+            @page {
+                size: A4 landscape;
+                margin: 12mm 15mm;
+            }
+            * { box-sizing: border-box; }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                color: #0f172a;
+                background: #fff;
+                font-size: 11px;
+                line-height: 1.4;
+            }
+            .kop {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                border-bottom: 2px solid #0f172a;
+                padding-bottom: 12px;
+                margin-bottom: 16px;
+            }
+            .kop-title {
+                font-size: 18px;
+                font-weight: 900;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: #0f172a;
+            }
+            .kop-sub {
+                font-size: 11px;
+                color: #475569;
+                margin-top: 2px;
+            }
+            .doc-badge {
+                display: inline-block;
+                padding: 4px 12px;
+                border: 1.5px solid #0f172a;
+                font-weight: 900;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                border-radius: 6px;
+                margin-bottom: 4px;
+            }
+            .kpi-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .kpi-card {
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+                padding: 10px 14px;
+                background: #f8fafc;
+            }
+            .kpi-label {
+                font-size: 9.5px;
+                font-weight: 800;
+                text-transform: uppercase;
+                color: #64748b;
+            }
+            .kpi-val {
+                font-size: 16px;
+                font-weight: 900;
+                margin-top: 2px;
+                color: #0f172a;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            th {
+                background: #f1f5f9;
+                border: 1px solid #cbd5e1;
+                padding: 8px 10px;
+                font-size: 10px;
+                font-weight: 800;
+                text-transform: uppercase;
+                text-align: center;
+            }
+            td {
+                border: 1px solid #cbd5e1;
+                padding: 7px 10px;
+                font-size: 10.5px;
+            }
+            .text-left { text-align: left; }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+            .badge-rate {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: 800;
+                font-size: 10px;
+            }
+            .rate-green { background: #dcfce7; color: #166534; }
+            .rate-amber { background: #fef3c7; color: #92400e; }
+            .rate-rose { background: #ffe4e6; color: #9f1239; }
+            .sign-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                text-align: center;
+                margin-top: 30px;
+                page-break-inside: avoid;
+            }
+            .sign-line {
+                border-bottom: 1px solid #94a3b8;
+                width: 60%;
+                margin: 50px auto 6px auto;
+            }
+            @media print {
+                body { padding: 0; }
+                .no-print { display: none; }
+            }
+        </style>
+    </head>
+    <body onload="window.print();">
+        <div class="kop">
+            <div>
+                <div class="kop-title">${l(a.name||"TOKO PUTRI UTAMA TEKNIK")}</div>
+                <div class="kop-sub">${l(a.address||"Pusat Bahan Bangunan & Alat Teknik")}</div>
+                <div class="kop-sub">WhatsApp: ${l(a.phone||a.wa||"-")}</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="doc-badge">REKAPITULASI PRESENSI KARYAWAN</div>
+                <div style="font-size: 11px; color: #475569;">Periode: <strong>${l(e.periodLabel)}</strong></div>
+                <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Dicetak: ${s}</div>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Rata-Rata Disiplin Kehadiran</div>
+                <div class="kpi-val" style="color: #059669;">${e.avgAttendanceRate}%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Total Hari Masuk Tim</div>
+                <div class="kpi-val">${e.totalWorkDays} Hari Kerja</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Total Izin / Sakit / Alpha</div>
+                <div class="kpi-val" style="color: #475569;">${e.totalPermitDays} / ${e.totalSickDays} / ${e.totalAlphaDays}</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Akumulasi Uang Makan / Tunjangan</div>
+                <div class="kpi-val font-mono" style="color: #059669;">${f(e.totalTeamAllowance)}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 35px;">No</th>
+                    <th class="text-left">Karyawan</th>
+                    <th class="text-left">Jabatan</th>
+                    <th>Hadir</th>
+                    <th>Terlambat</th>
+                    <th>Izin</th>
+                    <th>Sakit</th>
+                    <th>Alpha</th>
+                    <th>Total Masuk</th>
+                    <th>% Kehadiran</th>
+                    <th class="text-right">Hak Tunjangan (Rp)</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${e.items.map((n,o)=>{const x=n.attendanceRate>=95?"rate-green":n.attendanceRate>=80?"rate-amber":"rate-rose";return`
+                    <tr>
+                        <td class="text-center font-mono">${o+1}</td>
+                        <td class="text-left font-bold">
+                            ${l(n.name)}
+                            <span style="font-size: 9.5px; color: #64748b; font-weight: normal; margin-left: 4px;">(${l(n.employeeId)})</span>
+                        </td>
+                        <td class="text-left text-slate-600">${l(n.position)}</td>
+                        <td class="text-center font-bold" style="color: #16a34a;">${n.presentDays}</td>
+                        <td class="text-center font-bold" style="color: #d97706;">${n.lateDays}</td>
+                        <td class="text-center text-slate-600">${n.permitDays}</td>
+                        <td class="text-center text-slate-600">${n.sickDays}</td>
+                        <td class="text-center font-bold" style="color: #e11d48;">${n.alphaDays}</td>
+                        <td class="text-center font-bold font-mono">${n.totalWorkDays} Hari</td>
+                        <td class="text-center">
+                            <span class="badge-rate ${x}">${n.attendanceRate}%</span>
+                        </td>
+                        <td class="text-right font-bold font-mono">${f(n.totalAllowance)}</td>
+                    </tr>`}).join("")}
+                <tr style="background: #f8fafc; font-weight: 900; border-top: 2px solid #94a3b8;">
+                    <td colspan="3" class="text-right" style="padding: 10px;">TOTAL TIM (${e.totalMembers} Staf):</td>
+                    <td class="text-center font-mono" style="color: #16a34a;">${e.totalPresentDays}</td>
+                    <td class="text-center font-mono" style="color: #d97706;">${e.totalLateDays}</td>
+                    <td class="text-center font-mono">${e.totalPermitDays}</td>
+                    <td class="text-center font-mono">${e.totalSickDays}</td>
+                    <td class="text-center font-mono" style="color: #e11d48;">${e.totalAlphaDays}</td>
+                    <td class="text-center font-mono">${e.totalWorkDays} Hari</td>
+                    <td class="text-center">
+                        <span class="badge-rate ${e.avgAttendanceRate>=95?"rate-green":"rate-amber"}">${e.avgAttendanceRate}%</span>
+                    </td>
+                    <td class="text-right font-mono" style="color: #059669;">${f(e.totalTeamAllowance)}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="sign-grid">
+            <div>
+                <div>Dibuat oleh (Pengelola HR / Kasir Kepala):</div>
+                <div class="sign-line"></div>
+                <div style="font-weight: 800;">Staf Administrasi & HR</div>
+                <div style="font-size: 10.5px; color: #64748b;">${l(a.name||"Toko Putri")}</div>
+            </div>
+            <div>
+                <div>Mengetahui & Disetujui oleh:</div>
+                <div class="sign-line"></div>
+                <div style="font-weight: 800;">Direksi / Pemilik Toko</div>
+                <div style="font-size: 10.5px; color: #64748b;">${l(a.name||"Toko Putri")}</div>
+            </div>
+        </div>
+    </body>
+    </html>`,i=window.open("","_blank");i&&(i.document.write(r),i.document.close())};typeof window<"u"&&(window.ATTENDANCE_STATUSES=me,window.generateAttendanceId=le,window.loadAttendancesForDate=De,window.loadAttendancesForMonth=Re,window.renderAttendanceView=te,window.navigateAttendanceDate=ot,window.onAttendanceDateChanged=nt,window.setQuickAttendanceStatus=it,window.saveSingleAttendance=dt,window.bulkMarkAllPresent=ct,window.autoRecordCashierShiftAttendance=pt,window.calculateMonthlyAttendanceSummary=fe,window.calculateMonthlyTeamAttendanceRecap=Y,window.openMonthlyAttendanceRecapModal=xt,window.closeMonthlyAttendanceRecapModal=bt,window.filterAttendanceRecapTable=mt,window.exportMonthlyAttendanceCSV=ft,window.printMonthlyAttendanceA4=ut);let O=new Date().toISOString().slice(0,7),_=[],oe=null;const $e=async()=>{try{if(typeof window<"u"&&typeof window.saveApp=="function")return await window.saveApp();const t=await ie(()=>import("./module-pos-Bw3FogP4.js").then(e=>e.W),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url);if(typeof t?.saveApp=="function")return await t.saveApp()}catch{}},ue=(t,e)=>{const a=(t||new Date().toISOString().slice(0,7)).replace(/[^0-9]/g,""),s=(e||"STAFF").replace(/[^a-zA-Z0-9]/g,"");return`PAY-${a}-${s}`},F=t=>{if(!t)return"-";const[e,a]=t.split("-"),s=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],r=parseInt(a,10)-1;return`${s[r]||a} ${e}`},He=async(t=O)=>{try{let e=[];try{const a=await P.collection("freshmart").doc("cms_data").collection("salary_payrolls").where("period","==",t).get();a&&!a.empty&&(e=a.docs.map(s=>({id:s.id,...s.data()})))}catch{}if(!e||e.length===0){let a=Array.isArray(m.payrollRuns)?m.payrollRuns:[];if(a.length===0)try{a=JSON.parse(localStorage.getItem("freshmart_payroll_runs")||"[]"),Array.isArray(a)&&a.length>0&&(m.payrollRuns=a)}catch{}e=a.filter(s=>s.period===t)}return _=e,e}catch(e){return console.error("[HR Payroll] Gagal memuat payroll:",e),_=(Array.isArray(m.payrollRuns)?m.payrollRuns:[]).filter(s=>s.period===t),_}},ne=(t,e,a=[],s=[])=>{const r=t.employeeId||t.uid,i=parseFloat(t.baseSalary)||0,n=parseFloat(t.dailyAllowance)||0,o=fe(a,e,r),x=o.presentDays||0,c=o.lateDays||0,p=x+c;let b=o.totalAllowance;b<=0&&n>0&&p>0&&(b=p*n);const k=s.find(j=>(j.employeeId===r||j.employeeUid===t.uid)&&j.status==="active"&&parseFloat(j.remainingAmount)>0);let w=0,g="",v=0;if(k){g=k.advanceId||k.id,v=parseFloat(k.remainingAmount)||0;const j=parseFloat(k.monthlyInstallment)||v;w=Math.min(v,j)}const y=0,A=0,h=0,M=0,R=i+b+y+A,S=w+h+M,I=Math.max(0,R-S);return{payrollId:ue(e,r),period:e,periodLabel:F(e),employeeUid:t.uid||"",employeeId:r,employeeName:t.name||"Karyawan",employeeRole:t.role||"staff",position:t.position||"Staf Toko",phone:t.phone||"",status:"draft",baseSalary:i,dailyAllowanceRate:n,presentDays:x,lateDays:c,permitDays:o.permitDays||0,sickDays:o.sickDays||0,alphaDays:o.alphaDays||0,totalAttendanceDays:p,attendanceAllowance:b,bonus:y,overtimePay:A,totalEarnings:R,advanceDeduction:w,advanceId:g,advanceRemainingBefore:v,lostItemDeduction:h,lostItemNotes:"",otherDeductions:M,totalDeductions:S,netSalary:I,paymentMethod:t.paymentMethod||"transfer",bankName:t.bankName||"BCA",bankAccount:t.bankAccount||"-",notes:`Gaji periode ${F(e)}`,createdAt:new Date().toISOString()}},ae=async t=>{if(!t)return;t.innerHTML=`
     <div class="text-center py-16">
         <i class="fa-solid fa-spinner fa-spin text-3xl" style="color: var(--color-primary)"></i>
         <p class="text-xs text-slate-400 mt-2 font-medium">Memuat data payroll &amp; rekap kehadiran tim...</p>
-    </div>`,await He(R);const e=Array.isArray(m.attendances)?m.attendances:[],t=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[],s=J(),r=s.map(p=>{const k=p.employeeId||p.uid,y=_.find(g=>g.employeeId===k||g.employeeUid===p.uid);return y||oe(p,R,e,t)}),i=r.reduce((p,k)=>p+(parseFloat(k.netSalary)||0),0),c=r.filter(p=>p.status==="paid").length,o=r.length-c,x=r.reduce((p,k)=>p+(parseFloat(k.advanceDeduction)||0),0),d=r.reduce((p,k)=>p+(parseFloat(k.lostItemDeduction)||0),0),b=F(R);a.innerHTML=`
+    </div>`,await He(O);const e=Array.isArray(m.attendances)?m.attendances:[],a=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[],s=z(),r=s.map(b=>{const k=b.employeeId||b.uid,w=_.find(g=>g.employeeId===k||g.employeeUid===b.uid);return w||ne(b,O,e,a)}),i=r.reduce((b,k)=>b+(parseFloat(k.netSalary)||0),0),n=r.filter(b=>b.status==="paid").length,o=r.length-n,x=r.reduce((b,k)=>b+(parseFloat(k.advanceDeduction)||0),0),c=r.reduce((b,k)=>b+(parseFloat(k.lostItemDeduction)||0),0),p=F(O);t.innerHTML=`
     <div class="space-y-4">
         <!-- Header & Navigasi Periode Bulan Penggajian -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
@@ -527,7 +959,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     class="w-8 h-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
-                <input type="month" id="payroll-period-picker" value="${R}"
+                <input type="month" id="payroll-period-picker" value="${O}"
                     onchange="window.onPayrollPeriodChanged(this.value)"
                     class="px-2 py-1 bg-transparent text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
                 <button onclick="window.navigatePayrollPeriod(1)"
@@ -542,7 +974,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
                 <div class="flex items-center justify-between text-slate-400 mb-1">
-                    <span class="text-[11px] font-bold">Total Gaji (${b})</span>
+                    <span class="text-[11px] font-bold">Total Gaji (${p})</span>
                     <i class="fa-solid fa-sack-dollar text-emerald-500 text-xs"></i>
                 </div>
                 <div class="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 font-mono truncate">
@@ -557,7 +989,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-circle-check text-blue-500 text-xs"></i>
                 </div>
                 <div class="text-sm sm:text-base font-black text-slate-800 dark:text-white font-mono">
-                    <span class="text-emerald-600">${c} Lunas</span> / <span class="text-amber-500">${o} Draf</span>
+                    <span class="text-emerald-600">${n} Lunas</span> / <span class="text-amber-500">${o} Draf</span>
                 </div>
                 <div class="text-[10px] text-slate-400 mt-0.5">${o===0?"Semua gaji lunas":"Menunggu pencairan"}</div>
             </div>
@@ -579,7 +1011,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-boxes-packing text-rose-500 text-xs"></i>
                 </div>
                 <div class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 font-mono truncate">
-                    ${f(d)}
+                    ${f(c)}
                 </div>
                 <div class="text-[10px] text-slate-400 mt-0.5">Kompensasi selisih stock opname</div>
             </div>
@@ -587,39 +1019,39 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
         <!-- Daftar Kartu Payroll Karyawan -->
         <div class="space-y-3" id="payroll-items-container">
-            ${r.map((p,k)=>{const y=p.status==="paid",g=p.employeeRole==="owner"||p.employeeId==="OWN-001";return`
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border ${y?"border-emerald-200 dark:border-emerald-800/60":"border-slate-200/90 dark:border-slate-700"} shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
+            ${r.map((b,k)=>{const w=b.status==="paid",g=b.employeeRole==="owner"||b.employeeId==="OWN-001";return`
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border ${w?"border-emerald-200 dark:border-emerald-800/60":"border-slate-200/90 dark:border-slate-700"} shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
                     <!-- Info Karyawan -->
                     <div class="flex items-start gap-3.5 min-w-0 flex-1">
                         <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border ${g?"text-[var(--color-primary)] border-[rgba(var(--color-primary-rgb),0.3)]":"bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/60 dark:text-slate-200 dark:border-slate-700"}"
                             style="${g?"background: rgba(var(--color-primary-rgb), 0.12)":""}">
-                            ${g?'<i class="fa-solid fa-crown text-amber-500"></i>':p.employeeName?.charAt(0)?.toUpperCase()||"K"}
+                            ${g?'<i class="fa-solid fa-crown text-amber-500"></i>':b.employeeName?.charAt(0)?.toUpperCase()||"K"}
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-sm font-black text-slate-900 dark:text-white truncate">${l(p.employeeName)}</span>
+                                <span class="text-sm font-black text-slate-900 dark:text-white truncate">${l(b.employeeName)}</span>
                                 <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
-                                    ${l(p.employeeId)}
+                                    ${l(b.employeeId)}
                                 </span>
-                                <span class="inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full ${y?"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300":"bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300"}">
-                                    <i class="fa-solid ${y?"fa-circle-check text-emerald-500":"fa-clock text-amber-500"} text-[9px]"></i>
-                                    ${y?"Lunas / Dibayar":"Draf Penggajian"}
+                                <span class="inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full ${w?"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300":"bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300"}">
+                                    <i class="fa-solid ${w?"fa-circle-check text-emerald-500":"fa-clock text-amber-500"} text-[9px]"></i>
+                                    ${w?"Lunas / Dibayar":"Draf Penggajian"}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                                <span class="font-bold text-slate-700 dark:text-slate-200">${l(p.position)}</span>
+                                <span class="font-bold text-slate-700 dark:text-slate-200">${l(b.position)}</span>
                                 <span>•</span>
-                                <span>Absensi: <strong>${p.totalAttendanceDays||0} Hari Masuk</strong></span>
+                                <span>Absensi: <strong>${b.totalAttendanceDays||0} Hari Masuk</strong></span>
                                 <span>•</span>
-                                <span>Gaji Pokok: <strong>${f(p.baseSalary)}</strong></span>
-                                ${p.attendanceAllowance>0?`<span>•</span><span>Tunjangan: <strong class="text-[var(--color-primary)] font-bold">+${f(p.attendanceAllowance)}</strong></span>`:""}
+                                <span>Gaji Pokok: <strong>${f(b.baseSalary)}</strong></span>
+                                ${b.attendanceAllowance>0?`<span>•</span><span>Tunjangan: <strong class="text-[var(--color-primary)] font-bold">+${f(b.attendanceAllowance)}</strong></span>`:""}
                             </div>
                             <!-- Rincian Potongan -->
                             <div class="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 flex-wrap">
-                                ${p.advanceDeduction>0?`<span class="text-[var(--color-primary)] font-bold"><i class="fa-solid fa-hand-holding-dollar mr-0.5"></i> Potong Kasbon: -${f(p.advanceDeduction)}</span><span>•</span>`:""}
-                                ${p.lostItemDeduction>0?`<span class="text-rose-500 font-medium"><i class="fa-solid fa-triangle-exclamation mr-0.5"></i> Potong Hilang: -${f(p.lostItemDeduction)}</span><span>•</span>`:""}
-                                <span>Metode: <strong class="text-slate-600 dark:text-slate-300">${l(p.paymentMethod?.toUpperCase())}</strong></span>
-                                ${p.bankAccount&&p.bankAccount!=="-"?`<span>(${l(p.bankName)}: ${l(p.bankAccount)})</span>`:""}
+                                ${b.advanceDeduction>0?`<span class="text-[var(--color-primary)] font-bold"><i class="fa-solid fa-hand-holding-dollar mr-0.5"></i> Potong Kasbon: -${f(b.advanceDeduction)}</span><span>•</span>`:""}
+                                ${b.lostItemDeduction>0?`<span class="text-rose-500 font-medium"><i class="fa-solid fa-triangle-exclamation mr-0.5"></i> Potong Hilang: -${f(b.lostItemDeduction)}</span><span>•</span>`:""}
+                                <span>Metode: <strong class="text-slate-600 dark:text-slate-300">${l(b.paymentMethod?.toUpperCase())}</strong></span>
+                                ${b.bankAccount&&b.bankAccount!=="-"?`<span>(${l(b.bankName)}: ${l(b.bankAccount)})</span>`:""}
                             </div>
                         </div>
                     </div>
@@ -629,28 +1061,28 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <div class="text-left md:text-right">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Take Home Pay</span>
                             <span class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
-                                ${f(p.netSalary)}
+                                ${f(b.netSalary)}
                             </span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="window.openPayslipPreviewModal('${l(p.payrollId||p.id)}', '${l(p.employeeId)}')"
+                            <button onclick="window.openPayslipPreviewModal('${l(b.payrollId||b.id)}', '${l(b.employeeId)}')"
                                 title="Lihat & Cetak Slip Gaji"
                                 class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-receipt" style="color: var(--color-primary)"></i>
                                 <span>Slip Gaji</span>
                             </button>
-                            <button onclick="window.openPayrollItemModal('${l(p.employeeId)}', '${R}')"
-                                title="${y?"Ubah Rincian Kompensasi":"Hitung & Bayar Gaji"}"
+                            <button onclick="window.openPayrollItemModal('${l(b.employeeId)}', '${O}')"
+                                title="${w?"Ubah Rincian Kompensasi":"Hitung & Bayar Gaji"}"
                                 class="px-3.5 py-2.5 rounded-xl text-xs font-black text-white transition-all active:scale-95 cursor-pointer shadow-md flex items-center gap-1.5"
-                                style="background: ${y?"var(--color-primary)":"#10b981"}">
-                                <i class="fa-solid ${y?"fa-pen-to-square":"fa-cash-register"}"></i>
-                                <span>${y?"Edit":"Bayar"}</span>
+                                style="background: ${w?"var(--color-primary)":"#10b981"}">
+                                <i class="fa-solid ${w?"fa-pen-to-square":"fa-cash-register"}"></i>
+                                <span>${w?"Edit":"Bayar"}</span>
                             </button>
                         </div>
                     </div>
                 </div>`}).join("")}
         </div>
-    </div>`},da=a=>{const[e,t]=R.split("-");let s=parseInt(e,10),r=parseInt(t,10)+a;r<1?(r=12,s-=1):r>12&&(r=1,s+=1),R=`${s}-${String(r).padStart(2,"0")}`;const i=n("payroll-period-picker");i&&(i.value=R);const c=n("cashier-panel-payroll");c&&ee(c)},ca=a=>{if(!a)return;R=a;const e=n("cashier-panel-payroll");e&&ee(e)},pa=async(a,e=R)=>{if(!M("mengelola penggajian karyawan"))return;const s=J().find(b=>b.employeeId===a||b.uid===a);if(!s){S("Karyawan tidak ditemukan","warning");return}const r=Array.isArray(m.attendances)?m.attendances:[],i=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[],o=_.find(b=>(b.employeeId===a||b.employeeUid===s.uid)&&b.period===e)||oe(s,e,r,i),x=n("modal-payroll-item-form");x&&x.remove();const d=F(e);document.body.insertAdjacentHTML("beforeend",`
+    </div>`},gt=t=>{const[e,a]=O.split("-");let s=parseInt(e,10),r=parseInt(a,10)+t;r<1?(r=12,s-=1):r>12&&(r=1,s+=1),O=`${s}-${String(r).padStart(2,"0")}`;const i=d("payroll-period-picker");i&&(i.value=O);const n=d("cashier-panel-payroll");n&&ae(n)},kt=t=>{if(!t)return;O=t;const e=d("cashier-panel-payroll");e&&ae(e)},vt=async(t,e=O)=>{if(!D("mengelola penggajian karyawan"))return;const s=z().find(p=>p.employeeId===t||p.uid===t);if(!s){$("Karyawan tidak ditemukan","warning");return}const r=Array.isArray(m.attendances)?m.attendances:[],i=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[],o=_.find(p=>(p.employeeId===t||p.employeeUid===s.uid)&&p.period===e)||ne(s,e,r,i),x=d("modal-payroll-item-form");x&&x.remove();const c=F(e);document.body.insertAdjacentHTML("beforeend",`
     <div id="modal-payroll-item-form" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closePayrollItemModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="payroll-item-modal-box">
@@ -671,7 +1103,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                             Hitung Kompensasi Gaji
                         </h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400">
-                            ${l(s.name)} • ${l(s.position)} • Periode ${l(d)}
+                            ${l(s.name)} • ${l(s.position)} • Periode ${l(c)}
                         </p>
                     </div>
                 </div>
@@ -687,7 +1119,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="p-3.5 rounded-2xl border flex items-center justify-between gap-3 flex-wrap"
                     style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.18)">
                     <div>
-                        <span class="font-black text-slate-900 dark:text-white block">Presensi Kehadiran (${d}):</span>
+                        <span class="font-black text-slate-900 dark:text-white block">Presensi Kehadiran (${c}):</span>
                         <span class="text-slate-600 dark:text-slate-300 text-[11px]">
                             Hadir: <strong>${o.presentDays}</strong> • Terlambat: <strong>${o.lateDays}</strong> • Izin: <strong>${o.permitDays}</strong> • Sakit: <strong>${o.sickDays}</strong> • Alpha: <strong>${o.alphaDays}</strong>
                         </span>
@@ -852,7 +1284,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </div>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("payrollItemForm"),setTimeout(()=>{const b=n("payroll-item-modal-box");b&&b.classList.remove("scale-95")},10)},De=(a=!1)=>{const e=()=>{const t=n("modal-payroll-item-form");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("payrollItemForm",a,e):e()},ba=()=>{const a=parseFloat(n("pay-base-salary")?.value)||0,e=parseFloat(n("pay-attendance-allowance")?.value)||0,t=parseFloat(n("pay-bonus")?.value)||0,s=parseFloat(n("pay-overtime")?.value)||0,r=parseFloat(n("pay-advance-deduction")?.value)||0,i=parseFloat(n("pay-lost-item-deduction")?.value)||0,c=a+e+t+s,o=r+i,x=Math.max(0,c-o),d=n("pay-total-earnings-display"),b=n("pay-total-deductions-display"),p=n("pay-net-salary-display");d&&(d.textContent=`${f(c)}`),b&&(b.textContent=`-${f(o)}`),p&&(p.textContent=`${f(x)}`)},xa=async(a,e,t="paid")=>{if(!M("menyimpan data payroll karyawan"))return;const r=J().find(h=>h.employeeId===a||h.uid===a);if(!r)return;const i=parseFloat(n("pay-base-salary")?.value)||0,c=parseFloat(n("pay-attendance-allowance")?.value)||0,o=parseFloat(n("pay-bonus")?.value)||0,x=parseFloat(n("pay-overtime")?.value)||0,d=parseFloat(n("pay-advance-deduction")?.value)||0,b=parseFloat(n("pay-lost-item-deduction")?.value)||0,p=n("pay-lost-item-notes")?.value?.trim()||"",k=n("pay-payment-method")?.value||"transfer",y=n("pay-sync-expense")?.checked!==!1,g=i+c+o+x,v=d+b,w=Math.max(0,g-v),A=me(e,a);O(t==="paid"?"Memproses pembayaran gaji...":"Menyimpan draf payroll...");try{let h=null;if(t==="paid"&&y&&w>0){h="exp_pay_"+Date.now();const T={id:h,date:new Date().toISOString().split("T")[0],category:"gaji",amount:w,desc:`Gaji Karyawan: ${r.name} (${r.position}) - Periode ${F(e)}`,source:k==="cash"?"cash":"bank",recipient:r.name,receiptUrl:"",payrollId:A,createdAt:new Date().toISOString()};Array.isArray(m.expenses)||(m.expenses=[]),m.expenses.unshift(T);try{await we()}catch{}}if(t==="paid"&&d>0){const H=(Array.isArray(m.salaryAdvances)?m.salaryAdvances:[]).find(B=>(B.employeeId===a||B.employeeUid===r.uid)&&B.status==="active"&&parseFloat(B.remainingAmount)>0);if(H){const B=H.advanceId||H.id;try{await be(B,d,`Pemotongan payroll periode ${F(e)}`)}catch(ae){console.warn("[HR Payroll] Gagal memotong saldo kasbon:",ae)}}}const j={payrollId:A,period:e,periodLabel:F(e),employeeUid:r.uid||"",employeeId:a,employeeName:r.name,employeeRole:r.role,position:r.position,phone:r.phone||"",status:t,baseSalary:i,attendanceAllowance:c,bonus:o,overtimePay:x,totalEarnings:g,advanceDeduction:d,lostItemDeduction:b,lostItemNotes:p,totalDeductions:v,netSalary:w,paymentMethod:k,bankName:r.bankName||"BCA",bankAccount:r.bankAccount||"-",expenseId:h,notes:`Gaji ${F(e)}`,updatedAt:D.firestore.FieldValue.serverTimestamp(),paidAt:t==="paid"?new Date().toISOString():null};try{await $.collection("freshmart").doc("cms_data").collection("salary_payrolls").doc(A).set(j,{merge:!0})}catch{}Array.isArray(m.payrollRuns)||(m.payrollRuns=[]);const E=m.payrollRuns.findIndex(T=>T.payrollId===A||T.id===A);E>-1?m.payrollRuns[E]={id:A,...j}:m.payrollRuns.unshift({id:A,...j});try{localStorage.setItem("freshmart_payroll_runs",JSON.stringify(m.payrollRuns)),await we()}catch{}De(),S(t==="paid"?`Gaji ${f(w)} untuk ${r.name} berhasil dibayarkan!`:`Draf gaji untuk ${r.name} berhasil disimpan`,"success");const I=n("cashier-panel-payroll");I&&ee(I)}catch(h){console.error("[HR Payroll] Gagal menyimpan payroll:",h),S("Gagal menyimpan: "+h.message,"error")}finally{L()}},ma=(a,e)=>{let t=_.find(i=>(i.payrollId||i.id)===a);if(!t&&e){const i=J().find(c=>c.employeeId===e||c.uid===e);if(i){const c=Array.isArray(m.attendances)?m.attendances:[],o=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[];t=oe(i,R,c,o)}}if(!t){S("Data slip gaji tidak ditemukan","warning");return}le=t;const s=n("modal-payslip-preview");s&&s.remove();const r=m.store||{name:"TOKO PUTRI",address:"Jl. Raya Toko Putri"};document.body.insertAdjacentHTML("beforeend",`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("payrollItemForm"),setTimeout(()=>{const p=d("payroll-item-modal-box");p&&p.classList.remove("scale-95")},10)},Ce=(t=!1)=>{const e=()=>{const a=d("modal-payroll-item-form");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("payrollItemForm",t,e):e()},yt=()=>{const t=parseFloat(d("pay-base-salary")?.value)||0,e=parseFloat(d("pay-attendance-allowance")?.value)||0,a=parseFloat(d("pay-bonus")?.value)||0,s=parseFloat(d("pay-overtime")?.value)||0,r=parseFloat(d("pay-advance-deduction")?.value)||0,i=parseFloat(d("pay-lost-item-deduction")?.value)||0,n=t+e+a+s,o=r+i,x=Math.max(0,n-o),c=d("pay-total-earnings-display"),p=d("pay-total-deductions-display"),b=d("pay-net-salary-display");c&&(c.textContent=`${f(n)}`),p&&(p.textContent=`-${f(o)}`),b&&(b.textContent=`${f(x)}`)},ht=async(t,e,a="paid")=>{if(!D("menyimpan data payroll karyawan"))return;const r=z().find(h=>h.employeeId===t||h.uid===t);if(!r)return;const i=parseFloat(d("pay-base-salary")?.value)||0,n=parseFloat(d("pay-attendance-allowance")?.value)||0,o=parseFloat(d("pay-bonus")?.value)||0,x=parseFloat(d("pay-overtime")?.value)||0,c=parseFloat(d("pay-advance-deduction")?.value)||0,p=parseFloat(d("pay-lost-item-deduction")?.value)||0,b=d("pay-lost-item-notes")?.value?.trim()||"",k=d("pay-payment-method")?.value||"transfer",w=d("pay-sync-expense")?.checked!==!1,g=i+n+o+x,v=c+p,y=Math.max(0,g-v),A=ue(e,t);L(a==="paid"?"Memproses pembayaran gaji...":"Menyimpan draf payroll...");try{let h=null;if(a==="paid"&&w&&y>0){h="exp_pay_"+Date.now();const I={id:h,date:new Date().toISOString().split("T")[0],category:"gaji",amount:y,desc:`Gaji Karyawan: ${r.name} (${r.position}) - Periode ${F(e)}`,source:k==="cash"?"cash":"bank",recipient:r.name,receiptUrl:"",payrollId:A,createdAt:new Date().toISOString()};Array.isArray(m.expenses)||(m.expenses=[]),m.expenses.unshift(I);try{await $e()}catch{}}if(a==="paid"&&c>0){const j=(Array.isArray(m.salaryAdvances)?m.salaryAdvances:[]).find(E=>(E.employeeId===t||E.employeeUid===r.uid)&&E.status==="active"&&parseFloat(E.remainingAmount)>0);if(j){const E=j.advanceId||j.id;try{await be(E,c,`Pemotongan payroll periode ${F(e)}`)}catch(q){console.warn("[HR Payroll] Gagal memotong saldo kasbon:",q)}}}const M={payrollId:A,period:e,periodLabel:F(e),employeeUid:r.uid||"",employeeId:t,employeeName:r.name,employeeRole:r.role,position:r.position,phone:r.phone||"",status:a,baseSalary:i,attendanceAllowance:n,bonus:o,overtimePay:x,totalEarnings:g,advanceDeduction:c,lostItemDeduction:p,lostItemNotes:b,totalDeductions:v,netSalary:y,paymentMethod:k,bankName:r.bankName||"BCA",bankAccount:r.bankAccount||"-",expenseId:h,notes:`Gaji ${F(e)}`,updatedAt:H.firestore.FieldValue.serverTimestamp(),paidAt:a==="paid"?new Date().toISOString():null};try{await P.collection("freshmart").doc("cms_data").collection("salary_payrolls").doc(A).set(M,{merge:!0})}catch{}Array.isArray(m.payrollRuns)||(m.payrollRuns=[]);const R=m.payrollRuns.findIndex(I=>I.payrollId===A||I.id===A);R>-1?m.payrollRuns[R]={id:A,...M}:m.payrollRuns.unshift({id:A,...M});try{localStorage.setItem("freshmart_payroll_runs",JSON.stringify(m.payrollRuns)),await $e()}catch{}Ce(),$(a==="paid"?`Gaji ${f(y)} untuk ${r.name} berhasil dibayarkan!`:`Draf gaji untuk ${r.name} berhasil disimpan`,"success");const S=d("cashier-panel-payroll");S&&ae(S)}catch(h){console.error("[HR Payroll] Gagal menyimpan payroll:",h),$("Gagal menyimpan: "+h.message,"error")}finally{K()}},wt=(t,e)=>{let a=_.find(i=>(i.payrollId||i.id)===t);if(!a&&e){const i=z().find(n=>n.employeeId===e||n.uid===e);if(i){const n=Array.isArray(m.attendances)?m.attendances:[],o=Array.isArray(m.salaryAdvances)?m.salaryAdvances:[];a=ne(i,O,n,o)}}if(!a){$("Data slip gaji tidak ditemukan","warning");return}oe=a;const s=d("modal-payslip-preview");s&&s.remove();const r=m.store||{name:"TOKO PUTRI",address:"Jl. Raya Toko Putri"};document.body.insertAdjacentHTML("beforeend",`
     <div id="modal-payslip-preview" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closePayslipPreviewModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-lg flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="payslip-preview-modal-box">
@@ -873,7 +1305,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                             Pratinjau Slip Gaji Karyawan
                         </h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400">
-                            #${l(t.payrollId||t.id)} • ${l(t.periodLabel)}
+                            #${l(a.payrollId||a.id)} • ${l(a.periodLabel)}
                         </p>
                     </div>
                 </div>
@@ -893,7 +1325,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <p class="text-[10px] text-slate-500 dark:text-slate-400">${l(r.address||"Penyedia Bahan Bangunan & Alat Teknik")}</p>
                         <div class="inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 border"
                             style="background: rgba(var(--color-primary-rgb), 0.1); border-color: rgba(var(--color-primary-rgb), 0.25); color: var(--color-primary)">
-                            SLIP GAJI RESMI • ${l(t.periodLabel)}
+                            SLIP GAJI RESMI • ${l(a.periodLabel)}
                         </div>
                     </div>
 
@@ -901,20 +1333,20 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <div class="grid grid-cols-2 gap-2 text-xs pb-3 border-b border-dashed border-slate-300 dark:border-slate-600">
                         <div>
                             <span class="text-slate-400 block text-[10px]">ID Karyawan:</span>
-                            <span class="font-mono font-bold">${l(t.employeeId)}</span>
+                            <span class="font-mono font-bold">${l(a.employeeId)}</span>
                         </div>
                         <div>
                             <span class="text-slate-400 block text-[10px]">Nama Karyawan:</span>
-                            <span class="font-bold">${l(t.employeeName)}</span>
+                            <span class="font-bold">${l(a.employeeName)}</span>
                         </div>
                         <div>
                             <span class="text-slate-400 block text-[10px]">Jabatan / Divisi:</span>
-                            <span class="font-bold">${l(t.position)}</span>
+                            <span class="font-bold">${l(a.position)}</span>
                         </div>
                         <div>
                             <span class="text-slate-400 block text-[10px]">Status Pembayaran:</span>
-                            <span class="font-bold ${t.status==="paid"?"text-emerald-600":"text-amber-500"}">
-                                ${t.status==="paid"?"Lunas / Dibayar":"Draf"}
+                            <span class="font-bold ${a.status==="paid"?"text-emerald-600":"text-amber-500"}">
+                                ${a.status==="paid"?"Lunas / Dibayar":"Draf"}
                             </span>
                         </div>
                     </div>
@@ -924,47 +1356,47 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <span class="text-[11px] font-black uppercase text-emerald-600 dark:text-emerald-400 tracking-wider block">PENGHASILAN (+)</span>
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Gaji Pokok:</span>
-                            <span class="font-mono font-bold">${f(t.baseSalary)}</span>
+                            <span class="font-mono font-bold">${f(a.baseSalary)}</span>
                         </div>
-                        ${t.attendanceAllowance>0?`
+                        ${a.attendanceAllowance>0?`
                         <div class="flex justify-between">
-                            <span class="text-slate-600 dark:text-slate-300">Tunjangan Kehadiran (${t.totalAttendanceDays||0} Hari):</span>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${f(t.attendanceAllowance)}</span>
+                            <span class="text-slate-600 dark:text-slate-300">Tunjangan Kehadiran (${a.totalAttendanceDays||0} Hari):</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${f(a.attendanceAllowance)}</span>
                         </div>`:""}
-                        ${t.bonus>0?`
+                        ${a.bonus>0?`
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Bonus Kinerja &amp; Insentif:</span>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${f(t.bonus)}</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${f(a.bonus)}</span>
                         </div>`:""}
-                        ${t.overtimePay>0?`
+                        ${a.overtimePay>0?`
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Uang Lembur:</span>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${f(t.overtimePay)}</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${f(a.overtimePay)}</span>
                         </div>`:""}
                         <div class="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-700 font-bold">
                             <span>Total Penghasilan Bruto:</span>
-                            <span class="font-mono text-emerald-600 dark:text-emerald-400">${f(t.totalEarnings)}</span>
+                            <span class="font-mono text-emerald-600 dark:text-emerald-400">${f(a.totalEarnings)}</span>
                         </div>
                     </div>
 
                     <!-- Rincian Potongan (-) -->
                     <div class="space-y-1.5 pb-3 border-b border-dashed border-slate-300 dark:border-slate-600">
                         <span class="text-[11px] font-black uppercase text-rose-500 tracking-wider block">POTONGAN (-)</span>
-                        ${t.advanceDeduction>0?`
+                        ${a.advanceDeduction>0?`
                         <div class="flex justify-between">
-                            <span class="text-slate-600 dark:text-slate-300">Angsuran Kasbon (#${l(t.advanceId||"KSB")}):</span>
-                            <span class="font-mono font-bold text-rose-500">-${f(t.advanceDeduction)}</span>
+                            <span class="text-slate-600 dark:text-slate-300">Angsuran Kasbon (#${l(a.advanceId||"KSB")}):</span>
+                            <span class="font-mono font-bold text-rose-500">-${f(a.advanceDeduction)}</span>
                         </div>`:""}
-                        ${t.lostItemDeduction>0?`
+                        ${a.lostItemDeduction>0?`
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Potongan Selisih Barang Hilang:</span>
-                            <span class="font-mono font-bold text-rose-500">-${f(t.lostItemDeduction)}</span>
+                            <span class="font-mono font-bold text-rose-500">-${f(a.lostItemDeduction)}</span>
                         </div>
-                        ${t.lostItemNotes?`<span class="text-[10px] text-slate-400 italic block pl-2">${l(t.lostItemNotes)}</span>`:""}`:""}
-                        ${t.totalDeductions===0?'<div class="text-slate-400 text-[11px] italic">Tidak ada potongan pada periode ini</div>':""}
+                        ${a.lostItemNotes?`<span class="text-[10px] text-slate-400 italic block pl-2">${l(a.lostItemNotes)}</span>`:""}`:""}
+                        ${a.totalDeductions===0?'<div class="text-slate-400 text-[11px] italic">Tidak ada potongan pada periode ini</div>':""}
                         <div class="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-700 font-bold">
                             <span>Total Potongan:</span>
-                            <span class="font-mono text-rose-500">-${f(t.totalDeductions)}</span>
+                            <span class="font-mono text-rose-500">-${f(a.totalDeductions)}</span>
                         </div>
                     </div>
 
@@ -972,10 +1404,10 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 flex items-center justify-between">
                         <div>
                             <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">GAJI BERSIH (TAKE HOME PAY)</span>
-                            <span class="text-[10px] text-slate-500">Metode: ${l(t.paymentMethod?.toUpperCase())}</span>
+                            <span class="text-[10px] text-slate-500">Metode: ${l(a.paymentMethod?.toUpperCase())}</span>
                         </div>
                         <span class="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
-                            ${f(t.netSalary)}
+                            ${f(a.netSalary)}
                         </span>
                     </div>
 
@@ -984,7 +1416,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <div>
                             <span>Penerima,</span>
                             <div class="h-10"></div>
-                            <span class="font-bold text-slate-700 dark:text-slate-300">${l(t.employeeName)}</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300">${l(a.employeeName)}</span>
                         </div>
                         <div>
                             <span>Pengelola HR / Owner,</span>
@@ -1002,17 +1434,17 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     Tutup
                 </button>
                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
-                    <button onclick="window.sendPayslipWhatsApp('${l(t.payrollId||t.id)}')"
+                    <button onclick="window.sendPayslipWhatsApp('${l(a.payrollId||a.id)}')"
                         class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-white font-black text-xs transition-all active:scale-95 cursor-pointer shadow-sm flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700">
                         <i class="fa-brands fa-whatsapp text-sm"></i>
                         <span>Kirim WA</span>
                     </button>
-                    <button onclick="window.printPayslipThermal('${l(t.payrollId||t.id)}')"
+                    <button onclick="window.printPayslipThermal('${l(a.payrollId||a.id)}')"
                         class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-2xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-receipt text-xs"></i>
                         <span>Struk Thermal</span>
                     </button>
-                    <button onclick="window.printPayslipA4('${l(t.payrollId||t.id)}')"
+                    <button onclick="window.printPayslipA4('${l(a.payrollId||a.id)}')"
                         class="flex-1 sm:flex-initial min-h-[44px] px-5 py-2.5 rounded-2xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                         style="background: var(--color-primary);">
                         <i class="fa-solid fa-print text-xs"></i>
@@ -1021,12 +1453,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </div>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("payslipPreview"),setTimeout(()=>{const i=n("payslip-preview-modal-box");i&&i.classList.remove("scale-95")},10)},fa=(a=!1)=>{const e=()=>{const t=n("modal-payslip-preview");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("payslipPreview",a,e):e()},ua=a=>{const e=le||_.find(o=>(o.payrollId||o.id)===a);if(!e)return;const t=m.store||{name:"TOKO PUTRI"},s=String(e.phone||"").replace(/[^0-9]/g,""),r=[`*SLIP GAJI RESMI - ${t.name?.toUpperCase()||"TOKO PUTRI"}*`,`Periode: *${e.periodLabel}*`,"----------------------------------------","👤 *KARYAWAN*",`• ID: \`${e.employeeId}\``,`• Nama: *${e.employeeName}*`,`• Jabatan: ${e.position}`,`• Hari Masuk: ${e.totalAttendanceDays||0} Hari`,"----------------------------------------","💰 *PENGHASILAN (+)*",`• Gaji Pokok: ${f(e.baseSalary)}`,e.attendanceAllowance>0?`• Tunjangan Absensi: +${f(e.attendanceAllowance)}`:"",e.bonus>0?`• Bonus / Insentif: +${f(e.bonus)}`:"",e.overtimePay>0?`• Uang Lembur: +${f(e.overtimePay)}`:"",`*Total Bruto: ${f(e.totalEarnings)}*`,"----------------------------------------","✂️ *POTONGAN (-)*",e.advanceDeduction>0?`• Angsuran Kasbon: -${f(e.advanceDeduction)}`:"",e.lostItemDeduction>0?`• Potongan Selisih Barang Hilang: -${f(e.lostItemDeduction)}`:"",e.totalDeductions===0?"• Tidak ada potongan":`*Total Potongan: -${f(e.totalDeductions)}*`,"----------------------------------------","💵 *GAJI BERSIH (TAKE HOME PAY)*",`*${f(e.netSalary)}*`,`Metode: ${e.paymentMethod?.toUpperCase()} (${e.bankName||"BCA"}: ${e.bankAccount||"-"})`,`Status: *${e.status==="paid"?"LUNAS / DIBAYAR":"DRAF"}*`,"----------------------------------------","_Slip gaji ini dibuat otomatis secara sah oleh sistem manajemen Toko Putri._"].filter(Boolean).join(`
-`),i=encodeURIComponent(r),c=s?`https://wa.me/${s}?text=${i}`:`https://api.whatsapp.com/send?text=${i}`;window.open(c,"_blank")},ga=a=>{const e=le||_.find(i=>(i.payrollId||i.id)===a);if(!e)return;const t=m.store||{name:"TOKO PUTRI",address:"Jl. Raya Toko Putri"},s=`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("payslipPreview"),setTimeout(()=>{const i=d("payslip-preview-modal-box");i&&i.classList.remove("scale-95")},10)},At=(t=!1)=>{const e=()=>{const a=d("modal-payslip-preview");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("payslipPreview",t,e):e()},$t=t=>{const e=oe||_.find(o=>(o.payrollId||o.id)===t);if(!e)return;const a=m.store||{name:"TOKO PUTRI"},s=String(e.phone||"").replace(/[^0-9]/g,""),r=[`*SLIP GAJI RESMI - ${a.name?.toUpperCase()||"TOKO PUTRI"}*`,`Periode: *${e.periodLabel}*`,"----------------------------------------","👤 *KARYAWAN*",`• ID: \`${e.employeeId}\``,`• Nama: *${e.employeeName}*`,`• Jabatan: ${e.position}`,`• Hari Masuk: ${e.totalAttendanceDays||0} Hari`,"----------------------------------------","💰 *PENGHASILAN (+)*",`• Gaji Pokok: ${f(e.baseSalary)}`,e.attendanceAllowance>0?`• Tunjangan Absensi: +${f(e.attendanceAllowance)}`:"",e.bonus>0?`• Bonus / Insentif: +${f(e.bonus)}`:"",e.overtimePay>0?`• Uang Lembur: +${f(e.overtimePay)}`:"",`*Total Bruto: ${f(e.totalEarnings)}*`,"----------------------------------------","✂️ *POTONGAN (-)*",e.advanceDeduction>0?`• Angsuran Kasbon: -${f(e.advanceDeduction)}`:"",e.lostItemDeduction>0?`• Potongan Selisih Barang Hilang: -${f(e.lostItemDeduction)}`:"",e.totalDeductions===0?"• Tidak ada potongan":`*Total Potongan: -${f(e.totalDeductions)}*`,"----------------------------------------","💵 *GAJI BERSIH (TAKE HOME PAY)*",`*${f(e.netSalary)}*`,`Metode: ${e.paymentMethod?.toUpperCase()} (${e.bankName||"BCA"}: ${e.bankAccount||"-"})`,`Status: *${e.status==="paid"?"LUNAS / DIBAYAR":"DRAF"}*`,"----------------------------------------","_Slip gaji ini dibuat otomatis secara sah oleh sistem manajemen Toko Putri._"].filter(Boolean).join(`
+`),i=encodeURIComponent(r),n=s?`https://wa.me/${s}?text=${i}`:`https://api.whatsapp.com/send?text=${i}`;window.open(n,"_blank")},St=t=>{const e=oe||_.find(i=>(i.payrollId||i.id)===t);if(!e)return;const a=m.store||{name:"TOKO PUTRI",address:"Jl. Raya Toko Putri"},s=`
     <div style="font-family:'Courier New',Courier,monospace;width:300px;margin:0 auto;padding:10px;font-size:12px;color:#000;">
         <div style="text-align:center;border-bottom:1px dashed #000;padding-bottom:8px;margin-bottom:8px;">
-            <div style="font-size:16px;font-weight:bold;">${l(t.name||"TOKO PUTRI")}</div>
-            <div style="font-size:10px;">${l(t.address||"")}</div>
+            <div style="font-size:16px;font-weight:bold;">${l(a.name||"TOKO PUTRI")}</div>
+            <div style="font-size:10px;">${l(a.address||"")}</div>
             <div style="font-weight:bold;margin-top:4px;">SLIP GAJI KARYAWAN</div>
             <div style="font-size:11px;">${l(e.periodLabel)}</div>
         </div>
@@ -1059,7 +1491,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
             <div>Metode: ${l(e.paymentMethod?.toUpperCase())} • Status: ${l(e.status?.toUpperCase())}</div>
             <div style="margin-top:4px;">Terima kasih atas kerja keras Anda!</div>
         </div>
-    </div>`,r=window.open("","_blank");r&&(r.document.write(`<html><head><title>Slip Gaji - ${e.employeeName}</title></head><body onload="window.print();">${s}</body></html>`),r.document.close())},ka=a=>{const e=le||_.find(i=>(i.payrollId||i.id)===a);if(!e)return;const t=m.store||{name:"TOKO PUTRI",address:"Jl. Raya Toko Putri",phone:"081234567890"},s=`
+    </div>`,r=window.open("","_blank");r&&(r.document.write(`<html><head><title>Slip Gaji - ${e.employeeName}</title></head><body onload="window.print();">${s}</body></html>`),r.document.close())},Pt=t=>{const e=oe||_.find(i=>(i.payrollId||i.id)===t);if(!e)return;const a=m.store||{name:"TOKO PUTRI",address:"Jl. Raya Toko Putri",phone:"081234567890"},s=`
     <!DOCTYPE html>
     <html lang="id">
     <head>
@@ -1091,9 +1523,9 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
     <body onload="window.print();">
         <div class="kop">
             <div>
-                <div class="kop-title">${l(t.name||"TOKO PUTRI")}</div>
-                <div class="kop-sub">${l(t.address||"Pusat Bahan Bangunan & Alat Teknik")}</div>
-                <div class="kop-sub">WhatsApp: ${l(t.phone||"-")}</div>
+                <div class="kop-title">${l(a.name||"TOKO PUTRI")}</div>
+                <div class="kop-sub">${l(a.address||"Pusat Bahan Bangunan & Alat Teknik")}</div>
+                <div class="kop-sub">WhatsApp: ${l(a.phone||"-")}</div>
             </div>
             <div style="text-align: right;">
                 <div class="badge-title">SLIP GAJI KARYAWAN</div>
@@ -1201,11 +1633,11 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div>Mengetahui,</div>
                 <div class="sign-line"></div>
                 <div style="font-weight: 800;">Direksi / Pemilik Toko</div>
-                <div style="font-size: 11px; color: #64748b;">${l(t.name||"Toko Putri")}</div>
+                <div style="font-size: 11px; color: #64748b;">${l(a.name||"Toko Putri")}</div>
             </div>
         </div>
     </body>
-    </html>`,r=window.open("","_blank");r&&(r.document.write(s),r.document.close())};typeof window<"u"&&(window.generatePayrollId=me,window.loadPayrollRuns=He,window.calculateEmployeePayrollDraft=oe,window.renderPayrollView=ee,window.navigatePayrollPeriod=da,window.onPayrollPeriodChanged=ca,window.openPayrollItemModal=pa,window.closePayrollItemModal=De,window.recalculatePayrollItem=ba,window.savePayrollItem=xa,window.openPayslipPreviewModal=ma,window.closePayslipPreviewModal=fa,window.sendPayslipWhatsApp=ua,window.printPayslipThermal=ga,window.printPayslipA4=ka);let P=[],q="all",W="";const va=a=>{if(!a)return"";let e=a.replace(/[^0-9]/g,"");return e.startsWith("0")&&(e="62"+e.slice(1)),e},Ce=async()=>{if(!n("admin-content"))return;const e=document.querySelector("#view-admin .scroll-content");e&&(e.scrollTop=0);const t=Y.currentUser;t&&(t.uid,he);const s=t&&t.uid!==he,r=!t,i=Z(m);let c="",o="";r?(c='<span class="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Status: Pratinjau Lokal</span>',o=`
+    </html>`,r=window.open("","_blank");r&&(r.document.write(s),r.document.close())};typeof window<"u"&&(window.generatePayrollId=ue,window.loadPayrollRuns=He,window.calculateEmployeePayrollDraft=ne,window.renderPayrollView=ae,window.navigatePayrollPeriod=gt,window.onPayrollPeriodChanged=kt,window.openPayrollItemModal=vt,window.closePayrollItemModal=Ce,window.recalculatePayrollItem=yt,window.savePayrollItem=ht,window.openPayslipPreviewModal=wt,window.closePayslipPreviewModal=At,window.sendPayslipWhatsApp=$t,window.printPayslipThermal=St,window.printPayslipA4=Pt);let T=[],V="all",J="";const Mt=t=>{if(!t)return"";let e=t.replace(/[^0-9]/g,"");return e.startsWith("0")&&(e="62"+e.slice(1)),e},Ee=async()=>{if(!d("admin-content"))return;const e=document.querySelector("#view-admin .scroll-content");e&&(e.scrollTop=0);const a=Z.currentUser;a&&(a.uid,Ae);const s=a&&a.uid!==Ae,r=!a,i=ee(m);let n="",o="";r?(n='<span class="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Status: Pratinjau Lokal</span>',o=`
         <div class="p-4 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs mb-4">
             <div class="flex items-start gap-3">
                 <div class="w-9 h-9 rounded-xl bg-amber-200/80 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 shadow-2xs">
@@ -1224,15 +1656,15 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <i class="fa-solid fa-right-to-bracket text-xs"></i>
                 <span>Login Akun Owner</span>
             </button>
-        </div>`):s?(c=`<span class="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold"><i class="fa-solid fa-user-shield"></i> Staf (${l(t.email||"Staf")})</span>`,o=`
+        </div>`):s?(n=`<span class="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold"><i class="fa-solid fa-user-shield"></i> Staf (${l(a.email||"Staf")})</span>`,o=`
         <div class="p-3.5 rounded-2xl border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 flex items-center gap-3 shadow-2xs mb-4">
             <div class="w-8 h-8 rounded-xl bg-blue-200/70 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
                 <i class="fa-solid fa-shield-halved text-xs"></i>
             </div>
             <div class="text-[11px] leading-snug">
-                <span class="font-bold">Mode Akun Staf (${l(t.email||"Staf")}):</span> Anda dapat melihat direktori staf. Penambahan, pengubahan wewenang hak akses, dan penghapusan staf diproteksi eksklusif untuk Pemilik Toko (Owner).
+                <span class="font-bold">Mode Akun Staf (${l(a.email||"Staf")}):</span> Anda dapat melihat direktori staf. Penambahan, pengubahan wewenang hak akses, dan penghapusan staf diproteksi eksklusif untuk Pemilik Toko (Owner).
             </div>
-        </div>`):c=`<span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Owner Terverifikasi (${l(t.email||"Master")})</span>`,Ue("admin-content",`
+        </div>`):n=`<span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Owner Terverifikasi (${l(a.email||"Master")})</span>`,We("admin-content",`
     <div class="space-y-4 max-w-5xl mx-auto pb-24">
         <!-- Native App Sticky Segmented Control Bar -->
         <div class="sticky top-0 z-20 py-2 sm:py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-none border-b border-slate-200/80 dark:border-slate-800/80 mb-2">
@@ -1318,7 +1750,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
             <!-- 3. FLAGSHIP BENTO ISLAND: AKUN PEMILIK UTAMA (SUPER ADMIN & MASTER HR) -->
             <div id="owner-card-container">
-                ${ya(i,c)}
+                ${Tt(i,n)}
             </div>
 
             <!-- 4. TOOLBAR PENCARIAN & CHICLET FILTER PERAN -->
@@ -1359,7 +1791,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
         <!-- Panel 5: Laporan Shift Kasir -->
         <div id="cashier-panel-shifts" class="hidden pt-1"></div>
-    </div>`),await z()},ya=(a,e)=>`
+    </div>`),await W()},Tt=(t,e)=>`
     <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-white/95 dark:bg-slate-800/90 shadow-2xs hover:border-[var(--color-primary)] transition-all">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
@@ -1369,13 +1801,13 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="min-w-0 flex-1 space-y-1">
                     <div class="flex items-center gap-2 flex-wrap">
                         <h3 class="text-base font-black text-slate-900 dark:text-white truncate">
-                            ${l(a.name||"Akun Pemilik Utama (Owner)")}
+                            ${l(t.name||"Akun Pemilik Utama (Owner)")}
                         </h3>
                         <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                             <i class="fa-solid fa-shield-halved text-[9px]"></i> Super Admin Terproteksi
                         </span>
                         <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md border" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.2);">
-                            ${l(a.employeeId||"OWN-001")}
+                            ${l(t.employeeId||"OWN-001")}
                         </span>
                         <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1384,11 +1816,11 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     </div>
                     <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
                         <span class="font-bold text-slate-800 dark:text-slate-100">
-                            <i class="fa-solid fa-user-tie text-[11px] mr-1" style="color: var(--color-primary)"></i>${l(a.position||"Owner / Direktur Utama")}
+                            <i class="fa-solid fa-user-tie text-[11px] mr-1" style="color: var(--color-primary)"></i>${l(t.position||"Owner / Direktur Utama")}
                         </span>
                         <span class="text-slate-300 dark:text-slate-600">•</span>
                         <span class="font-black text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${f(a.baseSalary||1e7)}/bln
+                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${f(t.baseSalary||1e7)}/bln
                         </span>
                         <span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">(Gaji Pokok Direksi)</span>
                     </div>
@@ -1398,10 +1830,10 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <span class="inline-flex items-center gap-1 font-bold" style="color: var(--color-primary)">
                             <i class="fa-solid fa-key text-[10px]"></i> 22 Modul Lengkap (Akses Penuh)
                         </span>
-                        ${a.bankAccount&&a.bankAccount!=="-"?`
+                        ${t.bankAccount&&t.bankAccount!=="-"?`
                         <span class="text-slate-300 dark:text-slate-600">•</span>
                         <span class="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300 font-semibold">
-                            <i class="fa-solid fa-building-columns text-[10px]"></i> ${l(a.bankName||"BCA")}: ${l(a.bankAccount)}
+                            <i class="fa-solid fa-building-columns text-[10px]"></i> ${l(t.bankName||"BCA")}: ${l(t.bankAccount)}
                         </span>`:""}
                     </div>
                 </div>
@@ -1413,7 +1845,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </button>
             </div>
         </div>
-    </div>`,ha=a=>{const e=document.querySelector("#view-admin .scroll-content");e&&(e.scrollTop=0);const t=n("tab-btn-cashier-accounts"),s=n("tab-btn-cashier-attendance"),r=n("tab-btn-cashier-advances"),i=n("tab-btn-cashier-payroll"),c=n("tab-btn-cashier-shifts"),o=n("cashier-panel-accounts"),x=n("cashier-panel-attendance"),d=n("cashier-panel-advances"),b=n("cashier-panel-payroll"),p=n("cashier-panel-shifts"),k=(g,v,w)=>{g&&(g.className="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0",g.style.background="var(--color-primary)",g.style.boxShadow="0 4px 14px rgba(var(--color-primary-rgb), 0.35)",g.innerHTML=`${v}<span class="truncate">${w}</span>`)},y=(g,v,w)=>{g&&(g.className="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0",g.style.background="transparent",g.style.boxShadow="none",g.innerHTML=`${v}<span class="truncate">${w}</span>`)};y(t,'<i class="fa-solid fa-users-gear"></i>',"Staf &amp; Akses"),y(s,'<i class="fa-solid fa-clipboard-user"></i>',"Absensi Tim"),y(r,'<i class="fa-solid fa-hand-holding-dollar"></i>',"Buku Kasbon"),y(i,'<i class="fa-solid fa-money-check-dollar"></i>',"Gaji &amp; Slip"),y(c,'<i class="fa-solid fa-file-invoice-dollar"></i>',"Shift Kasir"),o&&o.classList.add("hidden"),x&&x.classList.add("hidden"),d&&d.classList.add("hidden"),b&&b.classList.add("hidden"),p&&p.classList.add("hidden"),a==="attendance"?(k(s,'<i class="fa-solid fa-clipboard-user text-white"></i>',"Absensi Tim"),x&&(x.classList.remove("hidden"),X(x))):a==="advances"?(k(r,'<i class="fa-solid fa-hand-holding-dollar text-white"></i>',"Buku Kasbon"),d&&(d.classList.remove("hidden"),V(d))):a==="payroll"?(k(i,'<i class="fa-solid fa-money-check-dollar text-white"></i>',"Gaji &amp; Slip"),b&&(b.classList.remove("hidden"),ee(b))):a==="shifts"?(k(c,'<i class="fa-solid fa-file-invoice-dollar text-white"></i>',"Shift Kasir"),p&&(p.classList.remove("hidden"),We(p))):(k(t,'<i class="fa-solid fa-users-gear text-white"></i>',"Staf &amp; Akses"),o&&o.classList.remove("hidden"))},wa=()=>{const a=n("staff-metrics-container");if(!a)return;const e=Z(m),t=P.length,s=P.filter(d=>d.isActive!==!1).length,r=P.filter(d=>(d.role===u.CASHIER||!d.role)&&d.isActive!==!1).length,i=P.filter(d=>d.role===u.ADMIN&&d.isActive!==!1).length,c=P.filter(d=>d.role===u.STAFF&&d.isActive!==!1).length,o=P.filter(d=>d.isActive===!1).length,x=P.reduce((d,b)=>d+(parseFloat(b.baseSalary)||0),0)+(parseFloat(e?.baseSalary)||1e7);a.innerHTML=`
+    </div>`,It=t=>{const e=document.querySelector("#view-admin .scroll-content");e&&(e.scrollTop=0);const a=d("tab-btn-cashier-accounts"),s=d("tab-btn-cashier-attendance"),r=d("tab-btn-cashier-advances"),i=d("tab-btn-cashier-payroll"),n=d("tab-btn-cashier-shifts"),o=d("cashier-panel-accounts"),x=d("cashier-panel-attendance"),c=d("cashier-panel-advances"),p=d("cashier-panel-payroll"),b=d("cashier-panel-shifts"),k=(g,v,y)=>{g&&(g.className="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0",g.style.background="var(--color-primary)",g.style.boxShadow="0 4px 14px rgba(var(--color-primary-rgb), 0.35)",g.innerHTML=`${v}<span class="truncate">${y}</span>`)},w=(g,v,y)=>{g&&(g.className="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0",g.style.background="transparent",g.style.boxShadow="none",g.innerHTML=`${v}<span class="truncate">${y}</span>`)};w(a,'<i class="fa-solid fa-users-gear"></i>',"Staf &amp; Akses"),w(s,'<i class="fa-solid fa-clipboard-user"></i>',"Absensi Tim"),w(r,'<i class="fa-solid fa-hand-holding-dollar"></i>',"Buku Kasbon"),w(i,'<i class="fa-solid fa-money-check-dollar"></i>',"Gaji &amp; Slip"),w(n,'<i class="fa-solid fa-file-invoice-dollar"></i>',"Shift Kasir"),o&&o.classList.add("hidden"),x&&x.classList.add("hidden"),c&&c.classList.add("hidden"),p&&p.classList.add("hidden"),b&&b.classList.add("hidden"),t==="attendance"?(k(s,'<i class="fa-solid fa-clipboard-user text-white"></i>',"Absensi Tim"),x&&(x.classList.remove("hidden"),te(x))):t==="advances"?(k(r,'<i class="fa-solid fa-hand-holding-dollar text-white"></i>',"Buku Kasbon"),c&&(c.classList.remove("hidden"),Q(c))):t==="payroll"?(k(i,'<i class="fa-solid fa-money-check-dollar text-white"></i>',"Gaji &amp; Slip"),p&&(p.classList.remove("hidden"),ae(p))):t==="shifts"?(k(n,'<i class="fa-solid fa-file-invoice-dollar text-white"></i>',"Shift Kasir"),b&&(b.classList.remove("hidden"),qe(b))):(k(a,'<i class="fa-solid fa-users-gear text-white"></i>',"Staf &amp; Akses"),o&&o.classList.remove("hidden"))},jt=()=>{const t=d("staff-metrics-container");if(!t)return;const e=ee(m),a=T.length,s=T.filter(c=>c.isActive!==!1).length,r=T.filter(c=>(c.role===u.CASHIER||!c.role)&&c.isActive!==!1).length,i=T.filter(c=>c.role===u.ADMIN&&c.isActive!==!1).length,n=T.filter(c=>c.role===u.STAFF&&c.isActive!==!1).length,o=T.filter(c=>c.isActive===!1).length,x=T.reduce((c,p)=>c+(parseFloat(p.baseSalary)||0),0)+(parseFloat(e?.baseSalary)||1e7);t.innerHTML=`
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
         <!-- 1. Total Tim & Staf -->
         <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
@@ -1423,7 +1855,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-users"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${s+1} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">/ ${t+1} Akun</span></p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${s+1} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">/ ${a+1} Akun</span></p>
             <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${o>0?`${o} Akun Dinonaktifkan`:"Seluruh Tim Aktif"}</p>
         </div>
 
@@ -1447,8 +1879,8 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${i+c} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
-            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${i} Admin • ${c} Staf Gudang</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${i+n} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${i} Admin • ${n} Staf Gudang</p>
         </div>
 
         <!-- 4. Beban Gaji Bulanan -->
@@ -1462,24 +1894,24 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
             <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${f(x)}</p>
             <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Total Gaji Tim &amp; Direksi /bln</p>
         </div>
-    </div>`},Ee=()=>{const a=n("staff-role-filters-bar");if(!a)return;const e=P.length,t=P.filter(o=>o.role===u.ADMIN||o.role===u.OWNER||o.role==="admin"||o.role==="owner").length,s=P.filter(o=>o.role===u.CASHIER||o.role==="cashier"||!o.role).length,r=P.filter(o=>o.role===u.STAFF||o.role==="staff").length,i=P.filter(o=>o.isActive===!1).length,c=[{key:"all",label:"Semua Staf",icon:"fa-users",count:e},{key:"cashier",label:"Kasir POS",icon:"fa-cash-register",count:s},{key:"admin",label:"Admin Toko",icon:"fa-shield-halved",count:t},{key:"staff",label:"Staf Gudang",icon:"fa-user-gear",count:r}];i>0&&c.push({key:"inactive",label:"Nonaktif",icon:"fa-user-slash",count:i}),a.innerHTML=c.map(o=>{const x=q===o.key;return`
+    </div>`},Ne=()=>{const t=d("staff-role-filters-bar");if(!t)return;const e=T.length,a=T.filter(o=>o.role===u.ADMIN||o.role===u.OWNER||o.role==="admin"||o.role==="owner").length,s=T.filter(o=>o.role===u.CASHIER||o.role==="cashier"||!o.role).length,r=T.filter(o=>o.role===u.STAFF||o.role==="staff").length,i=T.filter(o=>o.isActive===!1).length,n=[{key:"all",label:"Semua Staf",icon:"fa-users",count:e},{key:"cashier",label:"Kasir POS",icon:"fa-cash-register",count:s},{key:"admin",label:"Admin Toko",icon:"fa-shield-halved",count:a},{key:"staff",label:"Staf Gudang",icon:"fa-user-gear",count:r}];i>0&&n.push({key:"inactive",label:"Nonaktif",icon:"fa-user-slash",count:i}),t.innerHTML=n.map(o=>{const x=V===o.key;return`
         <button onclick="window.filterStaffRole('${o.key}')" id="staff-filter-${o.key}"
             class="staff-filter-btn min-h-[38px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0 border ${x?"text-white border-transparent":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/90 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600"}"
             style="${x?"background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);":""}">
             <i class="fa-solid ${o.icon} text-[10px]"></i>
             <span>${o.label}</span>
             <span class="ml-0.5 px-1.5 py-0.2 rounded-md text-[10px] font-mono ${x?"bg-white/20 text-white":"bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"}">${o.count}</span>
-        </button>`}).join("")},Aa=a=>{q=a,Ee(),fe()},Re=a=>{W=(a||"").toLowerCase().trim();const e=n("btn-clear-staff-search");e&&(W?e.classList.remove("hidden"):e.classList.add("hidden")),fe()},Sa=()=>{const a=n("staff-search-input");a&&(a.value="",a.focus()),Re("")},$a=a=>{if(a.role===u.OWNER)return Q.length;if(a.permissions)return Object.values(a.permissions).filter(Boolean).length;const e=U[a.role]||U[u.CASHIER];return Object.values(e).filter(Boolean).length},fe=()=>{const a=n("cashier-list-container");if(!a)return;let e=P;if(q==="admin"?e=e.filter(s=>s.role===u.ADMIN||s.role===u.OWNER||s.role==="admin"||s.role==="owner"):q==="cashier"?e=e.filter(s=>s.role===u.CASHIER||s.role==="cashier"||!s.role):q==="staff"?e=e.filter(s=>s.role===u.STAFF||s.role==="staff"):q==="inactive"&&(e=e.filter(s=>s.isActive===!1)),W){const s=W;e=e.filter(r=>{const i=(r.name||"").toLowerCase(),c=(r.email||"").toLowerCase(),o=(r.employeeId||"").toLowerCase(),x=(r.phone||"").toLowerCase(),d=(r.position||"").toLowerCase();return i.includes(s)||c.includes(s)||o.includes(s)||x.includes(s)||d.includes(s)})}if(e.length===0){a.innerHTML=`
+        </button>`}).join("")},Dt=t=>{V=t,Ne(),ge()},Oe=t=>{J=(t||"").toLowerCase().trim();const e=d("btn-clear-staff-search");e&&(J?e.classList.remove("hidden"):e.classList.add("hidden")),ge()},Rt=()=>{const t=d("staff-search-input");t&&(t.value="",t.focus()),Oe("")},Ht=t=>{if(t.role===u.OWNER)return X.length;if(t.permissions)return Object.values(t.permissions).filter(Boolean).length;const e=U[t.role]||U[u.CASHIER];return Object.values(e).filter(Boolean).length},ge=()=>{const t=d("cashier-list-container");if(!t)return;let e=T;if(V==="admin"?e=e.filter(s=>s.role===u.ADMIN||s.role===u.OWNER||s.role==="admin"||s.role==="owner"):V==="cashier"?e=e.filter(s=>s.role===u.CASHIER||s.role==="cashier"||!s.role):V==="staff"?e=e.filter(s=>s.role===u.STAFF||s.role==="staff"):V==="inactive"&&(e=e.filter(s=>s.isActive===!1)),J){const s=J;e=e.filter(r=>{const i=(r.name||"").toLowerCase(),n=(r.email||"").toLowerCase(),o=(r.employeeId||"").toLowerCase(),x=(r.phone||"").toLowerCase(),c=(r.position||"").toLowerCase();return i.includes(s)||n.includes(s)||o.includes(s)||x.includes(s)||c.includes(s)})}if(e.length===0){t.innerHTML=`
         <div class="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600 bg-white/95 dark:bg-slate-800/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-8 text-center shadow-2xs">
             <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
                 <i class="fa-solid fa-user-slash"></i>
             </div>
             <h4 class="font-black text-sm text-slate-800 dark:text-slate-200">Tidak ada staf yang cocok</h4>
             <p class="text-xs mt-1 text-slate-400 dark:text-slate-500 max-w-sm">
-                ${W?`Tidak ditemukan staf dengan kata kunci "${l(W)}". Silakan ubah filter atau kata kunci.`:"Belum ada akun staf pada kategori ini."}
+                ${J?`Tidak ditemukan staf dengan kata kunci "${l(J)}". Silakan ubah filter atau kata kunci.`:"Belum ada akun staf pada kategori ini."}
             </p>
             <div class="mt-4 flex items-center gap-2">
-                ${W?`
+                ${J?`
                 <button onclick="window.clearStaffSearch()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-xs font-bold text-slate-700 dark:text-slate-200 transition-all cursor-pointer">
                     Reset Pencarian
                 </button>`:""}
@@ -1487,7 +1919,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-plus mr-1"></i> Tambah Staf Baru
                 </button>
             </div>
-        </div>`;return}const t=e.map((s,r)=>{const i=s.uid,c=s.isActive!==!1,o=s.createdAt?.toDate?s.createdAt.toDate().toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}):s.hireDate||"-",x=(s.name||"Staf").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"ST",d=s.role||u.CASHIER,b=$a(s),p=s.employeeId||`EMP-${String(r+1).padStart(3,"0")}`,k=s.position||(d===u.CASHIER?"Kasir POS":d===u.ADMIN?"Admin Operasional":"Staf Gudang & Logistik"),y=parseFloat(s.baseSalary)||0,g=parseFloat(s.dailyAllowance)||0;let v="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);";return d===u.ADMIN?v="background: rgba(37, 99, 235, 0.12); color: #2563eb; border-color: rgba(37, 99, 235, 0.25);":d===u.STAFF&&(v="background: rgba(217, 119, 6, 0.12); color: #d97706; border-color: rgba(217, 119, 6, 0.25);"),`
+        </div>`;return}const a=e.map((s,r)=>{const i=s.uid,n=s.isActive!==!1,o=s.createdAt?.toDate?s.createdAt.toDate().toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}):s.hireDate||"-",x=(s.name||"Staf").trim().split(/\s+/).slice(0,2).map(y=>y[0]).join("").toUpperCase()||"ST",c=s.role||u.CASHIER,p=Ht(s),b=s.employeeId||`EMP-${String(r+1).padStart(3,"0")}`,k=s.position||(c===u.CASHIER?"Kasir POS":c===u.ADMIN?"Admin Operasional":"Staf Gudang & Logistik"),w=parseFloat(s.baseSalary)||0,g=parseFloat(s.dailyAllowance)||0;let v="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);";return c===u.ADMIN?v="background: rgba(37, 99, 235, 0.12); color: #2563eb; border-color: rgba(37, 99, 235, 0.25);":c===u.STAFF&&(v="background: rgba(217, 119, 6, 0.12); color: #d97706; border-color: rgba(217, 119, 6, 0.25);"),`
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-white/95 dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all">
             <div class="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
                 <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border" style="${v}">
@@ -1496,13 +1928,13 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="min-w-0 flex-1 space-y-1">
                     <div class="flex items-center gap-2 flex-wrap">
                         <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">${l(s.name||"Staf")}</p>
-                        ${ze(d)}
+                        ${Je(c)}
                         <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
-                            ${l(p)}
+                            ${l(b)}
                         </span>
-                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full ${c?"bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60":"bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600"}">
-                            <span class="w-1.5 h-1.5 rounded-full ${c?"bg-emerald-500 animate-pulse":"bg-slate-400"}"></span>
-                            ${c?"Aktif":"Nonaktif"}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full ${n?"bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60":"bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600"}">
+                            <span class="w-1.5 h-1.5 rounded-full ${n?"bg-emerald-500 animate-pulse":"bg-slate-400"}"></span>
+                            ${n?"Aktif":"Nonaktif"}
                         </span>
                     </div>
                     <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
@@ -1511,7 +1943,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         </span>
                         <span class="text-slate-300 dark:text-slate-600">•</span>
                         <span class="font-black text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${f(y)}/bln
+                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${f(w)}/bln
                         </span>
                         ${g>0?`<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+${f(g)}/hr)</span>`:""}
                     </div>
@@ -1519,12 +1951,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <span class="inline-flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${l(s.email||"-")}</span>
                         ${s.phone?`
                         <span class="text-slate-300 dark:text-slate-600">•</span>
-                        <a href="https://wa.me/${va(s.phone)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400 hover:underline" title="Kirim Pesan WhatsApp">
+                        <a href="https://wa.me/${Mt(s.phone)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400 hover:underline" title="Kirim Pesan WhatsApp">
                             <i class="fa-brands fa-whatsapp text-[12px]"></i> ${l(s.phone)}
                         </a>`:""}
                         <span class="text-slate-300 dark:text-slate-600">•</span>
                         <span class="inline-flex items-center gap-1 font-bold" style="color: var(--color-primary)">
-                            <i class="fa-solid fa-key text-[9px]"></i> ${b} Modul Diizinkan
+                            <i class="fa-solid fa-key text-[9px]"></i> ${p} Modul Diizinkan
                         </span>
                         ${s.bankAccount&&s.bankAccount!=="-"?`
                         <span class="text-slate-300 dark:text-slate-600">•</span>
@@ -1545,12 +1977,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-sliders text-[10px]"></i>
                     <span>Hak Akses</span>
                 </button>
-                <button onclick="window.toggleStaffActive('${l(i)}', ${!c})"
-                    title="${c?"Nonaktifkan Akun Staf":"Aktifkan Akun Staf"}"
-                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border shrink-0 ${c?"bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300":"bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800"}">
-                    <i class="fa-solid ${c?"fa-ban":"fa-circle-check"}"></i>
+                <button onclick="window.toggleStaffActive('${l(i)}', ${!n})"
+                    title="${n?"Nonaktifkan Akun Staf":"Aktifkan Akun Staf"}"
+                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border shrink-0 ${n?"bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300":"bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800"}">
+                    <i class="fa-solid ${n?"fa-ban":"fa-circle-check"}"></i>
                 </button>
-                <button onclick="window.openEditStaffModal('${l(i)}', '${l(s.name||"")}', '${l(s.email||"")}', '${l(d)}')"
+                <button onclick="window.openEditStaffModal('${l(i)}', '${l(s.name||"")}', '${l(s.email||"")}', '${l(c)}')"
                     title="Edit Profil Staf &amp; HR"
                     class="w-10 h-10 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0">
                     <i class="fa-solid fa-pen-to-square"></i>
@@ -1561,14 +1993,14 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
-        </div>`}).join("");a.innerHTML=`
-    <div class="space-y-3">${t}</div>
+        </div>`}).join("");t.innerHTML=`
+    <div class="space-y-3">${a}</div>
     <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-4 px-1">
-        <span>Menampilkan <strong>${e.length}</strong> dari <strong>${P.length}</strong> staf</span>
+        <span>Menampilkan <strong>${e.length}</strong> dari <strong>${T.length}</strong> staf</span>
         <button onclick="window.loadStaffList()" class="inline-flex items-center gap-1.5 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer">
             <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Segarkan Daftar
         </button>
-    </div>`},z=async()=>{const a=n("cashier-list-container");if(a)try{let e;try{e=await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").orderBy("createdAt","desc").get()}catch{e=await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").get()}P=e.docs.map((s,r)=>{const i=s.data()||{};return{uid:s.id,...te({uid:s.id,...i},r)}});const t=P.some(s=>s.isActive!==!1&&s.role===u.CASHIER);try{localStorage.setItem("pos_has_cashier",t?"true":"false"),await $.collection("freshmart").doc("cms_data").set({hasCashier:t},{merge:!0})}catch{}typeof window.updatePOSHeaderIcon=="function"&&window.updatePOSHeaderIcon();try{const s=await $.collection("freshmart").doc("cms_data").get();s.exists&&s.data()?.ownerEmployee&&(m.ownerEmployee=s.data().ownerEmployee)}catch{}m.employees=P.map((s,r)=>te(s,r)),wa(),Ee(),fe()}catch(e){console.error("[StaffAdmin] Gagal memuat daftar staf:",e),a.innerHTML=`
+    </div>`},W=async()=>{const t=d("cashier-list-container");if(t)try{let e;try{e=await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").orderBy("createdAt","desc").get()}catch{e=await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").get()}T=e.docs.map((s,r)=>{const i=s.data()||{};return{uid:s.id,...se({uid:s.id,...i},r)}});const a=T.some(s=>s.isActive!==!1&&s.role===u.CASHIER);try{localStorage.setItem("pos_has_cashier",a?"true":"false"),await P.collection("freshmart").doc("cms_data").set({hasCashier:a},{merge:!0})}catch{}typeof window.updatePOSHeaderIcon=="function"&&window.updatePOSHeaderIcon();try{const s=await P.collection("freshmart").doc("cms_data").get();s.exists&&s.data()?.ownerEmployee&&(m.ownerEmployee=s.data().ownerEmployee)}catch{}m.employees=T.map((s,r)=>se(s,r)),jt(),Ne(),ge()}catch(e){console.error("[StaffAdmin] Gagal memuat daftar staf:",e),t.innerHTML=`
         <div class="text-center py-10 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 flex flex-col items-center justify-center">
             <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center text-2xl mb-2.5 shadow-2xs">
                 <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1579,22 +2011,22 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
                 <span>Coba Lagi</span>
             </button>
-        </div>`}},Ne=()=>{if(!M("mendaftarkan staf baru"))return;const a=pe(P,"EMP"),e=(t,s,r)=>{const i=Q.filter(c=>c.group===t);return`
+        </div>`}},Le=()=>{if(!D("mendaftarkan staf baru"))return;const t=xe(T,"EMP"),e=(a,s,r)=>{const i=X.filter(n=>n.group===a);return`
         <div class="space-y-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
                 <i class="fa-solid ${r}" style="color: var(--color-primary)"></i>
                 <span>${s}</span>
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                ${i.map(c=>`
+                ${i.map(n=>`
                 <label class="flex items-start gap-2.5 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all cursor-pointer text-left">
-                    <input type="checkbox" name="staff_perm" value="${c.key}" class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 w-4 h-4 cursor-pointer" style="accent-color: var(--color-primary)">
+                    <input type="checkbox" name="staff_perm" value="${n.key}" class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 w-4 h-4 cursor-pointer" style="accent-color: var(--color-primary)">
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                            <i class="fa-solid ${c.icon} text-[10px] text-slate-400"></i>
-                            <span>${c.label}</span>
+                            <i class="fa-solid ${n.icon} text-[10px] text-slate-400"></i>
+                            <span>${n.label}</span>
                         </p>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5">${c.desc}</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5">${n.desc}</p>
                     </div>
                 </label>`).join("")}
             </div>
@@ -1701,13 +2133,13 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
                     <!-- Datalist Jabatan Terstandar -->
                     <datalist id="staff-positions-datalist">
-                        ${ie.map(t=>`<option value="${l(t.label||t)}"></option>`).join("")}
+                        ${de.map(a=>`<option value="${l(a.label||a)}"></option>`).join("")}
                     </datalist>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ID Karyawan</label>
-                            <input id="new-staff-empid" type="text" value="${l(a)}" placeholder="EMP-001"
+                            <input id="new-staff-empid" type="text" value="${l(t)}" placeholder="EMP-001"
                                 class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
                         </div>
                         <div>
@@ -1739,13 +2171,13 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Hubungan Kerja</label>
                             <select id="new-staff-status" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
-                                ${de.map(t=>`<option value="${t.key}">${l(t.label)}</option>`).join("")}
+                                ${ce.map(a=>`<option value="${a.key}">${l(a.label)}</option>`).join("")}
                             </select>
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Metode Pencairan Gaji</label>
                             <select id="new-staff-payment-method" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
-                                ${ce.map(t=>`<option value="${t.key}">${l(t.label)}</option>`).join("")}
+                                ${pe.map(a=>`<option value="${a.key}">${l(a.label)}</option>`).join("")}
                             </select>
                         </div>
                     </div>
@@ -1798,16 +2230,16 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </button>
             </div>
         </div>
-    </div>`),window.applyNewStaffPreset(u.CASHIER),typeof window.pushModalHistory=="function"&&window.pushModalHistory("addStaff"),setTimeout(()=>{const t=n("add-staff-modal-box");t&&t.classList.remove("scale-95");const s=n("new-staff-name");s&&s.focus()},10)},ue=(a=!1)=>{const e=()=>{const t=n("add-staff-modal");if(t){const s=n("new-staff-name");s&&(s.value="");const r=n("new-staff-email");r&&(r.value="");const i=n("new-staff-pass");i&&(i.value=""),t.style.opacity="0",setTimeout(()=>t.remove(),200)}};typeof window.requestCloseModal=="function"?window.requestCloseModal("addStaff",a,e):e()},Pa=a=>{const e=U[a]||U[u.CASHIER];document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(r=>{r.checked=!!e[r.value]}),document.querySelectorAll('#add-staff-modal input[name="new_staff_role"]').forEach(r=>{const i=r.closest("label");i&&(r.value===a?i.className="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-xs transition-all text-center":i.className="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer hover:border-slate-300 transition-all text-center")});const t=n("new-staff-position"),s=ie.map(r=>r.label||r);t&&(!t.value||s.includes(t.value))&&(a===u.STAFF?t.value="Staf Gudang & Penataan Rak":a===u.ADMIN?t.value="Admin Operasional & Inventori":a==="manager"?t.value="Kepala Toko / Manager":t.value="Kasir POS")},Ma=a=>{document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(e=>{e.checked=!!a})},Oe=async()=>{if(!M("mendaftarkan staf baru"))return;const a=n("new-staff-name")?.value?.trim()||"",e=n("new-staff-email")?.value?.trim()||"",t=n("new-staff-pass")?.value||"",s=document.querySelector('#add-staff-modal input[name="new_staff_role"]:checked'),r=s?s.value:u.CASHIER,i=r==="manager"?u.ADMIN:r,c=n("new-staff-empid")?.value?.trim()||pe(P,"EMP"),o=n("new-staff-position")?.value?.trim()||(i===u.STAFF?"Staf Gudang & Logistik":i===u.ADMIN?"Admin Operasional":"Kasir POS"),x=n("new-staff-phone")?.value?.trim()||"",d=Math.max(0,parseFloat(n("new-staff-salary")?.value)||0),b=Math.max(0,parseFloat(n("new-staff-allowance")?.value)||0),p=n("new-staff-status")?.value||"permanent",k=n("new-staff-payment-method")?.value||"cash",y=n("new-staff-bank-account")?.value?.trim()||"-",g=n("new-staff-bank-holder")?.value?.trim()||a,v=k==="cash"?"Tunai Kas Laci Toko":k.toUpperCase()||"Bank",w=n("add-staff-error"),A=n("save-staff-btn"),h=I=>{w&&(w.textContent=I,w.classList.remove("hidden"))};if((()=>{w&&w.classList.add("hidden")})(),!a){h("Nama staf wajib diisi.");return}if(!e||!e.includes("@")){h("Email login tidak valid.");return}if(t.length<6){h("Password minimal 6 karakter.");return}const E={};Q.forEach(I=>{const T=document.querySelector(`#add-staff-modal input[name="staff_perm"][value="${I.key}"]`);E[I.key]=T?T.checked:!1}),A&&(A.disabled=!0,A.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mendaftarkan ke Firebase...'),O("Mendaftarkan akun staf...");try{const T=(D.apps.find(ye=>ye.name==="pos-cashier-creator")||D.initializeApp(window.FIREBASE_CONFIG||D.app().options,"pos-cashier-creator")).auth(),B=(await T.createUserWithEmailAndPassword(e,t)).user?.uid;if(!B)throw new Error("UID tidak diterima dari Firebase");if(await T.signOut(),await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(B).set({uid:B,employeeId:c,name:a,email:e,phone:x,role:i,position:o,baseSalary:d,dailyAllowance:b,employmentStatus:p,paymentMethod:k,bankName:v,bankAccount:y,bankHolder:g,permissions:E,isActive:!0,createdAt:D.firestore.FieldValue.serverTimestamp(),createdBy:Y.currentUser?.uid||"owner"}),i===u.CASHIER)try{localStorage.setItem("pos_has_cashier","true"),await $.collection("freshmart").doc("cms_data").set({hasCashier:!0},{merge:!0})}catch{}const ae=n("new-staff-pass");ae&&(ae.value="");const ke=n("new-staff-name");ke&&(ke.value="");const ve=n("new-staff-email");ve&&(ve.value=""),ue(),S(`Akun "${a}" (${i.toUpperCase()}) berhasil didaftarkan!`,"success"),await z(),typeof window.updatePOSHeaderIcon=="function"&&window.updatePOSHeaderIcon()}catch(I){console.error("[StaffAdmin] Gagal membuat akun staf:",I);const T=I.code==="permission-denied"||I.message&&I.message.toLowerCase().includes("permission"),H=I.code||"";h(T?"Akses Ditolak Firebase: Hanya akun Owner yang berwenang menambahkan staf ke Firestore.":H==="auth/email-already-in-use"?"Email sudah digunakan oleh akun lain di Firebase.":H==="auth/invalid-email"?"Format email tidak valid.":H==="auth/weak-password"?"Password terlalu lemah (min. 6 karakter).":"Gagal mendaftarkan: "+(I.message||"Terjadi kesalahan sistem")),A&&(A.disabled=!1,A.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan &amp; Daftarkan Staf')}finally{L()}},Ia=a=>{if(!M("mengatur hak akses staf"))return;const e=P.find(r=>r.uid===a);if(!e){S("Data staf tidak ditemukan!");return}const t=e.permissions||U[e.role]||U[u.CASHIER],s=(r,i,c)=>{const o=Q.filter(x=>x.group===r);return`
+    </div>`),window.applyNewStaffPreset(u.CASHIER),typeof window.pushModalHistory=="function"&&window.pushModalHistory("addStaff"),setTimeout(()=>{const a=d("add-staff-modal-box");a&&a.classList.remove("scale-95");const s=d("new-staff-name");s&&s.focus()},10)},ke=(t=!1)=>{const e=()=>{const a=d("add-staff-modal");if(a){const s=d("new-staff-name");s&&(s.value="");const r=d("new-staff-email");r&&(r.value="");const i=d("new-staff-pass");i&&(i.value=""),a.style.opacity="0",setTimeout(()=>a.remove(),200)}};typeof window.requestCloseModal=="function"?window.requestCloseModal("addStaff",t,e):e()},Ct=t=>{const e=U[t]||U[u.CASHIER];document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(r=>{r.checked=!!e[r.value]}),document.querySelectorAll('#add-staff-modal input[name="new_staff_role"]').forEach(r=>{const i=r.closest("label");i&&(r.value===t?i.className="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-xs transition-all text-center":i.className="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer hover:border-slate-300 transition-all text-center")});const a=d("new-staff-position"),s=de.map(r=>r.label||r);a&&(!a.value||s.includes(a.value))&&(t===u.STAFF?a.value="Staf Gudang & Penataan Rak":t===u.ADMIN?a.value="Admin Operasional & Inventori":t==="manager"?a.value="Kepala Toko / Manager":a.value="Kasir POS")},Et=t=>{document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(e=>{e.checked=!!t})},Ke=async()=>{if(!D("mendaftarkan staf baru"))return;const t=d("new-staff-name")?.value?.trim()||"",e=d("new-staff-email")?.value?.trim()||"",a=d("new-staff-pass")?.value||"",s=document.querySelector('#add-staff-modal input[name="new_staff_role"]:checked'),r=s?s.value:u.CASHIER,i=r==="manager"?u.ADMIN:r,n=d("new-staff-empid")?.value?.trim()||xe(T,"EMP"),o=d("new-staff-position")?.value?.trim()||(i===u.STAFF?"Staf Gudang & Logistik":i===u.ADMIN?"Admin Operasional":"Kasir POS"),x=d("new-staff-phone")?.value?.trim()||"",c=Math.max(0,parseFloat(d("new-staff-salary")?.value)||0),p=Math.max(0,parseFloat(d("new-staff-allowance")?.value)||0),b=d("new-staff-status")?.value||"permanent",k=d("new-staff-payment-method")?.value||"cash",w=d("new-staff-bank-account")?.value?.trim()||"-",g=d("new-staff-bank-holder")?.value?.trim()||t,v=k==="cash"?"Tunai Kas Laci Toko":k.toUpperCase()||"Bank",y=d("add-staff-error"),A=d("save-staff-btn"),h=S=>{y&&(y.textContent=S,y.classList.remove("hidden"))};if((()=>{y&&y.classList.add("hidden")})(),!t){h("Nama staf wajib diisi.");return}if(!e||!e.includes("@")){h("Email login tidak valid.");return}if(a.length<6){h("Password minimal 6 karakter.");return}const R={};X.forEach(S=>{const I=document.querySelector(`#add-staff-modal input[name="staff_perm"][value="${S.key}"]`);R[S.key]=I?I.checked:!1}),A&&(A.disabled=!0,A.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mendaftarkan ke Firebase...'),L("Mendaftarkan akun staf...");try{const I=(H.apps.find(we=>we.name==="pos-cashier-creator")||H.initializeApp(window.FIREBASE_CONFIG||H.app().options,"pos-cashier-creator")).auth(),E=(await I.createUserWithEmailAndPassword(e,a)).user?.uid;if(!E)throw new Error("UID tidak diterima dari Firebase");if(await I.signOut(),await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(E).set({uid:E,employeeId:n,name:t,email:e,phone:x,role:i,position:o,baseSalary:c,dailyAllowance:p,employmentStatus:b,paymentMethod:k,bankName:v,bankAccount:w,bankHolder:g,permissions:R,isActive:!0,createdAt:H.firestore.FieldValue.serverTimestamp(),createdBy:Z.currentUser?.uid||"owner"}),i===u.CASHIER)try{localStorage.setItem("pos_has_cashier","true"),await P.collection("freshmart").doc("cms_data").set({hasCashier:!0},{merge:!0})}catch{}const q=d("new-staff-pass");q&&(q.value="");const ye=d("new-staff-name");ye&&(ye.value="");const he=d("new-staff-email");he&&(he.value=""),ke(),$(`Akun "${t}" (${i.toUpperCase()}) berhasil didaftarkan!`,"success"),await W(),typeof window.updatePOSHeaderIcon=="function"&&window.updatePOSHeaderIcon()}catch(S){console.error("[StaffAdmin] Gagal membuat akun staf:",S);const I=S.code==="permission-denied"||S.message&&S.message.toLowerCase().includes("permission"),j=S.code||"";h(I?"Akses Ditolak Firebase: Hanya akun Owner yang berwenang menambahkan staf ke Firestore.":j==="auth/email-already-in-use"?"Email sudah digunakan oleh akun lain di Firebase.":j==="auth/invalid-email"?"Format email tidak valid.":j==="auth/weak-password"?"Password terlalu lemah (min. 6 karakter).":"Gagal mendaftarkan: "+(S.message||"Terjadi kesalahan sistem")),A&&(A.disabled=!1,A.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan &amp; Daftarkan Staf')}finally{K()}},Nt=t=>{if(!D("mengatur hak akses staf"))return;const e=T.find(r=>r.uid===t);if(!e){$("Data staf tidak ditemukan!");return}const a=e.permissions||U[e.role]||U[u.CASHIER],s=(r,i,n)=>{const o=X.filter(x=>x.group===r);return`
         <div class="space-y-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                <i class="fa-solid ${c}" style="color: var(--color-primary)"></i>
+                <i class="fa-solid ${n}" style="color: var(--color-primary)"></i>
                 <span>${i}</span>
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                ${o.map(x=>{const d=t[x.key]===!0;return`
+                ${o.map(x=>{const c=a[x.key]===!0;return`
                     <label class="flex items-start gap-2.5 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all cursor-pointer text-left">
-                        <input type="checkbox" name="edit_staff_perm" value="${x.key}" ${d?"checked":""} class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 w-4 h-4 cursor-pointer" style="accent-color: var(--color-primary)">
+                        <input type="checkbox" name="edit_staff_perm" value="${x.key}" ${c?"checked":""} class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 w-4 h-4 cursor-pointer" style="accent-color: var(--color-primary)">
                         <div class="min-w-0 flex-1">
                             <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
                                 <i class="fa-solid ${x.icon} text-[10px] text-slate-400"></i>
@@ -1884,14 +2316,14 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button onclick="window.saveStaffPermissions('${l(a)}')" id="save-perms-btn"
+                <button onclick="window.saveStaffPermissions('${l(t)}')" id="save-perms-btn"
                     class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background: var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Hak Akses
                 </button>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("permissions"),setTimeout(()=>{const r=n("permissions-modal-box");r&&r.classList.remove("scale-95")},10)},Le=(a=!1)=>{const e=()=>{const t=n("permissions-modal");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("permissions",a,e):e()},ja=a=>{const e=U[a]||U[u.CASHIER];document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(t=>{t.checked=!!e[t.value]})},Ta=a=>{document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(e=>{e.checked=!!a})},Ha=async a=>{if(!M("mengubah hak akses staf"))return;const e=n("save-perms-btn");e&&(e.disabled=!0,e.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),O("Memperbarui hak akses...");try{const t={};Q.forEach(r=>{const i=document.querySelector(`#permissions-modal input[name="edit_staff_perm"][value="${r.key}"]`);t[r.key]=i?i.checked:!1});let s=u.CASHIER;(t.orders||t.products||t.suppliers||t.purchases)&&(s=u.ADMIN),await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(a).set({permissions:t,role:s,updatedAt:D.firestore.FieldValue.serverTimestamp()},{merge:!0}),Le(),S("Hak akses berhasil diperbarui!","success"),await z()}catch(t){console.error("[StaffAdmin] Gagal menyimpan hak akses:",t),t.code==="permission-denied"||t.message&&t.message.toLowerCase().includes("permission")?S("Izin Ditolak Firebase: Pastikan login dengan Akun Owner dan aturan firestore.rules sudah dipublikasikan di Firebase Console.","error"):S("Gagal memperbarui hak akses: "+(t.message||"Terjadi kesalahan sistem"),"error"),e&&(e.disabled=!1,e.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Hak Akses')}finally{L()}},Be=(a,e,t,s)=>{if(!M("mengubah profil staf"))return;const r=P.find(h=>h.uid===a)||{},i=e||r.name||"",c=t||r.email||"",o=s||r.role||u.CASHIER,x=r.employeeId||"EMP-001",d=r.position||(o===u.CASHIER?"Kasir POS":o===u.ADMIN?"Admin Operasional":"Staf Gudang & Logistik"),b=r.phone||"",p=r.baseSalary||0,k=r.dailyAllowance||0,y=r.employmentStatus||"permanent",g=r.paymentMethod||"cash",v=r.bankName||"BCA",w=r.bankAccount&&r.bankAccount!=="-"?r.bankAccount:"",A=r.bankHolder||i;document.body.insertAdjacentHTML("beforeend",`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("permissions"),setTimeout(()=>{const r=d("permissions-modal-box");r&&r.classList.remove("scale-95")},10)},Be=(t=!1)=>{const e=()=>{const a=d("permissions-modal");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("permissions",t,e):e()},Ot=t=>{const e=U[t]||U[u.CASHIER];document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(a=>{a.checked=!!e[a.value]})},Lt=t=>{document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(e=>{e.checked=!!t})},Kt=async t=>{if(!D("mengubah hak akses staf"))return;const e=d("save-perms-btn");e&&(e.disabled=!0,e.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),L("Memperbarui hak akses...");try{const a={};X.forEach(r=>{const i=document.querySelector(`#permissions-modal input[name="edit_staff_perm"][value="${r.key}"]`);a[r.key]=i?i.checked:!1});let s=u.CASHIER;(a.orders||a.products||a.suppliers||a.purchases)&&(s=u.ADMIN),await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).set({permissions:a,role:s,updatedAt:H.firestore.FieldValue.serverTimestamp()},{merge:!0}),Be(),$("Hak akses berhasil diperbarui!","success"),await W()}catch(a){console.error("[StaffAdmin] Gagal menyimpan hak akses:",a),a.code==="permission-denied"||a.message&&a.message.toLowerCase().includes("permission")?$("Izin Ditolak Firebase: Pastikan login dengan Akun Owner dan aturan firestore.rules sudah dipublikasikan di Firebase Console.","error"):$("Gagal memperbarui hak akses: "+(a.message||"Terjadi kesalahan sistem"),"error"),e&&(e.disabled=!1,e.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Hak Akses')}finally{K()}},_e=(t,e,a,s)=>{if(!D("mengubah profil staf"))return;const r=T.find(h=>h.uid===t)||{},i=e||r.name||"",n=a||r.email||"",o=s||r.role||u.CASHIER,x=r.employeeId||"EMP-001",c=r.position||(o===u.CASHIER?"Kasir POS":o===u.ADMIN?"Admin Operasional":"Staf Gudang & Logistik"),p=r.phone||"",b=r.baseSalary||0,k=r.dailyAllowance||0,w=r.employmentStatus||"permanent",g=r.paymentMethod||"cash",v=r.bankName||"BCA",y=r.bankAccount&&r.bankAccount!=="-"?r.bankAccount:"",A=r.bankHolder||i;document.body.insertAdjacentHTML("beforeend",`
     <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeEditStaffModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
@@ -1921,7 +2353,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
             <div class="p-4 sm:p-5 space-y-3.5 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- Datalist Jabatan Terstandar -->
                 <datalist id="edit-staff-positions-datalist">
-                    ${ie.map(h=>`<option value="${l(h.label||h)}"></option>`).join("")}
+                    ${de.map(h=>`<option value="${l(h.label||h)}"></option>`).join("")}
                 </datalist>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -1950,12 +2382,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Jabatan Resmi</label>
-                        <input id="edit-staff-position" list="edit-staff-positions-datalist" type="text" value="${l(d)}"
+                        <input id="edit-staff-position" list="edit-staff-positions-datalist" type="text" value="${l(c)}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. WhatsApp / HP</label>
-                        <input id="edit-staff-phone" type="tel" value="${l(b)}" placeholder="081234567890"
+                        <input id="edit-staff-phone" type="tel" value="${l(p)}" placeholder="081234567890"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                 </div>
@@ -1963,7 +2395,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Gaji Pokok Bulanan (Rp)</label>
-                        <input id="edit-staff-salary" type="number" min="0" step="50000" value="${p}"
+                        <input id="edit-staff-salary" type="number" min="0" step="50000" value="${b}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                     <div>
@@ -1977,13 +2409,13 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Hubungan Kerja</label>
                         <select id="edit-staff-status" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
-                            ${de.map(h=>`<option value="${h.key}" ${y===h.key?"selected":""}>${l(h.label)}</option>`).join("")}
+                            ${ce.map(h=>`<option value="${h.key}" ${w===h.key?"selected":""}>${l(h.label)}</option>`).join("")}
                         </select>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Metode Bayar Gaji</label>
                         <select id="edit-staff-payment-method" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
-                            ${ce.map(h=>`<option value="${h.key}" ${g===h.key?"selected":""}>${l(h.label)}</option>`).join("")}
+                            ${pe.map(h=>`<option value="${h.key}" ${g===h.key?"selected":""}>${l(h.label)}</option>`).join("")}
                         </select>
                     </div>
                 </div>
@@ -1996,7 +2428,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. Rekening</label>
-                        <input id="edit-staff-bank-account" type="text" value="${l(w)}" placeholder="1234567890"
+                        <input id="edit-staff-bank-account" type="text" value="${l(y)}" placeholder="1234567890"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                     </div>
                     <div>
@@ -2008,7 +2440,7 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
 
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login (Permanen)</label>
-                    <input type="email" value="${l(c)}" disabled
+                    <input type="email" value="${l(n)}" disabled
                         class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 text-slate-400 cursor-not-allowed">
                 </div>
                 <div id="edit-staff-error" class="hidden text-xs text-rose-600 font-semibold p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-200 dark:border-rose-800"></div>
@@ -2019,14 +2451,14 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button onclick="window.updateStaffProfile('${l(a)}')" id="update-staff-btn"
+                <button onclick="window.updateStaffProfile('${l(t)}')" id="update-staff-btn"
                     class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background: var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Profil &amp; HR
                 </button>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("editStaff"),setTimeout(()=>{const h=n("edit-staff-modal-box");h&&h.classList.remove("scale-95")},10)},ge=(a=!1)=>{const e=()=>{const t=n("edit-staff-modal");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("editStaff",a,e):e()},Da=async a=>{if(!M("mengubah profil staf"))return;const e=n("edit-staff-name")?.value?.trim()||"",t=n("edit-staff-role")?.value||u.CASHIER,s=n("edit-staff-empid")?.value?.trim()||"EMP-001",r=n("edit-staff-position")?.value?.trim()||"Staf Toko",i=n("edit-staff-phone")?.value?.trim()||"",c=Math.max(0,parseFloat(n("edit-staff-salary")?.value)||0),o=Math.max(0,parseFloat(n("edit-staff-allowance")?.value)||0),x=n("edit-staff-status")?.value||"permanent",d=n("edit-staff-payment-method")?.value||"cash",b=n("edit-staff-bank-name")?.value?.trim()||(d==="cash"?"Tunai Kas Laci Toko":d.toUpperCase()||"Bank"),p=n("edit-staff-bank-account")?.value?.trim()||"-",k=n("edit-staff-bank-holder")?.value?.trim()||e,y=n("edit-staff-error"),g=n("update-staff-btn");if(!e){y&&(y.textContent="Nama staf tidak boleh kosong.",y.classList.remove("hidden"));return}g&&(g.disabled=!0,g.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),O("Memperbarui profil staf...");try{await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(a).set({name:e,role:t,employeeId:s,position:r,phone:i,baseSalary:c,dailyAllowance:o,employmentStatus:x,paymentMethod:d,bankName:b,bankAccount:p,bankHolder:k,updatedAt:D.firestore.FieldValue.serverTimestamp()},{merge:!0}),ge(),S("Profil staf & data HR berhasil diperbarui!","success"),await z()}catch(v){const A=v.code==="permission-denied"||v.message&&v.message.toLowerCase().includes("permission")?"Izin ditolak oleh Firebase (Khusus Akun Owner).":v.message;y&&(y.textContent="Gagal memperbarui: "+A,y.classList.remove("hidden")),g&&(g.disabled=!1,g.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan')}finally{L()}},Ca=()=>{if(!M("mengatur profil dan gaji owner"))return;const a=Z(m),e=n("modal-owner-hr");e&&e.remove(),document.body.insertAdjacentHTML("beforeend",`
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("editStaff"),setTimeout(()=>{const h=d("edit-staff-modal-box");h&&h.classList.remove("scale-95")},10)},ve=(t=!1)=>{const e=()=>{const a=d("edit-staff-modal");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("editStaff",t,e):e()},Bt=async t=>{if(!D("mengubah profil staf"))return;const e=d("edit-staff-name")?.value?.trim()||"",a=d("edit-staff-role")?.value||u.CASHIER,s=d("edit-staff-empid")?.value?.trim()||"EMP-001",r=d("edit-staff-position")?.value?.trim()||"Staf Toko",i=d("edit-staff-phone")?.value?.trim()||"",n=Math.max(0,parseFloat(d("edit-staff-salary")?.value)||0),o=Math.max(0,parseFloat(d("edit-staff-allowance")?.value)||0),x=d("edit-staff-status")?.value||"permanent",c=d("edit-staff-payment-method")?.value||"cash",p=d("edit-staff-bank-name")?.value?.trim()||(c==="cash"?"Tunai Kas Laci Toko":c.toUpperCase()||"Bank"),b=d("edit-staff-bank-account")?.value?.trim()||"-",k=d("edit-staff-bank-holder")?.value?.trim()||e,w=d("edit-staff-error"),g=d("update-staff-btn");if(!e){w&&(w.textContent="Nama staf tidak boleh kosong.",w.classList.remove("hidden"));return}g&&(g.disabled=!0,g.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),L("Memperbarui profil staf...");try{await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).set({name:e,role:a,employeeId:s,position:r,phone:i,baseSalary:n,dailyAllowance:o,employmentStatus:x,paymentMethod:c,bankName:p,bankAccount:b,bankHolder:k,updatedAt:H.firestore.FieldValue.serverTimestamp()},{merge:!0}),ve(),$("Profil staf & data HR berhasil diperbarui!","success"),await W()}catch(v){const A=v.code==="permission-denied"||v.message&&v.message.toLowerCase().includes("permission")?"Izin ditolak oleh Firebase (Khusus Akun Owner).":v.message;w&&(w.textContent="Gagal memperbarui: "+A,w.classList.remove("hidden")),g&&(g.disabled=!1,g.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan')}finally{K()}},_t=()=>{if(!D("mengatur profil dan gaji owner"))return;const t=ee(m),e=d("modal-owner-hr");e&&e.remove(),document.body.insertAdjacentHTML("beforeend",`
     <div id="modal-owner-hr" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeOwnerHrModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="owner-hr-modal-box">
@@ -2067,12 +2499,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor ID Karyawan Owner</label>
-                        <input id="owner-hr-empid" type="text" value="${l(a.employeeId||"OWN-001")}"
+                        <input id="owner-hr-empid" type="text" value="${l(t.employeeId||"OWN-001")}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold cursor-not-allowed" readonly>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Pemilik / Direktur <span class="text-rose-500">*</span></label>
-                        <input id="owner-hr-name" type="text" value="${l(a.name||"Pemilik Toko")}"
+                        <input id="owner-hr-name" type="text" value="${l(t.name||"Pemilik Toko")}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-2xs">
                     </div>
                 </div>
@@ -2080,12 +2512,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan Resmi</label>
-                        <input id="owner-hr-position" type="text" value="${l(a.position||"Owner / Direktur Utama")}"
+                        <input id="owner-hr-position" type="text" value="${l(t.position||"Owner / Direktur Utama")}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">No. WhatsApp Pribadi</label>
-                        <input id="owner-hr-phone" type="tel" value="${l(a.phone||"")}" placeholder="081234567890"
+                        <input id="owner-hr-phone" type="tel" value="${l(t.phone||"")}" placeholder="081234567890"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                     </div>
                 </div>
@@ -2093,12 +2525,12 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Gaji Pokok Direksi (Rp/Bulan) <span class="text-rose-500">*</span></label>
-                        <input id="owner-hr-salary" type="number" min="0" step="50000" value="${a.baseSalary||1e7}"
+                        <input id="owner-hr-salary" type="number" min="0" step="50000" value="${t.baseSalary||1e7}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Tunjangan Bulanan Direksi (Rp)</label>
-                        <input id="owner-hr-allowance" type="number" min="0" step="50000" value="${a.dailyAllowance||0}"
+                        <input id="owner-hr-allowance" type="number" min="0" step="50000" value="${t.dailyAllowance||0}"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                     </div>
                 </div>
@@ -2111,17 +2543,17 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Bank</label>
-                            <input id="owner-hr-bank-name" type="text" value="${l(a.bankName||"BCA")}" placeholder="BCA / Mandiri / BRI"
+                            <input id="owner-hr-bank-name" type="text" value="${l(t.bankName||"BCA")}" placeholder="BCA / Mandiri / BRI"
                                 class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor Rekening</label>
-                            <input id="owner-hr-bank-account" type="text" value="${l(a.bankAccount&&a.bankAccount!=="-"?a.bankAccount:"")}" placeholder="1234567890"
+                            <input id="owner-hr-bank-account" type="text" value="${l(t.bankAccount&&t.bankAccount!=="-"?t.bankAccount:"")}" placeholder="1234567890"
                                 class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-mono transition-all shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Atas Nama Rekening</label>
-                            <input id="owner-hr-bank-holder" type="text" value="${l(a.bankHolder||a.name||"")}" placeholder="Nama Pemilik"
+                            <input id="owner-hr-bank-holder" type="text" value="${l(t.bankHolder||t.name||"")}" placeholder="Nama Pemilik"
                                 class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                         </div>
                     </div>
@@ -2143,4 +2575,4 @@ import{R as u,f,a as m,q as $,i as l,e as n,k as S,l as O,A as Y,n as L,H as Ae,
                 </button>
             </div>
         </div>
-    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("ownerHr"),setTimeout(()=>{const t=n("owner-hr-modal-box");t&&t.classList.remove("scale-95")},10)},Ke=(a=!1)=>{const e=()=>{const t=n("modal-owner-hr");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("ownerHr",a,e):e()},Ea=async()=>{if(!M("menyimpan kompensasi owner"))return;const a=n("owner-hr-name")?.value?.trim()||"Pemilik Toko",e=n("owner-hr-position")?.value?.trim()||"Owner / Direktur Utama",t=n("owner-hr-phone")?.value?.trim()||"",s=Math.max(0,parseFloat(n("owner-hr-salary")?.value)||0),r=Math.max(0,parseFloat(n("owner-hr-allowance")?.value)||0),i=n("owner-hr-bank-name")?.value?.trim()||"BCA",c=n("owner-hr-bank-account")?.value?.trim()||"-",o=n("owner-hr-bank-holder")?.value?.trim()||a,x=n("owner-hr-error"),d=n("save-owner-hr-btn");d&&(d.disabled=!0,d.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan ke Cloud...'),O("Menyimpan data kompensasi owner...");try{const b={employeeId:"OWN-001",name:a,position:e,phone:t,baseSalary:s,dailyAllowance:r,employmentStatus:"permanent",bankName:i,bankAccount:c,bankHolder:o,role:u.OWNER,isActive:!0,updatedAt:D.firestore.FieldValue.serverTimestamp()};await $.collection("freshmart").doc("cms_data").set({ownerEmployee:b},{merge:!0}),m.ownerEmployee=b,Ke(),S("Data kompensasi Owner berhasil diperbarui!","success"),await Ce()}catch(b){console.error("[OwnerHr] Gagal menyimpan data owner:",b),x&&(x.textContent="Gagal menyimpan: "+(b.message||"Terjadi kesalahan sistem"),x.classList.remove("hidden")),d&&(d.disabled=!1,d.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Kompensasi Owner')}finally{L()}},_e=async(a,e)=>{if(M("mengubah status aktif staf")){O(e?"Mengaktifkan staf...":"Menonaktifkan staf...");try{await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(a).set({isActive:e,updatedAt:D.firestore.FieldValue.serverTimestamp()},{merge:!0}),S(e?"Akun staf diaktifkan":"Akun staf dinonaktifkan","success"),await z()}catch(t){t.code==="permission-denied"||t.message&&t.message.toLowerCase().includes("permission")?S("Akses Ditolak: Hanya akun Owner yang berwenang mengubah status staf.","error"):S("Gagal mengubah status staf: "+t.message,"error")}finally{L()}}},Fe=(a,e)=>{M("menghapus akun staf")&&Ae("Hapus Akun Staf",`Yakin hapus akun staf "${e}"? Akun tidak dapat dipulihkan dan staf tidak dapat login lagi ke toko.`,async()=>{O("Menghapus akun staf...");try{await $.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(a).delete(),S(`Akun "${e}" berhasil dihapus`,"success"),await z()}catch(t){t.code==="permission-denied"||t.message&&t.message.toLowerCase().includes("permission")?S("Akses Ditolak: Hanya akun Owner yang berwenang menghapus staf.","error"):S("Gagal menghapus staf: "+t.message,"error")}finally{L()}},"Ya, Hapus",!0)},Ge=a=>{const e=n(a),t=n(a+"-eye");e&&(e.type==="password"?(e.type="text",t&&(t.className="fa-solid fa-eye-slash text-sm")):(e.type="password",t&&(t.className="fa-solid fa-eye text-sm")))},Ra=Ne,Na=ue,Oa=Oe,La=(a,e,t)=>Be(a,e,t,u.CASHIER),Ba=ge,Ka=_e,_a=Fe,Fa=z,Ga=Ge;typeof window<"u"&&(window.renderCashierAccounts=Ce,window.switchCashierTab=ha,window.filterStaffRole=Aa,window.handleStaffSearch=Re,window.clearStaffSearch=Sa,window.loadStaffList=z,window.openAddStaffModal=Ne,window.closeAddStaffModal=ue,window.applyNewStaffPreset=Pa,window.setAllNewStaffPerms=Ma,window.saveStaffAccount=Oe,window.openPermissionsModal=Ia,window.closePermissionsModal=Le,window.applyEditStaffPreset=ja,window.setAllEditStaffPerms=Ta,window.saveStaffPermissions=Ha,window.openEditStaffModal=Be,window.closeEditStaffModal=ge,window.updateStaffProfile=Da,window.openOwnerHrModal=Ca,window.closeOwnerHrModal=Ke,window.saveOwnerHrProfile=Ea,window.toggleStaffActive=_e,window.deleteStaffAccount=Fe,window.toggleStaffPassVisibility=Ge,window.verifyOwnerAuthority=M,window.openAddCashierModal=Ra,window.closeAddCashierModal=Na,window.saveCashierAccount=Oa,window.openEditCashierModal=La,window.closeEditCashierModal=Ba,window.toggleCashierActive=Ka,window.deleteCashierAccount=_a,window.loadCashierList=Fa,window.toggleCashierPassVisibility=Ga);export{ja as applyEditStaffPreset,Pa as applyNewStaffPreset,Sa as clearStaffSearch,Na as closeAddCashierModal,ue as closeAddStaffModal,Ba as closeEditCashierModal,ge as closeEditStaffModal,Ke as closeOwnerHrModal,Le as closePermissionsModal,_a as deleteCashierAccount,Fe as deleteStaffAccount,Aa as filterStaffRole,Re as handleStaffSearch,Fa as loadCashierList,z as loadStaffList,Ra as openAddCashierModal,Ne as openAddStaffModal,La as openEditCashierModal,Be as openEditStaffModal,Ca as openOwnerHrModal,Ia as openPermissionsModal,Ce as renderCashierAccounts,Oa as saveCashierAccount,Ea as saveOwnerHrProfile,Oe as saveStaffAccount,Ha as saveStaffPermissions,Ta as setAllEditStaffPerms,Ma as setAllNewStaffPerms,ha as switchCashierTab,Ka as toggleCashierActive,Ga as toggleCashierPassVisibility,_e as toggleStaffActive,Ge as toggleStaffPassVisibility,Da as updateStaffProfile,M as verifyOwnerAuthority};
+    </div>`),typeof window.pushModalHistory=="function"&&window.pushModalHistory("ownerHr"),setTimeout(()=>{const a=d("owner-hr-modal-box");a&&a.classList.remove("scale-95")},10)},Fe=(t=!1)=>{const e=()=>{const a=d("modal-owner-hr");a&&(a.style.opacity="0",setTimeout(()=>a.remove(),200))};typeof window.requestCloseModal=="function"?window.requestCloseModal("ownerHr",t,e):e()},Ft=async()=>{if(!D("menyimpan kompensasi owner"))return;const t=d("owner-hr-name")?.value?.trim()||"Pemilik Toko",e=d("owner-hr-position")?.value?.trim()||"Owner / Direktur Utama",a=d("owner-hr-phone")?.value?.trim()||"",s=Math.max(0,parseFloat(d("owner-hr-salary")?.value)||0),r=Math.max(0,parseFloat(d("owner-hr-allowance")?.value)||0),i=d("owner-hr-bank-name")?.value?.trim()||"BCA",n=d("owner-hr-bank-account")?.value?.trim()||"-",o=d("owner-hr-bank-holder")?.value?.trim()||t,x=d("owner-hr-error"),c=d("save-owner-hr-btn");c&&(c.disabled=!0,c.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan ke Cloud...'),L("Menyimpan data kompensasi owner...");try{const p={employeeId:"OWN-001",name:t,position:e,phone:a,baseSalary:s,dailyAllowance:r,employmentStatus:"permanent",bankName:i,bankAccount:n,bankHolder:o,role:u.OWNER,isActive:!0,updatedAt:H.firestore.FieldValue.serverTimestamp()};await P.collection("freshmart").doc("cms_data").set({ownerEmployee:p},{merge:!0}),m.ownerEmployee=p,Fe(),$("Data kompensasi Owner berhasil diperbarui!","success"),await Ee()}catch(p){console.error("[OwnerHr] Gagal menyimpan data owner:",p),x&&(x.textContent="Gagal menyimpan: "+(p.message||"Terjadi kesalahan sistem"),x.classList.remove("hidden")),c&&(c.disabled=!1,c.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Kompensasi Owner')}finally{K()}},Ge=async(t,e)=>{if(D("mengubah status aktif staf")){L(e?"Mengaktifkan staf...":"Menonaktifkan staf...");try{await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).set({isActive:e,updatedAt:H.firestore.FieldValue.serverTimestamp()},{merge:!0}),$(e?"Akun staf diaktifkan":"Akun staf dinonaktifkan","success"),await W()}catch(a){a.code==="permission-denied"||a.message&&a.message.toLowerCase().includes("permission")?$("Akses Ditolak: Hanya akun Owner yang berwenang mengubah status staf.","error"):$("Gagal mengubah status staf: "+a.message,"error")}finally{K()}}},Ue=(t,e)=>{D("menghapus akun staf")&&Se("Hapus Akun Staf",`Yakin hapus akun staf "${e}"? Akun tidak dapat dipulihkan dan staf tidak dapat login lagi ke toko.`,async()=>{L("Menghapus akun staf...");try{await P.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).delete(),$(`Akun "${e}" berhasil dihapus`,"success"),await W()}catch(a){a.code==="permission-denied"||a.message&&a.message.toLowerCase().includes("permission")?$("Akses Ditolak: Hanya akun Owner yang berwenang menghapus staf.","error"):$("Gagal menghapus staf: "+a.message,"error")}finally{K()}},"Ya, Hapus",!0)},ze=t=>{const e=d(t),a=d(t+"-eye");e&&(e.type==="password"?(e.type="text",a&&(a.className="fa-solid fa-eye-slash text-sm")):(e.type="password",a&&(a.className="fa-solid fa-eye text-sm")))},Gt=Le,Ut=ke,zt=Ke,Wt=(t,e,a)=>_e(t,e,a,u.CASHIER),Jt=ve,qt=Ge,Vt=Ue,Yt=W,Qt=ze;typeof window<"u"&&(window.renderCashierAccounts=Ee,window.switchCashierTab=It,window.filterStaffRole=Dt,window.handleStaffSearch=Oe,window.clearStaffSearch=Rt,window.loadStaffList=W,window.openAddStaffModal=Le,window.closeAddStaffModal=ke,window.applyNewStaffPreset=Ct,window.setAllNewStaffPerms=Et,window.saveStaffAccount=Ke,window.openPermissionsModal=Nt,window.closePermissionsModal=Be,window.applyEditStaffPreset=Ot,window.setAllEditStaffPerms=Lt,window.saveStaffPermissions=Kt,window.openEditStaffModal=_e,window.closeEditStaffModal=ve,window.updateStaffProfile=Bt,window.openOwnerHrModal=_t,window.closeOwnerHrModal=Fe,window.saveOwnerHrProfile=Ft,window.toggleStaffActive=Ge,window.deleteStaffAccount=Ue,window.toggleStaffPassVisibility=ze,window.verifyOwnerAuthority=D,window.openAddCashierModal=Gt,window.closeAddCashierModal=Ut,window.saveCashierAccount=zt,window.openEditCashierModal=Wt,window.closeEditCashierModal=Jt,window.toggleCashierActive=qt,window.deleteCashierAccount=Vt,window.loadCashierList=Yt,window.toggleCashierPassVisibility=Qt);export{Ot as applyEditStaffPreset,Ct as applyNewStaffPreset,Rt as clearStaffSearch,Ut as closeAddCashierModal,ke as closeAddStaffModal,Jt as closeEditCashierModal,ve as closeEditStaffModal,Fe as closeOwnerHrModal,Be as closePermissionsModal,Vt as deleteCashierAccount,Ue as deleteStaffAccount,Dt as filterStaffRole,Oe as handleStaffSearch,Yt as loadCashierList,W as loadStaffList,Gt as openAddCashierModal,Le as openAddStaffModal,Wt as openEditCashierModal,_e as openEditStaffModal,_t as openOwnerHrModal,Nt as openPermissionsModal,Ee as renderCashierAccounts,zt as saveCashierAccount,Ft as saveOwnerHrProfile,Ke as saveStaffAccount,Kt as saveStaffPermissions,Lt as setAllEditStaffPerms,Et as setAllNewStaffPerms,It as switchCashierTab,qt as toggleCashierActive,Qt as toggleCashierPassVisibility,Ge as toggleStaffActive,ze as toggleStaffPassVisibility,Bt as updateStaffProfile,D as verifyOwnerAuthority};
