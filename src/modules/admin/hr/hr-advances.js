@@ -248,12 +248,12 @@ const renderAdvanceCardsHtml = (list) => {
                 </div>
                 <div class="min-w-0 flex-1 space-y-1.5">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(adv.employeeName || 'Karyawan')}</span>
-                        <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
+                        <span class="text-sm font-black text-slate-900 dark:text-white leading-tight sm:whitespace-nowrap">${esc(adv.employeeName || 'Karyawan')}</span>
+                        <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 shrink-0">
                             ${esc(adv.employeeId || 'EMP')}
                         </span>
-                        <span class="font-mono text-[10px] text-slate-400">#${esc(adv.advanceId || adv.id)}</span>
-                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full ${
+                        <span class="font-mono text-[10px] text-slate-400 shrink-0">#${esc(adv.advanceId || adv.id)}</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full shrink-0 ${
                             isPaid 
                                 ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200' 
                                 : 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200'}">
@@ -262,14 +262,20 @@ const renderAdvanceCardsHtml = (list) => {
                         </span>
                     </div>
 
-                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
-                        <span class="font-bold text-slate-800 dark:text-slate-200">${esc(adv.position || 'Staf Toko')}</span>
-                        <span>•</span>
-                        <span>Pinjaman: <strong class="text-slate-900 dark:text-white">${fCur(adv.amount)}</strong></span>
-                        <span>•</span>
-                        <span>Sisa: <strong class="${isPaid ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${fCur(remaining)}</strong></span>
-                        <span>•</span>
-                        <span>Potongan: <strong class="text-[var(--color-primary)] font-bold">${fCur(adv.monthlyInstallment)}/bln</strong></span>
+                    <div class="flex items-center text-xs text-slate-600 dark:text-slate-300 flex-wrap gap-x-2 gap-y-0.5">
+                        <span class="font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">${esc(adv.position || 'Staf Toko')}</span>
+                        <span class="inline-flex items-center whitespace-nowrap">
+                            <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                            <span>Pinjaman: <strong class="text-slate-900 dark:text-white">${fCur(adv.amount)}</strong></span>
+                        </span>
+                        <span class="inline-flex items-center whitespace-nowrap">
+                            <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                            <span>Sisa: <strong class="${isPaid ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${fCur(remaining)}</strong></span>
+                        </span>
+                        <span class="inline-flex items-center whitespace-nowrap">
+                            <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                            <span>Potongan: <strong class="text-[var(--color-primary)] font-bold">${fCur(adv.monthlyInstallment)}/bln</strong></span>
+                        </span>
                     </div>
 
                     <!-- Progress Bar Cicilan -->
@@ -283,11 +289,17 @@ const renderAdvanceCardsHtml = (list) => {
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-500 flex-wrap pt-0.5">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-calendar-day text-[10px]"></i> Tgl: ${esc(dateStr)}</span>
-                        <span>•</span>
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-wallet text-[10px]"></i> Sumber: ${esc(sourceLabel)}</span>
-                        ${adv.reason ? `<span>•</span><span class="italic text-slate-500 truncate max-w-xs">"${esc(adv.reason)}"</span>` : ''}
+                    <div class="flex items-center text-[11px] text-slate-400 dark:text-slate-500 flex-wrap gap-x-2 gap-y-0.5 pt-0.5">
+                        <span class="flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-calendar-day text-[10px]"></i> Tgl: ${esc(dateStr)}</span>
+                        <span class="inline-flex items-center whitespace-nowrap">
+                            <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-wallet text-[10px]"></i> Sumber: ${esc(sourceLabel)}</span>
+                        </span>
+                        ${adv.reason ? `
+                        <span class="inline-flex items-center whitespace-nowrap">
+                            <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                            <span class="italic text-slate-500 truncate max-w-xs">"${esc(adv.reason)}"</span>
+                        </span>` : ''}
                     </div>
                 </div>
             </div>

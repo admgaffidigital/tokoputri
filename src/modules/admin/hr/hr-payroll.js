@@ -343,20 +343,31 @@ export const renderPayrollView = async (container) => {
                                     ${isPaid ? 'Lunas / Dibayar' : 'Draf Penggajian'}
                                 </span>
                             </div>
-                            <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                                <span class="font-bold text-slate-700 dark:text-slate-200">${esc(item.position)}</span>
-                                <span>•</span>
-                                <span>Absensi: <strong>${item.totalAttendanceDays || 0} Hari Masuk</strong></span>
-                                <span>•</span>
-                                <span>Gaji Pokok: <strong>${fCur(item.baseSalary)}</strong></span>
-                                ${item.attendanceAllowance > 0 ? `<span>•</span><span>Tunjangan: <strong class="text-[var(--color-primary)] font-bold">+${fCur(item.attendanceAllowance)}</strong></span>` : ''}
+                            <div class="flex items-center text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap gap-x-2 gap-y-0.5">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 whitespace-nowrap">${esc(item.position)}</span>
+                                <span class="inline-flex items-center whitespace-nowrap">
+                                    <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                                    <span>Absensi: <strong>${item.totalAttendanceDays || 0} Hari Masuk</strong></span>
+                                </span>
+                                <span class="inline-flex items-center whitespace-nowrap">
+                                    <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                                    <span>Gaji Pokok: <strong>${fCur(item.baseSalary)}</strong></span>
+                                </span>
+                                ${item.attendanceAllowance > 0 ? `
+                                <span class="inline-flex items-center whitespace-nowrap">
+                                    <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                                    <span>Tunjangan: <strong class="text-[var(--color-primary)] font-bold">+${fCur(item.attendanceAllowance)}</strong></span>
+                                </span>` : ''}
                             </div>
                             <!-- Rincian Potongan -->
-                            <div class="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 flex-wrap">
-                                ${item.advanceDeduction > 0 ? `<span class="text-[var(--color-primary)] font-bold"><i class="fa-solid fa-hand-holding-dollar mr-0.5"></i> Potong Kasbon: -${fCur(item.advanceDeduction)}</span><span>•</span>` : ''}
-                                ${item.lostItemDeduction > 0 ? `<span class="text-rose-500 font-medium"><i class="fa-solid fa-triangle-exclamation mr-0.5"></i> Potong Hilang: -${fCur(item.lostItemDeduction)}</span><span>•</span>` : ''}
-                                <span>Metode: <strong class="text-slate-600 dark:text-slate-300">${esc(item.paymentMethod?.toUpperCase())}</strong></span>
-                                ${item.bankAccount && item.bankAccount !== '-' ? `<span>(${esc(item.bankName)}: ${esc(item.bankAccount)})</span>` : ''}
+                            <div class="flex items-center text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 flex-wrap gap-x-2 gap-y-0.5">
+                                ${item.advanceDeduction > 0 ? `<span class="text-[var(--color-primary)] font-bold whitespace-nowrap"><i class="fa-solid fa-hand-holding-dollar mr-0.5"></i> Potong Kasbon: -${fCur(item.advanceDeduction)}</span>` : ''}
+                                ${item.lostItemDeduction > 0 ? `<span class="text-rose-500 font-medium whitespace-nowrap"><span class="text-slate-300 dark:text-slate-600 mr-1.5">•</span><i class="fa-solid fa-triangle-exclamation mr-0.5"></i> Potong Hilang: -${fCur(item.lostItemDeduction)}</span>` : ''}
+                                <span class="inline-flex items-center whitespace-nowrap">
+                                    ${(item.advanceDeduction > 0 || item.lostItemDeduction > 0) ? '<span class="text-slate-300 dark:text-slate-600 mr-1.5">•</span>' : ''}
+                                    <span>Metode: <strong class="text-slate-600 dark:text-slate-300">${esc(item.paymentMethod?.toUpperCase())}</strong></span>
+                                </span>
+                                ${item.bankAccount && item.bankAccount !== '-' ? `<span class="whitespace-nowrap">(${esc(item.bankName)}: ${esc(item.bankAccount)})</span>` : ''}
                             </div>
                         </div>
                     </div>

@@ -231,35 +231,44 @@ export const renderAttendanceView = async (container) => {
                 const dailyAllowance = parseFloat(emp.dailyAllowance) || 0;
                 const earned = isRecorded ? (parseFloat(att?.allowanceEarned) || 0) : (dailyAllowance > 0 ? dailyAllowance : 0);
                 const initials = (emp.name || 'ST').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+                const isOwner = emp.role === 'owner' || emp.employeeId === 'OWN-001';
+                const avatarContent = isOwner 
+                    ? '<i class="fa-solid fa-crown text-amber-500 text-sm"></i>' 
+                    : initials;
 
                 return `
-                <div class="p-4 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
-                    <div class="flex items-center gap-3.5 min-w-0">
-                        <div class="w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
-                            style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                            ${initials}
+                <div class="p-4 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
+                    <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                        <div class="w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs border ${isOwner ? 'border-amber-300 dark:border-amber-600/60 bg-amber-50/80 dark:bg-amber-950/40 text-amber-500' : 'border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)]'}">
+                            ${avatarContent}
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white">${esc(emp.name)}</span>
-                                <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                                <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight sm:whitespace-nowrap">${esc(emp.name)}</span>
+                                <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap shrink-0">
                                     ${esc(emp.employeeId)}
                                 </span>
                                 ${isRecorded ? `
-                                    <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                    <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 whitespace-nowrap shrink-0">
                                         <i class="fa-solid fa-circle-check"></i> Tersimpan
                                     </span>
                                 ` : `
-                                    <span class="text-[9px] font-bold text-amber-500 flex items-center gap-1">
+                                    <span class="text-[9px] font-bold text-amber-500 flex items-center gap-1 whitespace-nowrap shrink-0">
                                         <i class="fa-solid fa-clock"></i> Belum Disimpan
                                     </span>
                                 `}
                             </div>
-                            <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
-                                <span class="font-semibold text-slate-700 dark:text-slate-300">${esc(emp.position)}</span>
-                                <span>•</span>
-                                <span>Uang Makan Harian: <strong class="text-emerald-600 dark:text-emerald-400">${fCur(dailyAllowance)}</strong></span>
-                                ${att?.source === 'pos_shift' ? `<span>•</span><span class="text-[10px] text-blue-500 font-bold"><i class="fa-solid fa-cash-register mr-1"></i>Otomatis Buka Shift</span>` : ''}
+                            <div class="flex items-center text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap gap-x-2 gap-y-0.5">
+                                <span class="font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">${esc(emp.position)}</span>
+                                <span class="inline-flex items-center whitespace-nowrap">
+                                    <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                                    <span>Uang Makan: <strong class="text-emerald-600 dark:text-emerald-400 font-bold">${fCur(dailyAllowance)}</strong></span>
+                                </span>
+                                ${att?.source === 'pos_shift' ? `
+                                <span class="inline-flex items-center text-[10px] text-blue-500 font-bold whitespace-nowrap">
+                                    <span class="text-slate-300 dark:text-slate-600 mr-2">•</span>
+                                    <i class="fa-solid fa-cash-register mr-1"></i>Otomatis Buka Shift
+                                </span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -902,21 +911,23 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
                         <tbody id="att-rekap-tbody" class="divide-y divide-slate-100 dark:divide-slate-700/60">
                             ${recap.items.map((it, idx) => {
                                 const rateClass = it.attendanceRate >= 95 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-300' : (it.attendanceRate >= 80 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-300');
-                                const initials = (it.name || 'ST').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+                                const isRowOwner = it.role === 'owner' || it.employeeId === 'OWN-001';
+                                const rowAvatar = isRowOwner 
+                                    ? '<i class="fa-solid fa-crown text-amber-500 text-[10px]"></i>' 
+                                    : initials;
                                 return `
                                 <tr class="att-rekap-row hover:bg-slate-50/70 dark:hover:bg-slate-700/40 transition-colors" data-name="${esc(it.name.toLowerCase())}" data-pos="${esc(it.position.toLowerCase())}">
                                     <td class="py-2.5 px-3 text-center font-mono text-slate-400">${idx + 1}</td>
                                     <td class="py-2.5 px-3">
                                         <div class="flex items-center gap-2.5">
-                                            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-[10px] shrink-0 border border-[rgba(var(--color-primary-rgb),0.25)]"
-                                                style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
-                                                ${initials}
+                                            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-[10px] shrink-0 border ${isRowOwner ? 'border-amber-300 dark:border-amber-600/60 bg-amber-50/80 dark:bg-amber-950/40 text-amber-500' : 'border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)]'}">
+                                                ${rowAvatar}
                                             </div>
                                             <div class="min-w-0">
                                                 <div class="font-black text-slate-800 dark:text-white truncate">${esc(it.name)}</div>
-                                                <div class="text-[10px] text-slate-400 flex items-center gap-1.5">
+                                                <div class="text-[10px] text-slate-400 flex items-center gap-1.5 whitespace-nowrap">
                                                     <span class="font-mono">${esc(it.employeeId)}</span>
-                                                    <span>•</span>
+                                                    <span class="text-slate-300 dark:text-slate-600">•</span>
                                                     <span class="truncate">${esc(it.position)}</span>
                                                 </div>
                                             </div>
