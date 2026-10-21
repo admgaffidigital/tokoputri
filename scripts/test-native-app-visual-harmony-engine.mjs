@@ -153,9 +153,29 @@ test('Modal Rekapitulasi Presensi Tim memiliki header anti-truncate, pull-indica
     assert(attJs.includes('modal-bottom-sheet'), 'Menggunakan modal-bottom-sheet');
     assert(attJs.includes('att-rekap-period-picker-desktop') && attJs.includes('att-rekap-period-picker'), 'Selector bulan responsif desktop-mobile');
     assert(attJs.includes('min-h-[44px] px-4 rounded-xl') && attJs.includes('min-h-[44px] px-3 sm:px-4 rounded-xl'), 'Tombol footer berderet proporsional dalam 1 baris');
+    assert(attJs.includes('placeholder="Cari nama / jabatan..."'), 'Placeholder search bar rekap presensi ringkas dan anti-terpotong di mobile');
+});
+
+// 8. Storefront Hero Banner & Section Header Ergonomics
+console.log('\n🏪 8. Uji Storefront Hero Banner & Section Header Zero-Crushing:');
+const SECTIONS_JS_PATH = path.join(ROOT_DIR, 'src', 'modules', 'home', 'sections.js');
+assert(fs.existsSync(SECTIONS_JS_PATH), 'sections.js harus tersedia');
+const sectionsJs = fs.readFileSync(SECTIONS_JS_PATH, 'utf-8');
+
+test('Hero Banner dan Promo Banner titles menggunakan line-clamp-2 anti-ellipsis truncation di mobile', () => {
+    assert(sectionsJs.includes('line-clamp-2">\n                        ${esc(heroTitle)}') || sectionsJs.includes('line-clamp-2">\r\n                        ${esc(heroTitle)}'), 'Hero title menggunakan line-clamp-2');
+    assert(sectionsJs.includes('line-clamp-2">${esc(b.title || \'Penawaran Spesial\')}</h2>'), 'Promo banner title menggunakan line-clamp-2');
+});
+
+test('Section Header Kategori dan Brand di index.html memiliki proteksi zero-crushing dan adaptive titles', () => {
+    assert(indexHtml.includes('KATEGORI MATERIAL <span class="hidden sm:inline">&amp; ALAT TEKNIK</span>'), 'Judul kategori adaptif mobile/desktop');
+    assert(indexHtml.includes('BRAND RESMI <span class="hidden sm:inline">&amp; PRODUSEN TERPERCAYA</span>'), 'Judul brand adaptif mobile/desktop');
+    assert(indexHtml.includes('shrink-0 whitespace-nowrap min-h-[30px] inline-flex items-center justify-center rounded-lg border border-[rgba(var(--color-primary-rgb),0.15)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)]'), 'Tombol Lihat Semua pada Kategori dan Brand memiliki shrink-0 whitespace-nowrap');
+    assert(styleCss.includes('#sec-categories button[onclick*="openCategoryModal"]') && styleCss.includes('flex-shrink: 0 !important;'), 'CSS flex-shrink: 0 terpasang di style.css');
 });
 
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passCount} Passed, 0 Failed`);
 console.log('✨ SELURUH APLIKASI SUDAH 100% NATIVE APP HARMONY & PROPOSIONAL! ✅');
 console.log('============================================================\n');
+

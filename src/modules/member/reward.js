@@ -827,19 +827,19 @@ export const renderRewardCatalog = () => {
     rcC.classList.remove('hidden');
     let rHTML = `
     <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
-        <div class="mb-3.5 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-3 dark:border-slate-700/50">
-            <div class="flex items-center gap-2.5">
-                <div class="flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-2xs"
+        <div class="mb-3.5 flex items-center justify-between gap-2 border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-3 dark:border-slate-700/50">
+            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+                <div class="shrink-0 flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-2xs"
                      style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
                     <i class="fa-solid fa-gift text-sm"></i>
                 </div>
-                <div>
-                    <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-tight text-slate-800 dark:text-white leading-tight">KATALOG REWARD POIN</h3>
-                    <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Tukar poin transaksi Anda dengan hadiah fisik gratis</p>
+                <div class="min-w-0 flex-1">
+                    <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-tight text-slate-800 dark:text-white leading-tight truncate">KATALOG REWARD POIN</h3>
+                    <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 truncate hidden xs:block sm:block">Tukar poin transaksi Anda dengan hadiah fisik gratis</p>
                 </div>
             </div>
             <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" 
-                    class="rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0">
+                    class="shrink-0 whitespace-nowrap min-h-[30px] rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 flex items-center gap-1.5 cursor-pointer">
                 <span>Lihat Kartu VIP</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
             </button>
         </div>

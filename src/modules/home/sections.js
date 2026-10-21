@@ -96,7 +96,7 @@ export const rDyn = () => {
                         <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
                         <span>${esc(heroWelcomeTag)}</span>
                     </div>
-                    <h2 class="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">
+                    <h2 class="text-sm sm:text-lg md:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-2">
                         ${esc(heroTitle)}
                     </h2>
                     <p class="text-[10.5px] sm:text-xs md:text-sm text-white/95 font-medium leading-relaxed mt-1 sm:mt-1.5 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
@@ -236,7 +236,7 @@ export const rDyn = () => {
                         <i class="fa-solid fa-bolt-lightning text-amber-300"></i>
                         <span>PROMO SPESIAL</span>
                     </div>
-                    <h2 class="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-1">${esc(b.title || 'Penawaran Spesial')}</h2>
+                    <h2 class="text-sm sm:text-lg md:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] line-clamp-2">${esc(b.title || 'Penawaran Spesial')}</h2>
                     <p class="text-[10.5px] sm:text-xs md:text-sm text-white/95 font-medium leading-relaxed mb-3 sm:mb-4 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
                     ${b.link ? `<button class="bento-promo-cta-btn w-max text-[9.5px] sm:text-[10.5px] uppercase tracking-wider font-black py-2 sm:py-2.5 px-4 sm:px-5 rounded-full shadow-lg flex items-center gap-2 active:scale-95 transition-all group-hover:pr-6 cursor-pointer">Beli Sekarang <i class="fa-solid fa-arrow-right text-[8.5px] transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>

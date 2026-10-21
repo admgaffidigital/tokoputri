@@ -16,6 +16,21 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-19-7",
+        "version": "v1.19.7",
+        "date": "2026-10-21",
+        "title": "Storefront Zero-Truncation, Hero Banner Line-Clamp-2 & Section Header Zero-Crushing Engine",
+        "category": "feature",
+        "badge": "Native App Zero-Truncation & Proportional Consistency v1.19.7",
+        "items": [
+            "Eliminasi Pemotongan Placeholder Search Presensi Tim: Mengoptimalkan teks pencarian di modal rekap presensi tim menjadi 'Cari nama / jabatan...' dengan padding ikon responsif pl-8 pr-2.5, sehingga placeholder tampil utuh 100% tanpa terpotong di layar HP 360px.",
+            "Hero Banner & Promo Banner Multi-Line (line-clamp-2): Mengubah batasan baris judul spanduk utama dari line-clamp-1 menjadi line-clamp-2 dengan ukuran teks responsif text-sm sm:text-lg md:text-2xl lg:text-3xl font-black, mengeliminasi teks terpotong menjadi 'PELANGGAN TOKO...' dan membiarkan teks melipat secara alami dua baris.",
+            "Section Header Zero-Crushing (Kategori, Brand & Reward): Menerapkan proteksi flex-shrink: 0 !important dan white-space: nowrap !important pada tombol 'Lihat Semua', serta menyematkan judul adaptif 'BRAND RESMI' pada mobile dan 'BRAND RESMI & PRODUSEN TERPERCAYA' pada tablet/desktop agar bebas benturan dan tidak terpotong menjadi 'BRAND RESMI & PRO...' dan 'LIHAT...'.",
+            "Universal Native App Visual Harmony & Ergonomics: Menjaga keselarasan seluruh elemen native app, touch target 44px, frame hover desktop-only, dan 0% horizontal overflow di seluruh resolusi.",
+            "Multi-Channel Distribution v1.19.7 (Android versionCode 11907 & Windows x64)."
+        ]
+    },
+    {
         "id": "log-1-19-6",
         "version": "v1.19.6",
         "date": "2026-10-21",
@@ -86,22 +101,6 @@ export const DEFAULT_CHANGELOG = [
             "Eliminasi Total White-on-White Icon Pods Pengaturan Toko: Memperbaiki selector penentralan gradient di style.css yang sebelumnya secara tidak sengaja menimpa wadah icon pod bertema toko menjadi latar abu-abu pudar (#f8fafc) di Light Mode, serta mengunci seluruh wadah ikon kartu Pengaturan Toko (Profil, Katalog, Pengiriman, Pembayaran, Sistem, Operasional, Printer, Backup) ke solid background-color: var(--color-primary) dengan ikon putih kontras tinggi yang tajam dan jelas.",
             "Suite Unit Test Baru test-button-badge-icon-harmony.mjs (42 pengujian) dan test-pos-header-responsive.mjs (28 pengujian) 100% Passed dan terintegrasi otomatis ke audit kesehatan sistem.",
             "Multi-Channel Distribution v1.19.3 (Android versionCode 11903)."
-        ]
-    },
-    {
-        "id": "log-1-19-2",
-        "version": "v1.19.2",
-        "date": "2026-10-20",
-        "title": "Smart Dual-Mode High-Contrast Solid Engine, Eliminasi Total Kebocoran Warna Putih Dark Mode & Widget Arus Kas Harian",
-        "category": "feature",
-        "badge": "Smart Dual-Mode & Daily Cash Flow Hub v1.19.2",
-        "items": [
-            "Eliminasi Kebocoran Warna Putih di Dark Mode: Mengunci seluruh aturan warna putih (.bg-white/*) khusus ke html:not(.dark) dan menegakkan solid dark slate (#1e293b / #0f172a) pada seluruh kartu KPI, tombol sekunder, dan kartu utama di modul Supplier, Katalog Produk, PO Kulakan, Retur, dan Modal, mengeliminasi tampilan belang-belang secara tuntas.",
-            "Widget Ringkasan Arus Kas Harian (Daily Cash Flow Hub): Menghadirkan 4 kartu bento likuiditas harian di Dashboard Utama CMS Owner (Kas Tunai Laci Hari Ini, Masuk Bank & QRIS Hari Ini, Pengeluaran Toko Hari Ini, dan Estimasi Arus Kas Bersih Masuk) dengan navigasi 1-klik dan proteksi privasi RBAC.",
-            "Penajaman Garis Pembatas (Border) & Divider: Mengunci hairline border kartu bento, panel CMS, modal, dan pembagi ke solid #cbd5e1 (Slate-300) di Light Mode dan #334155 di Dark Mode, menghadirkan batas elemen yang tegas, rapi, dan tidak kabur.",
-            "Penajaman Font, Teks Sekunder & Ikon: Mengoptimalkan seluruh teks sekunder ke #475569 (Slate-600) di Light Mode dan #94a3b8 / #cbd5e1 di Dark Mode, menjamin seluruh angka, label, dan subtitle terbaca tajam dan tidak samar.",
-            "Solid Fallback Anti-Transparansi & Anti White-on-White: Menyediakan pemetaan warna solid murni berbobot untuk seluruh elemen eks-gradasi, menjamin teks putih tidak hilang di atas latar terang.",
-            "Multi-Channel Distribution v1.19.2 (Android versionCode 11902)."
         ]
     }
 ];
@@ -178,7 +177,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.6';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.7';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

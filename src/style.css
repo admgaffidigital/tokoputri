@@ -6560,4 +6560,17 @@ html.dark #pos-paid-input::placeholder {
     word-break: keep-all !important;
 }
 
+/* Section Header Zero-Crushing & Ergonomics Engine (Category, Brand, Reward & Attendance) */
+#sec-categories button[onclick*="openCategoryModal"],
+#sec-brands button[onclick*="openBrandModal"],
+#reward-catalog-container button {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+#att-rekap-search::placeholder {
+    text-overflow: ellipsis;
+}
+
+
 

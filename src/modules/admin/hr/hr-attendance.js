@@ -889,14 +889,14 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
             </div>
 
             <!-- Realtime Search Bar Staf -->
-            <div class="flex items-center justify-between gap-2.5">
-                <div class="relative flex-1">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                    <input type="text" id="att-rekap-search" placeholder="Cari nama karyawan atau jabatan..."
+            <div class="flex items-center justify-between gap-2">
+                <div class="relative flex-1 min-w-0">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                    <input type="text" id="att-rekap-search" placeholder="Cari nama / jabatan..."
                         oninput="window.filterAttendanceRecapTable(this.value)"
-                        class="w-full h-10 min-h-[40px] pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full h-10 min-h-[40px] pl-8 pr-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
-                <span class="px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
+                <span class="px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 whitespace-nowrap">
                     Total: <strong class="text-slate-800 dark:text-slate-200">${recap.totalMembers} Staf</strong>
                 </span>
             </div>
