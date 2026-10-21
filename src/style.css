@@ -6270,6 +6270,13 @@ html.dark #pos-catalog-grid span.bg-\[rgba\(var\(--color-primary-rgb\)\,0\.08\)\
     background: rgba(225, 29, 72, 0.16) !important;
 }
 
-
-
-
+/* Universal Time Input Anti-Clip & Proportionality */
+input[type="time"] {
+    min-width: 96px !important;
+    text-align: center;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}

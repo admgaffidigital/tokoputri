@@ -601,7 +601,7 @@ export const saveSalaryAdvance = async () => {
         } catch (_) {}
 
         closeSalaryAdvanceFormModal();
-        showToast(`Kasbon Rp ${fCur(amount)} untuk ${employeeName} berhasil dicatat!`, 'success');
+        showToast(`Kasbon ${fCur(amount)} untuk ${employeeName} berhasil dicatat!`, 'success');
 
         const panel = el('cashier-panel-advances');
         if (panel) renderSalaryAdvancesView(panel);
@@ -764,7 +764,7 @@ export const promptManualRepayment = (advanceId, remainingAmount) => {
     const adv = _cachedAdvances.find(a => (a.advanceId || a.id) === advanceId);
     if (!adv) return;
 
-    const payInput = prompt(`Masukkan nominal pembayaran angsuran kasbon untuk "${adv.employeeName}":\n(Sisa pinjaman saat ini: Rp ${fCur(remainingAmount)})`, remainingAmount);
+    const payInput = prompt(`Masukkan nominal pembayaran angsuran kasbon untuk "${adv.employeeName}":\n(Sisa pinjaman saat ini: ${fCur(remainingAmount)})`, remainingAmount);
     if (payInput === null) return;
 
     const payAmount = Math.max(0, parseFloat(payInput.replace(/[^0-9]/g, '')) || 0);
@@ -823,7 +823,7 @@ export const recordAdvanceRepayment = async (advanceId, payAmount, notes = 'Poto
             await saveApp();
         } catch (_) {}
 
-        showToast(`Pembayaran kasbon Rp ${fCur(actualPay)} berhasil dicatat! Sisa: Rp ${fCur(newRemaining)}`, 'success');
+        showToast(`Pembayaran kasbon ${fCur(actualPay)} berhasil dicatat! Sisa: ${fCur(newRemaining)}`, 'success');
 
         const panel = el('cashier-panel-advances');
         if (panel) renderSalaryAdvancesView(panel);

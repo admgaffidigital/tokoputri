@@ -280,7 +280,7 @@ export const renderPayrollView = async (container) => {
                     <i class="fa-solid fa-sack-dollar text-emerald-500 text-xs"></i>
                 </div>
                 <div class="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 font-mono truncate">
-                    Rp ${fCur(totalPayroll)}
+                    ${fCur(totalPayroll)}
                 </div>
                 <div class="text-[10px] text-slate-400 mt-0.5">${employees.length} Karyawan (Termasuk Owner)</div>
             </div>
@@ -302,7 +302,7 @@ export const renderPayrollView = async (container) => {
                     <i class="fa-solid fa-hand-holding-dollar text-xs" style="color: var(--color-primary)"></i>
                 </div>
                 <div class="text-sm sm:text-base font-black text-[var(--color-primary)] font-mono truncate">
-                    Rp ${fCur(totalAdvanceDeducted)}
+                    ${fCur(totalAdvanceDeducted)}
                 </div>
                 <div class="text-[10px] text-slate-400 mt-0.5">Otomatis potong saldo pinjaman</div>
             </div>
@@ -313,7 +313,7 @@ export const renderPayrollView = async (container) => {
                     <i class="fa-solid fa-boxes-packing text-rose-500 text-xs"></i>
                 </div>
                 <div class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 font-mono truncate">
-                    Rp ${fCur(totalLostItemDeducted)}
+                    ${fCur(totalLostItemDeducted)}
                 </div>
                 <div class="text-[10px] text-slate-400 mt-0.5">Kompensasi selisih stock opname</div>
             </div>
@@ -348,7 +348,7 @@ export const renderPayrollView = async (container) => {
                                 <span>•</span>
                                 <span>Absensi: <strong>${item.totalAttendanceDays || 0} Hari Masuk</strong></span>
                                 <span>•</span>
-                                <span>Gaji Pokok: <strong>Rp ${fCur(item.baseSalary)}</strong></span>
+                                <span>Gaji Pokok: <strong>${fCur(item.baseSalary)}</strong></span>
                                 ${item.attendanceAllowance > 0 ? `<span>•</span><span>Tunjangan: <strong class="text-[var(--color-primary)] font-bold">+${fCur(item.attendanceAllowance)}</strong></span>` : ''}
                             </div>
                             <!-- Rincian Potongan -->
@@ -366,7 +366,7 @@ export const renderPayrollView = async (container) => {
                         <div class="text-left md:text-right">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Take Home Pay</span>
                             <span class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
-                                Rp ${fCur(item.netSalary)}
+                                ${fCur(item.netSalary)}
                             </span>
                         </div>
                         <div class="flex items-center gap-2">
@@ -553,7 +553,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                                 class="w-full min-h-[44px] text-[16px] sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-mono font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] shadow-inner">
                             ${draft.advanceId ? `
                                 <span class="text-[10px] text-[var(--color-primary)] mt-0.5 block font-medium">
-                                    Terkoneksi #${draft.advanceId} (Sisa saldo kasbon: Rp ${fCur(draft.advanceRemainingBefore)})
+                                    Terkoneksi #${draft.advanceId} (Sisa saldo kasbon: ${fCur(draft.advanceRemainingBefore)})
                                 </span>
                             ` : `<span class="text-[10px] text-slate-400 mt-0.5 block">Tidak ada kasbon aktif</span>`}
                         </div>
@@ -582,19 +582,19 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                     <div class="flex items-center justify-between text-slate-600 dark:text-slate-300 text-xs">
                         <span>Total Penghasilan Bruto:</span>
                         <strong class="font-mono text-emerald-600 dark:text-emerald-400" id="pay-total-earnings-display">
-                            Rp ${fCur(draft.totalEarnings)}
+                            ${fCur(draft.totalEarnings)}
                         </strong>
                     </div>
                     <div class="flex items-center justify-between text-slate-600 dark:text-slate-300 text-xs">
                         <span>Total Potongan:</span>
                         <strong class="font-mono text-rose-500 dark:text-rose-400" id="pay-total-deductions-display">
-                            -Rp ${fCur(draft.totalDeductions)}
+                            -${fCur(draft.totalDeductions)}
                         </strong>
                     </div>
                     <div class="border-t border-slate-200 dark:border-slate-700 pt-2 flex items-center justify-between">
                         <span class="font-black text-slate-900 dark:text-white text-sm">Gaji Bersih (Take Home Pay):</span>
                         <span class="font-black text-lg sm:text-xl font-mono text-emerald-600 dark:text-emerald-400" id="pay-net-salary-display">
-                            Rp ${fCur(draft.netSalary)}
+                            ${fCur(draft.netSalary)}
                         </span>
                     </div>
                 </div>
@@ -699,9 +699,9 @@ export const recalculatePayrollItem = () => {
     const dedEl = el('pay-total-deductions-display');
     const netEl = el('pay-net-salary-display');
 
-    if (earnEl) earnEl.textContent = `Rp ${fCur(totalEarnings)}`;
-    if (dedEl) dedEl.textContent = `-Rp ${fCur(totalDeductions)}`;
-    if (netEl) netEl.textContent = `Rp ${fCur(netSalary)}`;
+    if (earnEl) earnEl.textContent = `${fCur(totalEarnings)}`;
+    if (dedEl) dedEl.textContent = `-${fCur(totalDeductions)}`;
+    if (netEl) netEl.textContent = `${fCur(netSalary)}`;
 };
 
 /**
@@ -834,7 +834,7 @@ export const savePayrollItem = async (employeeId, periodStr, targetStatus = 'pai
         closePayrollItemModal();
         showToast(
             targetStatus === 'paid' 
-                ? `Gaji Rp ${fCur(netSalary)} untuk ${emp.name} berhasil dibayarkan!` 
+                ? `Gaji ${fCur(netSalary)} untuk ${emp.name} berhasil dibayarkan!` 
                 : `Draf gaji untuk ${emp.name} berhasil disimpan`, 
             'success'
         );
@@ -949,26 +949,26 @@ export const openPayslipPreviewModal = (payrollId, employeeId) => {
                         <span class="text-[11px] font-black uppercase text-emerald-600 dark:text-emerald-400 tracking-wider block">PENGHASILAN (+)</span>
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Gaji Pokok:</span>
-                            <span class="font-mono font-bold">Rp ${fCur(item.baseSalary)}</span>
+                            <span class="font-mono font-bold">${fCur(item.baseSalary)}</span>
                         </div>
                         ${item.attendanceAllowance > 0 ? `
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Tunjangan Kehadiran (${item.totalAttendanceDays || 0} Hari):</span>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+Rp ${fCur(item.attendanceAllowance)}</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${fCur(item.attendanceAllowance)}</span>
                         </div>` : ''}
                         ${item.bonus > 0 ? `
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Bonus Kinerja &amp; Insentif:</span>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+Rp ${fCur(item.bonus)}</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${fCur(item.bonus)}</span>
                         </div>` : ''}
                         ${item.overtimePay > 0 ? `
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Uang Lembur:</span>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+Rp ${fCur(item.overtimePay)}</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">+${fCur(item.overtimePay)}</span>
                         </div>` : ''}
                         <div class="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-700 font-bold">
                             <span>Total Penghasilan Bruto:</span>
-                            <span class="font-mono text-emerald-600 dark:text-emerald-400">Rp ${fCur(item.totalEarnings)}</span>
+                            <span class="font-mono text-emerald-600 dark:text-emerald-400">${fCur(item.totalEarnings)}</span>
                         </div>
                     </div>
 
@@ -978,18 +978,18 @@ export const openPayslipPreviewModal = (payrollId, employeeId) => {
                         ${item.advanceDeduction > 0 ? `
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Angsuran Kasbon (#${esc(item.advanceId || 'KSB')}):</span>
-                            <span class="font-mono font-bold text-rose-500">-Rp ${fCur(item.advanceDeduction)}</span>
+                            <span class="font-mono font-bold text-rose-500">-${fCur(item.advanceDeduction)}</span>
                         </div>` : ''}
                         ${item.lostItemDeduction > 0 ? `
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-300">Potongan Selisih Barang Hilang:</span>
-                            <span class="font-mono font-bold text-rose-500">-Rp ${fCur(item.lostItemDeduction)}</span>
+                            <span class="font-mono font-bold text-rose-500">-${fCur(item.lostItemDeduction)}</span>
                         </div>
                         ${item.lostItemNotes ? `<span class="text-[10px] text-slate-400 italic block pl-2">${esc(item.lostItemNotes)}</span>` : ''}` : ''}
                         ${item.totalDeductions === 0 ? `<div class="text-slate-400 text-[11px] italic">Tidak ada potongan pada periode ini</div>` : ''}
                         <div class="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-700 font-bold">
                             <span>Total Potongan:</span>
-                            <span class="font-mono text-rose-500">-Rp ${fCur(item.totalDeductions)}</span>
+                            <span class="font-mono text-rose-500">-${fCur(item.totalDeductions)}</span>
                         </div>
                     </div>
 
@@ -1000,7 +1000,7 @@ export const openPayslipPreviewModal = (payrollId, employeeId) => {
                             <span class="text-[10px] text-slate-500">Metode: ${esc(item.paymentMethod?.toUpperCase())}</span>
                         </div>
                         <span class="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">
-                            Rp ${fCur(item.netSalary)}
+                            ${fCur(item.netSalary)}
                         </span>
                     </div>
 
@@ -1094,19 +1094,19 @@ export const sendPayslipWhatsApp = (payrollId) => {
         `• Hari Masuk: ${item.totalAttendanceDays || 0} Hari`,
         `----------------------------------------`,
         `💰 *PENGHASILAN (+)*`,
-        `• Gaji Pokok: Rp ${fCur(item.baseSalary)}`,
-        item.attendanceAllowance > 0 ? `• Tunjangan Absensi: +Rp ${fCur(item.attendanceAllowance)}` : '',
-        item.bonus > 0 ? `• Bonus / Insentif: +Rp ${fCur(item.bonus)}` : '',
-        item.overtimePay > 0 ? `• Uang Lembur: +Rp ${fCur(item.overtimePay)}` : '',
-        `*Total Bruto: Rp ${fCur(item.totalEarnings)}*`,
+        `• Gaji Pokok: ${fCur(item.baseSalary)}`,
+        item.attendanceAllowance > 0 ? `• Tunjangan Absensi: +${fCur(item.attendanceAllowance)}` : '',
+        item.bonus > 0 ? `• Bonus / Insentif: +${fCur(item.bonus)}` : '',
+        item.overtimePay > 0 ? `• Uang Lembur: +${fCur(item.overtimePay)}` : '',
+        `*Total Bruto: ${fCur(item.totalEarnings)}*`,
         `----------------------------------------`,
         `✂️ *POTONGAN (-)*`,
-        item.advanceDeduction > 0 ? `• Angsuran Kasbon: -Rp ${fCur(item.advanceDeduction)}` : '',
-        item.lostItemDeduction > 0 ? `• Potongan Selisih Barang Hilang: -Rp ${fCur(item.lostItemDeduction)}` : '',
-        item.totalDeductions === 0 ? `• Tidak ada potongan` : `*Total Potongan: -Rp ${fCur(item.totalDeductions)}*`,
+        item.advanceDeduction > 0 ? `• Angsuran Kasbon: -${fCur(item.advanceDeduction)}` : '',
+        item.lostItemDeduction > 0 ? `• Potongan Selisih Barang Hilang: -${fCur(item.lostItemDeduction)}` : '',
+        item.totalDeductions === 0 ? `• Tidak ada potongan` : `*Total Potongan: -${fCur(item.totalDeductions)}*`,
         `----------------------------------------`,
         `💵 *GAJI BERSIH (TAKE HOME PAY)*`,
-        `*Rp ${fCur(item.netSalary)}*`,
+        `*${fCur(item.netSalary)}*`,
         `Metode: ${item.paymentMethod?.toUpperCase()} (${item.bankName || 'BCA'}: ${item.bankAccount || '-'})`,
         `Status: *${item.status === 'paid' ? 'LUNAS / DIBAYAR' : 'DRAF'}*`,
         `----------------------------------------`,
@@ -1143,22 +1143,22 @@ export const printPayslipThermal = (payrollId) => {
         </div>
         <div style="border-top:1px dashed #000;border-bottom:1px dashed #000;padding:6px 0;margin-bottom:6px;">
             <div style="font-weight:bold;margin-bottom:2px;">PENGHASILAN:</div>
-            <div style="display:flex;justify-content:space-between;"><span>Gaji Pokok:</span><span>Rp ${fCur(item.baseSalary)}</span></div>
-            ${item.attendanceAllowance > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Tunj. Kehadiran:</span><span>+Rp ${fCur(item.attendanceAllowance)}</span></div>` : ''}
-            ${item.bonus > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Bonus/Insentif:</span><span>+Rp ${fCur(item.bonus)}</span></div>` : ''}
-            ${item.overtimePay > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Lembur:</span><span>+Rp ${fCur(item.overtimePay)}</span></div>` : ''}
-            <div style="display:flex;justify-content:space-between;font-weight:bold;margin-top:2px;"><span>Bruto:</span><span>Rp ${fCur(item.totalEarnings)}</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Gaji Pokok:</span><span>${fCur(item.baseSalary)}</span></div>
+            ${item.attendanceAllowance > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Tunj. Kehadiran:</span><span>+${fCur(item.attendanceAllowance)}</span></div>` : ''}
+            ${item.bonus > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Bonus/Insentif:</span><span>+${fCur(item.bonus)}</span></div>` : ''}
+            ${item.overtimePay > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Lembur:</span><span>+${fCur(item.overtimePay)}</span></div>` : ''}
+            <div style="display:flex;justify-content:space-between;font-weight:bold;margin-top:2px;"><span>Bruto:</span><span>${fCur(item.totalEarnings)}</span></div>
         </div>
         <div style="border-bottom:1px dashed #000;padding-bottom:6px;margin-bottom:6px;">
             <div style="font-weight:bold;margin-bottom:2px;">POTONGAN:</div>
-            ${item.advanceDeduction > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Kasbon:</span><span>-Rp ${fCur(item.advanceDeduction)}</span></div>` : ''}
-            ${item.lostItemDeduction > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Selisih Barang:</span><span>-Rp ${fCur(item.lostItemDeduction)}</span></div>` : ''}
+            ${item.advanceDeduction > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Kasbon:</span><span>-${fCur(item.advanceDeduction)}</span></div>` : ''}
+            ${item.lostItemDeduction > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Selisih Barang:</span><span>-${fCur(item.lostItemDeduction)}</span></div>` : ''}
             ${item.totalDeductions === 0 ? `<div>(Tidak ada potongan)</div>` : ''}
-            <div style="display:flex;justify-content:space-between;font-weight:bold;margin-top:2px;"><span>Tot. Potongan:</span><span>-Rp ${fCur(item.totalDeductions)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-weight:bold;margin-top:2px;"><span>Tot. Potongan:</span><span>-${fCur(item.totalDeductions)}</span></div>
         </div>
         <div style="font-size:14px;font-weight:bold;display:flex;justify-content:space-between;margin-bottom:10px;">
             <span>TAKE HOME PAY:</span>
-            <span>Rp ${fCur(item.netSalary)}</span>
+            <span>${fCur(item.netSalary)}</span>
         </div>
         <div style="text-align:center;font-size:10px;border-top:1px dashed #000;padding-top:8px;">
             <div>Metode: ${esc(item.paymentMethod?.toUpperCase())} • Status: ${esc(item.status?.toUpperCase())}</div>
@@ -1249,26 +1249,26 @@ export const printPayslipA4 = (payrollId) => {
             <tbody>
                 <tr>
                     <td>Gaji Pokok Karyawan</td>
-                    <td class="text-right font-mono">Rp ${fCur(item.baseSalary)}</td>
+                    <td class="text-right font-mono">${fCur(item.baseSalary)}</td>
                 </tr>
                 ${item.attendanceAllowance > 0 ? `
                 <tr>
-                    <td>Tunjangan Kehadiran (${item.totalAttendanceDays || 0} hari x Rp ${fCur(item.dailyAllowanceRate)})</td>
-                    <td class="text-right font-mono text-emerald-600">+Rp ${fCur(item.attendanceAllowance)}</td>
+                    <td>Tunjangan Kehadiran (${item.totalAttendanceDays || 0} hari x ${fCur(item.dailyAllowanceRate)})</td>
+                    <td class="text-right font-mono text-emerald-600">+${fCur(item.attendanceAllowance)}</td>
                 </tr>` : ''}
                 ${item.bonus > 0 ? `
                 <tr>
                     <td>Bonus Kinerja &amp; Insentif Toko</td>
-                    <td class="text-right font-mono text-emerald-600">+Rp ${fCur(item.bonus)}</td>
+                    <td class="text-right font-mono text-emerald-600">+${fCur(item.bonus)}</td>
                 </tr>` : ''}
                 ${item.overtimePay > 0 ? `
                 <tr>
                     <td>Uang Lembur / Tambahan</td>
-                    <td class="text-right font-mono text-emerald-600">+Rp ${fCur(item.overtimePay)}</td>
+                    <td class="text-right font-mono text-emerald-600">+${fCur(item.overtimePay)}</td>
                 </tr>` : ''}
                 <tr style="background: #f8fafc; font-weight: 800;">
                     <td>Subtotal Penghasilan Bruto</td>
-                    <td class="text-right font-mono text-emerald-600">Rp ${fCur(item.totalEarnings)}</td>
+                    <td class="text-right font-mono text-emerald-600">${fCur(item.totalEarnings)}</td>
                 </tr>
             </tbody>
         </table>
@@ -1284,12 +1284,12 @@ export const printPayslipA4 = (payrollId) => {
                 ${item.advanceDeduction > 0 ? `
                 <tr>
                     <td>Angsuran Kasbon / Pinjaman Karyawan (#${esc(item.advanceId || 'KSB')})</td>
-                    <td class="text-right font-mono text-rose-500">-Rp ${fCur(item.advanceDeduction)}</td>
+                    <td class="text-right font-mono text-rose-500">-${fCur(item.advanceDeduction)}</td>
                 </tr>` : ''}
                 ${item.lostItemDeduction > 0 ? `
                 <tr>
                     <td>Potongan Selisih Barang Hilang / Stock Opname ${item.lostItemNotes ? `(${esc(item.lostItemNotes)})` : ''}</td>
-                    <td class="text-right font-mono text-rose-500">-Rp ${fCur(item.lostItemDeduction)}</td>
+                    <td class="text-right font-mono text-rose-500">-${fCur(item.lostItemDeduction)}</td>
                 </tr>` : ''}
                 ${item.totalDeductions === 0 ? `
                 <tr>
@@ -1297,7 +1297,7 @@ export const printPayslipA4 = (payrollId) => {
                 </tr>` : ''}
                 <tr style="background: #f8fafc; font-weight: 800;">
                     <td>Subtotal Pemotongan</td>
-                    <td class="text-right font-mono text-rose-500">-Rp ${fCur(item.totalDeductions)}</td>
+                    <td class="text-right font-mono text-rose-500">-${fCur(item.totalDeductions)}</td>
                 </tr>
             </tbody>
         </table>
@@ -1310,7 +1310,7 @@ export const printPayslipA4 = (payrollId) => {
                     ${item.bankAccount && item.bankAccount !== '-' ? `(${esc(item.bankName)}: ${esc(item.bankAccount)})` : ''}
                 </div>
             </div>
-            <div class="total-val">Rp ${fCur(item.netSalary)}</div>
+            <div class="total-val">${fCur(item.netSalary)}</div>
         </div>
 
         <div class="sign-grid">

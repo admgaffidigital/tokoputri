@@ -833,7 +833,7 @@ export const renderMasterCatalogView = () => {
                                             </h4>
                                             <div class="flex items-center gap-2 mt-1.5 flex-wrap">
                                                 <span class="text-xs font-black text-[var(--color-primary)]">
-                                                    Rp ${fCur(preset.price || (variants[0]?.price || 0))}
+                                                    ${fCur(preset.price || (variants[0]?.price || 0))}
                                                 </span>
                                                 <span class="text-[10px] font-bold text-slate-400">/ ${esc(preset.unit || 'Unit')}</span>
                                             </div>
@@ -1099,7 +1099,7 @@ window.openMasterProductImportModal = (presetId, isUpdate = false) => {
                                 </div>
                             </div>
                             <div class="text-right shrink-0">
-                                <span class="text-xs font-black text-slate-700 dark:text-slate-200">Rp ${fCur(v.price || defaultPrice)}</span>
+                                <span class="text-xs font-black text-slate-700 dark:text-slate-200">${fCur(v.price || defaultPrice)}</span>
                             </div>
                         </label>
                     `).join('')}
@@ -1480,7 +1480,7 @@ window.openExportStoreProductPicker = () => {
                     <div class="bento-island-card flex items-center justify-between gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all min-h-[52px]">
                         <div class="min-w-0">
                             <h5 class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(p.name)}</h5>
-                            <p class="text-[10px] text-slate-400 mt-0.5">${esc(p.category || 'Tanpa Kategori')} &bull; ${(p.variants || []).length} Varian &bull; Rp ${fCur(p.price || 0)}</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">${esc(p.category || 'Tanpa Kategori')} &bull; ${(p.variants || []).length} Varian &bull; ${fCur(p.price || 0)}</p>
                         </div>
                         <button type="button" onclick="window.confirmExportProductToMaster('${esc(p.id)}')" class="h-10 min-h-[40px] px-4 rounded-xl primary-bg text-white font-bold text-xs uppercase tracking-wider hover:opacity-95 active:scale-95 cursor-pointer shrink-0 flex items-center justify-center">
                             Simpan

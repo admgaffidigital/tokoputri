@@ -109,8 +109,8 @@ export const renderCashierAccounts = async () => {
     setH('admin-content', `
     <div class="space-y-4 max-w-5xl mx-auto pb-24">
         <!-- Native App Sticky Segmented Control Bar -->
-        <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xs">
-            <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-4xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar border border-slate-200/90 dark:border-slate-700/80 shadow-inner sm:grid sm:grid-cols-5">
+        <div class="sticky top-0 z-20 py-2 sm:py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-none border-b border-slate-200/80 dark:border-slate-800/80 mb-2">
+            <div class="p-1.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-2xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar border border-slate-200/90 dark:border-slate-700/80 shadow-xs sm:grid sm:grid-cols-5">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
                     class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
                     style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
@@ -271,7 +271,7 @@ const getOwnerCardHtml = (ownerProfile, authStatusBadge) => {
                         </span>
                         <span class="text-slate-300 dark:text-slate-600">•</span>
                         <span class="font-black text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>Rp ${fCur(ownerProfile.baseSalary || 10000000)}/bln
+                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${fCur(ownerProfile.baseSalary || 10000000)}/bln
                         </span>
                         <span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">(Gaji Pokok Direksi)</span>
                     </div>
@@ -411,36 +411,36 @@ const renderStaffMetrics = () => {
         <!-- 2. Kasir POS Aktif -->
         <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Kasir POS Aktif</span>
-                <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kasir POS Aktif</span>
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${cashierCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${cashierCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
             <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Penjualan Kasir Fisik Toko</p>
         </div>
 
         <!-- 3. Admin & Logistik -->
         <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">Admin &amp; Logistik</span>
-                <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Admin &amp; Logistik</span>
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">${adminCount + staffGudangCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${adminCount + staffGudangCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
             <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${adminCount} Admin • ${staffGudangCount} Staf Gudang</p>
         </div>
 
         <!-- 4. Beban Gaji Bulanan -->
         <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Beban Gaji Pokok</span>
-                <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Beban Gaji Pokok</span>
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-money-bill-wave"></i>
                 </div>
             </div>
-            <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">Rp ${fCur(totalBaseSalary)}</p>
+            <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${fCur(totalBaseSalary)}</p>
             <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Total Gaji Tim &amp; Direksi /bln</p>
         </div>
     </div>`;
@@ -635,9 +635,9 @@ const renderStaffListHtml = () => {
                         </span>
                         <span class="text-slate-300 dark:text-slate-600">•</span>
                         <span class="font-black text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>Rp ${fCur(baseSalary)}/bln
+                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${fCur(baseSalary)}/bln
                         </span>
-                        ${dailyAllowance > 0 ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+Rp ${fCur(dailyAllowance)}/hr)</span>` : ''}
+                        ${dailyAllowance > 0 ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+${fCur(dailyAllowance)}/hr)</span>` : ''}
                     </div>
                     <div class="flex items-center gap-3 pt-0.5 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap">
                         <span class="inline-flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${esc(d.email || '-')}</span>

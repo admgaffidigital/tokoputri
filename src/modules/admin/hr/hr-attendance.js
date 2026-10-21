@@ -138,29 +138,30 @@ export const renderAttendanceView = async (container) => {
     container.innerHTML = `
     <div class="space-y-4">
         <!-- Date Selector & Quick Controls -->
-        <div class="p-4 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <i class="fa-solid fa-calendar-day text-[var(--color-primary)]"></i> Tanggal Presensi:
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day" style="color: var(--color-primary)"></i>
+                    <span>Tanggal Presensi:</span>
                 </span>
-                <button onclick="window.navigateAttendanceDate(-1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
+                <button onclick="window.navigateAttendanceDate(-1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700" title="Hari Sebelumnya">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <input id="att-date-picker" type="date" value="${_selectedAttendanceDate}" onchange="window.onAttendanceDateChanged(this.value)"
-                    class="border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-black bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
-                <button onclick="window.navigateAttendanceDate(1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer">
+                    class="h-9 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                <button onclick="window.navigateAttendanceDate(1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700" title="Hari Berikutnya">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
                 ${!isToday ? `
                 <button onclick="window.onAttendanceDateChanged('${new Date().toISOString().split('T')[0]}')"
-                    class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-all active:scale-95 cursor-pointer">
+                    class="h-9 px-3.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer">
                     Hari Ini
                 </button>` : ''}
             </div>
 
             <div class="flex items-center gap-2">
                 <button onclick="window.bulkMarkAllPresent()"
-                    class="px-4 py-2 rounded-xl text-xs font-black text-white shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+                    class="h-9 px-4 rounded-xl text-xs font-black text-white shadow-xs active:scale-95 transition-all cursor-pointer flex items-center gap-2 hover:opacity-95"
                     style="background: var(--color-primary)">
                     <i class="fa-solid fa-bolt text-xs"></i>
                     <span>Hadirkan Semua Staf</span>
@@ -168,27 +169,47 @@ export const renderAttendanceView = async (container) => {
             </div>
         </div>
 
-        <!-- Bento Ringkasan Kehadiran Hari Ini -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
-                <span class="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-300 block mb-1">Hadir Tepat Waktu</span>
-                <p class="text-xl font-black text-emerald-800 dark:text-emerald-200">${presentCount} <span class="text-xs font-normal text-emerald-600">Staf</span></p>
-                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5 block">Presensi terpenuhi</span>
+        <!-- Bento Ringkasan Kehadiran Hari Ini (Theme Harmonized) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+            <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Hadir Tepat Waktu</span>
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                </div>
+                <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${presentCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Staf</span></p>
+                <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">Presensi terpenuhi</p>
             </div>
-            <div class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 shadow-2xs">
-                <span class="text-[10px] font-black uppercase text-amber-700 dark:text-amber-300 block mb-1">Terlambat</span>
-                <p class="text-xl font-black text-amber-800 dark:text-amber-200">${lateCount} <span class="text-xs font-normal text-amber-600">Staf</span></p>
-                <span class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5 block">Jam masuk lewat batas</span>
+            <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Terlambat</span>
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </div>
+                </div>
+                <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${lateCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Staf</span></p>
+                <p class="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">Jam masuk lewat batas</p>
             </div>
-            <div class="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/60 shadow-2xs">
-                <span class="text-[10px] font-black uppercase text-blue-700 dark:text-blue-300 block mb-1">Izin / Sakit</span>
-                <p class="text-xl font-black text-blue-800 dark:text-blue-200">${permitCount} <span class="text-xs font-normal text-blue-600">Staf</span></p>
-                <span class="text-[10px] text-blue-600 dark:text-blue-400 mt-0.5 block">Tercatat izin resmi</span>
+            <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Izin / Sakit</span>
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+                        <i class="fa-solid fa-calendar-minus"></i>
+                    </div>
+                </div>
+                <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${permitCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Staf</span></p>
+                <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-0.5">Tercatat izin resmi</p>
             </div>
-            <div class="p-3.5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 shadow-2xs">
-                <span class="text-[10px] font-black uppercase text-rose-700 dark:text-rose-300 block mb-1">Alpha / Belum Tercatat</span>
-                <p class="text-xl font-black text-rose-800 dark:text-rose-200">${alphaCount + (employees.length - presentCount - lateCount - permitCount - alphaCount)} <span class="text-xs font-normal text-rose-600">Staf</span></p>
-                <span class="text-[10px] text-rose-600 dark:text-rose-400 mt-0.5 block">Uang makan Rp 0</span>
+            <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Alpha / Belum Tercatat</span>
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 border border-rose-200 dark:border-rose-800/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+                        <i class="fa-solid fa-user-xmark"></i>
+                    </div>
+                </div>
+                <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${alphaCount + (employees.length - presentCount - lateCount - permitCount - alphaCount)} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Staf</span></p>
+                <p class="text-[10px] font-bold text-rose-500 mt-0.5">Uang makan Rp 0</p>
             </div>
         </div>
 
@@ -214,7 +235,7 @@ export const renderAttendanceView = async (container) => {
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(emp.name)}</span>
+                                <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white">${esc(emp.name)}</span>
                                 <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
                                     ${esc(emp.employeeId)}
                                 </span>
@@ -240,33 +261,44 @@ export const renderAttendanceView = async (container) => {
                     <!-- Status Selector Buttons & Jam Kerja -->
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
                         <!-- Status Chips -->
-                        <div class="grid grid-cols-5 gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
-                            ${ATTENDANCE_STATUSES.map(st => `
+                        <div class="grid grid-cols-5 gap-1 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+                            ${ATTENDANCE_STATUSES.map(st => {
+                                const isActive = status === st.key;
+                                let activeColorClass = 'bg-slate-800 text-white';
+                                if (st.key === 'present') activeColorClass = 'bg-emerald-600 text-white shadow-2xs font-black';
+                                else if (st.key === 'late') activeColorClass = 'bg-amber-500 text-white shadow-2xs font-black';
+                                else if (st.key === 'permit') activeColorClass = 'bg-blue-600 text-white shadow-2xs font-black';
+                                else if (st.key === 'sick') activeColorClass = 'bg-purple-600 text-white shadow-2xs font-black';
+                                else if (st.key === 'alpha') activeColorClass = 'bg-rose-600 text-white shadow-2xs font-black';
+
+                                return `
                                 <button type="button" onclick="window.setQuickAttendanceStatus('${esc(emp.employeeId)}', '${st.key}')"
                                     id="btn-att-status-${esc(emp.employeeId)}-${st.key}"
-                                    class="att-status-btn-${esc(emp.employeeId)} px-2 py-1.5 rounded-xl text-[10px] font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${
-                                        status === st.key 
-                                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs border border-slate-300 dark:border-slate-600' 
-                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}">
+                                    data-status="${st.key}"
+                                    data-selected="${isActive ? 'true' : 'false'}"
+                                    class="att-status-btn-${esc(emp.employeeId)} px-2.5 py-1.5 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${
+                                        isActive 
+                                            ? activeColorClass 
+                                            : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60'}">
                                     <i class="fa-solid ${st.icon} text-[9px]"></i>
                                     <span>${st.label}</span>
                                 </button>
-                            `).join('')}
+                            `;}).join('')}
                         </div>
 
                         <!-- Jam Masuk & Keluar -->
                         <div class="flex items-center gap-1 text-xs">
                             <input id="att-in-${esc(emp.employeeId)}" type="time" value="${clockIn}" title="Jam Masuk"
-                                class="w-20 px-2 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[11px] font-mono text-center">
-                            <span class="text-slate-400">-</span>
+                                class="w-[96px] sm:w-[104px] min-w-[96px] h-9 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-center text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                            <span class="text-slate-400 font-bold">-</span>
                             <input id="att-out-${esc(emp.employeeId)}" type="time" value="${clockOut}" title="Jam Pulang"
-                                class="w-20 px-2 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[11px] font-mono text-center">
+                                class="w-[96px] sm:w-[104px] min-w-[96px] h-9 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-center text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
                         </div>
 
                         <!-- Tombol Simpan Row -->
                         <button onclick="window.saveSingleAttendance('${esc(emp.employeeId)}', '${esc(emp.uid || emp.employeeId)}', '${esc(emp.name)}', '${esc(emp.position)}', '${esc(emp.role)}', ${dailyAllowance})"
                             id="btn-save-att-${esc(emp.employeeId)}"
-                            class="px-3 py-1.5 rounded-xl text-xs font-black text-white transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 hover:opacity-95"
+                            class="h-9 px-4 rounded-xl text-xs font-black text-white transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1.5 hover:opacity-95"
                             style="background: var(--color-primary)">
                             <i class="fa-solid fa-floppy-disk text-[10px]"></i>
                             <span>Simpan</span>
@@ -300,15 +332,23 @@ export const onAttendanceDateChanged = (newDate) => {
  */
 export const setQuickAttendanceStatus = (empId, statusKey) => {
     document.querySelectorAll(`.att-status-btn-${empId}`).forEach(btn => {
-        btn.className = `att-status-btn-${empId} px-2 py-1.5 rounded-xl text-[10px] font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200`;
+        btn.className = `att-status-btn-${empId} px-2.5 py-1.5 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/60`;
+        btn.setAttribute('data-selected', 'false');
     });
 
     const activeBtn = el(`btn-att-status-${empId}-${statusKey}`);
     if (activeBtn) {
-        activeBtn.className = `att-status-btn-${empId} px-2 py-1.5 rounded-xl text-[10px] font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs border border-slate-300 dark:border-slate-600`;
-    }
+        let activeColorClass = 'bg-slate-800 text-white';
+        if (statusKey === 'present') activeColorClass = 'bg-emerald-600 text-white shadow-2xs font-black';
+        else if (statusKey === 'late') activeColorClass = 'bg-amber-500 text-white shadow-2xs font-black';
+        else if (statusKey === 'permit') activeColorClass = 'bg-blue-600 text-white shadow-2xs font-black';
+        else if (statusKey === 'sick') activeColorClass = 'bg-purple-600 text-white shadow-2xs font-black';
+        else if (statusKey === 'alpha') activeColorClass = 'bg-rose-600 text-white shadow-2xs font-black';
 
-    activeBtn?.setAttribute('data-selected-status', statusKey);
+        activeBtn.className = `att-status-btn-${empId} px-2.5 py-1.5 rounded-xl text-[10px] font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1 ${activeColorClass}`;
+        activeBtn.setAttribute('data-selected', 'true');
+        activeBtn.setAttribute('data-selected-status', statusKey);
+    }
 };
 
 /**
@@ -320,7 +360,7 @@ export const saveSingleAttendance = async (empId, uid, name, position, role, dai
     let selectedStatus = 'present';
     ATTENDANCE_STATUSES.forEach(st => {
         const btn = el(`btn-att-status-${empId}-${st.key}`);
-        if (btn && (btn.classList.contains('bg-white') || btn.classList.contains('dark:bg-slate-800'))) {
+        if (btn && (btn.getAttribute('data-selected') === 'true' || btn.getAttribute('data-selected-status') === st.key || btn.classList.contains('bg-emerald-600') || btn.classList.contains('bg-amber-500') || btn.classList.contains('bg-blue-600') || btn.classList.contains('bg-purple-600') || btn.classList.contains('bg-rose-600') || btn.classList.contains('bg-white') || btn.classList.contains('dark:bg-slate-800'))) {
             selectedStatus = st.key;
         }
     });
