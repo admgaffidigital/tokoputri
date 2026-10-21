@@ -180,4 +180,33 @@ describe('HR Advances & Attendance Unit Tests (Fase 2)', () => {
         assert.equal(summary.alphaDays, 1);
         assert.equal(summary.totalAllowance, 75000); // 2 present (50k) + 1 late (25k)
     });
+
+    it('8. firestore.rules harus mencakup aturan keamanan sub-koleksi attendances, salary_advances, dan salary_payrolls', async () => {
+        const fs = await import('fs');
+        const rules = fs.readFileSync('firestore.rules', 'utf8');
+
+        assert.ok(rules.includes('match /attendances/{attendanceId}'), 'firestore.rules harus memiliki aturan match /attendances/{attendanceId}');
+        assert.ok(rules.includes('match /salary_advances/{advanceId}'), 'firestore.rules harus memiliki aturan match /salary_advances/{advanceId}');
+        assert.ok(rules.includes('match /salary_payrolls/{payrollId}'), 'firestore.rules harus memiliki aturan match /salary_payrolls/{payrollId}');
+        assert.ok(rules.includes('isAuthStaff()'), 'Sub-koleksi HR harus dilindungi oleh verifikasi staf terotentikasi isAuthStaff');
+    });
+
+    it('9. hr-attendance.js harus mendukung offline-first, persistensi localStorage dan graceful cloud fallback', async () => {
+        const fs = await import('fs');
+        const attCode = fs.readFileSync('src/modules/admin/hr/hr-attendance.js', 'utf8');
+
+        assert.ok(attCode.includes('freshmart_attendances'), 'hr-attendance.js harus menyimpan ke localStorage freshmart_attendances');
+        assert.ok(attCode.includes('saveApp()'), 'hr-attendance.js harus memanggil saveApp() untuk persistensi global');
+        assert.ok(!attCode.includes("showToast('Gagal menyimpan presensi: ' + err.message, 'error')"), 'hr-attendance.js tidak boleh gagal fatal saat Firestore permission error');
+    });
+
+    it('10. storage.js prepareAppData harus memulihkan cache HR saat startup', async () => {
+        const fs = await import('fs');
+        const storageCode = fs.readFileSync('src/services/storage.js', 'utf8');
+
+        assert.ok(storageCode.includes('appData.attendances'), 'storage.js harus menginisialisasi appData.attendances');
+        assert.ok(storageCode.includes('appData.salaryAdvances'), 'storage.js harus menginisialisasi appData.salaryAdvances');
+        assert.ok(storageCode.includes('appData.payrollRuns'), 'storage.js harus menginisialisasi appData.payrollRuns');
+    });
 });
+

@@ -66,6 +66,28 @@ export const loadAppData = async () => {
         appData.expenses = Array.isArray(appData.expenses) ? appData.expenses : [];
         appData.salesReturns = Array.isArray(appData.salesReturns) ? appData.salesReturns : [];
         appData.vendorReturns = Array.isArray(appData.vendorReturns) ? appData.vendorReturns : [];
+        appData.employees = Array.isArray(appData.employees) ? appData.employees : [];
+        appData.attendances = Array.isArray(appData.attendances) ? appData.attendances : [];
+        if (appData.attendances.length === 0) {
+            try {
+                const localAtt = JSON.parse(sL('freshmart_attendances') || '[]');
+                if (Array.isArray(localAtt) && localAtt.length > 0) appData.attendances = localAtt;
+            } catch (_) {}
+        }
+        appData.salaryAdvances = Array.isArray(appData.salaryAdvances) ? appData.salaryAdvances : [];
+        if (appData.salaryAdvances.length === 0) {
+            try {
+                const localAdv = JSON.parse(sL('freshmart_salary_advances') || '[]');
+                if (Array.isArray(localAdv) && localAdv.length > 0) appData.salaryAdvances = localAdv;
+            } catch (_) {}
+        }
+        appData.payrollRuns = Array.isArray(appData.payrollRuns) ? appData.payrollRuns : [];
+        if (appData.payrollRuns.length === 0) {
+            try {
+                const localPay = JSON.parse(sL('freshmart_payroll_runs') || '[]');
+                if (Array.isArray(localPay) && localPay.length > 0) appData.payrollRuns = localPay;
+            } catch (_) {}
+        }
         if(appData.rewards) appData.rewards.forEach(r => { if(r.img) r.img = fixD(r.img); });
         appData.products.forEach(p => { 
             if(p.img) p.img = fixD(p.img); 

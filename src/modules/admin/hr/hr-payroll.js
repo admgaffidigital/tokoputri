@@ -79,9 +79,19 @@ export const loadPayrollRuns = async (periodStr = _activePayrollPeriod) => {
                 .collection('salary_payrolls')
                 .where('period', '==', periodStr)
                 .get();
-            runs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        } catch (_) {
-            const allLocal = Array.isArray(appData.payrollRuns) ? appData.payrollRuns : [];
+            if (snap && !snap.empty) {
+                runs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            }
+        } catch (_) {}
+
+        if (!runs || runs.length === 0) {
+            let allLocal = Array.isArray(appData.payrollRuns) ? appData.payrollRuns : [];
+            if (allLocal.length === 0) {
+                try {
+                    allLocal = JSON.parse(localStorage.getItem('freshmart_payroll_runs') || '[]');
+                    if (Array.isArray(allLocal) && allLocal.length > 0) appData.payrollRuns = allLocal;
+                } catch (_) {}
+            }
             runs = allLocal.filter(r => r.period === periodStr);
         }
 
@@ -815,6 +825,11 @@ export const savePayrollItem = async (employeeId, periodStr, targetStatus = 'pai
         } else {
             appData.payrollRuns.unshift({ id: payrollId, ...payrollDoc });
         }
+
+        try {
+            localStorage.setItem('freshmart_payroll_runs', JSON.stringify(appData.payrollRuns));
+            await saveApp();
+        } catch (_) {}
 
         closePayrollItemModal();
         showToast(

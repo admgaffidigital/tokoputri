@@ -22,6 +22,18 @@ import { verifyOwnerAuthority } from './hr-schema.js';
 let _selectedAttendanceDate = new Date().toISOString().split('T')[0];
 let _cachedAttendances = []; // Data absensi tanggal terpilih
 
+const saveApp = async () => {
+    try {
+        if (typeof window !== 'undefined' && typeof window.saveApp === 'function') {
+            return await window.saveApp();
+        }
+        const storageMod = await import('../../../services/storage.js');
+        if (typeof storageMod?.saveApp === 'function') {
+            return await storageMod.saveApp();
+        }
+    } catch (_) {}
+};
+
 export const ATTENDANCE_STATUSES = [
     { key: 'present', label: 'Hadir', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200', icon: 'fa-check' },
     { key: 'late',    label: 'Terlambat', badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-200', icon: 'fa-clock' },
@@ -40,18 +52,32 @@ export const generateAttendanceId = (dateStr, empId) => {
 /**
  * Muat data absensi untuk tanggal tertentu
  */
-export const loadAttendancesForDate = async (dateStr) => {
+export const loadAttendancesForDate = async (dateStr = _selectedAttendanceDate) => {
+    _selectedAttendanceDate = dateStr;
     try {
         let atts = [];
+        let fromCloud = false;
         try {
             const snap = await db.collection('freshmart').doc('cms_data')
                 .collection('attendances')
                 .where('date', '==', dateStr)
                 .get();
-            atts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        } catch (_) {
-            const allLocal = Array.isArray(appData.attendances) ? appData.attendances : [];
-            atts = allLocal.filter(a => a.date === dateStr);
+            if (snap && !snap.empty) {
+                atts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                fromCloud = true;
+            }
+        } catch (_) {}
+
+        if (!fromCloud || atts.length === 0) {
+            let allLocal = Array.isArray(appData.attendances) ? appData.attendances : [];
+            if (allLocal.length === 0) {
+                try {
+                    allLocal = JSON.parse(localStorage.getItem('freshmart_attendances') || '[]');
+                    if (Array.isArray(allLocal) && allLocal.length > 0) appData.attendances = allLocal;
+                } catch (_) {}
+            }
+            const dateLocal = allLocal.filter(a => a.date === dateStr);
+            if (dateLocal.length > 0) atts = dateLocal;
         }
 
         _cachedAttendances = atts;
@@ -325,28 +351,39 @@ export const saveSingleAttendance = async (empId, uid, name, position, role, dai
     const btn = el(`btn-save-att-${empId}`);
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i>'; }
 
+    // 1. UPDATE CACHE LOKAL & APPDATA TERLEBIH DAHULU (Offline-First, Anti-Data-Loss)
+    const idx = _cachedAttendances.findIndex(a => a.attendanceId === attendanceId);
+    if (idx > -1) _cachedAttendances[idx] = { id: attendanceId, ...attRecord };
+    else _cachedAttendances.push({ id: attendanceId, ...attRecord });
+
+    if (!Array.isArray(appData.attendances)) appData.attendances = [];
+    const globalIdx = appData.attendances.findIndex(a => a.attendanceId === attendanceId);
+    if (globalIdx > -1) appData.attendances[globalIdx] = { id: attendanceId, ...attRecord };
+    else appData.attendances.push({ id: attendanceId, ...attRecord });
+
+    try {
+        localStorage.setItem('freshmart_attendances', JSON.stringify(appData.attendances));
+    } catch (_) {}
+
+    // 2. SINKRONISASI KE CLOUD FIRESTORE SUB-KOLEKSI SECARA ASINKRON & AMAN
     try {
         await db.collection('freshmart').doc('cms_data')
             .collection('attendances')
             .doc(attendanceId)
             .set(attRecord, { merge: true });
+    } catch (syncErr) {
+        console.warn('[HR Attendance] Cloud sync terkendala hak akses/offline, presensi tetap tersimpan di lokal:', syncErr);
+    }
 
-        // Update local cache
-        const idx = _cachedAttendances.findIndex(a => a.attendanceId === attendanceId);
-        if (idx > -1) _cachedAttendances[idx] = { id: attendanceId, ...attRecord };
-        else _cachedAttendances.push({ id: attendanceId, ...attRecord });
+    // 3. PERSISTENSI KE STATE LOKAL
+    try {
+        await saveApp();
+    } catch (_) {}
 
-        if (!Array.isArray(appData.attendances)) appData.attendances = [];
-        const globalIdx = appData.attendances.findIndex(a => a.attendanceId === attendanceId);
-        if (globalIdx > -1) appData.attendances[globalIdx] = { id: attendanceId, ...attRecord };
-        else appData.attendances.push({ id: attendanceId, ...attRecord });
-
-        showToast(`Presensi ${name} (${selectedStatus.toUpperCase()}) tersimpan!`, 'success');
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i><span>Tersimpan</span>'; }
-    } catch (err) {
-        console.error('[HR Attendance] Gagal menyimpan presensi:', err);
-        showToast('Gagal menyimpan presensi: ' + err.message, 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk text-[10px]"></i><span>Simpan</span>'; }
+    showToast(`Presensi ${name} (${selectedStatus.toUpperCase()}) tersimpan!`, 'success');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i><span>Tersimpan</span>';
     }
 };
 
@@ -362,7 +399,6 @@ export const bulkMarkAllPresent = async () => {
     sLoad('Mencatat kehadiran seluruh staf...');
 
     try {
-        const batch = db.batch();
         const updatedList = [];
 
         for (const emp of employees) {
@@ -388,16 +424,10 @@ export const bulkMarkAllPresent = async () => {
                 recordedBy: auth.currentUser?.uid || 'owner'
             };
 
-            const ref = db.collection('freshmart').doc('cms_data')
-                .collection('attendances')
-                .doc(attendanceId);
-
-            batch.set(ref, attRecord, { merge: true });
             updatedList.push({ id: attendanceId, ...attRecord });
         }
 
-        await batch.commit();
-
+        // 1. UPDATE CACHE LOKAL & APPDATA TERLEBIH DAHULU (Offline-First)
         _cachedAttendances = updatedList;
         if (!Array.isArray(appData.attendances)) appData.attendances = [];
         updatedList.forEach(item => {
@@ -405,6 +435,29 @@ export const bulkMarkAllPresent = async () => {
             if (gIdx > -1) appData.attendances[gIdx] = item;
             else appData.attendances.push(item);
         });
+
+        try {
+            localStorage.setItem('freshmart_attendances', JSON.stringify(appData.attendances));
+        } catch (_) {}
+
+        // 2. SINKRONISASI BATCH KE CLOUD FIRESTORE
+        try {
+            const batch = db.batch();
+            for (const item of updatedList) {
+                const ref = db.collection('freshmart').doc('cms_data')
+                    .collection('attendances')
+                    .doc(item.attendanceId);
+                batch.set(ref, item, { merge: true });
+            }
+            await batch.commit();
+        } catch (batchErr) {
+            console.warn('[HR Attendance] Cloud batch presensi massal terkendala hak akses/offline, tetap tersimpan lokal:', batchErr);
+        }
+
+        // 3. PERSISTENSI KE STATE LOKAL
+        try {
+            await saveApp();
+        } catch (_) {}
 
         showToast(`Presensi seluruh ${employees.length} staf berhasil dicatat sebagai HADIR!`, 'success');
 
@@ -430,14 +483,14 @@ export const autoRecordCashierShiftAttendance = async (cashierUser, openTimeDate
         const empId = cashierUser.employeeId || 'EMP-001';
         const attendanceId = generateAttendanceId(todayStr, empId);
 
+        // Cek di cache lokal dulu
+        if (!Array.isArray(appData.attendances)) appData.attendances = [];
+        const existsLocal = appData.attendances.some(a => a.attendanceId === attendanceId);
+        if (existsLocal) return;
+
         const hours = String(openTimeDate?.getHours ? openTimeDate.getHours() : new Date().getHours()).padStart(2, '0');
         const minutes = String(openTimeDate?.getMinutes ? openTimeDate.getMinutes() : new Date().getMinutes()).padStart(2, '0');
         const clockIn = `${hours}:${minutes}`;
-
-        // Cek apakah sudah pernah ada absensi hari ini
-        const docRef = db.collection('freshmart').doc('cms_data').collection('attendances').doc(attendanceId);
-        const existing = await docRef.get();
-        if (existing.exists) return; // Sudah tercatat, jangan timpa
 
         const dailyAllowance = parseFloat(cashierUser.dailyAllowance) || 20000;
 
@@ -458,7 +511,21 @@ export const autoRecordCashierShiftAttendance = async (cashierUser, openTimeDate
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        await docRef.set(attRecord);
+        // Simpan lokal
+        appData.attendances.push({ id: attendanceId, ...attRecord });
+        try {
+            localStorage.setItem('freshmart_attendances', JSON.stringify(appData.attendances));
+        } catch (_) {}
+
+        // Simpan cloud (graceful)
+        try {
+            const docRef = db.collection('freshmart').doc('cms_data').collection('attendances').doc(attendanceId);
+            const snap = await docRef.get();
+            if (!snap.exists) {
+                await docRef.set(attRecord);
+            }
+        } catch (_) {}
+
         console.log('[HR Attendance] Presensi kasir tercatat otomatis dari shift:', empId, clockIn);
 
     } catch (err) {

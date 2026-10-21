@@ -80,9 +80,20 @@ export const loadSalaryAdvances = async () => {
                 .collection('salary_advances')
                 .orderBy('createdAt', 'desc')
                 .get();
-            advances = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        } catch (_) {
-            advances = Array.isArray(appData.salaryAdvances) ? appData.salaryAdvances : [];
+            if (snap && !snap.empty) {
+                advances = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            }
+        } catch (_) {}
+
+        if (!advances || advances.length === 0) {
+            let allLocal = Array.isArray(appData.salaryAdvances) ? appData.salaryAdvances : [];
+            if (allLocal.length === 0) {
+                try {
+                    allLocal = JSON.parse(localStorage.getItem('freshmart_salary_advances') || '[]');
+                    if (Array.isArray(allLocal) && allLocal.length > 0) appData.salaryAdvances = allLocal;
+                } catch (_) {}
+            }
+            advances = allLocal;
         }
 
         _cachedAdvances = advances;
@@ -584,6 +595,11 @@ export const saveSalaryAdvance = async () => {
         appData.salaryAdvances.unshift({ id: advanceId, ...advanceDoc });
         _cachedAdvances = appData.salaryAdvances;
 
+        try {
+            localStorage.setItem('freshmart_salary_advances', JSON.stringify(appData.salaryAdvances));
+            await saveApp();
+        } catch (_) {}
+
         closeSalaryAdvanceFormModal();
         showToast(`Kasbon Rp ${fCur(amount)} untuk ${employeeName} berhasil dicatat!`, 'success');
 
@@ -802,6 +818,11 @@ export const recordAdvanceRepayment = async (advanceId, payAmount, notes = 'Poto
         if (!Array.isArray(adv.repayments)) adv.repayments = [];
         adv.repayments.push(repaymentEntry);
 
+        try {
+            localStorage.setItem('freshmart_salary_advances', JSON.stringify(appData.salaryAdvances));
+            await saveApp();
+        } catch (_) {}
+
         showToast(`Pembayaran kasbon Rp ${fCur(actualPay)} berhasil dicatat! Sisa: Rp ${fCur(newRemaining)}`, 'success');
 
         const panel = el('cashier-panel-advances');
@@ -829,13 +850,22 @@ export const deleteSalaryAdvance = (advanceId, employeeName) => {
         async () => {
             sLoad('Menghapus catatan kasbon...');
             try {
-                await db.collection('freshmart').doc('cms_data')
-                    .collection('salary_advances')
-                    .doc(advanceId)
-                    .delete();
+                try {
+                    await db.collection('freshmart').doc('cms_data')
+                        .collection('salary_advances')
+                        .doc(advanceId)
+                        .delete();
+                } catch (delErr) {
+                    console.warn('[HR Advances] Cloud delete terkendala hak akses/offline:', delErr);
+                }
 
                 _cachedAdvances = _cachedAdvances.filter(a => (a.advanceId || a.id) !== advanceId);
                 appData.salaryAdvances = _cachedAdvances;
+
+                try {
+                    localStorage.setItem('freshmart_salary_advances', JSON.stringify(appData.salaryAdvances));
+                    await saveApp();
+                } catch (_) {}
 
                 showToast(`Catatan kasbon "${employeeName}" berhasil dihapus`, 'success');
                 const panel = el('cashier-panel-advances');

@@ -190,6 +190,19 @@ service cloud.firestore {
       match /orders/{orderId} {
         allow read, write: if isAuthStaff();
       }
+
+      // ─── Data Kepegawaian & HR Toko (Presensi, Kasbon & Payroll Staf) ───
+      match /attendances/{attendanceId} {
+        allow read, write: if isAuthStaff();
+      }
+
+      match /salary_advances/{advanceId} {
+        allow read, write: if isAuthStaff();
+      }
+
+      match /salary_payrolls/{payrollId} {
+        allow read, write: if isAuthStaff();
+      }
     }
 
     // ─── Data Bisnis Sensitif (cms_private: HANYA staf admin/owner) ──────────
