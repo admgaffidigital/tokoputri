@@ -354,7 +354,7 @@
     </div>
     <!-- Quick Menu Modal (Tautan Cepat) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="quickmenu-modal" onclick="if (event.target === this) closeQuickMenuModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-sm sm:max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="quickmenu-modal-content">
+      <div class="modal-bottom-sheet relative flex max-h-[85dvh] w-full max-w-sm sm:max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="quickmenu-modal-content">
         <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
@@ -546,7 +546,7 @@
 
     <!-- Shopping Guide Modal (Panduan Toko & SOP Lengkap: Pelanggan, Kasir POS, & Admin) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="shopping-guide-modal" onclick="if (event.target === this) closeShoppingGuideModal();">
-      <div class="relative flex max-h-[90dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="shopping-guide-modal-content">
+      <div class="modal-bottom-sheet relative flex max-h-[90dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="shopping-guide-modal-content">
         <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
@@ -1320,7 +1320,8 @@
 
     <!-- Terms & Conditions Modal -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="terms-modal" onclick="if (event.target === this) closeTermsModal();">
-      <div class="relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="terms-modal-content">
+      <div class="modal-bottom-sheet relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="terms-modal-content">
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
@@ -1340,12 +1341,12 @@
         <div id="terms-modal-content-body" class="custom-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300">
         </div>
         <!-- Footer Modal -->
-        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0">
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
           <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
             <i class="fa-solid fa-shield-halved text-[var(--color-primary)] text-xs"></i>
             <span>Berlaku untuk semua transaksi</span>
           </div>
-          <button onclick="closeTermsModal()" class="px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+          <button onclick="closeTermsModal()" class="min-h-[44px] px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
             Tutup
           </button>
         </div>
@@ -1354,7 +1355,8 @@
 
     <!-- Privacy Policy Modal -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="privacy-modal" onclick="if (event.target === this) closePrivacyModal();">
-      <div class="relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="privacy-modal-content">
+      <div class="modal-bottom-sheet relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="privacy-modal-content">
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
@@ -1374,12 +1376,12 @@
         <div id="privacy-modal-content-body" class="custom-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300">
         </div>
         <!-- Footer Modal -->
-        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0">
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
           <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
             <i class="fa-solid fa-lock text-[var(--color-primary)] text-xs"></i>
             <span>Data Anda Terjamin Aman</span>
           </div>
-          <button onclick="closePrivacyModal()" class="px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+          <button onclick="closePrivacyModal()" class="min-h-[44px] px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
             Tutup
           </button>
         </div>
@@ -1388,7 +1390,7 @@
 
     <!-- Category Modal -->
     <div class="fixed inset-0 z-[75] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="category-modal" onclick="if (event.target === this) closeCategoryModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 md:max-w-xl lg:max-w-2xl" id="category-modal-content">
+      <div class="modal-bottom-sheet relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 md:max-w-xl lg:max-w-2xl" id="category-modal-content">
         <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]">
           <div class="flex items-center gap-3">
@@ -1413,7 +1415,7 @@
             <i class="fa-solid fa-table-cells-large text-[var(--color-primary)] text-xs"></i>
             <span>Pilih kategori untuk memfilter</span>
           </div>
-          <button onclick="closeCategoryModal()" class="px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+          <button onclick="closeCategoryModal()" class="min-h-[44px] px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
             Tutup
           </button>
         </div>
@@ -1422,7 +1424,7 @@
 
     <!-- Brand Modal -->
     <div class="fixed inset-0 z-[75] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="brand-modal" onclick="if (event.target === this) closeBrandModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 md:max-w-2xl lg:max-w-3xl xl:max-w-4xl" id="brand-modal-content">
+      <div class="modal-bottom-sheet relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 md:max-w-2xl lg:max-w-3xl xl:max-w-4xl" id="brand-modal-content">
         <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]">
           <div class="flex items-center gap-3">
@@ -1449,7 +1451,7 @@
             <i class="fa-solid fa-badge-check text-[var(--color-primary)] text-xs"></i>
             <span>100% Produk Asli Original</span>
           </div>
-          <button onclick="closeBrandModal()" class="px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+          <button onclick="closeBrandModal()" class="min-h-[44px] px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
             Tutup
           </button>
         </div>
