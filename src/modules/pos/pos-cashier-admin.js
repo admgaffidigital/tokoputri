@@ -1,13 +1,14 @@
 /**
  * ============================================================
- * MODUL ADMIN: MANAJEMEN STAF & HAK AKSES TOKO
- * Toko Putri v1.9.86
+ * MODUL ADMIN: MANAJEMEN STAF & HAK AKSES TOKO (HARMONIZED)
+ * Toko Putri v1.19.6
  * Ditampilkan di tab "Staf & Hak Akses" (cashiers/staff) pada CMS.
- * Owner dapat:
- * - Menambah staf baru (Kasir POS, Admin Operasional, Owner)
- * - Mengatur hak akses setiap modul secara dinamis (granular permissions)
- * - Mengaktifkan / menonaktifkan akun staf seketika
- * - Menghapus akun staf
+ * Fitur:
+ * 1. Hero Banner Terpadu Beraksen Tema Toko & 4-Card Bento Stat Hub (Total Tim, Kasir POS, Admin & Gudang, Beban Gaji).
+ * 2. Flagship Bento Island: Akun Pemilik Utama (Owner / Super Admin) dengan status login, ID resmi, dan gaji direksi.
+ * 3. Search Bar Realtime Cepat [F2] & Filter Chiclet Responsif (Semua, Kasir, Admin, Gudang, Nonaktif).
+ * 4. Kartu Staf Modern Native App (Bento Cards) dengan Initial Avatar Pods, Link WhatsApp Langsung, dan Action Bar Ergonomis.
+ * 5. Modal Tambah Staf, Edit Profil, Hak Akses Granular, & Kompensasi Owner 100% Solid Flat Clean (Zero Gradients).
  * ============================================================
  */
 
@@ -38,7 +39,18 @@ import { renderPayrollView } from '../admin/hr/hr-payroll.js';
 export { verifyOwnerAuthority };
 
 let _cachedStaffList = [];
-let _activeRoleFilter = 'all'; // 'all' | 'admin' | 'cashier'
+let _activeRoleFilter = 'all'; // 'all' | 'cashier' | 'admin' | 'staff' | 'inactive'
+let _staffSearchQuery = '';
+
+/**
+ * Format nomor telepon untuk tautan langsung ke WhatsApp
+ */
+const cleanPhone = (p) => {
+    if (!p) return '';
+    let clean = p.replace(/[^0-9]/g, '');
+    if (clean.startsWith('0')) clean = '62' + clean.slice(1);
+    return clean;
+};
 
 // ─── Render Panel Manajemen Staf & Akses ─────────────────────
 export const renderCashierAccounts = async () => {
@@ -58,9 +70,9 @@ export const renderCashierAccounts = async () => {
     let authBannerHtml = '';
 
     if (isUnauth) {
-        authStatusBadge = '<span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Status: Pratinjau Lokal (Belum Terotentikasi Firebase)</span>';
+        authStatusBadge = '<span class="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Status: Pratinjau Lokal</span>';
         authBannerHtml = `
-        <div class="p-4 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div class="p-4 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs mb-4">
             <div class="flex items-start gap-3">
                 <div class="w-9 h-9 rounded-xl bg-amber-200/80 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 shadow-2xs">
                     <i class="fa-solid fa-triangle-exclamation text-sm"></i>
@@ -80,9 +92,9 @@ export const renderCashierAccounts = async () => {
             </button>
         </div>`;
     } else if (isStaff) {
-        authStatusBadge = `<span class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold"><i class="fa-solid fa-user-shield"></i> Status: Login Staf (${esc(curUser.email || 'Staf')}) — Wewenang Dibatasi Khusus Owner</span>`;
+        authStatusBadge = `<span class="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold"><i class="fa-solid fa-user-shield"></i> Staf (${esc(curUser.email || 'Staf')})</span>`;
         authBannerHtml = `
-        <div class="p-3.5 rounded-2xl border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 flex items-center gap-3 shadow-2xs">
+        <div class="p-3.5 rounded-2xl border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 flex items-center gap-3 shadow-2xs mb-4">
             <div class="w-8 h-8 rounded-xl bg-blue-200/70 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
                 <i class="fa-solid fa-shield-halved text-xs"></i>
             </div>
@@ -91,11 +103,11 @@ export const renderCashierAccounts = async () => {
             </div>
         </div>`;
     } else {
-        authStatusBadge = `<span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Status: Terverifikasi Login sebagai Owner (${esc(curUser.email || 'Master')})</span>`;
+        authStatusBadge = `<span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Owner Terverifikasi (${esc(curUser.email || 'Master')})</span>`;
     }
 
     setH('admin-content', `
-    <div class="space-y-4 max-w-5xl mx-auto pb-16">
+    <div class="space-y-4 max-w-5xl mx-auto pb-24">
         <!-- Native App Sticky Segmented Control Bar -->
         <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xs">
             <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-4xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar border border-slate-200/90 dark:border-slate-700/80 shadow-inner sm:grid sm:grid-cols-5">
@@ -132,91 +144,80 @@ export const renderCashierAccounts = async () => {
         <div id="cashier-panel-accounts" class="space-y-4 pt-1">
             ${authBannerHtml}
 
-            <!-- Header -->
-            <div class="flex items-center justify-between gap-3 pt-1">
-                <div>
-                    <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                            <i class="fa-solid fa-user-shield"></i>
-                        </span>
-                        <span>Manajemen Staf &amp; Hak Akses</span>
-                    </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Kelola akun kasir, admin, dan batasan wewenang tiap modul toko</p>
-                </div>
-                <button onclick="window.openAddStaffModal()"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white text-xs font-black shadow-md active:scale-95 transition-all cursor-pointer hover:opacity-95 shrink-0"
-                    style="background:var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                    <i class="fa-solid fa-user-plus text-xs"></i>
-                    <span>Tambah Staf</span>
-                </button>
-            </div>
-
-            <!-- Kartu Owner Utama Toko (Super Admin & Master HR) -->
-            <div class="relative overflow-hidden p-4 sm:p-5 rounded-2xl sm:rounded-3xl border shadow-2xs flex flex-col sm:flex-row sm:items-start justify-between gap-4"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%); border-color: rgba(var(--color-primary-rgb), 0.25)">
-                <div class="flex items-start gap-4 min-w-0">
-                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-md text-white"
-                        style="background: var(--color-primary)">
-                        <i class="fa-solid fa-crown text-amber-300"></i>
-                    </div>
-                    <div class="space-y-1.5 min-w-0 flex-1">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-sm font-black text-slate-900 dark:text-white">Akun Pemilik Utama (Owner)</span>
-                            <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full"
-                                style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25)">
-                                <i class="fa-solid fa-lock text-[9px]"></i> Super Admin Terproteksi
-                            </span>
-                            <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md"
-                                style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.2)">
-                                ${esc(ownerProfile.employeeId || 'OWN-001')}
+            <!-- 1. HERO BANNER: MASTER MANAJEMEN STAF & HAK AKSES (THEME HARMONIZED) -->
+            <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-white dark:bg-slate-900 shadow-xs">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-2xs whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                                <i class="fa-solid fa-users-gear"></i> Tim Toko &amp; Keamanan Akses
                             </span>
                         </div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Jabatan: <strong class="text-slate-900 dark:text-white">${esc(ownerProfile.position || 'Owner / Direktur Utama')}</strong> • Gaji Pokok Direksi: <strong class="text-emerald-600 dark:text-emerald-400">${fCur(ownerProfile.baseSalary || 10000000)}</strong> /bln • Status: Karyawan Tetap
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2.5">
+                            Manajemen Staf &amp; Hak Akses
+                        </h2>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
+                            Daftarkan akun kasir POS, admin operasional, dan staf gudang. Atur wewenang akses modul toko secara granular serta sinkronisasi penggajian dan kompensasi HR.
                         </p>
-                        <div class="flex items-center gap-3 pt-1 text-[11px] text-slate-600 dark:text-slate-300 font-bold flex-wrap">
-                            ${authStatusBadge}
-                            <span>•</span>
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-key" style="color: var(--color-primary)"></i> Hak Akses: 22 Modul Terbuka</span>
-                            ${ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? `<span>•</span><span class="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold"><i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(ownerProfile.bankName)}: ${esc(ownerProfile.bankAccount)}</span>` : ''}
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="window.openOwnerHrModal()" class="px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                            <i class="fa-solid fa-crown text-amber-500"></i>
+                            <span>Profil Owner</span>
+                        </button>
+                        <button onclick="window.openAddStaffModal()" class="px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                            <i class="fa-solid fa-user-plus text-xs"></i>
+                            <span>Tambah Staf</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. METRIK STATISTIK TIM (4-CARD BENTO STAT HUB) -->
+                <div id="staff-metrics-container" class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700/60">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+                        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Tim &amp; Staf</span>
+                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                            </div>
+                            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">-</p>
+                            <p class="text-[10px] font-bold text-slate-400 mt-0.5">Memuat data...</p>
                         </div>
                     </div>
                 </div>
-                <button onclick="window.openOwnerHrModal()"
-                    class="shrink-0 self-end sm:self-start min-h-[44px] px-4 py-2.5 rounded-2xl text-xs font-bold bg-white dark:bg-slate-800 border transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95"
-                    style="color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25)">
-                    <i class="fa-solid fa-user-pen text-xs"></i>
-                    <span>Atur Gaji &amp; HR Owner</span>
-                </button>
             </div>
 
-            <!-- Filter Kategori Staf -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
-                <button onclick="window.filterStaffRole('all')" id="staff-filter-all"
-                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0"
-                    style="background: var(--color-primary); color: #fff;">
-                    <i class="fa-solid fa-users text-[10px]"></i>
-                    <span>Semua Staf</span>
-                </button>
-                <button onclick="window.filterStaffRole('admin')" id="staff-filter-admin"
-                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0">
-                    <i class="fa-solid fa-shield-halved text-[10px] text-blue-500"></i>
-                    <span>Admin Toko</span>
-                </button>
-                <button onclick="window.filterStaffRole('cashier')" id="staff-filter-cashier"
-                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0">
-                    <i class="fa-solid fa-cash-register text-[10px] text-emerald-500"></i>
-                    <span>Kasir POS</span>
-                </button>
-                <button onclick="window.filterStaffRole('staff')" id="staff-filter-staff"
-                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0">
-                    <i class="fa-solid fa-user-gear text-[10px] text-amber-500"></i>
-                    <span>Staf / Gudang</span>
-                </button>
+            <!-- 3. FLAGSHIP BENTO ISLAND: AKUN PEMILIK UTAMA (SUPER ADMIN & MASTER HR) -->
+            <div id="owner-card-container">
+                ${getOwnerCardHtml(ownerProfile, authStatusBadge)}
             </div>
 
-            <!-- List Staf Terdaftar -->
-            <div id="cashier-list-container">
+            <!-- 4. TOOLBAR PENCARIAN & CHICLET FILTER PERAN -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                <!-- Kolom Pencarian High-Contrast -->
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-sm pointer-events-none" style="color: var(--color-primary)"></i>
+                    <input id="staff-search-input" type="text"
+                        placeholder="Cari nama staf, ID karyawan, email, no. HP, jabatan..."
+                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                        oninput="window.handleStaffSearch(this.value)"
+                        class="w-full min-h-[44px] pl-10 pr-10 py-2.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 text-xs sm:text-sm font-bold text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs transition-all">
+                    <button id="btn-clear-staff-search" onclick="window.clearStaffSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center text-xs hover:bg-rose-100 hover:text-rose-600 transition-all cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Filter Kategori Staf (Chiclet Pill Bar) -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 shrink-0" id="staff-role-filters-bar">
+                    <!-- Rendered by renderStaffRoleFilterChiclets() -->
+                </div>
+            </div>
+
+            <!-- 5. LIST STAF TERDAFTAR (MODERN BENTO CARDS) -->
+            <div id="cashier-list-container" class="pt-1">
                 <div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>
             </div>
         </div>
@@ -237,6 +238,70 @@ export const renderCashierAccounts = async () => {
     await loadStaffList();
 };
 
+/**
+ * Render HTML Kartu Pemilik Utama Toko (Solid Flat Clean & Harmonized)
+ */
+const getOwnerCardHtml = (ownerProfile, authStatusBadge) => {
+    return `
+    <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-white/95 dark:bg-slate-800/90 shadow-2xs hover:border-[var(--color-primary)] transition-all">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
+                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-xl shrink-0 shadow-md text-white" style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.28);">
+                    <i class="fa-solid fa-crown text-amber-300"></i>
+                </div>
+                <div class="min-w-0 flex-1 space-y-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="text-base font-black text-slate-900 dark:text-white truncate">
+                            ${esc(ownerProfile.name || 'Akun Pemilik Utama (Owner)')}
+                        </h3>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                            <i class="fa-solid fa-shield-halved text-[9px]"></i> Super Admin Terproteksi
+                        </span>
+                        <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md border" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.2);">
+                            ${esc(ownerProfile.employeeId || 'OWN-001')}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Owner Aktif
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
+                        <span class="font-bold text-slate-800 dark:text-slate-100">
+                            <i class="fa-solid fa-user-tie text-[11px] mr-1" style="color: var(--color-primary)"></i>${esc(ownerProfile.position || 'Owner / Direktur Utama')}
+                        </span>
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="font-black text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>Rp ${fCur(ownerProfile.baseSalary || 10000000)}/bln
+                        </span>
+                        <span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">(Gaji Pokok Direksi)</span>
+                    </div>
+                    <div class="flex items-center gap-3 pt-0.5 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap">
+                        ${authStatusBadge}
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="inline-flex items-center gap-1 font-bold" style="color: var(--color-primary)">
+                            <i class="fa-solid fa-key text-[10px]"></i> 22 Modul Lengkap (Akses Penuh)
+                        </span>
+                        ${ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? `
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300 font-semibold">
+                            <i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(ownerProfile.bankName || 'BCA')}: ${esc(ownerProfile.bankAccount)}
+                        </span>` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="shrink-0 self-end lg:self-center border-t lg:border-t-0 pt-2.5 lg:pt-0 border-slate-100 dark:border-slate-700/60 w-full lg:w-auto flex justify-end">
+                <button onclick="window.openOwnerHrModal()" class="w-full sm:w-auto min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 border transition-all cursor-pointer shadow-2xs flex items-center justify-center gap-2 active:scale-95 hover:bg-slate-50 dark:hover:bg-slate-700" style="color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-user-pen text-xs"></i>
+                    <span>Atur Gaji &amp; HR Owner</span>
+                </button>
+            </div>
+        </div>
+    </div>`;
+};
+
+/**
+ * Switch Tab Navigasi Staf (Accounts, Attendance, Advances, Payroll, Shifts)
+ */
 export const switchCashierTab = (tab) => {
     const sc = document.querySelector('#view-admin .scroll-content');
     if (sc) sc.scrollTop = 0;
@@ -313,24 +378,152 @@ export const switchCashierTab = (tab) => {
     }
 };
 
-export const filterStaffRole = (role) => {
-    _activeRoleFilter = role;
-    document.querySelectorAll('.staff-filter-btn').forEach(btn => {
-        btn.style.background = 'transparent';
-        btn.style.color = '';
-        btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-    });
+/**
+ * Kalkulasi & Render 4-Card Bento Stat Hub Metrik Kepegawaian
+ */
+const renderStaffMetrics = () => {
+    const container = el('staff-metrics-container');
+    if (!container) return;
 
-    const activeBtn = el(`staff-filter-${role}`);
-    if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-        activeBtn.style.background = 'var(--color-primary)';
-        activeBtn.style.color = '#fff';
+    const ownerProfile = getOwnerEmployeeProfile(appData);
+    const totalStaff = _cachedStaffList.length;
+    const activeStaff = _cachedStaffList.filter(s => s.isActive !== false).length;
+    const cashierCount = _cachedStaffList.filter(s => (s.role === ROLES.CASHIER || !s.role) && s.isActive !== false).length;
+    const adminCount = _cachedStaffList.filter(s => s.role === ROLES.ADMIN && s.isActive !== false).length;
+    const staffGudangCount = _cachedStaffList.filter(s => s.role === ROLES.STAFF && s.isActive !== false).length;
+    const inactiveCount = _cachedStaffList.filter(s => s.isActive === false).length;
+    const totalBaseSalary = _cachedStaffList.reduce((acc, s) => acc + (parseFloat(s.baseSalary) || 0), 0) + (parseFloat(ownerProfile?.baseSalary) || 10000000);
+
+    container.innerHTML = `
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+        <!-- 1. Total Tim & Staf -->
+        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Tim &amp; Staf</span>
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${activeStaff + 1} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">/ ${totalStaff + 1} Akun</span></p>
+            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${inactiveCount > 0 ? `${inactiveCount} Akun Dinonaktifkan` : 'Seluruh Tim Aktif'}</p>
+        </div>
+
+        <!-- 2. Kasir POS Aktif -->
+        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Kasir POS Aktif</span>
+                <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                    <i class="fa-solid fa-cash-register"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${cashierCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Penjualan Kasir Fisik Toko</p>
+        </div>
+
+        <!-- 3. Admin & Logistik -->
+        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">Admin &amp; Logistik</span>
+                <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">${adminCount + staffGudangCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${adminCount} Admin • ${staffGudangCount} Staf Gudang</p>
+        </div>
+
+        <!-- 4. Beban Gaji Bulanan -->
+        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Beban Gaji Pokok</span>
+                <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+            </div>
+            <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">Rp ${fCur(totalBaseSalary)}</p>
+            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Total Gaji Tim &amp; Direksi /bln</p>
+        </div>
+    </div>`;
+};
+
+/**
+ * Render Chiclets Filter Peran Staf dengan indikator jumlah real
+ */
+const renderStaffRoleFilterChiclets = () => {
+    const bar = el('staff-role-filters-bar');
+    if (!bar) return;
+
+    const totalCount = _cachedStaffList.length;
+    const adminCount = _cachedStaffList.filter(s => s.role === ROLES.ADMIN || s.role === ROLES.OWNER || s.role === 'admin' || s.role === 'owner').length;
+    const cashierCount = _cachedStaffList.filter(s => s.role === ROLES.CASHIER || s.role === 'cashier' || !s.role).length;
+    const staffCount = _cachedStaffList.filter(s => s.role === ROLES.STAFF || s.role === 'staff').length;
+    const inactiveCount = _cachedStaffList.filter(s => s.isActive === false).length;
+
+    const filters = [
+        { key: 'all', label: 'Semua Staf', icon: 'fa-users', count: totalCount },
+        { key: 'cashier', label: 'Kasir POS', icon: 'fa-cash-register', count: cashierCount },
+        { key: 'admin', label: 'Admin Toko', icon: 'fa-shield-halved', count: adminCount },
+        { key: 'staff', label: 'Staf Gudang', icon: 'fa-user-gear', count: staffCount },
+    ];
+
+    if (inactiveCount > 0) {
+        filters.push({ key: 'inactive', label: 'Nonaktif', icon: 'fa-user-slash', count: inactiveCount });
     }
 
+    bar.innerHTML = filters.map(f => {
+        const isActive = _activeRoleFilter === f.key;
+        return `
+        <button onclick="window.filterStaffRole('${f.key}')" id="staff-filter-${f.key}"
+            class="staff-filter-btn min-h-[38px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0 border ${
+                isActive
+                    ? 'text-white border-transparent'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/90 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600'
+            }"
+            style="${isActive ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}">
+            <i class="fa-solid ${f.icon} text-[10px]"></i>
+            <span>${f.label}</span>
+            <span class="ml-0.5 px-1.5 py-0.2 rounded-md text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}">${f.count}</span>
+        </button>`;
+    }).join('');
+};
+
+/**
+ * Filter Peran Staf
+ */
+export const filterStaffRole = (role) => {
+    _activeRoleFilter = role;
+    renderStaffRoleFilterChiclets();
     renderStaffListHtml();
 };
 
+/**
+ * Handler Pencarian Staf Realtime
+ */
+export const handleStaffSearch = (query) => {
+    _staffSearchQuery = (query || '').toLowerCase().trim();
+    const clearBtn = el('btn-clear-staff-search');
+    if (clearBtn) {
+        if (_staffSearchQuery) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+    }
+    renderStaffListHtml();
+};
+
+/**
+ * Reset Input Pencarian
+ */
+export const clearStaffSearch = () => {
+    const input = el('staff-search-input');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    handleStaffSearch('');
+};
+
+/**
+ * Hitung Jumlah Hak Akses Modul Aktif Staf
+ */
 const countStaffPermissions = (staff) => {
     if (staff.role === ROLES.OWNER) return PERMISSION_DEFINITIONS.length;
     if (staff.permissions) {
@@ -340,27 +533,58 @@ const countStaffPermissions = (staff) => {
     return Object.values(preset).filter(Boolean).length;
 };
 
+/**
+ * Render Kartu-Kartu Staf Terdaftar (Hero Bento Cards)
+ */
 const renderStaffListHtml = () => {
     const container = el('cashier-list-container');
     if (!container) return;
 
     let filtered = _cachedStaffList;
+
+    // Filter berdasarkan tab peran
     if (_activeRoleFilter === 'admin') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.ADMIN || s.role === ROLES.OWNER || s.role === 'admin' || s.role === 'owner');
+        filtered = filtered.filter(s => s.role === ROLES.ADMIN || s.role === ROLES.OWNER || s.role === 'admin' || s.role === 'owner');
     } else if (_activeRoleFilter === 'cashier') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.CASHIER || s.role === 'cashier' || !s.role);
+        filtered = filtered.filter(s => s.role === ROLES.CASHIER || s.role === 'cashier' || !s.role);
     } else if (_activeRoleFilter === 'staff') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.STAFF || s.role === 'staff');
+        filtered = filtered.filter(s => s.role === ROLES.STAFF || s.role === 'staff');
+    } else if (_activeRoleFilter === 'inactive') {
+        filtered = filtered.filter(s => s.isActive === false);
+    }
+
+    // Filter berdasarkan query pencarian teks
+    if (_staffSearchQuery) {
+        const q = _staffSearchQuery;
+        filtered = filtered.filter(s => {
+            const name = (s.name || '').toLowerCase();
+            const email = (s.email || '').toLowerCase();
+            const empId = (s.employeeId || '').toLowerCase();
+            const phone = (s.phone || '').toLowerCase();
+            const pos = (s.position || '').toLowerCase();
+            return name.includes(q) || email.includes(q) || empId.includes(q) || phone.includes(q) || pos.includes(q);
+        });
     }
 
     if (filtered.length === 0) {
         container.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600 bg-white dark:bg-slate-800/60 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-8 text-center">
-            <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl mb-3 text-slate-400">
+        <div class="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600 bg-white/95 dark:bg-slate-800/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-8 text-center shadow-2xs">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
                 <i class="fa-solid fa-user-slash"></i>
             </div>
-            <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum ada akun staf pada kategori ini</p>
-            <p class="text-xs mt-1 text-slate-400">Klik "Tambah Staf" untuk mendaftarkan akun kasir, admin atau staf operasional baru</p>
+            <h4 class="font-black text-sm text-slate-800 dark:text-slate-200">Tidak ada staf yang cocok</h4>
+            <p class="text-xs mt-1 text-slate-400 dark:text-slate-500 max-w-sm">
+                ${_staffSearchQuery ? `Tidak ditemukan staf dengan kata kunci "${esc(_staffSearchQuery)}". Silakan ubah filter atau kata kunci.` : 'Belum ada akun staf pada kategori ini.'}
+            </p>
+            <div class="mt-4 flex items-center gap-2">
+                ${_staffSearchQuery ? `
+                <button onclick="window.clearStaffSearch()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-xs font-bold text-slate-700 dark:text-slate-200 transition-all cursor-pointer">
+                    Reset Pencarian
+                </button>` : ''}
+                <button onclick="window.openAddStaffModal()" class="px-4 py-2 rounded-xl text-white text-xs font-black shadow-md transition-all cursor-pointer active:scale-95" style="background: var(--color-primary)">
+                    <i class="fa-solid fa-plus mr-1"></i> Tambah Staf Baru
+                </button>
+            </div>
         </div>`;
         return;
     }
@@ -377,16 +601,23 @@ const renderStaffListHtml = () => {
         const baseSalary = parseFloat(d.baseSalary) || 0;
         const dailyAllowance = parseFloat(d.dailyAllowance) || 0;
 
+        // Styling Avatar Pod berbasis Peran
+        let avatarStyle = 'background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);';
+        if (role === ROLES.ADMIN) {
+            avatarStyle = 'background: rgba(37, 99, 235, 0.12); color: #2563eb; border-color: rgba(37, 99, 235, 0.25);';
+        } else if (role === ROLES.STAFF) {
+            avatarStyle = 'background: rgba(217, 119, 6, 0.12); color: #d97706; border-color: rgba(217, 119, 6, 0.25);';
+        }
+
         return `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 sm:p-5 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all">
-            <div class="flex items-start sm:items-center gap-3.5 min-w-0">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
-                    style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-white/95 dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all">
+            <div class="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border" style="${avatarStyle}">
                     ${initials}
                 </div>
-                <div class="min-w-0 flex-1">
+                <div class="min-w-0 flex-1 space-y-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <p class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(d.name || 'Staf')}</p>
+                        <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">${esc(d.name || 'Staf')}</p>
                         ${getRoleBadgeHtml(role)}
                         <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
                             ${esc(empId)}
@@ -398,22 +629,34 @@ const renderStaffListHtml = () => {
                             ${isActive ? 'Aktif' : 'Nonaktif'}
                         </span>
                     </div>
-                    <div class="flex items-center gap-2 mt-1 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
-                        <span class="font-bold text-slate-800 dark:text-slate-100"><i class="fa-solid fa-user-tag text-[10px] mr-1" style="color: var(--color-primary)"></i>${esc(position)}</span>
-                        <span>•</span>
-                        <span class="font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>${fCur(baseSalary)}/bln</span>
-                        ${dailyAllowance > 0 ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+${fCur(dailyAllowance)}/hr)</span>` : ''}
-                    </div>
-                    <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-                        <span class="flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${esc(d.email || '')}</span>
-                        ${d.phone ? `<span>•</span><span class="flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400"><i class="fa-brands fa-whatsapp text-[11px]"></i> ${esc(d.phone)}</span>` : ''}
-                        <span>•</span>
-                        <span class="inline-flex items-center gap-1 font-bold text-[11px] text-[var(--color-primary)]">
-                            <i class="fa-solid fa-key text-[9px]"></i> ${permCount} Modul
+                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
+                        <span class="font-bold text-slate-800 dark:text-slate-100">
+                            <i class="fa-solid fa-user-tag text-[10px] mr-1" style="color: var(--color-primary)"></i>${esc(position)}
                         </span>
-                        ${d.bankAccount && d.bankAccount !== '-' ? `<span>•</span><span class="text-[11px] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(d.bankName)}: ${esc(d.bankAccount)}</span>` : ''}
-                        <span>•</span>
-                        <span class="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Masuk: ${esc(dateStr)}</span>
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="font-black text-emerald-600 dark:text-emerald-400">
+                            <i class="fa-solid fa-money-bill-wave text-[10px] mr-1"></i>Rp ${fCur(baseSalary)}/bln
+                        </span>
+                        ${dailyAllowance > 0 ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">(+Rp ${fCur(dailyAllowance)}/hr)</span>` : ''}
+                    </div>
+                    <div class="flex items-center gap-3 pt-0.5 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap">
+                        <span class="inline-flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${esc(d.email || '-')}</span>
+                        ${d.phone ? `
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <a href="https://wa.me/${cleanPhone(d.phone)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400 hover:underline" title="Kirim Pesan WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-[12px]"></i> ${esc(d.phone)}
+                        </a>` : ''}
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="inline-flex items-center gap-1 font-bold" style="color: var(--color-primary)">
+                            <i class="fa-solid fa-key text-[9px]"></i> ${permCount} Modul Diizinkan
+                        </span>
+                        ${d.bankAccount && d.bankAccount !== '-' ? `
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="inline-flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                            <i class="fa-solid fa-building-columns text-[10px]"></i> ${esc(d.bankName)}: ${esc(d.bankAccount)}
+                        </span>` : ''}
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span class="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Masuk: ${esc(dateStr)}</span>
                     </div>
                 </div>
             </div>
@@ -428,14 +671,15 @@ const renderStaffListHtml = () => {
                 </button>
                 <button onclick="window.toggleStaffActive('${esc(uid)}', ${!isActive})"
                     title="${isActive ? 'Nonaktifkan Akun Staf' : 'Aktifkan Akun Staf'}"
-                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border shrink-0
-                    ${isActive
-                        ? 'bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300'
-                        : 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800'}">
+                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border shrink-0 ${
+                        isActive
+                            ? 'bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300'
+                            : 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800'
+                    }">
                     <i class="fa-solid ${isActive ? 'fa-ban' : 'fa-circle-check'}"></i>
                 </button>
                 <button onclick="window.openEditStaffModal('${esc(uid)}', '${esc(d.name || '')}', '${esc(d.email || '')}', '${esc(role)}')"
-                    title="Edit Profil Staf & HR"
+                    title="Edit Profil Staf &amp; HR"
                     class="w-10 h-10 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -448,10 +692,19 @@ const renderStaffListHtml = () => {
         </div>`;
     }).join('');
 
-    container.innerHTML = `<div class="space-y-2.5">${listHtml}</div>
-    <p class="text-center text-[10px] text-slate-400 mt-3 font-medium">${filtered.length} staf terdaftar</p>`;
+    container.innerHTML = `
+    <div class="space-y-3">${listHtml}</div>
+    <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-4 px-1">
+        <span>Menampilkan <strong>${filtered.length}</strong> dari <strong>${_cachedStaffList.length}</strong> staf</span>
+        <button onclick="window.loadStaffList()" class="inline-flex items-center gap-1.5 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer">
+            <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Segarkan Daftar
+        </button>
+    </div>`;
 };
 
+/**
+ * Muat Seluruh Akun Staf dari Database Cloud Firestore
+ */
 export const loadStaffList = async () => {
     const container = el('cashier-list-container');
     if (!container) return;
@@ -477,7 +730,7 @@ export const loadStaffList = async () => {
             };
         });
 
-        // Sinkronisasi status hasCashier ke metadata
+        // Sinkronisasi status hasCashier ke metadata toko
         const hasActiveCashier = _cachedStaffList.some(s => s.isActive !== false && s.role === ROLES.CASHIER);
         try {
             localStorage.setItem('pos_has_cashier', hasActiveCashier ? 'true' : 'false');
@@ -495,6 +748,9 @@ export const loadStaffList = async () => {
 
         appData.employees = _cachedStaffList.map((s, idx) => normalizeEmployeeProfile(s, idx));
 
+        // Render komponen-komponen UI
+        renderStaffMetrics();
+        renderStaffRoleFilterChiclets();
         renderStaffListHtml();
 
     } catch (err) {
@@ -514,7 +770,7 @@ export const loadStaffList = async () => {
     }
 };
 
-// ─── Modal Tambah Staf Baru ──────────────────────────────────
+// ─── Modal Tambah Staf Baru (Solid Flat Clean) ────────────────
 export const openAddStaffModal = () => {
     if (!verifyOwnerAuthority('mendaftarkan staf baru')) return;
 
@@ -526,19 +782,19 @@ export const openAddStaffModal = () => {
         return `
         <div class="space-y-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                <i class="fa-solid ${groupIcon} text-[var(--color-primary)]"></i>
+                <i class="fa-solid ${groupIcon}" style="color: var(--color-primary)"></i>
                 <span>${groupTitle}</span>
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 ${defs.map(p => `
-                <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer text-left">
-                    <input type="checkbox" name="staff_perm" value="${p.key}" class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
-                    <div class="min-w-0">
+                <label class="flex items-start gap-2.5 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all cursor-pointer text-left">
+                    <input type="checkbox" name="staff_perm" value="${p.key}" class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 w-4 h-4 cursor-pointer" style="accent-color: var(--color-primary)">
+                    <div class="min-w-0 flex-1">
                         <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
                             <i class="fa-solid ${p.icon} text-[10px] text-slate-400"></i>
                             <span>${p.label}</span>
                         </p>
-                        <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">${p.desc}</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5">${p.desc}</p>
                     </div>
                 </label>`).join('')}
             </div>
@@ -551,20 +807,20 @@ export const openAddStaffModal = () => {
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="add-staff-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            
+            <!-- Modal Header (Solid Flat Clean) -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
-                        style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-xs text-white"
+                        style="background: var(--color-primary)">
                         <i class="fa-solid fa-user-plus"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white">Daftarkan Staf &amp; Karyawan Baru</h3>
-                        <p class="text-[11px] text-slate-400">Buat akun untuk kasir, admin, atau staf gudang/operasional</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Buat akun untuk kasir, admin, atau staf gudang/operasional</p>
                     </div>
                 </div>
-                <button onclick="window.closeAddStaffModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
+                <button onclick="window.closeAddStaffModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -574,25 +830,25 @@ export const openAddStaffModal = () => {
                 <!-- Info Akun Dasar -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Lengkap Staf <span class="text-rose-500">*</span></label>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Nama Lengkap Staf <span class="text-rose-500">*</span></label>
                         <input id="new-staff-name" type="text" placeholder="Contoh: Rina Kasir / Budi Gudang"
                             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs transition-all">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login <span class="text-rose-500">*</span></label>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Email Login <span class="text-rose-500">*</span></label>
                         <input id="new-staff-email" type="email" placeholder="staf@tokoputri.com"
                             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs transition-all">
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Password Staf (Min. 6 Karakter) <span class="text-rose-500">*</span></label>
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Password Staf (Min. 6 Karakter) <span class="text-rose-500">*</span></label>
                     <div class="relative">
                         <input id="new-staff-pass" type="password" placeholder="Minimal 6 karakter..."
                             autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl pl-4 pr-12 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl pl-4 pr-12 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs transition-all">
                         <button type="button" onclick="window.toggleStaffPassVisibility('new-staff-pass')"
                             class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1">
                             <i id="new-staff-pass-eye" class="fa-solid fa-eye text-sm"></i>
@@ -602,7 +858,7 @@ export const openAddStaffModal = () => {
 
                 <!-- Pilihan Role Pokok (4 Kolom Responsif) -->
                 <div>
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Role Pokok Sistem <span class="text-rose-500">*</span></label>
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Role Pokok Sistem <span class="text-rose-500">*</span></label>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 cursor-pointer hover:border-emerald-500 transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.CASHIER}" checked onchange="window.applyNewStaffPreset('${ROLES.CASHIER}')" class="sr-only">
@@ -620,13 +876,13 @@ export const openAddStaffModal = () => {
                             <input type="radio" name="new_staff_role" value="${ROLES.STAFF}" onchange="window.applyNewStaffPreset('${ROLES.STAFF}')" class="sr-only">
                             <i class="fa-solid fa-user-gear text-lg mb-1 text-amber-500"></i>
                             <span class="text-xs font-black">Staf Gudang</span>
-                            <span class="text-[9px] text-slate-400 mt-0.5">Logistik &amp; Bantu</span>
+                            <span class="text-[9px] text-slate-400 mt-0.5">Logistik &amp; Rak</span>
                         </label>
                         <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-[var(--color-primary)] transition-all text-center">
                             <input type="radio" name="new_staff_role" value="manager" onchange="window.applyNewStaffPreset('manager')" class="sr-only">
                             <i class="fa-solid fa-user-tie text-lg mb-1" style="color: var(--color-primary)"></i>
                             <span class="text-xs font-black">Manajer</span>
-                            <span class="text-[9px] text-slate-400 mt-0.5">Akses Luas</span>
+                            <span class="text-[9px] text-slate-400 mt-0.5">Wewenang Luas</span>
                         </label>
                     </div>
                 </div>
@@ -636,7 +892,7 @@ export const openAddStaffModal = () => {
                     <div class="flex items-center justify-between">
                         <div>
                             <h4 class="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-                                <i class="fa-solid fa-id-card-clip text-[var(--color-primary)]"></i>
+                                <i class="fa-solid fa-id-card-clip" style="color: var(--color-primary)"></i>
                                 <span>Profil Kepegawaian &amp; Struktur Kompensasi</span>
                             </h4>
                             <p class="text-[10px] text-slate-400">ID karyawan resmi, jabatan terstandarisasi, gaji pokok &amp; rekening pencairan</p>
@@ -655,17 +911,17 @@ export const openAddStaffModal = () => {
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ID Karyawan</label>
                             <input id="new-staff-empid" type="text" value="${esc(autoEmpId)}" placeholder="EMP-001"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Jabatan Resmi <span class="text-rose-500">*</span></label>
                             <input id="new-staff-position" list="staff-positions-datalist" type="text" value="Kasir POS" placeholder="Pilih / ketik jabatan..."
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. WhatsApp / HP</label>
                             <input id="new-staff-phone" type="tel" placeholder="081234567890"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                         </div>
                     </div>
 
@@ -673,25 +929,25 @@ export const openAddStaffModal = () => {
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Gaji Pokok Bulanan (Rp) <span class="text-rose-500">*</span></label>
                             <input id="new-staff-salary" type="number" min="0" step="50000" value="2500000" placeholder="2500000"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Tunjangan Harian / Uang Makan (Rp/Hari)</label>
                             <input id="new-staff-allowance" type="number" min="0" step="5000" value="20000" placeholder="20000"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Hubungan Kerja</label>
-                            <select id="new-staff-status" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            <select id="new-staff-status" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                                 ${EMPLOYMENT_STATUSES.map(s => `<option value="${s.key}">${esc(s.label)}</option>`).join('')}
                             </select>
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Metode Pencairan Gaji</label>
-                            <select id="new-staff-payment-method" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            <select id="new-staff-payment-method" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                                 ${SALARY_PAYMENT_METHODS.map(m => `<option value="${m.key}">${esc(m.label)}</option>`).join('')}
                             </select>
                         </div>
@@ -701,12 +957,12 @@ export const openAddStaffModal = () => {
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Nomor Rekening Bank</label>
                             <input id="new-staff-bank-account" type="text" placeholder="Contoh: 1234567890 (atau '-' jika tunai)"
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Atas Nama Rekening</label>
                             <input id="new-staff-bank-holder" type="text" placeholder="Sesuai buku tabungan..."
-                                class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                         </div>
                     </div>
                 </div>
@@ -719,8 +975,8 @@ export const openAddStaffModal = () => {
                             <p class="text-[10px] text-slate-400">Centang modul yang diizinkan untuk akun staf ini</p>
                         </div>
                         <div class="flex items-center gap-1.5 text-[11px]">
-                            <button type="button" onclick="window.setAllNewStaffPerms(true)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold active:scale-95 transition-all">Pilih Semua</button>
-                            <button type="button" onclick="window.setAllNewStaffPerms(false)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold active:scale-95 transition-all">Kosongkan</button>
+                            <button type="button" onclick="window.setAllNewStaffPerms(true)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold active:scale-95 transition-all cursor-pointer">Pilih Semua</button>
+                            <button type="button" onclick="window.setAllNewStaffPerms(false)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold active:scale-95 transition-all cursor-pointer">Kosongkan</button>
                         </div>
                     </div>
 
@@ -735,12 +991,12 @@ export const openAddStaffModal = () => {
             <!-- Modal Footer -->
             <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeAddStaffModal()"
-                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.saveStaffAccount()" id="save-staff-btn"
-                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    style="background:var(--color-primary)">
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    style="background: var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Daftarkan Staf
                 </button>
             </div>
@@ -934,7 +1190,7 @@ export const saveStaffAccount = async () => {
     }
 };
 
-// ─── Modal Atur Hak Akses Staf ───────────────────────────────
+// ─── Modal Atur Hak Akses Staf (Solid Flat Clean) ────────────
 export const openPermissionsModal = (uid) => {
     if (!verifyOwnerAuthority('mengatur hak akses staf')) return;
 
@@ -951,21 +1207,21 @@ export const openPermissionsModal = (uid) => {
         return `
         <div class="space-y-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                <i class="fa-solid ${groupIcon} text-[var(--color-primary)]"></i>
+                <i class="fa-solid ${groupIcon}" style="color: var(--color-primary)"></i>
                 <span>${groupTitle}</span>
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 ${defs.map(p => {
                     const isChecked = currentPerms[p.key] === true;
                     return `
-                    <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer text-left">
-                        <input type="checkbox" name="edit_staff_perm" value="${p.key}" ${isChecked ? 'checked' : ''} class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
-                        <div class="min-w-0">
+                    <label class="flex items-start gap-2.5 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all cursor-pointer text-left">
+                        <input type="checkbox" name="edit_staff_perm" value="${p.key}" ${isChecked ? 'checked' : ''} class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30 w-4 h-4 cursor-pointer" style="accent-color: var(--color-primary)">
+                        <div class="min-w-0 flex-1">
                             <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
                                 <i class="fa-solid ${p.icon} text-[10px] text-slate-400"></i>
                                 <span>${p.label}</span>
                             </p>
-                            <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">${p.desc}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5">${p.desc}</p>
                         </div>
                     </label>`;
                 }).join('')}
@@ -979,11 +1235,11 @@ export const openPermissionsModal = (uid) => {
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="permissions-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            
+            <!-- Modal Header (Solid Flat Clean) -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs text-white"
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-xs text-white"
                         style="background: var(--color-primary)">
                         <i class="fa-solid fa-sliders"></i>
                     </div>
@@ -992,7 +1248,7 @@ export const openPermissionsModal = (uid) => {
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">Sesuaikan modul yang boleh dibuka oleh akun ini</p>
                     </div>
                 </div>
-                <button onclick="window.closePermissionsModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
+                <button onclick="window.closePermissionsModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -1000,29 +1256,29 @@ export const openPermissionsModal = (uid) => {
             <!-- Modal Body -->
             <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- 1-Click Preset Bar -->
-                <div class="p-3.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+                <div class="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/90 dark:border-slate-700/80">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Preset Cepat 1-Klik:</span>
                         <div class="flex items-center gap-2 text-[11px]">
-                            <button type="button" onclick="window.setAllEditStaffPerms(true)" class="text-xs text-[var(--color-primary)] font-bold hover:underline active:scale-95 transition-all">Pilih Semua</button>
+                            <button type="button" onclick="window.setAllEditStaffPerms(true)" class="text-xs font-bold hover:underline active:scale-95 transition-all cursor-pointer" style="color: var(--color-primary)">Pilih Semua</button>
                             <span class="text-slate-300">•</span>
-                            <button type="button" onclick="window.setAllEditStaffPerms(false)" class="text-xs text-rose-500 font-bold hover:underline active:scale-95 transition-all">Kosongkan</button>
+                            <button type="button" onclick="window.setAllEditStaffPerms(false)" class="text-xs text-rose-500 font-bold hover:underline active:scale-95 transition-all cursor-pointer">Kosongkan</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.CASHIER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.CASHIER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-cash-register text-[11px] text-emerald-500"></i>
                             <span>Kasir POS</span>
                         </button>
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.ADMIN}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.ADMIN}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-shield-halved text-[11px] text-blue-500"></i>
                             <span>Admin Ops</span>
                         </button>
-                        <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-user-tie text-[11px]" style="color: var(--color-primary)"></i>
                             <span>Manajer</span>
                         </button>
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.OWNER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.OWNER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-crown text-[11px] text-amber-500"></i>
                             <span>Full Akses</span>
                         </button>
@@ -1037,12 +1293,12 @@ export const openPermissionsModal = (uid) => {
             <!-- Modal Footer -->
             <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closePermissionsModal()"
-                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.saveStaffPermissions('${esc(uid)}')" id="save-perms-btn"
-                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    style="background:var(--color-primary)">
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    style="background: var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Hak Akses
                 </button>
             </div>
@@ -1153,11 +1409,12 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            
+            <!-- Modal Header (Solid Flat Clean) -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
-                        style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-xs text-white"
+                        style="background: var(--color-primary)">
                         <i class="fa-solid fa-user-pen"></i>
                     </div>
                     <div>
@@ -1165,10 +1422,10 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                             <span>Edit Profil &amp; HR Staf</span>
                             <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${esc(employeeId)}</span>
                         </h3>
-                        <p class="text-[11px] text-slate-400">Perbarui data personal, peran, kompensasi &amp; rekening</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Perbarui data personal, peran, kompensasi &amp; rekening</p>
                     </div>
                 </div>
-                <button onclick="window.closeEditStaffModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
+                <button onclick="window.closeEditStaffModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -1181,14 +1438,14 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Staf <span class="text-rose-500">*</span></label>
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Nama Staf <span class="text-rose-500">*</span></label>
                         <input id="edit-staff-name" type="text" value="${esc(name)}"
                             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Role Pokok Sistem</label>
-                        <select id="edit-staff-role" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Role Pokok Sistem</label>
+                        <select id="edit-staff-role" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                             <option value="${ROLES.CASHIER}" ${role === ROLES.CASHIER ? 'selected' : ''}>Kasir POS (Penjualan)</option>
                             <option value="${ROLES.ADMIN}" ${role === ROLES.ADMIN ? 'selected' : ''}>Admin Toko (Operasional CMS)</option>
                             <option value="${ROLES.STAFF}" ${role === ROLES.STAFF ? 'selected' : ''}>Staf Gudang &amp; Logistik</option>
@@ -1201,17 +1458,17 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ID Karyawan</label>
                         <input id="edit-staff-empid" type="text" value="${esc(employeeId)}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-slate-50 dark:bg-slate-800/70 font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Jabatan Resmi</label>
                         <input id="edit-staff-position" list="edit-staff-positions-datalist" type="text" value="${esc(position)}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. WhatsApp / HP</label>
                         <input id="edit-staff-phone" type="tel" value="${esc(phone)}" placeholder="081234567890"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                 </div>
 
@@ -1219,25 +1476,25 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Gaji Pokok Bulanan (Rp)</label>
                         <input id="edit-staff-salary" type="number" min="0" step="50000" value="${baseSalary}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Tunjangan Harian / Uang Makan (Rp/Hari)</label>
                         <input id="edit-staff-allowance" type="number" min="0" step="5000" value="${dailyAllowance}"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Hubungan Kerja</label>
-                        <select id="edit-staff-status" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        <select id="edit-staff-status" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                             ${EMPLOYMENT_STATUSES.map(s => `<option value="${s.key}" ${employmentStatus === s.key ? 'selected' : ''}>${esc(s.label)}</option>`).join('')}
                         </select>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Metode Bayar Gaji</label>
-                        <select id="edit-staff-payment-method" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                        <select id="edit-staff-payment-method" class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                             ${SALARY_PAYMENT_METHODS.map(m => `<option value="${m.key}" ${paymentMethod === m.key ? 'selected' : ''}>${esc(m.label)}</option>`).join('')}
                         </select>
                     </div>
@@ -1247,36 +1504,36 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Bank</label>
                         <input id="edit-staff-bank-name" type="text" value="${esc(bankName)}" placeholder="BCA / BRI"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">No. Rekening</label>
                         <input id="edit-staff-bank-account" type="text" value="${esc(bankAccount)}" placeholder="1234567890"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Atas Nama Rekening</label>
                         <input id="edit-staff-bank-holder" type="text" value="${esc(bankHolder)}" placeholder="Nama Pemilik"
-                            class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
                     </div>
                 </div>
 
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login (Permanen)</label>
                     <input type="email" value="${esc(email)}" disabled
-                        class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800/50 text-slate-400 cursor-not-allowed">
+                        class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 text-slate-400 cursor-not-allowed">
                 </div>
                 <div id="edit-staff-error" class="hidden text-xs text-rose-600 font-semibold p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-200 dark:border-rose-800"></div>
             </div>
 
             <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeEditStaffModal()"
-                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.updateStaffProfile('${esc(uid)}')" id="update-staff-btn"
-                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    style="background:var(--color-primary)">
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    style="background: var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Profil &amp; HR
                 </button>
             </div>
@@ -1377,9 +1634,9 @@ export const openOwnerHrModal = () => {
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="owner-hr-modal-box">
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            
+            <!-- Modal Header (Solid Flat Clean) -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-md text-white"
                         style="background: var(--color-primary)">
@@ -1394,7 +1651,7 @@ export const openOwnerHrModal = () => {
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">Gaji resmi pemilik toko terpisah dari laba usaha (Tata Kelola Modern)</p>
                     </div>
                 </div>
-                <button onclick="window.closeOwnerHrModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
+                <button onclick="window.closeOwnerHrModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90 cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -1413,12 +1670,12 @@ export const openOwnerHrModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor ID Karyawan Owner</label>
                         <input id="owner-hr-empid" type="text" value="${esc(ownerProfile.employeeId || 'OWN-001')}"
-                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold cursor-not-allowed" readonly>
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold cursor-not-allowed" readonly>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Pemilik / Direktur <span class="text-rose-500">*</span></label>
                         <input id="owner-hr-name" type="text" value="${esc(ownerProfile.name || 'Pemilik Toko')}"
-                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-2xs">
                     </div>
                 </div>
 
@@ -1426,12 +1683,12 @@ export const openOwnerHrModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan Resmi</label>
                         <input id="owner-hr-position" type="text" value="${esc(ownerProfile.position || 'Owner / Direktur Utama')}"
-                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">No. WhatsApp Pribadi</label>
                         <input id="owner-hr-phone" type="tel" value="${esc(ownerProfile.phone || '')}" placeholder="081234567890"
-                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                     </div>
                 </div>
 
@@ -1439,35 +1696,35 @@ export const openOwnerHrModal = () => {
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Gaji Pokok Direksi (Rp/Bulan) <span class="text-rose-500">*</span></label>
                         <input id="owner-hr-salary" type="number" min="0" step="50000" value="${ownerProfile.baseSalary || 10000000}"
-                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-bold transition-all shadow-2xs">
                     </div>
                     <div>
                         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Tunjangan Bulanan Direksi (Rp)</label>
                         <input id="owner-hr-allowance" type="number" min="0" step="50000" value="${ownerProfile.dailyAllowance || 0}"
-                            class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
+                            class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                     </div>
                 </div>
 
                 <!-- Informasi Rekening Bank Owner -->
                 <div class="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-3">
                     <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
-                        <i class="fa-solid fa-building-columns text-[var(--color-primary)]"></i> Rekening Penerimaan Gaji
+                        <i class="fa-solid fa-building-columns" style="color: var(--color-primary)"></i> Rekening Penerimaan Gaji
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Bank</label>
                             <input id="owner-hr-bank-name" type="text" value="${esc(ownerProfile.bankName || 'BCA')}" placeholder="BCA / Mandiri / BRI"
-                                class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nomor Rekening</label>
                             <input id="owner-hr-bank-account" type="text" value="${esc(ownerProfile.bankAccount && ownerProfile.bankAccount !== '-' ? ownerProfile.bankAccount : '')}" placeholder="1234567890"
-                                class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-mono transition-all shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white font-mono transition-all shadow-2xs">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Atas Nama Rekening</label>
                             <input id="owner-hr-bank-holder" type="text" value="${esc(ownerProfile.bankHolder || ownerProfile.name || '')}" placeholder="Nama Pemilik"
-                                class="w-full min-h-[44px] border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-[16px] sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-inner">
+                                class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.25)] text-slate-900 dark:text-white transition-all shadow-2xs">
                         </div>
                     </div>
                 </div>
@@ -1478,11 +1735,11 @@ export const openOwnerHrModal = () => {
             <!-- Modal Footer -->
             <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeOwnerHrModal()"
-                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.saveOwnerHrProfile()" id="save-owner-hr-btn"
-                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Kompensasi Owner
                 </button>
@@ -1658,6 +1915,8 @@ if (typeof window !== 'undefined') {
     window.renderCashierAccounts        = renderCashierAccounts;
     window.switchCashierTab             = switchCashierTab;
     window.filterStaffRole              = filterStaffRole;
+    window.handleStaffSearch            = handleStaffSearch;
+    window.clearStaffSearch             = clearStaffSearch;
     window.loadStaffList                = loadStaffList;
     window.openAddStaffModal            = openAddStaffModal;
     window.closeAddStaffModal           = closeAddStaffModal;

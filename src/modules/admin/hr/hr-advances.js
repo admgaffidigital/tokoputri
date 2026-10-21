@@ -330,8 +330,7 @@ export const openSalaryAdvanceFormModal = () => {
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs text-white"
                         style="background: var(--color-primary)">
@@ -631,8 +630,7 @@ export const openAdvanceDetailModal = (advanceId) => {
             <!-- Mobile Drag Handle -->
             <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs ${isPaid ? 'bg-emerald-500 text-white' : 'text-white'}"
                         style="${isPaid ? '' : 'background: var(--color-primary)'}">

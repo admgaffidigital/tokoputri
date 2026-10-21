@@ -369,7 +369,7 @@ export const renderPayrollView = async (container) => {
                             <button onclick="window.openPayrollItemModal('${esc(item.employeeId)}', '${_activePayrollPeriod}')"
                                 title="${isPaid ? 'Ubah Rincian Kompensasi' : 'Hitung & Bayar Gaji'}"
                                 class="px-3.5 py-2.5 rounded-xl text-xs font-black text-white transition-all active:scale-95 cursor-pointer shadow-md flex items-center gap-1.5"
-                                style="background: ${isPaid ? 'var(--color-primary)' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)'}">
+                                style="background: ${isPaid ? 'var(--color-primary)' : '#10b981'}">
                                 <i class="fa-solid ${isPaid ? 'fa-pen-to-square' : 'fa-cash-register'}"></i>
                                 <span>${isPaid ? 'Edit' : 'Bayar'}</span>
                             </button>
@@ -450,8 +450,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
             </div>
 
             <!-- Modal Header -->
-            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-sm"
                         style="background: var(--color-primary)">
@@ -636,7 +635,7 @@ export const openPayrollItemModal = async (employeeId, periodStr = _activePayrol
                     </button>
                     <button onclick="window.savePayrollItem('${esc(emp.employeeId || emp.uid)}', '${periodStr}', 'paid')"
                         class="min-h-[44px] px-6 py-2.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-                        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        style="background: #10b981;">
                         <i class="fa-solid fa-check"></i>
                         <span>Bayar &amp; Terbitkan Slip</span>
                     </button>
@@ -873,8 +872,7 @@ export const openPayslipPreviewModal = (payrollId, employeeId) => {
             </div>
 
             <!-- Modal Header -->
-            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0"
-                style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%)">
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50 dark:bg-slate-800/90">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-sm"
                         style="background: var(--color-primary)">
