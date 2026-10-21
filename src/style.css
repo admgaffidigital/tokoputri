@@ -6421,9 +6421,19 @@ select:not([class*="h-7"]):not([class*="h-8"]),
 .btn-secondary-neutral,
 .btn-native-action,
 .modal-bottom-sheet button[type="submit"],
-.modal-bottom-sheet .primary-bg {
+.modal-bottom-sheet button.primary-bg,
+.modal-bottom-sheet a.primary-bg {
     min-height: 2.75rem !important; /* 44px */
     box-sizing: border-box !important;
+}
+
+/* Guard: Pastikan span, div, badge, dan chip berkelas primary-bg TIDAK terpengaruh tinggi tombol 44px */
+span.primary-bg,
+div.primary-bg,
+span[class*="badge"],
+[class*="badge"],
+.status-pill {
+    min-height: unset !important;
 }
 
 /* Tactile touch response */

@@ -109,6 +109,8 @@ window.closeBrandModal = (fH=false) => {
 window.openQuickMenuModal = () => {
     const m = el('quickmenu-modal'), c = el('quickmenu-modal-content');
     if(m && c){
+        const body = c.querySelector('.overflow-y-auto');
+        if (body) body.scrollTop = 0;
         if (m.classList.contains('hidden')) pushModalHistory('quickmenu');
         openModalAnim(m, c);
     }

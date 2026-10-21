@@ -174,6 +174,15 @@ test('Section Header Kategori dan Brand di index.html memiliki proteksi zero-cru
     assert(styleCss.includes('#sec-categories button[onclick*="openCategoryModal"]') && styleCss.includes('flex-shrink: 0 !important;'), 'CSS flex-shrink: 0 terpasang di style.css');
 });
 
+// 9. Quick Menu Modal & Badge Anti-Inflate Protection
+console.log('\n🧭 9. Uji Quick Menu Modal & Badge Anti-Inflate Protection:');
+test('Modal Tautan Cepat memiliki badge proporsional dan tidak terpengaruh min-height 44px', () => {
+    assert(indexHtml.includes('id="quickmenu-modal-content"') && indexHtml.includes('modal-bottom-sheet'), 'Quickmenu modal menggunakan modal-bottom-sheet');
+    assert(styleCss.includes('.modal-bottom-sheet button.primary-bg'), 'Selector min-height 44px hanya menarget button');
+    assert(styleCss.includes('span.primary-bg') && styleCss.includes('min-height: unset !important;'), 'Guard min-height unset untuk span/badge terpasang');
+    assert(indexHtml.includes('bg-rose-500 text-white shadow-2xs">Update</span>'), 'Badge Update di quickmenu modal berukuran proporsional chip');
+});
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passCount} Passed, 0 Failed`);
 console.log('✨ SELURUH APLIKASI SUDAH 100% NATIVE APP HARMONY & PROPOSIONAL! ✅');
