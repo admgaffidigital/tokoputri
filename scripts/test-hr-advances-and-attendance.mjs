@@ -272,5 +272,23 @@ describe('HR Advances & Attendance Unit Tests (Fase 2)', () => {
         assert.ok(routerCode.includes("case 'attendanceRecap':"), 'closeModalByName harus memiliki case attendanceRecap');
         assert.ok(nativeCode.includes("case 'modal-attendance-rekap':"), 'native-mobile.js harus memiliki case modal-attendance-rekap');
     });
+
+    it('14. documents.js harus mengintegrasikan attendance_recap ke sistem pratinjau A4 presisi', async () => {
+        const fs = await import('fs');
+        const docCode = fs.readFileSync('src/modules/print/documents.js', 'utf8');
+
+        assert.ok(docCode.includes("type === 'attendance_recap'"), 'documents.js harus mendukung tipe attendance_recap');
+        assert.ok(docCode.includes('Pratinjau Rekapitulasi Presensi Tim'), 'Judul modal pratinjau rekap presensi terpasang');
+        assert.ok(docCode.includes('attendance_recap') && docCode.includes('Rekap Presensi & Kedisiplinan Tim'), 'Label judul cetak attendance_recap terdaftar di printDocA4');
+    });
+
+    it('15. hr-attendance.js harus selaras tema toko, anti-rainbow header, dan memicu preview dokumen A4', async () => {
+        const fs = await import('fs');
+        const attCode = fs.readFileSync('src/modules/admin/hr/hr-attendance.js', 'utf8');
+
+        assert.ok(attCode.includes("window.openDocPreview('attendance_recap'"), 'printMonthlyAttendanceA4 harus memanggil window.openDocPreview');
+        assert.ok(attCode.includes('openDocPreview') && attCode.includes('Pratinjau &amp; Cetak A4'), 'Tombol footer harus menampilkan teks Pratinjau & Cetak A4');
+        assert.ok(!attCode.includes('text-purple-500">Sakit</th>'), 'Eliminasi total header tabel pelangi (rainbow table header)');
+    });
 });
 

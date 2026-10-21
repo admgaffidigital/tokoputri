@@ -19,14 +19,15 @@ export const DEFAULT_CHANGELOG = [
         "id": "log-1-19-7",
         "version": "v1.19.7",
         "date": "2026-10-21",
-        "title": "Storefront Zero-Truncation, Hero Banner Line-Clamp-2 & Section Header Zero-Crushing Engine",
+        "title": "Native App Harmony, Pratinjau Dokumen Presensi A4 & Eliminasi Warna Jomplang",
         "category": "feature",
-        "badge": "Native App Zero-Truncation & Proportional Consistency v1.19.7",
+        "badge": "Native App Harmony, Attendance Doc Preview & Zero Disparity v1.19.7",
         "items": [
-            "Eliminasi Pemotongan Placeholder Search Presensi Tim: Mengoptimalkan teks pencarian di modal rekap presensi tim menjadi 'Cari nama / jabatan...' dengan padding ikon responsif pl-8 pr-2.5, sehingga placeholder tampil utuh 100% tanpa terpotong di layar HP 360px.",
-            "Hero Banner & Promo Banner Multi-Line (line-clamp-2): Mengubah batasan baris judul spanduk utama dari line-clamp-1 menjadi line-clamp-2 dengan ukuran teks responsif text-sm sm:text-lg md:text-2xl lg:text-3xl font-black, mengeliminasi teks terpotong menjadi 'PELANGGAN TOKO...' dan membiarkan teks melipat secara alami dua baris.",
-            "Section Header Zero-Crushing (Kategori, Brand & Reward): Menerapkan proteksi flex-shrink: 0 !important dan white-space: nowrap !important pada tombol 'Lihat Semua', serta menyematkan judul adaptif 'BRAND RESMI' pada mobile dan 'BRAND RESMI & PRODUSEN TERPERCAYA' pada tablet/desktop agar bebas benturan dan tidak terpotong menjadi 'BRAND RESMI & PRO...' dan 'LIHAT...'.",
-            "Universal Native App Visual Harmony & Ergonomics: Menjaga keselarasan seluruh elemen native app, touch target 44px, frame hover desktop-only, dan 0% horizontal overflow di seluruh resolusi.",
+            "Pratinjau Dokumen A4 Rekapitulasi Presensi Resmi (#doc-preview-modal): Mengintegrasikan dokumen rekap presensi tim bulanan ke dalam engine pratinjau A4 standar (openDocPreview) lengkap dengan kop surat resmi toko, 4 kartu ringkasan KPI eksekutif, tabel matriks kehadiran multi-halaman, tanda tangan pengesahan HR & Pemilik Toko, serta opsi cetak printer, ekspor gambar HD, dan simpan PDF A4.",
+            "Redesain Native App Bento Modal Presensi Tim (#modal-attendance-rekap): Menata ulang 4 kartu KPI menjadi bento kompak (p-2 sm:p-2.5) dan mengintegrasikan selector periode bulan ke bilah header kanan sejajar tombol tutup, menghemat ~90px ruang vertikal sehingga tabel kehadiran staf langsung tampil lapang di layar smartphone.",
+            "Harmonisasi Tema Toko & Eliminasi Header Tabel Pelangi: Menghilangkan pewarnaan teks pelangi acak pada header tabel (hijau, kuning, biru, ungu, pink) dan angka KPI, menggantinya dengan tipografi kontras tinggi slate korporat profesional dan wadah ikon beraksen tema toko var(--color-primary) selaras 100% dengan ekosistem bisnis hulu ke hilir Toko Putri.",
+            "Eliminasi Pemotongan Placeholder Search Bar: Mengoptimalkan teks kolom isian pencarian di modal rekap presensi menjadi 'Cari nama / jabatan...' dengan padding proporsional pl-8 pr-2.5 anti-terpotong di mobile 360px.",
+            "Hero Banner Line-Clamp-2 & Section Header Zero-Crushing: Proteksi flex-shrink: 0 !important dan white-space: nowrap !important pada tombol 'Lihat Semua' serta judul pemasaran multiline bebas terpotong elipsis di storefront.",
             "Multi-Channel Distribution v1.19.7 (Android versionCode 11907 & Windows x64)."
         ]
     },

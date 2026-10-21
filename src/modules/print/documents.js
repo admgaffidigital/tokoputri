@@ -10,6 +10,7 @@ import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad, openModalAnim, cl
 import { appData } from '../../core/state.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { generateCode128Svg } from '../../core/barcode-code128.js';
+import { calculateMonthlyTeamAttendanceRecap } from '../admin/hr/hr-attendance.js';
 
 export let currentDocType = 'invoice';
 let isSaving = false;
@@ -1987,6 +1988,174 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
     }
 
     // ────────────────────────────────────────────────────────────
+    // 5. REKAPITULASI PRESENSI & KEDISIPLINAN KARYAWAN (HR BULANAN)
+    // ────────────────────────────────────────────────────────────
+    if (type === 'attendance_recap') {
+        const yearMonth = (typeof targetId === 'string' && targetId)
+            ? targetId
+            : ((targetId && targetId.yearMonth) || (extraOptions && extraOptions.yearMonth) || new Date().toISOString().slice(0, 7));
+
+        let recap = null;
+        if (typeof calculateMonthlyTeamAttendanceRecap === 'function') {
+            recap = calculateMonthlyTeamAttendanceRecap(yearMonth);
+        } else if (typeof window.calculateMonthlyTeamAttendanceRecap === 'function') {
+            recap = window.calculateMonthlyTeamAttendanceRecap(yearMonth);
+        }
+
+        if (!recap || !Array.isArray(recap.items) || recap.items.length === 0) {
+            if (typeof window.showToast === 'function') window.showToast('Data presensi tim belum tersedia!');
+            return;
+        }
+
+        setIn('doc-modal-title', 'Pratinjau Rekapitulasi Presensi Tim');
+        setIn('doc-modal-subtitle', `Rekapitulasi Presensi & Kedisiplinan Staf • Periode ${esc(recap.periodLabel)} • Kertas A4`);
+        const logoHTML = getStoreLogoHtml('w-16 h-16');
+        const printDate = formatDate(Date.now(), true);
+        const docNumber = `ATT-${yearMonth.replace(/-/g, '')}`;
+
+        const kopHtml = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
+            <div class="flex items-center gap-4">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'TOKO PUTRI UTAMA TEKNIK')}</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store?.slogan || 'Pusat Bahan Bangunan & Alat Teknik')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store?.address || 'Alamat fisik toko')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || appData.store?.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-xl sm:text-2xl tracking-widest text-slate-900 uppercase">REKAPITULASI PRESENSI</h2>
+                <h3 class="font-bold text-xs tracking-wider text-[var(--color-primary)] uppercase">Kedisiplinan &amp; Uang Makan Tim</h3>
+                <p class="text-xs font-bold text-slate-700 mt-1 font-mono">#${esc(docNumber)}</p>
+                <p class="text-[11px] font-semibold text-slate-500 mt-0.5">Periode: <b class="text-slate-800">${esc(recap.periodLabel)}</b></p>
+                <p class="text-[10px] text-slate-400 mt-0.5">Dicetak: ${printDate}</p>
+            </div>
+        </div>
+        `;
+
+        const metaHtml = `
+        <div class="grid grid-cols-4 gap-3 mb-5">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Rata-Rata Disiplin</span>
+                <span class="text-lg font-black text-slate-900 font-mono">${recap.avgAttendanceRate}%</span>
+                <span class="text-[10px] text-slate-500 block">Tingkat Kehadiran Tim</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Total Hari Hadir</span>
+                <span class="text-lg font-black text-slate-900 font-mono">${recap.totalWorkDays} Hari</span>
+                <span class="text-[10px] text-slate-500 block">${recap.totalPresentDays} Tepat, ${recap.totalLateDays} Terlambat</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Izin, Sakit &amp; Alpha</span>
+                <span class="text-lg font-black text-slate-900 font-mono">${recap.totalPermitDays + recap.totalSickDays + recap.totalAlphaDays} Hari</span>
+                <span class="text-[10px] text-slate-500 block">${recap.totalPermitDays} Iz • ${recap.totalSickDays} Sk • ${recap.totalAlphaDays} Al</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Akumulasi Uang Makan</span>
+                <span class="text-lg font-black text-slate-900 font-mono">${fCur(recap.totalTeamAllowance)}</span>
+                <span class="text-[10px] text-slate-500 block">Hak Kompensasi Tim</span>
+            </div>
+        </div>
+        `;
+
+        const tableHeaderHtml = `
+        <tr class="border-b-2 border-slate-800 text-[10px] font-black text-white uppercase tracking-wider bg-slate-900">
+            <th class="py-2.5 px-2 rounded-tl-xl text-center w-8 border-r border-slate-700">No</th>
+            <th class="py-2.5 px-3 border-r border-slate-700">Karyawan &amp; Jabatan</th>
+            <th class="py-2.5 px-2 text-center w-12 border-r border-slate-700">Hadir</th>
+            <th class="py-2.5 px-2 text-center w-14 border-r border-slate-700">Terlambat</th>
+            <th class="py-2.5 px-2 text-center w-10 border-r border-slate-700">Izin</th>
+            <th class="py-2.5 px-2 text-center w-10 border-r border-slate-700">Sakit</th>
+            <th class="py-2.5 px-2 text-center w-10 border-r border-slate-700">Alpha</th>
+            <th class="py-2.5 px-2 text-center w-16 border-r border-slate-700">Total Masuk</th>
+            <th class="py-2.5 px-2 text-center w-16 border-r border-slate-700">% Disiplin</th>
+            <th class="py-2.5 px-3 rounded-tr-xl text-right w-24">Hak Tunjangan</th>
+        </tr>
+        `;
+
+        const rows = recap.items.map((it, idx) => {
+            const rateBadge = it.attendanceRate >= 95
+                ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                : (it.attendanceRate >= 80 ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-rose-100 text-rose-800 border-rose-300');
+            return `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-2 px-2 text-center font-mono text-slate-400 text-[10px]">${idx + 1}</td>
+                <td class="py-2 px-3">
+                    <div class="font-bold text-slate-900 text-xs">${esc(it.name)}</div>
+                    <div class="text-[9.5px] text-slate-500 font-mono flex items-center gap-1.5">
+                        <span>${esc(it.employeeId)}</span>
+                        <span>•</span>
+                        <span class="font-sans">${esc(it.position)}</span>
+                    </div>
+                </td>
+                <td class="py-2 px-2 text-center font-mono font-bold text-slate-800">${it.presentDays}</td>
+                <td class="py-2 px-2 text-center font-mono font-bold ${it.lateDays > 0 ? 'text-amber-600' : 'text-slate-400'}">${it.lateDays}</td>
+                <td class="py-2 px-2 text-center font-mono text-slate-500">${it.permitDays}</td>
+                <td class="py-2 px-2 text-center font-mono text-slate-500">${it.sickDays}</td>
+                <td class="py-2 px-2 text-center font-mono font-bold ${it.alphaDays > 0 ? 'text-rose-600' : 'text-slate-400'}">${it.alphaDays}</td>
+                <td class="py-2 px-2 text-center font-mono font-bold text-slate-900">${it.totalWorkDays} Hari</td>
+                <td class="py-2 px-2 text-center">
+                    <span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-black border ${rateBadge}">
+                        ${it.attendanceRate}%
+                    </span>
+                </td>
+                <td class="py-2 px-3 text-right font-mono font-bold text-slate-900">${fCur(it.totalAllowance)}</td>
+            </tr>
+            `;
+        });
+
+        const summaryHtml = `
+        <div class="border-t-2 border-slate-800 bg-slate-50 p-3 rounded-xl mb-4 text-xs font-bold text-slate-800 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="uppercase tracking-wider text-[11px] font-black">TOTAL TIM (${recap.totalMembers} Staf):</span>
+                <span class="text-slate-500 font-mono text-[11px]">${recap.totalWorkDays} Hari Kerja Total</span>
+            </div>
+            <div class="flex items-center gap-6 font-mono">
+                <span class="text-slate-600">Rata-rata Disiplin: <b class="text-slate-900">${recap.avgAttendanceRate}%</b></span>
+                <span>Total Tunjangan: <b class="text-emerald-700 text-sm font-black">${fCur(recap.totalTeamAllowance)}</b></span>
+            </div>
+        </div>
+        `;
+
+        const signaturesHtml = `
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-auto pt-4 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-12 uppercase tracking-widest text-[9px]">Dibuat oleh (Pengelola HR / Kasir Kepala):</span>
+                <div class="w-44 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 uppercase">Staf Administrasi &amp; HR</span>
+                <span class="text-[9.5px] text-slate-500">${esc(appData.store?.name || 'Toko Putri')}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-12 uppercase tracking-widest text-[9px]">Mengetahui &amp; Disetujui oleh:</span>
+                <div class="w-44 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 uppercase">Direksi / Pemilik Toko</span>
+                <span class="text-[9.5px] text-slate-500">${esc(appData.store?.name || 'Toko Putri')}</span>
+            </div>
+        </div>
+        `;
+
+        const pages = paginateTableDocument({
+            docTitle: 'Rekapitulasi Presensi & Kedisiplinan Tim',
+            docNumber: `#${docNumber}`,
+            docDate: printDate,
+            kopHtml,
+            metaHtml,
+            tableHeaderHtml,
+            rows,
+            summaryHtml,
+            signaturesHtml,
+            singlePageMax: 9,
+            itemsFirstPage: 8,
+            itemsMiddlePage: 14,
+            itemsLastPage: 7
+        });
+
+        renderPagesToContainer(pages);
+        return;
+    }
+
+    // ────────────────────────────────────────────────────────────
     // 6 & 7. FAKTUR INVOICE & SURAT JALAN PESANAN
     // ────────────────────────────────────────────────────────────
     const targetOrderId = targetId || window.cVOrd;
@@ -2716,9 +2885,8 @@ export const printDocA4 = () => {
         setTimeout(() => document.body.classList.remove('printing-a4'), 2500);
         return;
     }
-
     const printWindow = window.open('', '_blank');
-    const docTitleLabel = currentDocType === 'pricelist' ? 'Katalog & Daftar Harga Resmi' : (currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : (currentDocType === 'sales_return' ? 'Nota Retur Penjualan' : (currentDocType === 'vendor_return' ? 'Surat Pengembalian Barang' : 'Dokumen Resmi A4'))))))));
+    const docTitleLabel = currentDocType === 'pricelist' ? 'Katalog & Daftar Harga Resmi' : (currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : (currentDocType === 'sales_return' ? 'Nota Retur Penjualan' : (currentDocType === 'vendor_return' ? 'Surat Pengembalian Barang' : (currentDocType === 'attendance_recap' ? 'Rekap Presensi & Kedisiplinan Tim' : 'Dokumen Resmi A4')))))))));
 
     const printHtml = `<!DOCTYPE html>
 <html lang="id">

@@ -793,15 +793,15 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
         <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto mt-2.5 mb-1 sm:hidden shrink-0"></div>
 
         <!-- Modal Header (Solid Clean & Anti-Truncate) -->
-        <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 shrink-0">
+        <div class="px-4 sm:px-6 py-3 sm:py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 shrink-0">
             <div class="flex items-center justify-between gap-2.5">
                 <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs"
                         style="background: var(--color-primary)">
-                        <i class="fa-solid fa-clipboard-user text-base"></i>
+                        <i class="fa-solid fa-clipboard-user text-sm sm:text-base"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
+                        <h3 class="font-black text-sm sm:text-base text-slate-900 dark:text-white leading-tight truncate">
                             Rekapitulasi Presensi Tim
                         </h3>
                         <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
@@ -810,81 +810,78 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
                     </div>
                 </div>
 
-                <!-- Desktop Period Picker & Close Button -->
-                <div class="flex items-center gap-2 shrink-0">
+                <!-- Responsive Period Pickers & Close Button (Compact Top Pill, Zero Vertical Waste) -->
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <!-- Desktop Period Picker -->
                     <div class="hidden sm:flex items-center gap-1.5 bg-white dark:bg-slate-800 py-1 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
-                        <i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i>
+                        <i class="fa-solid fa-calendar-days text-[var(--color-primary)] text-xs"></i>
                         <input type="month" id="att-rekap-period-picker-desktop" value="${yearMonth}"
                             onchange="window.openMonthlyAttendanceRecapModal(this.value)"
                             class="bg-transparent text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
                     </div>
+                    <!-- Mobile Period Picker -->
+                    <div class="sm:hidden flex items-center gap-1 bg-white dark:bg-slate-800 py-1 px-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                        <i class="fa-solid fa-calendar-days text-[var(--color-primary)] text-[10px]"></i>
+                        <input type="month" id="att-rekap-period-picker" value="${yearMonth}"
+                            onchange="window.openMonthlyAttendanceRecapModal(this.value)"
+                            class="bg-transparent text-[11px] font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer max-w-[108px]">
+                    </div>
                     <button onclick="window.closeMonthlyAttendanceRecapModal()" 
-                        class="w-8 h-8 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-base flex items-center justify-center transition-all cursor-pointer"
+                        class="w-8 h-8 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-base flex items-center justify-center transition-all cursor-pointer shrink-0"
                         title="Tutup">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
-
-            <!-- Mobile Period Selector Bar (Lega & Tidak Menghimpit Judul Modal) -->
-            <div class="sm:hidden mt-2.5 flex items-center justify-between gap-2 p-1.5 px-3 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-2xs">
-                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <i class="fa-solid fa-calendar-days text-[var(--color-primary)] text-xs"></i>
-                    <span>Pilih Periode Bulan:</span>
-                </span>
-                <input type="month" id="att-rekap-period-picker" value="${yearMonth}"
-                    onchange="window.openMonthlyAttendanceRecapModal(this.value)"
-                    class="px-2 py-1 bg-slate-100 dark:bg-slate-700/60 rounded-lg text-xs font-black text-slate-800 dark:text-white border-0 focus:outline-none cursor-pointer">
-            </div>
         </div>
 
         <!-- Modal Body -->
-        <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 custom-scrollbar text-xs">
+        <div class="p-3.5 sm:p-5 overflow-y-auto space-y-3 sm:space-y-4 flex-1 custom-scrollbar text-xs">
             
-            <!-- 4 Bento KPI Kehadiran Bulanan -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Rata-Rata Disiplin</span>
-                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-chart-line"></i>
+            <!-- 4 Bento KPI Kehadiran Bulanan (Compact Native App Bento Layout) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+                <div class="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Rata-Rata Disiplin</span>
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs shrink-0 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--color-primary)]">
+                            <i class="fa-solid fa-chart-line text-[10px]"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${recap.avgAttendanceRate}%</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Tingkat kehadiran tim</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">${recap.avgAttendanceRate}%</p>
+                    <p class="text-[9px] font-semibold text-slate-400 truncate">Tingkat kehadiran tim</p>
                 </div>
 
-                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Hari Hadir</span>
-                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]">
-                            <i class="fa-solid fa-user-check"></i>
+                <div class="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Hari Hadir</span>
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs shrink-0 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--color-primary)]">
+                            <i class="fa-solid fa-user-check text-[10px]"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${recap.totalWorkDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${recap.totalPresentDays} Tepat, ${recap.totalLateDays} Terlambat</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">${recap.totalWorkDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
+                    <p class="text-[9px] font-semibold text-slate-400 truncate">${recap.totalPresentDays} Tepat, ${recap.totalLateDays} Terlambat</p>
                 </div>
 
-                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Izin, Sakit &amp; Alpha</span>
-                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
-                            <i class="fa-solid fa-user-clock"></i>
+                <div class="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Izin, Sakit &amp; Alpha</span>
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs shrink-0 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--color-primary)]">
+                            <i class="fa-solid fa-user-clock text-[10px]"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${recap.totalPermitDays + recap.totalSickDays + recap.totalAlphaDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${recap.totalPermitDays} Izin, ${recap.totalSickDays} Sakit, ${recap.totalAlphaDays} Alpha</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">${recap.totalPermitDays + recap.totalSickDays + recap.totalAlphaDays} <span class="text-xs font-semibold text-slate-400">Hari</span></p>
+                    <p class="text-[9px] font-semibold text-slate-400 truncate">${recap.totalPermitDays} Iz, ${recap.totalSickDays} Sk, ${recap.totalAlphaDays} Al</p>
                 </div>
 
-                <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Hak Uang Makan</span>
-                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                <div class="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Hak Uang Makan</span>
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs shrink-0 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[var(--color-primary)]">
+                            <i class="fa-solid fa-hand-holding-dollar text-[10px]"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${fCur(recap.totalTeamAllowance)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Siap ditarik ke Payroll</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white font-mono tracking-tight">${fCur(recap.totalTeamAllowance)}</p>
+                    <p class="text-[9px] font-semibold text-slate-400 truncate">Siap ditarik ke Payroll</p>
                 </div>
             </div>
 
@@ -894,10 +891,10 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                     <input type="text" id="att-rekap-search" placeholder="Cari nama / jabatan..."
                         oninput="window.filterAttendanceRecapTable(this.value)"
-                        class="w-full h-10 min-h-[40px] pl-8 pr-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)]">
+                        class="w-full h-10 min-h-[40px] pl-8 pr-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)]">
                 </div>
-                <span class="px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 whitespace-nowrap">
-                    Total: <strong class="text-slate-800 dark:text-slate-200">${recap.totalMembers} Staf</strong>
+                <span class="h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 whitespace-nowrap flex items-center">
+                    Total: <strong class="text-slate-800 dark:text-slate-200 ml-1">${recap.totalMembers} Staf</strong>
                 </span>
             </div>
 
@@ -905,24 +902,25 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
             <div class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-2xs bg-white dark:bg-slate-800/60">
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-xs whitespace-nowrap">
-                        <thead class="bg-slate-50 dark:bg-slate-800/90 text-slate-500 dark:text-slate-400 font-black uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+                        <thead class="bg-slate-50 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 font-black uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
                             <tr>
-                                <th class="py-3 px-3 text-center w-10">No</th>
-                                <th class="py-3 px-3">Karyawan</th>
-                                <th class="py-3 px-2 text-center text-emerald-600">Hadir</th>
-                                <th class="py-3 px-2 text-center text-amber-500">Terlambat</th>
-                                <th class="py-3 px-2 text-center text-blue-500">Izin</th>
-                                <th class="py-3 px-2 text-center text-purple-500">Sakit</th>
-                                <th class="py-3 px-2 text-center text-rose-500">Alpha</th>
-                                <th class="py-3 px-3 text-center">Total Masuk</th>
-                                <th class="py-3 px-3 text-center">% Disiplin</th>
-                                <th class="py-3 px-3 text-right">Hak Tunjangan</th>
+                                <th class="py-2.5 px-3 text-center w-10">No</th>
+                                <th class="py-2.5 px-3">Karyawan</th>
+                                <th class="py-2.5 px-2 text-center">Hadir</th>
+                                <th class="py-2.5 px-2 text-center">Terlambat</th>
+                                <th class="py-2.5 px-2 text-center">Izin</th>
+                                <th class="py-2.5 px-2 text-center">Sakit</th>
+                                <th class="py-2.5 px-2 text-center">Alpha</th>
+                                <th class="py-2.5 px-3 text-center">Total Masuk</th>
+                                <th class="py-2.5 px-3 text-center">% Disiplin</th>
+                                <th class="py-2.5 px-3 text-right">Hak Tunjangan</th>
                             </tr>
                         </thead>
                         <tbody id="att-rekap-tbody" class="divide-y divide-slate-100 dark:divide-slate-700/60">
                             ${recap.items.map((it, idx) => {
                                 const rateClass = it.attendanceRate >= 95 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-300' : (it.attendanceRate >= 80 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-300');
                                 const isRowOwner = it.role === 'owner' || it.employeeId === 'OWN-001';
+                                const initials = esc((it.name || 'K').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase());
                                 const rowAvatar = isRowOwner 
                                     ? '<i class="fa-solid fa-crown text-amber-500 text-[10px]"></i>' 
                                     : initials;
@@ -944,36 +942,36 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-emerald-600 dark:text-emerald-400">${it.presentDays}</td>
-                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-amber-500">${it.lateDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-slate-800 dark:text-slate-100">${it.presentDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold ${it.lateDays > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'}">${it.lateDays}</td>
                                     <td class="py-2.5 px-2 text-center font-mono text-slate-500">${it.permitDays}</td>
                                     <td class="py-2.5 px-2 text-center font-mono text-slate-500">${it.sickDays}</td>
-                                    <td class="py-2.5 px-2 text-center font-mono font-bold text-rose-500">${it.alphaDays}</td>
+                                    <td class="py-2.5 px-2 text-center font-mono font-bold ${it.alphaDays > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">${it.alphaDays}</td>
                                     <td class="py-2.5 px-3 text-center font-mono font-black text-slate-800 dark:text-white">${it.totalWorkDays} Hari</td>
                                     <td class="py-2.5 px-3 text-center">
                                         <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border ${rateClass}">
                                             ${it.attendanceRate}%
                                         </span>
                                     </td>
-                                    <td class="py-2.5 px-3 text-right font-mono font-black text-emerald-600 dark:text-emerald-400">${fCur(it.totalAllowance)}</td>
+                                    <td class="py-2.5 px-3 text-right font-mono font-black text-slate-900 dark:text-white">${fCur(it.totalAllowance)}</td>
                                 </tr>`;
                             }).join('')}
                         </tbody>
                         <tfoot class="bg-slate-50 dark:bg-slate-800/90 font-black text-slate-800 dark:text-white border-t-2 border-slate-200 dark:border-slate-700">
                             <tr>
-                                <td colspan="2" class="py-3 px-3 text-right">TOTAL TIM (${recap.totalMembers} Staf):</td>
-                                <td class="py-3 px-2 text-center font-mono text-emerald-600">${recap.totalPresentDays}</td>
-                                <td class="py-3 px-2 text-center font-mono text-amber-500">${recap.totalLateDays}</td>
-                                <td class="py-3 px-2 text-center font-mono text-slate-500">${recap.totalPermitDays}</td>
-                                <td class="py-3 px-2 text-center font-mono text-slate-500">${recap.totalSickDays}</td>
-                                <td class="py-3 px-2 text-center font-mono text-rose-500">${recap.totalAlphaDays}</td>
-                                <td class="py-3 px-3 text-center font-mono">${recap.totalWorkDays} Hari</td>
-                                <td class="py-3 px-3 text-center">
-                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border bg-emerald-100 text-emerald-800 border-emerald-300">
+                                <td colspan="2" class="py-2.5 px-3 text-right font-black">TOTAL TIM (${recap.totalMembers} Staf):</td>
+                                <td class="py-2.5 px-2 text-center font-mono font-black">${recap.totalPresentDays}</td>
+                                <td class="py-2.5 px-2 text-center font-mono font-black ${recap.totalLateDays > 0 ? 'text-amber-600 dark:text-amber-400' : ''}">${recap.totalLateDays}</td>
+                                <td class="py-2.5 px-2 text-center font-mono font-black">${recap.totalPermitDays}</td>
+                                <td class="py-2.5 px-2 text-center font-mono font-black">${recap.totalSickDays}</td>
+                                <td class="py-2.5 px-2 text-center font-mono font-black ${recap.totalAlphaDays > 0 ? 'text-rose-600 dark:text-rose-400' : ''}">${recap.totalAlphaDays}</td>
+                                <td class="py-2.5 px-3 text-center font-mono font-black">${recap.totalWorkDays} Hari</td>
+                                <td class="py-2.5 px-3 text-center">
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black border ${recap.avgAttendanceRate >= 90 ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300'}">
                                         ${recap.avgAttendanceRate}%
                                     </span>
                                 </td>
-                                <td class="py-3 px-3 text-right font-mono text-emerald-600">${fCur(recap.totalTeamAllowance)}</td>
+                                <td class="py-2.5 px-3 text-right font-mono font-black text-slate-900 dark:text-white">${fCur(recap.totalTeamAllowance)}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -992,12 +990,12 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
                 <i class="fa-solid fa-file-excel text-emerald-600 text-xs"></i>
                 <span>Ekspor CSV</span>
             </button>
-            <button onclick="window.printMonthlyAttendanceA4('${yearMonth}')"
+            <button onclick="window.openDocPreview ? window.openDocPreview('attendance_recap', '${yearMonth}') : window.printMonthlyAttendanceA4('${yearMonth}')"
                 class="btn-native-action flex-1 min-h-[44px] px-3.5 sm:px-5 rounded-xl text-white font-black text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                 style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                <i class="fa-solid fa-print text-xs"></i>
-                <span class="hidden sm:inline">Cetak Rekap A4</span>
-                <span class="sm:hidden">Cetak A4</span>
+                <i class="fa-solid fa-file-invoice text-xs"></i>
+                <span class="hidden sm:inline">Pratinjau &amp; Cetak A4</span>
+                <span class="sm:hidden">Preview A4</span>
             </button>
         </div>
     </div>`;
@@ -1128,6 +1126,10 @@ export const exportMonthlyAttendanceCSV = (yearMonth = new Date().toISOString().
  * ─── Cetak Dokumen Rekapitulasi Presensi Standar A4 Landscape ───
  */
 export const printMonthlyAttendanceA4 = (yearMonth = new Date().toISOString().slice(0, 7)) => {
+    if (typeof window !== 'undefined' && typeof window.openDocPreview === 'function') {
+        window.openDocPreview('attendance_recap', yearMonth);
+        return;
+    }
     const recap = calculateMonthlyTeamAttendanceRecap(yearMonth);
     const store = appData.store || { name: 'TOKO PUTRI UTAMA TEKNIK' };
     const datePrinted = new Date().toLocaleDateString('id-ID', {
