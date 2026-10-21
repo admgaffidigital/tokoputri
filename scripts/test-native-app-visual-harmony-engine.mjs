@@ -118,6 +118,32 @@ test('Viewport & layout sections memiliki proteksi overflow-x: hidden', () => {
     assert(styleCss.includes('overflow-x: hidden !important'), 'Proteksi mutlak anti bocor horizontal');
 });
 
+// 7. Modals Spesifik (POS Pembayaran Kasir & Barcode Label Modal)
+console.log('\n💳 7. Uji Kasir POS & Cetak Label Barcode Native App Harmony:');
+const POS_JS_PATH = path.join(ROOT_DIR, 'src', 'modules', 'pos', 'pos.js');
+assert(fs.existsSync(POS_JS_PATH), 'pos.js harus tersedia');
+const posJs = fs.readFileSync(POS_JS_PATH, 'utf-8');
+
+const BARCODE_MODAL_PATH = path.join(ROOT_DIR, 'src', 'modules', 'admin', 'products', 'barcode-label-modal.js');
+assert(fs.existsSync(BARCODE_MODAL_PATH), 'barcode-label-modal.js harus tersedia');
+const barcodeModalJs = fs.readFileSync(BARCODE_MODAL_PATH, 'utf-8');
+
+test('Modal POS Pembayaran Kasir memiliki pull-indicator, rounded-t-[2rem], dan layout proporsional', () => {
+    assert(posJs.includes('pull-indicator w-12 h-1.5'), 'Pull indicator handle terpasang di modal POS');
+    assert(posJs.includes('modal-bottom-sheet'), 'Menggunakan arsitektur modal-bottom-sheet');
+    assert(posJs.includes('rounded-t-[2rem]'), 'Squircle 2rem pada mobile');
+    assert(posJs.includes('id="pos-change-box"'), 'Kembalian box tersedia');
+    assert(styleCss.includes('#pos-paid-input'), 'CSS kontras tinggi pos-paid-input terpasang di style.css');
+});
+
+test('Modal Cetak Label Barcode anti-wrap pada SKU dan responsif pada mobile', () => {
+    assert(barcodeModalJs.includes('pull-indicator w-12 h-1.5'), 'Pull indicator handle terpasang di barcode modal');
+    assert(barcodeModalJs.includes('whitespace-nowrap'), 'SKU terlindungi dari pemotongan hyphen (whitespace-nowrap)');
+    assert(barcodeModalJs.includes('flex flex-col sm:flex-row'), 'Baris item varian fleksibel responsif mobile-desktop');
+    assert(barcodeModalJs.includes('RawBT<span class="hidden sm:inline"> / Bluetooth</span>'), 'Tombol RawBT ringkas di layar kecil');
+    assert(styleCss.includes('#modal-product-barcode-label .font-mono'), 'CSS anti-wrap font-mono terpasang di style.css');
+});
+
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passCount} Passed, 0 Failed`);
 console.log('✨ SELURUH APLIKASI SUDAH 100% NATIVE APP HARMONY & PROPOSIONAL! ✅');

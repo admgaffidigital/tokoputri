@@ -6529,3 +6529,35 @@ html, body, #app-container, #view-admin, .view-section {
     overflow-x: hidden !important;
 }
 
+/* High Contrast POS Payment Input Guarantee */
+#pos-paid-input {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.025em !important;
+}
+html.dark #pos-paid-input {
+    color: #ffffff !important;
+    background-color: #1e293b !important;
+}
+#pos-paid-input::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.8 !important;
+    font-weight: 700 !important;
+}
+html.dark #pos-paid-input::placeholder {
+    color: #64748b !important;
+    opacity: 0.8 !important;
+    font-weight: 700 !important;
+}
+
+/* SKU Anti-Wrap Guarantee Across All Modals & Labels */
+.sku-badge,
+[id*="barcode-"] .font-mono,
+#modal-product-barcode-label .font-mono {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+}
+
+

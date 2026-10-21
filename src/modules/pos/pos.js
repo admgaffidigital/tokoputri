@@ -2389,7 +2389,10 @@ export const openPayModal = () => {
 
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-pay-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4" style="background:rgba(15,23,42,0.75)">
-      <div class="bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-md max-h-[94vh] flex flex-col overflow-hidden border border-slate-200/80 dark:border-slate-800">
+      <div class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full sm:max-w-md max-h-[94vh] flex flex-col overflow-hidden border border-slate-200/80 dark:border-slate-800">
+        <!-- Top Pull Indicator for Native Mobile -->
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto mt-2.5 mb-1 sm:hidden shrink-0"></div>
+
         <!-- Header -->
         <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
           <div>
@@ -2406,7 +2409,7 @@ export const openPayModal = () => {
         </div>
 
         <!-- Body Scrollable -->
-        <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+        <div class="p-4 sm:p-5 pb-8 sm:pb-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
           <!-- Pilih Pelanggan -->
           <div>
             <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Tipe Pelanggan</label>
@@ -2434,9 +2437,9 @@ export const openPayModal = () => {
         </div>
 
         <!-- Footer -->
-        <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex gap-2.5 shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
-          <button onclick="window.closePayModal()" class="w-1/3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
-          <button onclick="window.processPOSTx()" id="pos-process-btn" class="w-2/3 py-3 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+        <div class="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-slate-100 dark:border-slate-800 flex gap-2.5 shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
+          <button onclick="window.closePayModal()" class="w-1/3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
+          <button onclick="window.processPOSTx()" id="pos-process-btn" class="w-2/3 py-3 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb),0.35)">
             <i class="fa-solid fa-check-circle"></i>
             <span>Selesaikan Transaksi</span>
           </button>
@@ -2547,23 +2550,44 @@ const renderPayDetail = (method) => {
             { label: '500.000', val: 500000 }
         ];
 
-        const quickBtns = quickAmounts.map(q => `
+        const quickBtns = quickAmounts.map(q => {
+            const isPas = q.isPas;
+            const isSelected = isPas ? (posPaidAmount === total) : (posPaidAmount === q.val);
+            return `
             <button onclick="window.posSetQuickCash(${q.val})" type="button"
-                class="px-3 py-2 min-h-[38px] rounded-xl text-xs font-black border transition-all active:scale-95 flex items-center justify-center ${q.isPas ? 'text-white border-transparent shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]'}"
-                style="${q.isPas ? 'background:var(--color-primary)' : ''}">
-                ${q.isPas ? '<i class="fa-solid fa-money-bill-wave mr-1.5 text-emerald-400"></i> Uang Pas' : `Rp ${q.label}`}
+                id="pos-quick-cash-${q.val}"
+                class="pos-quick-btn px-2.5 sm:px-3 py-2 min-h-[40px] rounded-xl text-xs font-black border transition-all active:scale-95 flex items-center justify-center cursor-pointer ${isSelected ? 'text-white border-transparent shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]'}"
+                style="${isSelected ? 'background:var(--color-primary)' : ''}">
+                ${isPas ? '<i class="fa-solid fa-money-bill-wave mr-1.5 text-emerald-300"></i> Uang Pas' : `Rp ${q.label}`}
             </button>
-        `).join('');
+            `;
+        }).join('');
 
         d.innerHTML = `
             ${topRow}
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Nominal Uang Diterima (Rp)</label>
-                <div class="relative">
-                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-black text-slate-400">Rp</span>
-                    <input id="pos-paid-input" type="number" min="0" placeholder="${total}" value="${posPaidAmount || ''}"
-                        class="w-full border-2 rounded-2xl pl-10 pr-4 py-2.5 text-base sm:text-lg font-black bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none text-right transition-all"
-                        style="border-color:var(--color-primary)" oninput="window.updatePosChange(this.value)">
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1 block">Nominal Uang Diterima (Rp)</label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-black text-slate-500 dark:text-slate-400 select-none">Rp</span>
+                        <input id="pos-paid-input" type="number" min="0" placeholder="${total}" value="${posPaidAmount || total}"
+                            class="w-full border-2 rounded-2xl pl-12 pr-4 py-3 text-lg font-black bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none text-right transition-all tracking-wide shadow-xs"
+                            style="border-color: var(--color-primary);"
+                            oninput="window.updatePosChange(this.value)">
+                    </div>
+                </div>
+
+                <!-- Kembalian Box (Tepat di Bawah Input Nominal agar Kasir Cepat Melihat) -->
+                <div id="pos-change-box" class="p-3.5 rounded-2xl border transition-all flex items-center justify-between ${posPaidAmount >= total ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'}">
+                    <div>
+                        <p class="text-[9px] font-black uppercase tracking-wider text-slate-400">Status Kembalian</p>
+                        <p id="pos-change-label" class="text-xs font-black ${posPaidAmount >= total ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
+                            ${posPaidAmount >= total ? 'Kembalian Uang Pembeli:' : 'Uang Masih Kurang:'}
+                        </p>
+                    </div>
+                    <span id="pos-change-display" class="text-lg font-black ${posPaidAmount >= total ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                        ${fRp(Math.abs(posChange()))}
+                    </span>
                 </div>
 
                 <!-- Quick Cash Buttons Grid -->
@@ -2572,19 +2596,6 @@ const renderPayDetail = (method) => {
                     <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
                         ${quickBtns}
                     </div>
-                </div>
-
-                <!-- Kembalian Box -->
-                <div id="pos-change-box" class="mt-2.5 p-3 rounded-2xl border transition-all flex items-center justify-between ${posPaidAmount >= total ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'}">
-                    <div>
-                        <p class="text-[9px] font-black uppercase tracking-wider text-slate-400">Status Kembalian</p>
-                        <p id="pos-change-label" class="text-xs font-bold ${posPaidAmount >= total ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
-                            ${posPaidAmount >= total ? 'Kembalian Uang Pembeli:' : 'Uang Masih Kurang:'}
-                        </p>
-                    </div>
-                    <span id="pos-change-display" class="text-base font-black ${posPaidAmount >= total ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
-                        ${fRp(Math.abs(posChange()))}
-                    </span>
                 </div>
             </div>
         `;
@@ -2901,10 +2912,10 @@ export const updatePosChange = (val) => {
     if (c) c.textContent = fRp(Math.abs(change));
     if (lbl) lbl.textContent = change >= 0 ? 'Kembalian Uang Pembeli:' : 'Uang Masih Kurang:';
     if (c) {
-        c.className = `text-base font-black ${change >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
+        c.className = `text-lg font-black ${change >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
     }
     if (box) {
-        box.className = `mt-2.5 p-3 rounded-2xl border transition-all flex items-center justify-between ${change >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'}`;
+        box.className = `p-3.5 rounded-2xl border transition-all flex items-center justify-between ${change >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'}`;
     }
     if (procBtn && posPayMethod === 'cash') {
         procBtn.disabled = change < 0;
@@ -2917,6 +2928,20 @@ export const posSetQuickCash = (val) => {
     if (inp) {
         inp.value = val;
         updatePosChange(val);
+        document.querySelectorAll('.pos-quick-btn').forEach(btn => {
+            const isMatch = btn.id === `pos-quick-cash-${val}`;
+            if (isMatch) {
+                btn.style.background = 'var(--color-primary)';
+                btn.style.color = '#ffffff';
+                btn.classList.add('shadow-xs');
+                btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.classList.remove('shadow-xs');
+                btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+            }
+        });
         if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     }
 };

@@ -198,8 +198,11 @@ export const renderBarcodeLabelModalContent = () => {
         : '';
 
     container.innerHTML = `
+        <!-- PULL INDICATOR UNTUK NATIVE MOBILE BOTTOM SHEET -->
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto mt-2.5 mb-1 sm:hidden shrink-0"></div>
+
         <!-- 1. HEADER MODAL (SOLID PINNED) -->
-        <div class="shrink-0 px-5 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
+        <div class="shrink-0 px-5 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-barcode"></i>
@@ -224,7 +227,7 @@ export const renderBarcodeLabelModalContent = () => {
         </div>
 
         <!-- 2. BODY UTAMA (2-KOLOM RESPONSIVE INDEPENDENT SCROLL) -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 p-4 sm:p-6 bg-slate-50/60 dark:bg-slate-950/40">
+        <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 p-4 sm:p-6 pb-8 sm:pb-6 bg-slate-50/60 dark:bg-slate-950/40">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
                 
                 <!-- KOLOM KIRI: KONFIGURASI VARIAN, KUANTITAS & KERTAS (7 DARI 12) -->
@@ -309,41 +312,44 @@ export const renderBarcodeLabelModalContent = () => {
                                 const rowBorderClass = isInspected ? 'shadow-2xs' : 'border-slate-200/90 dark:border-slate-700/80 bg-slate-50/40 dark:bg-slate-800/40 hover:border-slate-300';
                                 const rowStyle = isInspected ? 'background: rgba(var(--color-primary-rgb), 0.05); border: 1.5px solid var(--color-primary);' : '';
                                 return `
-                                    <div class="p-3 sm:p-3.5 rounded-xl border transition-all ${rowBorderClass}" style="${rowStyle} display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
-                                        <div class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1" onclick="window.selectBarcodePreviewIndex(${idx})">
+                                    <div class="p-3 sm:p-3.5 rounded-xl border transition-all ${rowBorderClass} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3" style="${rowStyle}">
+                                        <div class="flex items-start sm:items-center gap-2.5 min-w-0 cursor-pointer flex-1" onclick="window.selectBarcodePreviewIndex(${idx})">
                                             ${it.hex ? `
-                                                <div class="w-5 h-5 rounded-full border border-slate-300 shadow-2xs shrink-0" style="background-color: ${esc(it.hex)}"></div>
+                                                <div class="w-5 h-5 rounded-full border border-slate-300 shadow-2xs shrink-0 mt-0.5 sm:mt-0" style="background-color: ${esc(it.hex)}"></div>
                                             ` : `
-                                                <div class="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-500 font-bold shrink-0">
+                                                <div class="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-500 font-bold shrink-0 mt-0.5 sm:mt-0">
                                                     #${idx + 1}
                                                 </div>
                                             `}
                                             <div class="min-w-0 flex-1">
                                                 <div class="flex items-center gap-1.5 flex-wrap">
-                                                    <span class="text-xs font-black text-slate-800 dark:text-white truncate">
+                                                    <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-white line-clamp-1 sm:line-clamp-2">
                                                         ${esc(it.variantName || it.name)}
                                                     </span>
-                                                    ${isInspected ? `<span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase text-white shadow-2xs" style="background: var(--color-primary);">Preview</span>` : ''}
+                                                    ${isInspected ? `<span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase text-white shadow-2xs shrink-0" style="background: var(--color-primary);">Preview</span>` : ''}
                                                 </div>
-                                                <div class="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
-                                                    <span class="font-mono font-bold text-slate-600 dark:text-slate-300">${esc(it.sku)}</span>
-                                                    <span>•</span>
-                                                    <span>${fCur(it.price)}</span>
-                                                    <span>•</span>
-                                                    <span>Stok: <b>${it.stock}</b></span>
+                                                <div class="flex items-center gap-1.5 sm:gap-2 text-[10.5px] text-slate-400 font-medium flex-wrap mt-0.5">
+                                                    <span class="font-mono font-bold text-slate-700 dark:text-slate-200 whitespace-nowrap bg-slate-100 dark:bg-slate-700/60 px-1.5 py-0.5 rounded">${esc(it.sku)}</span>
+                                                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                    <span class="font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">${fCur(it.price)}</span>
+                                                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                    <span class="whitespace-nowrap">Stok: <b class="text-slate-800 dark:text-slate-100 font-bold">${it.stock}</b></span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- STEPPER KUANTITAS ERGONOMIS SENTUH -->
-                                        <div class="flex items-center gap-1.5 shrink-0">
-                                            <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, -1)" class="btn-native-icon w-9 h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Kurangi 1">
-                                                <i class="fa-solid fa-minus text-[11px]"></i>
-                                            </button>
-                                            <input type="number" id="barcode-qty-input-${idx}" min="0" max="999" value="${it.qty}" oninput="window.setBarcodeLabelQtyDirect(${idx}, this.value, true)" onchange="window.setBarcodeLabelQtyDirect(${idx}, this.value, false)" class="w-14 h-9 text-center font-mono font-black text-sm border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
-                                            <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, 1)" class="btn-native-icon w-9 h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Tambah 1">
-                                                <i class="fa-solid fa-plus text-[11px]"></i>
-                                            </button>
+                                        <div class="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
+                                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 sm:hidden">Jumlah Label:</span>
+                                            <div class="flex items-center gap-1.5">
+                                                <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, -1)" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Kurangi 1">
+                                                    <i class="fa-solid fa-minus text-[11px]"></i>
+                                                </button>
+                                                <input type="number" id="barcode-qty-input-${idx}" min="0" max="999" value="${it.qty}" oninput="window.setBarcodeLabelQtyDirect(${idx}, this.value, true)" onchange="window.setBarcodeLabelQtyDirect(${idx}, this.value, false)" class="w-12 sm:w-14 h-8 sm:h-9 text-center font-mono font-black text-sm border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] shadow-2xs">
+                                                <button type="button" onclick="window.adjustBarcodeLabelQty(${idx}, 1)" class="btn-native-icon w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition-all cursor-pointer active:scale-95 shadow-2xs" title="Tambah 1">
+                                                    <i class="fa-solid fa-plus text-[11px]"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 `;
@@ -471,24 +477,24 @@ export const renderBarcodeLabelModalContent = () => {
         </div>
 
         <!-- 3. FOOTER MODAL (SOLID PINNED / MULTI-ACTION) -->
-        <div class="shrink-0 px-4 sm:px-6 py-3.5 sm:py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3 z-10">
+        <div class="shrink-0 px-4 sm:px-6 py-3 sm:py-4 pb-[max(0.875rem,env(safe-area-inset-bottom))] border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 z-10">
             <div class="text-xs text-slate-500 dark:text-slate-400 font-bold hidden sm:block">
                 <span>Siap dicetak ke printer label thermal USB/Bluetooth atau printer A4 biasa.</span>
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto">
-                <button type="button" onclick="window.closeProductBarcodeLabelModal()" class="h-11 sm:h-12 px-3.5 sm:px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95 shrink-0 flex items-center justify-center">
+                <button type="button" onclick="window.closeProductBarcodeLabelModal()" class="h-11 sm:h-12 px-3 sm:px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95 shrink-0 flex items-center justify-center">
                     Batal
                 </button>
 
-                <button type="button" onclick="window.printBarcodeLabelsThermalRawbt()" class="flex-1 sm:flex-initial h-11 sm:h-12 px-3.5 sm:px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition-all active:scale-95 shadow-xs flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap" title="Cetak via Thermal Bluetooth / RawBT">
+                <button type="button" onclick="window.printBarcodeLabelsThermalRawbt()" class="flex-1 sm:flex-initial h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition-all active:scale-95 shadow-xs flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap" title="Cetak via Thermal Bluetooth / RawBT">
                     <i class="fa-solid fa-satellite-dish text-xs"></i>
-                    <span>RawBT / Bluetooth</span>
+                    <span>RawBT<span class="hidden sm:inline"> / Bluetooth</span></span>
                 </button>
 
-                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="btn-native-action flex-1 sm:flex-initial h-11 sm:h-12 px-4 sm:px-6 rounded-xl text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="btn-native-action flex-1 sm:flex-initial h-11 sm:h-12 px-3.5 sm:px-6 rounded-xl text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-print text-xs"></i>
-                    <span id="barcode-label-print-btn-text">Cetak Sekarang (${totalLabelsCount})</span>
+                    <span id="barcode-label-print-btn-text">Cetak<span class="hidden sm:inline"> Sekarang</span> (${totalLabelsCount})</span>
                 </button>
             </div>
         </div>
@@ -529,7 +535,7 @@ export const updateBarcodeLabelQtySummaryOnly = () => {
     if (elA4) elA4.textContent = `${a4SheetsNeeded} Lembar (${a4PerSheet} label/lembar)`;
 
     const elBtnText = el('barcode-label-print-btn-text');
-    if (elBtnText) elBtnText.textContent = `Cetak Sekarang (${totalLabelsCount})`;
+    if (elBtnText) elBtnText.innerHTML = `Cetak<span class="hidden sm:inline"> Sekarang</span> (${totalLabelsCount})`;
 };
 
 export const adjustBarcodeLabelQty = (idx, delta) => {
