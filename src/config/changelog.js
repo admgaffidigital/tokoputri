@@ -16,6 +16,24 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-20-0",
+        "version": "v1.20.0",
+        "date": "2026-10-24",
+        "title": "Industrial Neo-Brutalism & Full Native App Experience untuk Ekosistem Perkakas & Toko Bahan Bangunan",
+        "category": "feature",
+        "badge": "Industrial Neo-Brutalism & Full Native App Engine v1.20.0",
+        "items": [
+            "Industrial Neo-Brutalism & Full Native App Engine (v1.20.0): Penyelarasan identitas visual toko perkakas teknik & bahan bangunan (heavy-duty, kokoh, tahan banting, presisi) dengan 2px solid charcoal outlines, zero-blur hard offset shadows (2.5px), dan aksen safety K3 (kuning peringatan, oranye industri, hijau SNI).",
+            "Sensasi Tekan Taktil Saklar Mekanikal (Mechanical Switch Feedback): Mengintegrasikan respon tekan instan (active: translate(2px, 2px)) pada tombol aksi utama, tuts kasir, dan kartu produk, memberikan rasa klik fisik seperti saklar mesin perkakas asli di layar sentuh smartphone.",
+            "Integrasi Storefront & Etalase Pelanggan: Menghadirkan aksen pita proyek (hazard caution stripes) pada hero banner & promo kilat, kartu produk bento modular bergaris tebal 2px (.neo-card), serta stiker label rak gudang (.neo-badge) untuk varian, grosir, dan satuan barang.",
+            "Penyempurnaan Layar POS Kasir & Transaksi Cepat: Tombol tipe pelanggan (Umum, Member, Tempo), tuts nominal pecahan cepat (Rp 10rb s.d. Uang Pas), kotak status kembalian (.neo-box), dan tombol proses transaksi F4 (.neo-btn) tampil tebal, kontras tinggi, dan nyaman dioperasikan satu jempol.",
+            "CMS Admin Bento Island: Seluruh kartu ringkasan likuiditas arus kas harian dan master template presets otomatis terharmonisasi dengan styling bento industrial kokoh.",
+            "Isolasi Keamanan Cetak Thermal & Dokumen A4 Resmi: Penjaminan mutlak bahwa hard shadow CSS diisolasi penuh (@media print) sehingga cetakan kertas struk thermal kasir dan PDF A4 tetap 100% putih bersih, pekat, dan hemat ribbon/kertas.",
+            "Suite Unit Test Baru test-industrial-neo-brutalism.mjs (22 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
+            "Multi-Channel Distribution v1.20.0 (Android versionCode 12000 & Windows x64)."
+        ]
+    },
+    {
         "id": "log-1-19-7",
         "version": "v1.19.7",
         "date": "2026-10-21",
@@ -83,25 +101,6 @@ export const DEFAULT_CHANGELOG = [
             "Stabilisasi Jaringan Cloud Firestore (Anti-ERR_QUIC_PROTOCOL_ERROR): Mengunci komunikasi data Firestore WebChannel ke standard HTTPS TCP Port 443 via experimentalForceLongPolling, mengeliminasi pemutusan sesi UDP/QUIC dan HTTP 400 Bad Request pada jaringan internet ISP/WiFi lokal sehingga sinkronisasi kasir berjalan 100% hening dan stabil.",
             "Suite Unit Test test-master-presets-persistence.mjs, test-master-product-presets.mjs & test-pos-header-responsive.mjs (87 pengujian) 100% Passed.",
             "Multi-Channel Distribution v1.19.4 (Android versionCode 11904)."
-        ]
-    },
-    {
-        "id": "log-1-19-3",
-        "version": "v1.19.3",
-        "date": "2026-10-20",
-        "title": "Universal Harmony Engine: Penyelarasan Border Radius Tombol, Badge Anti-Wrap & Anti-Bloat, dan Konsistensi Wadah Ikon (Icon Pods)",
-        "category": "optimization",
-        "badge": "Universal UI Harmony & Consistency Engine v1.19.3",
-        "items": [
-            "Universal Badge Anti-Wrap & Anti-Bloat Engine: Menstandarkan seluruh badge status dan info pill di seluruh aplikasi (Pesanan, Supplier, Kulakan PO, Retur, dan Tempo) dengan white-space: nowrap !important, line-height: 1.15, max-height 26px, dan letter-spacing proporsional, mengeliminasi teks bertumpuk atau mekar menggembung secara tuntas.",
-            "Hierarki Border Radius Tombol Selaras: Mengunci seluruh tombol aksi ke sistem squircle terstandar: Tombol Utama/CTA/Submit (1rem / 16px), Tombol Sekunder/Filter Chiclet/Tab (0.75rem / 12px), Tombol Aksi Kompak (0.75rem / 12px), dan Micro Action/Drag Handle (0.5rem / 8px).",
-            "Standarisasi Wadah Ikon (Icon Pods): Menyelaraskan border radius seluruh wadah ikon berdasarkan dimensi (Large 56-64px ke 16px squircle, Medium 40-48px ke 14px, Compact/Stat 32-36px ke 12px, dan Small 24-28px ke 8px) dengan proteksi aspect-ratio 1:1 anti-gepeng.",
-            "Penyelarasan Proporsional Tombol Sinkronasi (Segarkan) & Widget Arus Kas: Menetralkan aspect-ratio paksaan pada tombol yang memiliki teks responsif (w-auto / aspect-auto) dan mengunci ukuran tombol header CMS (#btn-admin-refresh) di mobile ke 32x32px (1:1 squircle) serasi sempurna dengan tombol theme toggle dan tombol aksi lainnya, serta menyelaraskan ikon Segarkan arus kas dengan fa-arrows-rotate text-xs terpusat anti-gepeng.",
-            "Restrukturisasi Header POS Kasir Native Mobile App: Mengeliminasi kebocoran elemen desktop (Live Clock WIB, Badge Online, USB Scanner Aktif) pada layar HP (<xl) dengan proteksi display: none !important mutlak di CSS, menghadirkan tampilan header POS kasir yang 100% Native Mobile App: lapang, nama toko & kasir tampil utuh tanpa terpotong, serta tombol menu opsi kasir [ ⋮ ] dan antrean parkir tampil proporsional di sisi kanan.",
-            "Pemulihan Presisi Antarmuka POS Kasir: Mengembalikan placeholder asli kasir 'Cari nama, SKU, barcode... [F2]' lengkap dengan shortcut, teks tombol scan kamera 'Scan (F9)' pada tablet/desktop, dan menetralkan aspect-ratio tombol parkir antrean serta stepper kuantitas keranjang sehingga antarmuka POS kasir kembali 100% identik dengan aslinya.",
-            "Eliminasi Total White-on-White Icon Pods Pengaturan Toko: Memperbaiki selector penentralan gradient di style.css yang sebelumnya secara tidak sengaja menimpa wadah icon pod bertema toko menjadi latar abu-abu pudar (#f8fafc) di Light Mode, serta mengunci seluruh wadah ikon kartu Pengaturan Toko (Profil, Katalog, Pengiriman, Pembayaran, Sistem, Operasional, Printer, Backup) ke solid background-color: var(--color-primary) dengan ikon putih kontras tinggi yang tajam dan jelas.",
-            "Suite Unit Test Baru test-button-badge-icon-harmony.mjs (42 pengujian) dan test-pos-header-responsive.mjs (28 pengujian) 100% Passed dan terintegrasi otomatis ke audit kesehatan sistem.",
-            "Multi-Channel Distribution v1.19.3 (Android versionCode 11903)."
         ]
     }
 ];
@@ -178,7 +177,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.19.7';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.20.0';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

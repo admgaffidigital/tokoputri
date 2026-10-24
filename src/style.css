@@ -6582,5 +6582,210 @@ html.dark #pos-paid-input::placeholder {
     text-overflow: ellipsis;
 }
 
+/* ============================================================
+   INDUSTRIAL NEO-BRUTALISM & FULL NATIVE APP ENGINE — v1.20.0
+   Penyelarasan estetika industrial perkakas teknik & bahan bangunan:
+   1. Heavy-duty 2px solid outlines & zero-blur hard offset shadows.
+   2. Mechanical switch tactile feedback (active: translate(1.5px, 1.5px)).
+   3. Industrial label badges (monospace uppercase, SKU plates).
+   4. High-contrast safety accents (warning yellow, hazard orange, safety green).
+   5. Thermal print isolation & zero shadow leak guarantee.
+   ============================================================ */
 
+:root {
+    --neo-border-width: 2px;
+    --neo-border-color: #0f172a;
+    --neo-border-color-dark: #334155;
+    --neo-shadow-sm: 1.5px 1.5px 0px #0f172a;
+    --neo-shadow-md: 2.5px 2.5px 0px #0f172a;
+    --neo-shadow-lg: 3.5px 3.5px 0px #0f172a;
+    --neo-shadow-dark-sm: 1.5px 1.5px 0px #000000;
+    --neo-shadow-dark-md: 2.5px 2.5px 0px #000000;
+    --neo-shadow-dark-lg: 3.5px 3.5px 0px #000000;
+    --neo-hazard-yellow: #facc15;
+    --neo-hazard-orange: #f97316;
+    --neo-safety-green: #16a34a;
+}
 
+/* 1. Industrial Neo-Brutalist Box & Cards */
+.neo-box {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important; /* 14px modern squircle */
+    background-color: #ffffff;
+    box-sizing: border-box !important;
+}
+html.dark .neo-box {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: #1e293b;
+}
+
+.neo-card,
+.catalog-product-card,
+.bento-island-card {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.15s ease,
+                border-color 0.15s ease !important;
+    box-sizing: border-box !important;
+}
+html.dark .neo-card,
+html.dark .catalog-product-card,
+html.dark .bento-island-card {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .neo-card:hover,
+    .catalog-product-card:hover,
+    .bento-island-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 3.5px 3.5px 0px #0f172a !important;
+        border-color: #0f172a !important;
+    }
+    html.dark .neo-card:hover,
+    html.dark .catalog-product-card:hover,
+    html.dark .bento-island-card:hover {
+        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        border-color: #475569 !important;
+    }
+}
+
+@media (hover: none) {
+    .neo-card:hover,
+    .catalog-product-card:hover,
+    .bento-island-card:hover {
+        transform: none !important;
+    }
+}
+
+/* 2. Mechanical Tactile Button Switch Engine */
+.neo-btn {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.75rem !important; /* 12px squircle */
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+    touch-action: manipulation;
+    min-height: 2.75rem !important; /* 44px golden touch target */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box !important;
+    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
+}
+html.dark .neo-btn {
+    border-color: #475569 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+.neo-btn:active:not(:disabled) {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark .neo-btn:active:not(:disabled) {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* Enhancing .btn-catalog-action with Industrial Mechanical Tactile Switch */
+.btn-catalog-action {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
+}
+html.dark .btn-catalog-action {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+.btn-catalog-action:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark .btn-catalog-action:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* 3. Industrial Serial Plate Badges & SKU Stickers */
+.neo-badge {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.5rem !important; /* 8px squircle */
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.035em !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    line-height: 1.15 !important;
+    box-sizing: border-box !important;
+}
+html.dark .neo-badge {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* 4. Industrial High-Contrast Input Form Fields */
+.neo-input {
+    border: 2px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    min-height: 2.75rem !important;
+    box-sizing: border-box !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.neo-input:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    outline: none !important;
+}
+html.dark .neo-input {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+html.dark .neo-input:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+/* 5. Industrial Hazard Caution Stripe (Garis Pita Proyek) */
+.neo-hazard-stripe {
+    background: repeating-linear-gradient(
+        -45deg,
+        #facc15,
+        #facc15 10px,
+        #0f172a 10px,
+        #0f172a 20px
+    ) !important;
+}
+.neo-hazard-stripe-subtle {
+    background: repeating-linear-gradient(
+        -45deg,
+        rgba(250, 204, 21, 0.25),
+        rgba(250, 204, 21, 0.25) 8px,
+        rgba(15, 23, 42, 0.1) 8px,
+        rgba(15, 23, 42, 0.1) 16px
+    ) !important;
+}
+
+/* 6. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak) */
+@media print {
+    .neo-box,
+    .neo-card,
+    .neo-btn,
+    .neo-badge,
+    .neo-input,
+    .catalog-product-card,
+    .bento-island-card,
+    .btn-catalog-action,
+    #thermal-receipt,
+    #thermal-receipt *,
+    .receipt-content,
+    .receipt-content *,
+    #doc-preview-modal,
+    #doc-preview-modal * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}

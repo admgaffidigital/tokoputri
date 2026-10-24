@@ -2414,12 +2414,12 @@ export const openPayModal = () => {
           <div>
             <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Tipe Pelanggan</label>
             <div class="grid grid-cols-3 gap-2 mb-2.5">
-              <button onclick="window.setPosCustomerType('umum')" id="pos-ctype-umum" type="button" class="flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border transition-all cursor-pointer shadow-xs" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-user text-base leading-none mb-1 text-center"></i><span>Umum</span></button>
-              <button onclick="window.setPosCustomerType('member')" id="pos-ctype-member" type="button" class="flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-id-card text-base leading-none mb-1 text-center"></i><span>Member</span></button>
-              <button onclick="window.setPosCustomerType('tempo')" id="pos-ctype-tempo" type="button" class="flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-hourglass-half text-base leading-none mb-1 text-center"></i><span>Tempo</span></button>
+              <button onclick="window.setPosCustomerType('umum')" id="pos-ctype-umum" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border transition-all cursor-pointer shadow-xs" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-user text-base leading-none mb-1 text-center"></i><span>Umum</span></button>
+              <button onclick="window.setPosCustomerType('member')" id="pos-ctype-member" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-id-card text-base leading-none mb-1 text-center"></i><span>Member</span></button>
+              <button onclick="window.setPosCustomerType('tempo')" id="pos-ctype-tempo" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-hourglass-half text-base leading-none mb-1 text-center"></i><span>Tempo</span></button>
             </div>
             <div id="pos-customer-fields">
-              <input id="pos-cust-name" type="text" placeholder="Nama pembeli (opsional)" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white">
+              <input id="pos-cust-name" type="text" placeholder="Nama pembeli (opsional)" class="neo-input w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white">
             </div>
           </div>
 
@@ -2427,10 +2427,10 @@ export const openPayModal = () => {
           <div>
             <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Metode Pembayaran</label>
             <div class="grid grid-cols-4 gap-1.5 mb-3">
-              <button onclick="window.setPosPayMethod('cash')" id="pos-pay-cash" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border transition-all cursor-pointer shadow-xs" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-money-bill-wave text-base leading-none mb-1 text-center"></i><span>Tunai</span></button>
-              <button onclick="window.setPosPayMethod('qris')" id="pos-pay-qris" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-qrcode text-base leading-none mb-1 text-center"></i><span>QRIS</span></button>
-              <button onclick="window.setPosPayMethod('transfer')" id="pos-pay-transfer" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-building-columns text-base leading-none mb-1 text-center"></i><span>Bank</span></button>
-              <button onclick="window.setPosPayMethod('tempo')" id="pos-pay-tempo" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-hourglass-half text-base leading-none mb-1 text-center"></i><span>Tempo</span></button>
+              <button onclick="window.setPosPayMethod('cash')" id="pos-pay-cash" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border transition-all cursor-pointer shadow-xs" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-money-bill-wave text-base leading-none mb-1 text-center"></i><span>Tunai</span></button>
+              <button onclick="window.setPosPayMethod('qris')" id="pos-pay-qris" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-qrcode text-base leading-none mb-1 text-center"></i><span>QRIS</span></button>
+              <button onclick="window.setPosPayMethod('transfer')" id="pos-pay-transfer" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-building-columns text-base leading-none mb-1 text-center"></i><span>Bank</span></button>
+              <button onclick="window.setPosPayMethod('tempo')" id="pos-pay-tempo" type="button" class="neo-btn flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-hourglass-half text-base leading-none mb-1 text-center"></i><span>Tempo</span></button>
             </div>
             <div id="pos-pay-detail"></div>
           </div>
@@ -2438,8 +2438,8 @@ export const openPayModal = () => {
 
         <!-- Footer -->
         <div class="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-slate-100 dark:border-slate-800 flex gap-2.5 shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
-          <button onclick="window.closePayModal()" class="w-1/3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
-          <button onclick="window.processPOSTx()" id="pos-process-btn" class="w-2/3 py-3 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+          <button onclick="window.closePayModal()" class="neo-btn w-1/3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
+          <button onclick="window.processPOSTx()" id="pos-process-btn" class="neo-btn w-2/3 py-3 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb),0.35)">
             <i class="fa-solid fa-check-circle"></i>
             <span>Selesaikan Transaksi</span>
           </button>
@@ -2556,7 +2556,7 @@ const renderPayDetail = (method) => {
             return `
             <button onclick="window.posSetQuickCash(${q.val})" type="button"
                 id="pos-quick-cash-${q.val}"
-                class="pos-quick-btn px-2.5 sm:px-3 py-2 min-h-[40px] rounded-xl text-xs font-black border transition-all active:scale-95 flex items-center justify-center cursor-pointer ${isSelected ? 'text-white border-transparent shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]'}"
+                class="pos-quick-btn neo-btn px-2.5 sm:px-3 py-2 min-h-[40px] rounded-xl text-xs font-black border transition-all active:scale-95 flex items-center justify-center cursor-pointer ${isSelected ? 'text-white border-transparent shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]'}"
                 style="${isSelected ? 'background:var(--color-primary)' : ''}">
                 ${isPas ? '<i class="fa-solid fa-money-bill-wave mr-1.5 text-emerald-300"></i> Uang Pas' : `Rp ${q.label}`}
             </button>
@@ -2571,14 +2571,14 @@ const renderPayDetail = (method) => {
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-black text-slate-500 dark:text-slate-400 select-none">Rp</span>
                         <input id="pos-paid-input" type="number" min="0" placeholder="${total}" value="${posPaidAmount || total}"
-                            class="w-full border-2 rounded-2xl pl-12 pr-4 py-3 text-lg font-black bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none text-right transition-all tracking-wide shadow-xs"
+                            class="neo-input w-full border-2 rounded-2xl pl-12 pr-4 py-3 text-lg font-black bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none text-right transition-all tracking-wide shadow-xs"
                             style="border-color: var(--color-primary);"
                             oninput="window.updatePosChange(this.value)">
                     </div>
                 </div>
 
                 <!-- Kembalian Box (Tepat di Bawah Input Nominal agar Kasir Cepat Melihat) -->
-                <div id="pos-change-box" class="p-3.5 rounded-2xl border transition-all flex items-center justify-between ${posPaidAmount >= total ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'}">
+                <div id="pos-change-box" class="neo-box p-3.5 rounded-2xl border transition-all flex items-center justify-between ${posPaidAmount >= total ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'}">
                     <div>
                         <p class="text-[9px] font-black uppercase tracking-wider text-slate-400">Status Kembalian</p>
                         <p id="pos-change-label" class="text-xs font-black ${posPaidAmount >= total ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
@@ -4710,7 +4710,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Bayar
                         </span>
                     </div>
-                    <button onclick="window.openPayModal()" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                    <button onclick="window.openPayModal()" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
                         <span class="pos-keycap-on-btn">F4</span>
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">PROSES PEMBAYARAN</span>
@@ -4816,7 +4816,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>
                         <span class="pos-total-target text-base sm:text-lg font-black font-mono" style="color:var(--color-primary)">Rp 0</span>
                     </div>
-                    <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                    <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
                         <span class="pos-keycap-on-btn">F4</span>
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">LANJUT KE PEMBAYARAN</span>

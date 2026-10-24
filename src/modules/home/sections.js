@@ -79,8 +79,10 @@ export const rDyn = () => {
     const heroBtnText = appData.store.heroBtnText || 'Member VIP';
 
     const welcomeHeroSlide = showHeroSlide ? `
-        <div id="banner-slide-0" class="banner-slide-item w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
+        <div id="banner-slide-0" class="banner-slide-item neo-card w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
              style="background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-light) 100%); box-shadow: 0 14px 35px -8px rgba(var(--color-primary-rgb), 0.45);">
+            <!-- Industrial Precision Hazard Caution Stripe Accent -->
+            <div class="neo-hazard-stripe-subtle h-1 w-full absolute top-0 inset-x-0 z-30 opacity-70"></div>
             <!-- Sleek Decorative Geometric Rings & Precision Grid Accents (100% Solid & Crisp) -->
             <div class="absolute -right-12 -top-12 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-105 transition-transform duration-700"></div>
             <div class="absolute -right-4 -top-4 w-32 h-32 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full border-2 border-white/25 pointer-events-none"></div>
@@ -224,7 +226,7 @@ export const rDyn = () => {
 
         // ── BENTO PROMO CARD PREMIUM (Dynamic Theme & Dark/Light Adaptive) ──
         return `
-        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item bento-promo-card w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col select-none">
+        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item bento-promo-card neo-card w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col select-none">
             <!-- Sleek Decorative Geometric Rings (100% Solid & Crisp) -->
             <div class="absolute -right-12 -bottom-12 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
             <div class="absolute -left-10 -top-10 w-36 h-36 md:w-44 md:h-44 rounded-full border-[6px] border-white/10 pointer-events-none"></div>
