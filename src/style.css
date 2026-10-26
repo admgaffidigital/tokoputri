@@ -7258,7 +7258,7 @@ span[id$="-badge"][class*="min-w-"] {
 }
 
 .admin-input,
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact),
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input),
 select,
 textarea,
 .header-search-capsule {
@@ -7270,7 +7270,7 @@ textarea,
     transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 .admin-input:focus,
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):focus,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
 select:focus,
 textarea:focus,
 .header-search-capsule:focus-within {
@@ -7280,7 +7280,7 @@ textarea:focus,
 }
 html.dark .neo-input,
 html.dark .admin-input,
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact),
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input),
 html.dark select,
 html.dark textarea,
 html.dark .header-search-capsule {
@@ -7289,7 +7289,7 @@ html.dark .header-search-capsule {
 }
 html.dark .neo-input:focus,
 html.dark .admin-input:focus,
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):focus,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
 html.dark select:focus,
 html.dark textarea:focus,
 html.dark .header-search-capsule:focus-within {
@@ -7328,6 +7328,30 @@ textarea {
 }
 html.dark .header-search-capsule button[onclick*="openCameraScanner"] {
     border-color: #475569 !important;
+}
+
+/* Clean Search Inputs (Zero Internal Frame / Zero Double-Boxing Inside Search Bars) */
+.search-clean-input,
+.header-search-capsule input,
+#mobile-header-search,
+#search-input {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+    min-height: unset !important;
+    height: 100% !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+html.dark .search-clean-input,
+html.dark .header-search-capsule input,
+html.dark #mobile-header-search,
+html.dark #search-input {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
 }
 
 /* 4b. Stepper Kuantitas Terpadu (Industrial Mechanical Stepper Unit) */
