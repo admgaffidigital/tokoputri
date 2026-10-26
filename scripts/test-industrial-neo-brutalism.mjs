@@ -195,8 +195,35 @@ assert(
 console.log('\n🌐 7. Memeriksa Cakupan Universal Neo-Brutalism di Seluruh Web Aplikasi...');
 assert(
     cssContent.includes('#dynamic-categories-container [onclick*="filterCategory"] > div') &&
-    cssContent.includes('#dynamic-brands-container [onclick*="filterBrand"] > div > div'),
-    'Chiclet kategori dan kartu brand etalase terstandarisasi neo-brutalist 2px border & 2px shadow'
+    cssContent.includes('#dynamic-brands-container [onclick*="filterBrand"] > div') &&
+    cssContent.includes('#modal-brand-grid button'),
+    'Chiclet kategori, kartu brand etalase, dan modal brand terstandarisasi neo-brutalist 2px border & 2px shadow'
+);
+
+assert(
+    cssContent.includes('#modal-active-controls .overflow-hidden.rounded-xl') &&
+    cssContent.includes('#modal-qty-input') &&
+    cssContent.includes('not(#modal-qty-input)'),
+    'Stepper kuantitas terproteksi dari styling input umum dan terintegrasi sebagai unit mekanikal neo-brutalist'
+);
+
+assert(
+    cssContent.includes('#product-modal-options button') &&
+    cssContent.includes('.paint-swatch-card') &&
+    cssContent.includes('#product-modal-sticky-bar button'),
+    'Varian produk, swatch warna cat, dan bilah tombol aksi beli terstandarisasi neo-brutalist'
+);
+
+assert(
+    cssContent.includes('#modal-material-estimator-body button[onclick*="copyEstimatorSummary"]') &&
+    cssContent.includes('#modal-material-estimator [id^="estimator-tab-btn-"]'),
+    'Modal Kalkulator Estimasi Bahan Bangunan terstandarisasi neo-brutalist'
+);
+
+assert(
+    cssContent.includes('#shopping-guide-modal [id^="guide-tab-btn-"]') &&
+    cssContent.includes('#shopping-guide-modal .p-4.rounded-2xl.border'),
+    'Modal Panduan & SOP Ekosistem Toko terstandarisasi neo-brutalist'
 );
 
 assert(

@@ -28,9 +28,11 @@ export const DEFAULT_CHANGELOG = [
             "Integrasi Storefront & Etalase Pelanggan: Menghadirkan aksen pita proyek (hazard caution stripes) pada hero banner & promo kilat, kartu produk bento modular bergaris tebal 2px (.neo-card), serta stiker label rak gudang (.neo-badge) untuk varian, grosir, dan satuan barang.",
             "Penyempurnaan Layar POS Kasir & Transaksi Cepat: Tombol tipe pelanggan (Umum, Member, Tempo), tuts nominal pecahan cepat (Rp 10rb s.d. Uang Pas), kotak status kembalian (.neo-box), dan tombol proses transaksi F4 (.neo-btn) tampil tebal, kontras tinggi, dan nyaman dioperasikan satu jempol.",
             "Harmonisasi Menyeluruh CMS Owner & Dashboard: Menjamin seluruh kartu KPI Arus Kas, Welcome Banner Owner, kartu menu navigasi, dan tombol aksi header CMS mengadopsi 2px solid border, 2.5px hard shadow, dan sensasi tekan mekanikal tanpa tertimpa CSS spesifisitas lama.",
-            "Integrasi Etalase & Chiclet Kategori/Brand: Menghadirkan aksen neo-brutalisme pada chiclet kategori interaktif (#dynamic-categories-container), kartu brand terpercaya (#dynamic-brands-container), tombol 'Lihat Semua', serta kartu aksi WhatsApp & unduh APK pada footer toko.",
+            "Integrasi Etalase & Chiclet Kategori/Brand: Menghadirkan aksen neo-brutalisme penuh pada chiclet kategori interaktif (#dynamic-categories-container), kartu brand terpercaya (#dynamic-brands-container), grid brand modal (#modal-brand-grid), tombol 'Lihat Semua', serta kartu aksi WhatsApp & unduh APK pada footer toko.",
+            "Unit Stepper Kuantitas Terpadu & Varian Produk: Mengintegrasikan kontrol jumlah beli (#modal-qty-input) ke dalam blok mekanikal terpadu bebas anomali kotak terisolasi, serta standardisasi tombol varian produk dan swatch warna cat beraksen neo-brutalist tegas.",
+            "Harmonisasi Modal Kalkulator Estimasi Bahan Bangunan & SOP Ekosistem: Menyelaraskan seluruh tab kategori, kartu hasil estimasi, tombol aksi Salin/WA, serta kartu-kartu panduan SOP ke standar border 2px solid dan hard shadow.",
             "Isolasi Keamanan Cetak Thermal & Dokumen A4 Resmi: Penjaminan mutlak bahwa hard shadow CSS diisolasi penuh (@media print) sehingga cetakan kertas struk thermal kasir dan PDF A4 tetap 100% putih bersih, pekat, dan hemat ribbon/kertas.",
-            "Suite Unit Test test-industrial-neo-brutalism.mjs (32 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
+            "Suite Unit Test test-industrial-neo-brutalism.mjs (36 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
             "Multi-Channel Distribution v1.20.0 (Android versionCode 12000 & Windows x64)."
         ]
     },

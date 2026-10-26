@@ -6769,8 +6769,11 @@ html.dark #dynamic-categories-container .snap-start > div:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
+#dynamic-brands-container [onclick*="filterBrand"] > div,
+#dynamic-brands-container .snap-start > div,
 #dynamic-brands-container [onclick*="filterBrand"] > div > div,
-#dynamic-brands-container .snap-start > div > div {
+#dynamic-brands-container .snap-start > div > div,
+#modal-brand-grid button {
     border: 2px solid #0f172a !important;
     box-shadow: 2px 2px 0px #0f172a !important;
     border-radius: 0.75rem !important;
@@ -6778,19 +6781,28 @@ html.dark #dynamic-categories-container .snap-start > div:active {
     background-color: #ffffff;
     box-sizing: border-box !important;
 }
+#dynamic-brands-container [onclick*="filterBrand"] > div:active,
+#dynamic-brands-container .snap-start > div:active,
 #dynamic-brands-container [onclick*="filterBrand"] > div > div:active,
-#dynamic-brands-container .snap-start > div > div:active {
+#dynamic-brands-container .snap-start > div > div:active,
+#modal-brand-grid button:active {
     transform: translate(1.5px, 1.5px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
+html.dark #dynamic-brands-container [onclick*="filterBrand"] > div,
+html.dark #dynamic-brands-container .snap-start > div,
 html.dark #dynamic-brands-container [onclick*="filterBrand"] > div > div,
-html.dark #dynamic-brands-container .snap-start > div > div {
+html.dark #dynamic-brands-container .snap-start > div > div,
+html.dark #modal-brand-grid button {
     border-color: #475569 !important;
     box-shadow: 2px 2px 0px #000000 !important;
     background-color: #1e293b;
 }
+html.dark #dynamic-brands-container [onclick*="filterBrand"] > div:active,
+html.dark #dynamic-brands-container .snap-start > div:active,
 html.dark #dynamic-brands-container [onclick*="filterBrand"] > div > div:active,
-html.dark #dynamic-brands-container .snap-start > div > div:active {
+html.dark #dynamic-brands-container .snap-start > div > div:active,
+html.dark #modal-brand-grid button:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
@@ -7191,7 +7203,7 @@ span[id$="-badge"][class*="min-w-"] {
 }
 
 .admin-input,
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]),
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact),
 select,
 textarea,
 .header-search-capsule {
@@ -7203,7 +7215,7 @@ textarea,
     transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 .admin-input:focus,
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):focus,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):focus,
 select:focus,
 textarea:focus,
 .header-search-capsule:focus-within {
@@ -7213,7 +7225,7 @@ textarea:focus,
 }
 html.dark .neo-input,
 html.dark .admin-input,
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]),
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact),
 html.dark select,
 html.dark textarea,
 html.dark .header-search-capsule {
@@ -7222,7 +7234,7 @@ html.dark .header-search-capsule {
 }
 html.dark .neo-input:focus,
 html.dark .admin-input:focus,
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):focus,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):focus,
 html.dark select:focus,
 html.dark textarea:focus,
 html.dark .header-search-capsule:focus-within {
@@ -7234,6 +7246,230 @@ textarea.admin-input,
 textarea.neo-input,
 textarea {
     min-height: 5.5rem !important;
+}
+
+/* 4b. Stepper Kuantitas Terpadu (Industrial Mechanical Stepper Unit) */
+#modal-active-controls .overflow-hidden.rounded-xl,
+.product-stepper-control {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+html.dark #modal-active-controls .overflow-hidden.rounded-xl,
+html.dark .product-stepper-control {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background: #1e293b !important;
+}
+
+#modal-qty-input {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: 2px solid #0f172a !important;
+    border-right: 2px solid #0f172a !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    min-height: 2.75rem !important;
+    height: 100% !important;
+    background: transparent !important;
+    text-align: center !important;
+    font-weight: 800 !important;
+    box-sizing: border-box !important;
+}
+html.dark #modal-qty-input {
+    border-left-color: #475569 !important;
+    border-right-color: #475569 !important;
+    color: #ffffff !important;
+}
+#modal-active-controls button {
+    transition: background-color 0.1s ease, transform 0.05s ease !important;
+    min-width: 2.75rem !important;
+}
+#modal-active-controls button:active {
+    transform: scale(0.9) !important;
+}
+
+/* 4c. Modal Detail Produk: Varian, Deskripsi, Trust Badges & Action Bar */
+#product-modal-options button,
+.paint-swatch-card {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    box-sizing: border-box !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.15s ease !important;
+}
+#product-modal-options button[class*="border-[var(--color-primary)]"],
+#product-modal-options button[class*="ring-2"],
+.paint-swatch-card.is-selected {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
+}
+#product-modal-options button:active:not(:disabled),
+.paint-swatch-card:active:not(:disabled) {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #product-modal-options button,
+html.dark .paint-swatch-card {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #product-modal-options button[class*="border-[var(--color-primary)]"],
+html.dark #product-modal-options button[class*="ring-2"],
+html.dark .paint-swatch-card.is-selected {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
+}
+html.dark #product-modal-options button:active:not(:disabled),
+html.dark .paint-swatch-card:active:not(:disabled) {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#product-modal-content .mb-6.rounded-2xl.border,
+#product-modal-paylater-container > div,
+#product-modal-paint-warning {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+}
+html.dark #product-modal-content .mb-6.rounded-2xl.border,
+html.dark #product-modal-paylater-container > div,
+html.dark #product-modal-paint-warning {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+#product-modal-content button[onclick*="chatWAAboutProduct"] {
+    border: 2px solid #059669 !important;
+    box-shadow: 2px 2px 0px #059669 !important;
+    border-radius: 0.75rem !important;
+    font-weight: 800 !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#product-modal-content button[onclick*="chatWAAboutProduct"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #059669 !important;
+}
+
+#modal-active-controls .rounded-2xl.border {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+}
+html.dark #modal-active-controls .rounded-2xl.border {
+    border-color: #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+
+#product-modal-sticky-bar button,
+#product-modal-content > .absolute.right-3.top-3 button {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    font-weight: 800 !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#product-modal-sticky-bar button[onclick*="confirmAddProductToCart"] {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2px 2px 0px var(--color-primary) !important;
+}
+#product-modal-sticky-bar button:active,
+#product-modal-content > .absolute.right-3.top-3 button:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #product-modal-sticky-bar button,
+html.dark #product-modal-content > .absolute.right-3.top-3 button {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #product-modal-sticky-bar button:active,
+html.dark #product-modal-content > .absolute.right-3.top-3 button:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* 4d. Material Estimator Modal Harmonization */
+#modal-material-estimator-body button[onclick*="copyEstimatorSummary"],
+#modal-material-estimator-body button[onclick*="shareEstimatorToWA"],
+#modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"],
+#modal-material-estimator button[onclick*="closeMaterialEstimatorModal"],
+#modal-material-estimator [id^="estimator-tab-btn-"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    font-weight: 800 !important;
+    box-sizing: border-box !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#modal-material-estimator-body button[onclick*="copyEstimatorSummary"]:active,
+#modal-material-estimator-body button[onclick*="shareEstimatorToWA"]:active,
+#modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"]:active,
+#modal-material-estimator button[onclick*="closeMaterialEstimatorModal"]:active,
+#modal-material-estimator [id^="estimator-tab-btn-"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #modal-material-estimator-body button[onclick*="copyEstimatorSummary"],
+html.dark #modal-material-estimator-body button[onclick*="shareEstimatorToWA"],
+html.dark #modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"],
+html.dark #modal-material-estimator button[onclick*="closeMaterialEstimatorModal"],
+html.dark #modal-material-estimator [id^="estimator-tab-btn-"] {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #modal-material-estimator-body button[onclick*="copyEstimatorSummary"]:active,
+html.dark #modal-material-estimator-body button[onclick*="shareEstimatorToWA"]:active,
+html.dark #modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"]:active,
+html.dark #modal-material-estimator button[onclick*="closeMaterialEstimatorModal"]:active,
+html.dark #modal-material-estimator [id^="estimator-tab-btn-"]:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* 4e. Shopping Guide & SOP Modal Harmonization */
+#shopping-guide-modal .p-4.rounded-2xl.border,
+#shopping-guide-modal .rounded-2xl.border,
+#shopping-guide-modal [id^="guide-section-"] > div {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+}
+html.dark #shopping-guide-modal .p-4.rounded-2xl.border,
+html.dark #shopping-guide-modal .rounded-2xl.border,
+html.dark #shopping-guide-modal [id^="guide-section-"] > div {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+#shopping-guide-modal [id^="guide-tab-btn-"],
+#shopping-guide-modal button[onclick*="closeShoppingGuideModal"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    font-weight: 800 !important;
+    box-sizing: border-box !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#shopping-guide-modal [id^="guide-tab-btn-"]:active,
+#shopping-guide-modal button[onclick*="closeShoppingGuideModal"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #shopping-guide-modal [id^="guide-tab-btn-"],
+html.dark #shopping-guide-modal button[onclick*="closeShoppingGuideModal"] {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #shopping-guide-modal [id^="guide-tab-btn-"]:active,
+html.dark #shopping-guide-modal button[onclick*="closeShoppingGuideModal"]:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 /* 5. Universal Industrial Neo-Brutalist Modals & Dialogs */
@@ -7467,6 +7703,12 @@ html.dark #toast {
     #admin-dashboard-cashflow-slot *,
     #bottom-nav-bar,
     .glass-header,
+    #product-modal,
+    #product-modal *,
+    #modal-material-estimator,
+    #modal-material-estimator *,
+    #shopping-guide-modal,
+    #shopping-guide-modal *,
     #thermal-receipt,
     #thermal-receipt *,
     .receipt-content,
