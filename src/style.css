@@ -923,21 +923,23 @@ html.dark .pos-img-box {
 }
 
 .product-chips-wrap > span {
-    line-height: 1.25 !important;
-    letter-spacing: 0.02em !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.015em !important;
     box-sizing: border-box !important;
-    min-height: 22px !important;
-    padding: 2px 8px !important;
+    min-height: 18px !important;
+    max-height: 20px !important;
+    padding: 1px 5px !important;
+    font-size: 8.5px !important;
 }
 
 .pos-product-card .product-chips-wrap,
 .pos-catalog-grid-mode .product-chips-wrap,
 .catalog-product-card .product-chips-wrap,
 #product-container.grid .product-chips-wrap {
-    min-height: 22px !important;
-    max-height: 52px !important;
+    min-height: 18px !important;
+    max-height: 44px !important;
     overflow: hidden !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
     flex-shrink: 0 !important;
 }
 
@@ -5997,13 +5999,13 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     display: inline-flex;
     align-items: center !important;
     justify-content: center !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.02em !important; /* Mencegah tracking melebar berlebihan yang membuat teks tumpah */
+    line-height: 1.15 !important;
+    letter-spacing: 0.015em !important;
     border-radius: 0.5rem !important; /* 8px modern squircle chip */
     box-sizing: border-box !important;
     vertical-align: middle !important;
-    min-height: 22px !important;
-    padding: 2px 8px !important;
+    min-height: 18px !important;
+    padding: 1px 5px !important;
     max-height: 26px !important;
 }
 
@@ -7431,19 +7433,20 @@ html.dark #btn-view-list:active:not(:disabled) {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
-/* 3. Universal Industrial Serial Plate Badges & SKU Stickers */
+/* 3. Universal Industrial Serial Plate Badges & SKU Stickers (Proporsional, Ramping & Lapang) */
 .neo-badge {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    border-radius: 0.5rem !important; /* 8px squircle */
-    font-weight: 800 !important;
+    border: 1px solid #0f172a !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+    border-radius: 0.375rem !important; /* 6px compact squircle */
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.035em !important;
+    letter-spacing: 0.02em !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
-    line-height: 1.25 !important;
-    min-height: 22px !important;
-    padding: 2px 8px !important;
+    line-height: 1.15 !important;
+    min-height: 18px !important;
+    max-height: 22px !important;
+    padding: 1px 5px !important;
     box-sizing: border-box !important;
 }
 
@@ -7453,17 +7456,18 @@ span.badge,
 span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]),
 span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]),
 span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge) {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    border-radius: 0.5rem !important; /* 8px squircle */
-    font-weight: 800 !important;
+    border: 1px solid #0f172a !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+    border-radius: 0.375rem !important; /* 6px compact squircle */
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.035em !important;
+    letter-spacing: 0.02em !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
-    line-height: 1.25 !important;
-    min-height: 22px !important;
-    padding: 2px 8px !important;
+    line-height: 1.15 !important;
+    min-height: 18px !important;
+    max-height: 22px !important;
+    padding: 1px 5px !important;
     box-sizing: border-box !important;
 }
 html.dark .neo-badge,
@@ -7474,7 +7478,25 @@ html.dark span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"
 html.dark span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]),
 html.dark span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge) {
     border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    box-shadow: 1px 1px 0px #000000 !important;
+}
+
+/* Flash Sale & Promo Card Badge Harmony (Sleek, Proportional & Lapang) */
+.flash-sale-card .neo-badge,
+.flash-sale-card span[class*="rounded"] {
+    border-width: 1px !important;
+    border-color: rgba(15, 23, 42, 0.25) !important;
+    box-shadow: none !important;
+    min-height: 18px !important;
+    max-height: 20px !important;
+    padding: 1px 5px !important;
+    font-size: 8.5px !important;
+    border-radius: 0.375rem !important;
+}
+html.dark .flash-sale-card .neo-badge,
+html.dark .flash-sale-card span[class*="rounded"] {
+    border-color: rgba(71, 85, 105, 0.45) !important;
+    box-shadow: none !important;
 }
 
 /* Guard: Pastikan badge counter bulat (misal badge cart '0', wishlist '0') tetap bulat */
