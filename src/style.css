@@ -7453,9 +7453,9 @@ html.dark #btn-view-list:active:not(:disabled) {
 span.badge,
 .status-pill,
 [class*="status-badge"],
-span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]),
-span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]),
-span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge) {
+span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
+span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
+span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge):not(.flash-variant-badge) {
     border: 1px solid #0f172a !important;
     box-shadow: 1px 1px 0px #0f172a !important;
     border-radius: 0.375rem !important; /* 6px compact squircle */
@@ -7474,18 +7474,20 @@ html.dark .neo-badge,
 html.dark span.badge,
 html.dark .status-pill,
 html.dark [class*="status-badge"],
-html.dark span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]),
-html.dark span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]),
-html.dark span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge) {
+html.dark span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
+html.dark span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
+html.dark span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge):not(.flash-variant-badge) {
     border-color: #475569 !important;
     box-shadow: 1px 1px 0px #000000 !important;
 }
 
 /* Flash Sale & Promo Card Badge Harmony (Sleek, Proportional & Lapang) */
+.flash-variant-badge,
 .flash-sale-card .neo-badge,
+.flash-sale-card .flash-variant-badge,
 .flash-sale-card span[class*="rounded"] {
     border-width: 1px !important;
-    border-color: rgba(15, 23, 42, 0.25) !important;
+    border-color: rgba(15, 23, 42, 0.18) !important;
     box-shadow: none !important;
     min-height: 18px !important;
     max-height: 20px !important;
@@ -7493,9 +7495,11 @@ html.dark span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badg
     font-size: 8.5px !important;
     border-radius: 0.375rem !important;
 }
+html.dark .flash-variant-badge,
 html.dark .flash-sale-card .neo-badge,
+html.dark .flash-sale-card .flash-variant-badge,
 html.dark .flash-sale-card span[class*="rounded"] {
-    border-color: rgba(71, 85, 105, 0.45) !important;
+    border-color: rgba(148, 163, 184, 0.25) !important;
     box-shadow: none !important;
 }
 

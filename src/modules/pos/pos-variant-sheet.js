@@ -189,8 +189,8 @@ const renderVariantSheetContent = (p) => {
             class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all ${activeStyle} ${outStyle}"
             ${isDisabled ? 'disabled' : ''}>
             ${vVisual}
-            <div class="flex flex-col items-start min-w-0">
-                <span class="truncate max-w-[120px]">${esc(v.name)}${labelSuffix}</span>
+            <div class="flex flex-col items-start min-w-0 flex-1">
+                <span class="font-bold text-slate-800 dark:text-slate-100 truncate max-w-[280px] sm:max-w-md">${esc(v.name)}${labelSuffix}</span>
                 <div class="flex items-center gap-1.5 text-[9px] flex-wrap">
                     <span class="text-slate-500 font-bold">${fRp(varPrice)}</span>
                     ${canViewHpp() && varHpp > 0 ? `<span class="text-amber-600 dark:text-amber-400 font-black">HPP: ${fRp(varHpp)}</span>` : ''}
@@ -294,7 +294,7 @@ const renderVariantSheetContent = (p) => {
             </div>
         </div>
     </div>
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60">
+    <div class="sticky bottom-0 z-10 p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-4px_14px_rgba(0,0,0,0.06)]">
         <div class="flex items-center justify-between mb-1">
             <span class="text-xs font-bold text-slate-500">Subtotal</span>
             <span class="text-sm font-black" style="color:var(--color-primary)">${fRp(subtotal)}</span>

@@ -189,12 +189,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-D0eE1iCF.js"></script>
+    <script type="module" crossorigin src="./assets/index-e4KPqLAx.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="./assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="./assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-B1pLgNjc.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-C6dRdbzf.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -2037,7 +2037,7 @@
             </div>
           </div>
         </div>
-        <div class="scroll-content hide-scrollbar pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-6">
+        <div class="scroll-content hide-scrollbar pt-1.5 sm:pt-2 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-6">
           <div class="mx-auto mt-4 w-full max-w-full px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px]" id="dynamic-banners-container">
             <div class="w-full h-[195px] sm:h-[240px] md:h-[285px] lg:h-[300px] rounded-3xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/20 animate-pulse flex items-center justify-center shadow-lg">
               <div class="flex items-center gap-3 text-[var(--color-primary)]/50 font-black text-xs">
@@ -3442,15 +3442,23 @@
     <!-- ║        BOTTOM SHEET: PILIH VARIAN POS          ║ -->
     <!-- ╚══════════════════════════════════════════════════╝ -->
     <div id="pos-variant-sheet"
-      class="hidden opacity-0 fixed inset-0 z-[9996] flex items-end justify-center bg-slate-900/80 transition-all duration-300"
+      class="hidden opacity-0 fixed inset-0 z-[9996] flex items-end sm:items-center justify-center bg-slate-900/80 transition-all duration-300 p-0 sm:p-4"
       onclick="if(event.target===this) window.closePOSVariantSheet && window.closePOSVariantSheet()">
       <div id="pos-variant-sheet-box"
-        class="relative translate-y-full transition-all duration-300 bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[88dvh] border border-slate-200/80 dark:border-slate-800">
-        <!-- Header & Drag Handle (Clean & Anti-Floating) -->
-        <div class="relative w-full pt-3 pb-2 px-5 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-800/80">
-          <div class="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+        class="relative translate-y-full sm:translate-y-6 transition-all duration-300 bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90dvh] sm:max-h-[85dvh] border border-slate-200/80 dark:border-slate-800">
+        <!-- Top Pull Indicator for Native Mobile -->
+        <div class="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto mt-2.5 mb-1 sm:hidden shrink-0"></div>
+
+        <!-- Header Bar: Rapi, Proporsional & Anti-Mengambang/Anti-Keluar -->
+        <div class="px-4 py-2.5 sm:px-5 sm:py-3 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-[var(--color-primary)] text-white flex items-center justify-center text-xs shrink-0 shadow-2xs">
+              <i class="fa-solid fa-layer-group text-[10px]"></i>
+            </span>
+            <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100">Pilih Varian &amp; Jumlah</span>
+          </div>
           <button onclick="window.closePOSVariantSheet && window.closePOSVariantSheet()"
-            class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition-all active:scale-90 cursor-pointer shadow-xs" title="Tutup">
+            class="w-8 h-8 rounded-xl bg-slate-200/70 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition-all active:scale-90 cursor-pointer shadow-xs" title="Tutup">
             <i class="fa-solid fa-xmark text-sm"></i>
           </button>
         </div>

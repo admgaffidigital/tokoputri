@@ -122,7 +122,7 @@ export const renderStorefrontFlashSale = () => {
                         <!-- Baris Badge Varian Terdedikasi: Ramping, Proporsional & Lapang -->
                         <div class="mt-1 flex items-center min-h-[18px]">
                             ${item.variantName ? `
-                                <span class="inline-flex items-center gap-1 text-[8px] sm:text-[8.5px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 max-w-full truncate shadow-none">
+                                <span class="flash-variant-badge inline-flex items-center gap-1 text-[8px] sm:text-[8.5px] font-semibold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 max-w-full truncate shadow-none">
                                     <i class="fa-solid fa-shapes text-[7.5px] text-[var(--color-primary)] shrink-0"></i>
                                     <span class="truncate">${esc(item.variantName)}</span>
                                 </span>
