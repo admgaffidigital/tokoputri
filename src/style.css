@@ -262,16 +262,17 @@ html.dark #view-admin-login {
 }
 
 /* Container kartu produk POS grid (Bento Native App 1:1 Harmonis dengan Storefront) */
+/* Container kartu produk POS grid (Bento Native App 1:1 Harmonis dengan Storefront & Industrial Neo-Brutalism) */
 .pos-product-card {
     display: flex !important;
     flex-direction: column !important;
     background: #ffffff;
     border-radius: 18px !important;
     padding: 0 !important; /* Flush cover header, identik Storefront */
-    border: 1px solid rgba(226, 232, 240, 0.9) !important;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02) !important;
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
     cursor: pointer;
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, border-color 0.15s ease;
     user-select: none;
     overflow: hidden !important;
     position: relative;
@@ -282,19 +283,39 @@ html.dark #view-admin-login {
     box-sizing: border-box !important;
 }
 
-.pos-product-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
-    border-color: rgba(var(--color-primary-rgb), 0.45);
+html.dark .pos-product-card {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background: #0f172a !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .pos-product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 3.5px 3.5px 0px #0f172a !important;
+        border-color: #0f172a !important;
+    }
+    html.dark .pos-product-card:hover {
+        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        border-color: #475569 !important;
+    }
 }
 
 .pos-product-card:active {
-    transform: scale(0.985);
+    transform: translate(1px, 1px) !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+}
+html.dark .pos-product-card:active {
+    box-shadow: 1px 1px 0px #000000 !important;
 }
 
 .pos-product-card.in-cart {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25), 0 4px 14px rgba(var(--color-primary-rgb), 0.1);
+    border-color: #0f172a !important;
+    box-shadow: 3px 3px 0px var(--color-primary) !important;
+}
+html.dark .pos-product-card.in-cart {
+    border-color: #334155 !important;
+    box-shadow: 3px 3px 0px var(--color-primary) !important;
 }
 
 /* Kotak gambar produk: rasio 1:1 flush cover atas & hard min-height */
@@ -308,7 +329,10 @@ html.dark #view-admin-login {
     background: #f8fafc;
     flex-shrink: 0 !important;
     margin-bottom: 0 !important;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 2px solid #0f172a !important;
+}
+html.dark .pos-img-box {
+    border-bottom-color: #334155 !important;
 }
 
 /* Gambar presisi di dalam kotak — absolute fill penuh */
@@ -977,10 +1001,10 @@ html.dark #view-admin-login {
     padding: 12px !important;
     background: white;
     border-radius: 18px !important;
-    border: 1px solid rgba(226, 232, 240, 0.95) !important;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, border-color 0.15s ease;
     user-select: none;
     position: relative;
     overflow: hidden !important;
@@ -988,6 +1012,12 @@ html.dark #view-admin-login {
     width: 100% !important;
     min-height: 96px !important; /* HARD FLOOR: Menjamin ruang selalu lega */
     box-sizing: border-box !important;
+}
+
+html.dark .pos-list-item {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background: #0f172a !important;
 }
 
 @media (min-width: 640px) {
@@ -1009,10 +1039,13 @@ html.dark #view-admin-login {
     overflow: hidden !important;
     flex-shrink: 0 !important;
     background: #f8fafc;
-    border: 1px solid #f1f5f9;
+    border: 1.5px solid #0f172a !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+}
+html.dark .pos-list-thumb {
+    border-color: #334155 !important;
 }
 
 @media (min-width: 640px) {
@@ -1025,20 +1058,34 @@ html.dark #view-admin-login {
     }
 }
 
-.pos-list-item:hover {
-    border-color: rgba(var(--color-primary-rgb), 0.45);
-    box-shadow: 0 6px 18px rgba(var(--color-primary-rgb), 0.12);
-    transform: translateY(-1.5px);
+@media (hover: hover) and (pointer: fine) {
+    .pos-list-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 3.5px 3.5px 0px #0f172a !important;
+        border-color: #0f172a !important;
+    }
+    html.dark .pos-list-item:hover {
+        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        border-color: #475569 !important;
+    }
 }
 
 .pos-list-item:active {
-    transform: scale(0.99);
+    transform: translate(1px, 1px) !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+}
+html.dark .pos-list-item:active {
+    box-shadow: 1px 1px 0px #000000 !important;
 }
 
 .pos-list-item.in-cart {
-    border-color: var(--color-primary);
-    background: rgba(var(--color-primary-rgb), 0.02);
-    box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.35), 0 2px 10px rgba(var(--color-primary-rgb), 0.08);
+    border-color: #0f172a !important;
+    background: rgba(var(--color-primary-rgb), 0.04);
+    box-shadow: 3px 3px 0px var(--color-primary) !important;
+}
+html.dark .pos-list-item.in-cart {
+    border-color: #334155 !important;
+    box-shadow: 3px 3px 0px var(--color-primary) !important;
 }
 
 /* In-Cart Pill Badge untuk Mode List */
@@ -4129,48 +4176,48 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     transform: scale(0.90) !important;
 }
 
-/* Tombol Tambah (+) — Solid Flat Clean Theme, Tajam & Bebas Blur Shadow */
+/* Tombol Tambah (+) — Solid Flat Clean Theme, Industrial Neo-Brutalism */
 .btn-catalog-add {
     background: var(--color-primary) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
 }
 .dark .btn-catalog-add {
     background: var(--color-primary) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+    border: 2px solid #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
 }
 .btn-catalog-add:hover {
     filter: brightness(1.08) !important;
-    transform: translateY(-0.5px) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
 }
 .btn-catalog-add:active {
-    transform: scale(0.92) !important;
-    box-shadow: none !important;
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
 
-/* Tombol Varian — Solid Flat Indigo Royale, Tajam & Bebas Blur Shadow */
+/* Tombol Varian — Solid Flat Indigo Royale, Industrial Neo-Brutalism */
 .btn-catalog-variant {
     background: #4f46e5 !important;
     color: #ffffff !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
 }
 .dark .btn-catalog-variant {
     background: #6366f1 !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+    border: 2px solid #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
 }
 .btn-catalog-variant:hover {
     filter: brightness(1.08) !important;
-    transform: translateY(-0.5px) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
 }
 .btn-catalog-variant:active {
-    transform: scale(0.92) !important;
-    box-shadow: none !important;
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
 
 /* ============================================================
@@ -6688,7 +6735,16 @@ html.dark .neo-box {
 #delivery-cards-container > div,
 #pos-hold-cart-list > div,
 #customer-cards-list > div,
-#staff-cards-list > div {
+#staff-cards-list > div,
+.pos-product-card,
+.pos-list-item,
+#pos-mobile-quick-menu,
+#pos-open-shift-box,
+#pos-cash-movement-box,
+#pos-shift-summary-box,
+#pos-close-shift-box,
+#pos-held-modal-box,
+[id^="pos-item-"] {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     border-radius: 0.875rem !important;
@@ -6763,7 +6819,16 @@ html.dark #return-cards-container > div,
 html.dark #delivery-cards-container > div,
 html.dark #pos-hold-cart-list > div,
 html.dark #customer-cards-list > div,
-html.dark #staff-cards-list > div {
+html.dark #staff-cards-list > div,
+html.dark .pos-product-card,
+html.dark .pos-list-item,
+html.dark #pos-mobile-quick-menu,
+html.dark #pos-open-shift-box,
+html.dark #pos-cash-movement-box,
+html.dark #pos-shift-summary-box,
+html.dark #pos-close-shift-box,
+html.dark #pos-held-modal-box,
+html.dark [id^="pos-item-"] {
     border-color: #334155 !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
@@ -6798,6 +6863,8 @@ html.dark #dynamic-banners-container > div {
     .product-admin-card:hover,
     .category-admin-card:hover,
     .option-select-card:hover,
+    .pos-product-card:hover,
+    .pos-list-item:hover,
     #quickmenu-modal-content button:hover,
     #admin-dashboard-view .grid button:hover,
     #cart-items-container > div:hover,
@@ -6818,6 +6885,8 @@ html.dark #dynamic-banners-container > div {
     html.dark .product-admin-card:hover,
     html.dark .category-admin-card:hover,
     html.dark .option-select-card:hover,
+    html.dark .pos-product-card:hover,
+    html.dark .pos-list-item:hover,
     html.dark #quickmenu-modal-content button:hover,
     html.dark #admin-dashboard-view .grid button:hover,
     html.dark #cart-items-container > div:hover,
@@ -6852,9 +6921,13 @@ html.dark #dynamic-banners-container > div {
     }
 }
 
-/* 1b. Dynamic Storefront Category & Brand Chiclets */
+/* 1b. Dynamic Storefront Category & Brand Chiclets and POS Filters */
 #dynamic-categories-container [onclick*="filterCategory"] > div,
-#dynamic-categories-container .snap-start > div {
+#dynamic-categories-container .snap-start > div,
+#pos-cat-filter button,
+#pos-subcat-filter button,
+.pos-preset-chip,
+.pos-shortcut-chiclet {
     border: 2px solid #0f172a !important;
     box-shadow: 2px 2px 0px #0f172a !important;
     border-radius: 0.75rem !important;
@@ -6863,18 +6936,30 @@ html.dark #dynamic-banners-container > div {
     box-sizing: border-box !important;
 }
 #dynamic-categories-container [onclick*="filterCategory"] > div:active,
-#dynamic-categories-container .snap-start > div:active {
+#dynamic-categories-container .snap-start > div:active,
+#pos-cat-filter button:active,
+#pos-subcat-filter button:active,
+.pos-preset-chip:active,
+.pos-shortcut-chiclet:active {
     transform: translate(1.5px, 1.5px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
 html.dark #dynamic-categories-container [onclick*="filterCategory"] > div,
-html.dark #dynamic-categories-container .snap-start > div {
+html.dark #dynamic-categories-container .snap-start > div,
+html.dark #pos-cat-filter button,
+html.dark #pos-subcat-filter button,
+html.dark .pos-preset-chip,
+html.dark .pos-shortcut-chiclet {
     border-color: #475569 !important;
     box-shadow: 2px 2px 0px #000000 !important;
     background-color: #1e293b;
 }
 html.dark #dynamic-categories-container [onclick*="filterCategory"] > div:active,
-html.dark #dynamic-categories-container .snap-start > div:active {
+html.dark #dynamic-categories-container .snap-start > div:active,
+html.dark #pos-cat-filter button:active,
+html.dark #pos-subcat-filter button:active,
+html.dark .pos-preset-chip:active,
+html.dark .pos-shortcut-chiclet:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
@@ -8153,6 +8238,14 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     [id$="-modal-content"],
     [id*="modal-"][class*="max-w-"],
     [id^="modal-"][class*="max-w-"],
+    #pos-open-shift-box,
+    #pos-cash-movement-box,
+    #pos-shift-summary-box,
+    #pos-close-shift-box,
+    #pos-held-modal-box,
+    #pos-held-list-modal > div,
+    #pos-recall-confirm-modal > div,
+    [id^="pos-"][id$="-box"],
     #custom-confirm-box,
     #exit-confirm-modal-box,
     #doc-preview-modal-box,
@@ -8171,6 +8264,14 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     html.dark [id$="-modal-content"],
     html.dark [id*="modal-"][class*="max-w-"],
     html.dark [id^="modal-"][class*="max-w-"],
+    html.dark #pos-open-shift-box,
+    html.dark #pos-cash-movement-box,
+    html.dark #pos-shift-summary-box,
+    html.dark #pos-close-shift-box,
+    html.dark #pos-held-modal-box,
+    html.dark #pos-held-list-modal > div,
+    html.dark #pos-recall-confirm-modal > div,
+    html.dark [id^="pos-"][id$="-box"],
     html.dark #custom-confirm-box,
     html.dark #exit-confirm-modal-box,
     html.dark #doc-preview-modal-box,
@@ -8211,13 +8312,29 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     }
 
     #custom-confirm-box,
-    #exit-confirm-modal-box {
+    #exit-confirm-modal-box,
+    #pos-open-shift-box,
+    #pos-cash-movement-box,
+    #pos-shift-summary-box,
+    #pos-close-shift-box,
+    #pos-held-modal-box,
+    #pos-held-list-modal > div,
+    #pos-recall-confirm-modal > div,
+    [id^="pos-"][id$="-box"] {
         border: 2.5px solid #0f172a !important;
         box-shadow: 3.5px 3.5px 0px #0f172a !important;
         border-radius: 1.5rem !important;
     }
     html.dark #custom-confirm-box,
-    html.dark #exit-confirm-modal-box {
+    html.dark #exit-confirm-modal-box,
+    html.dark #pos-open-shift-box,
+    html.dark #pos-cash-movement-box,
+    html.dark #pos-shift-summary-box,
+    html.dark #pos-close-shift-box,
+    html.dark #pos-held-modal-box,
+    html.dark #pos-held-list-modal > div,
+    html.dark #pos-recall-confirm-modal > div,
+    html.dark [id^="pos-"][id$="-box"] {
         border-color: #334155 !important;
         box-shadow: 3.5px 3.5px 0px #000000 !important;
     }
@@ -8226,23 +8343,31 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
 /* Modal Inner Section Dividers */
 .modal-bottom-sheet > div:first-child [class*="border-b"],
 [id*="modal-box"] [class*="border-b"]:first-of-type,
-[id*="modal-content"] [class*="border-b"]:first-of-type {
+[id*="modal-content"] [class*="border-b"]:first-of-type,
+[id^="pos-"][id$="-box"] [class*="border-b"]:first-of-type,
+#pos-held-modal-box [class*="border-b"]:first-of-type {
     border-bottom: 2px solid #0f172a !important;
 }
 html.dark .modal-bottom-sheet > div:first-child [class*="border-b"],
 html.dark [id*="modal-box"] [class*="border-b"]:first-of-type,
-html.dark [id*="modal-content"] [class*="border-b"]:first-of-type {
+html.dark [id*="modal-content"] [class*="border-b"]:first-of-type,
+html.dark [id^="pos-"][id$="-box"] [class*="border-b"]:first-of-type,
+html.dark #pos-held-modal-box [class*="border-b"]:first-of-type {
     border-bottom-color: #334155 !important;
 }
 
 .modal-bottom-sheet [class*="border-t"]:last-child,
 [id*="modal-box"] [class*="border-t"]:last-child,
-[id*="modal-content"] [class*="border-t"]:last-child {
+[id*="modal-content"] [class*="border-t"]:last-child,
+[id^="pos-"][id$="-box"] [class*="border-t"]:last-child,
+#pos-held-modal-box [class*="border-t"]:last-child {
     border-top: 2px solid #0f172a !important;
 }
 html.dark .modal-bottom-sheet [class*="border-t"]:last-child,
 html.dark [id*="modal-box"] [class*="border-t"]:last-child,
-html.dark [id*="modal-content"] [class*="border-t"]:last-child {
+html.dark [id*="modal-content"] [class*="border-t"]:last-child,
+html.dark [id^="pos-"][id$="-box"] [class*="border-t"]:last-child,
+html.dark #pos-held-modal-box [class*="border-t"]:last-child {
     border-top-color: #334155 !important;
 }
 
