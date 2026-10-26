@@ -2778,29 +2778,33 @@ html.dark .option-select-card .radio-label {
     color: #cbd5e1;
 }
 
-/* Checked State - Solid and Highlighted */
+/* Checked State - Industrial Neo-Brutalist Selection Highlight */
 .custom-radio:checked + .option-select-card {
-    border-color: var(--color-primary) !important;
+    border: 2px solid var(--color-primary) !important;
     background-color: #ffffff !important;
-    box-shadow: none !important;
-    outline: 2px solid var(--color-primary) !important;
-    outline-offset: -1px !important;
+    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    outline: none !important;
+    transform: translate(-1px, -1px) !important;
 }
 
 html.dark .custom-radio:checked + .option-select-card {
-    border-color: var(--color-primary) !important;
+    border: 2px solid var(--color-primary) !important;
     background-color: #1e293b !important;
-    box-shadow: none !important;
-    outline: 2px solid var(--color-primary) !important;
-    outline-offset: -1px !important;
+    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    outline: none !important;
+    transform: translate(-1px, -1px) !important;
 }
 
 .custom-radio:checked + .option-select-card .radio-icon-box {
     background-color: var(--color-primary) !important;
-    border-color: var(--color-primary) !important;
+    border: 2px solid #0f172a !important;
     color: #ffffff !important;
-    transform: scale(1.06);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    transform: scale(1.05);
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+}
+html.dark .custom-radio:checked + .option-select-card .radio-icon-box {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
 
 .custom-radio:checked + .option-select-card .radio-label {
@@ -6646,9 +6650,36 @@ html.dark .neo-box {
 #cust-info-card,
 .checkout-stepper-bar,
 #cart-items-container > div,
+#orders-items-container > div,
+#wishlist-items-container > div,
+#storefront-faq-container > div,
+#dynamic-flashsale-container .snap-start > div,
+#reward-catalog-container .snap-start > div,
+#dynamic-vouchers-container .snap-start > div,
+#cart-sph-card > div,
+#address-container [class*="border-amber-200"],
+#droppoint-form > div,
+#droppoint-form [class*="border-"],
+#detail-transfer #dynamic-banks-container > div,
+#detail-qris > div,
+#detail-tempo > div,
+#detail-paylater > div,
+#detail-paylater [class*="bg-white/95"],
+#paylater-status-box,
+#bukti-payment-section,
+#bukti-upload-label,
+#payment-items-preview > div,
 #supplier-cards-list > div,
 #purchase-cards-list > div,
-#tempo-cards-container > div {
+#tempo-cards-container > div,
+#expense-ledger-container > div,
+#expenses-cards-container > div,
+#stock-opname-list > div,
+#return-cards-container > div,
+#delivery-cards-container > div,
+#pos-hold-cart-list > div,
+#customer-cards-list > div,
+#staff-cards-list > div {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     border-radius: 0.875rem !important;
@@ -6682,9 +6713,36 @@ html.dark #address-container,
 html.dark #cust-info-card,
 html.dark .checkout-stepper-bar,
 html.dark #cart-items-container > div,
+html.dark #orders-items-container > div,
+html.dark #wishlist-items-container > div,
+html.dark #storefront-faq-container > div,
+html.dark #dynamic-flashsale-container .snap-start > div,
+html.dark #reward-catalog-container .snap-start > div,
+html.dark #dynamic-vouchers-container .snap-start > div,
+html.dark #cart-sph-card > div,
+html.dark #address-container [class*="border-amber-200"],
+html.dark #droppoint-form > div,
+html.dark #droppoint-form [class*="border-"],
+html.dark #detail-transfer #dynamic-banks-container > div,
+html.dark #detail-qris > div,
+html.dark #detail-tempo > div,
+html.dark #detail-paylater > div,
+html.dark #detail-paylater [class*="bg-white/95"],
+html.dark #paylater-status-box,
+html.dark #bukti-payment-section,
+html.dark #bukti-upload-label,
+html.dark #payment-items-preview > div,
 html.dark #supplier-cards-list > div,
 html.dark #purchase-cards-list > div,
-html.dark #tempo-cards-container > div {
+html.dark #tempo-cards-container > div,
+html.dark #expense-ledger-container > div,
+html.dark #expenses-cards-container > div,
+html.dark #stock-opname-list > div,
+html.dark #return-cards-container > div,
+html.dark #delivery-cards-container > div,
+html.dark #pos-hold-cart-list > div,
+html.dark #customer-cards-list > div,
+html.dark #staff-cards-list > div {
     border-color: #334155 !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
@@ -6721,7 +6779,12 @@ html.dark #dynamic-banners-container > div {
     .option-select-card:hover,
     #quickmenu-modal-content button:hover,
     #admin-dashboard-view .grid button:hover,
-    #cart-items-container > div:hover {
+    #cart-items-container > div:hover,
+    #orders-items-container > div:hover,
+    #wishlist-items-container > div:hover,
+    #dynamic-flashsale-container .snap-start > div:hover,
+    #reward-catalog-container .snap-start > div:hover,
+    #dynamic-vouchers-container .snap-start > div:hover {
         transform: translateY(-2px);
         box-shadow: 3.5px 3.5px 0px #0f172a !important;
         border-color: #0f172a !important;
@@ -6736,7 +6799,12 @@ html.dark #dynamic-banners-container > div {
     html.dark .option-select-card:hover,
     html.dark #quickmenu-modal-content button:hover,
     html.dark #admin-dashboard-view .grid button:hover,
-    html.dark #cart-items-container > div:hover {
+    html.dark #cart-items-container > div:hover,
+    html.dark #orders-items-container > div:hover,
+    html.dark #wishlist-items-container > div:hover,
+    html.dark #dynamic-flashsale-container .snap-start > div:hover,
+    html.dark #reward-catalog-container .snap-start > div:hover,
+    html.dark #dynamic-vouchers-container .snap-start > div:hover {
         box-shadow: 3.5px 3.5px 0px #000000 !important;
         border-color: #475569 !important;
     }
@@ -6753,7 +6821,12 @@ html.dark #dynamic-banners-container > div {
     .option-select-card:hover,
     #quickmenu-modal-content button:hover,
     #admin-dashboard-view .grid button:hover,
-    #cart-items-container > div:hover {
+    #cart-items-container > div:hover,
+    #orders-items-container > div:hover,
+    #wishlist-items-container > div:hover,
+    #dynamic-flashsale-container .snap-start > div:hover,
+    #reward-catalog-container .snap-start > div:hover,
+    #dynamic-vouchers-container .snap-start > div:hover {
         transform: none !important;
     }
 }
@@ -7049,7 +7122,17 @@ button[type="submit"],
 .modal-bottom-sheet button.btn-primary,
 #custom-confirm-box button,
 #exit-confirm-modal-box button,
-#pos-pay-modal button.pos-pay-btn-target {
+#pos-pay-modal button.pos-pay-btn-target,
+#orders-items-container button,
+#wishlist-items-container button,
+button[onclick*="trackOrderManual"],
+button[onclick*="applyVoucher"],
+#paylater-tenor-chips-grid button,
+#btn-location,
+#btn-dp-location,
+#btn-process-order,
+#btn-clear-orders,
+#btn-clear-wishlist {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     border-radius: 0.75rem !important; /* 12px squircle */
@@ -7084,7 +7167,17 @@ html.dark .modal-bottom-sheet button.primary-bg,
 html.dark .modal-bottom-sheet button.btn-primary,
 html.dark #custom-confirm-box button,
 html.dark #exit-confirm-modal-box button,
-html.dark #pos-pay-modal button.pos-pay-btn-target {
+html.dark #pos-pay-modal button.pos-pay-btn-target,
+html.dark #orders-items-container button,
+html.dark #wishlist-items-container button,
+html.dark button[onclick*="trackOrderManual"],
+html.dark button[onclick*="applyVoucher"],
+html.dark #paylater-tenor-chips-grid button,
+html.dark #btn-location,
+html.dark #btn-dp-location,
+html.dark #btn-process-order,
+html.dark #btn-clear-orders,
+html.dark #btn-clear-wishlist {
     border-color: #475569 !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
@@ -7109,7 +7202,17 @@ button[type="submit"]:active:not(:disabled):not(.btn-disabled),
 .modal-bottom-sheet button.btn-primary:active:not(:disabled):not(.btn-disabled),
 #custom-confirm-box button:active:not(:disabled):not(.btn-disabled),
 #exit-confirm-modal-box button:active:not(:disabled):not(.btn-disabled),
-#pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled) {
+#pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled),
+#orders-items-container button:active:not(:disabled):not(.btn-disabled),
+#wishlist-items-container button:active:not(:disabled):not(.btn-disabled),
+button[onclick*="trackOrderManual"]:active:not(:disabled):not(.btn-disabled),
+button[onclick*="applyVoucher"]:active:not(:disabled):not(.btn-disabled),
+#paylater-tenor-chips-grid button:active:not(:disabled):not(.btn-disabled),
+#btn-location:active:not(:disabled):not(.btn-disabled),
+#btn-dp-location:active:not(:disabled):not(.btn-disabled),
+#btn-process-order:active:not(:disabled):not(.btn-disabled),
+#btn-clear-orders:active:not(:disabled):not(.btn-disabled),
+#btn-clear-wishlist:active:not(:disabled):not(.btn-disabled) {
     transform: translate(2px, 2px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
@@ -7134,7 +7237,17 @@ html.dark .modal-bottom-sheet button.primary-bg:active:not(:disabled):not(.btn-d
 html.dark .modal-bottom-sheet button.btn-primary:active:not(:disabled):not(.btn-disabled),
 html.dark #custom-confirm-box button:active:not(:disabled):not(.btn-disabled),
 html.dark #exit-confirm-modal-box button:active:not(:disabled):not(.btn-disabled),
-html.dark #pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled) {
+html.dark #pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled),
+html.dark #orders-items-container button:active:not(:disabled):not(.btn-disabled),
+html.dark #wishlist-items-container button:active:not(:disabled):not(.btn-disabled),
+html.dark button[onclick*="trackOrderManual"]:active:not(:disabled):not(.btn-disabled),
+html.dark button[onclick*="applyVoucher"]:active:not(:disabled):not(.btn-disabled),
+html.dark #paylater-tenor-chips-grid button:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-location:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-dp-location:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-process-order:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-clear-orders:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-clear-wishlist:active:not(:disabled):not(.btn-disabled) {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 

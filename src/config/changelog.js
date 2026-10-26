@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-20-1",
+        "version": "v1.20.1",
+        "date": "2026-10-26",
+        "title": "Universal Industrial Neo-Brutalism Delivery, Service Worker Auto-Purge & Zero Cache Desync",
+        "category": "feature",
+        "badge": "Universal Industrial Neo-Brutalism Delivery & PWA Cache Invalidation v1.20.1",
+        "items": [
+            "Universal Neo-Brutalism Delivery & Cache Invalidation Engine (v1.20.1): Memperbarui versi Service Worker ke v1.20.1 dengan aktivasi pembersihan cache otomatis (auto-purge tokoputri-cache-v1.20.0), mengeliminasi tampilan usang dan kendala tampilan belang-belang akibat disk cache pada browser/PWA.",
+            "Harmonisasi Menyeluruh Keranjang Belanja & Checkout (Step 2 & 3): Seluruh kartu opsi pengiriman dan metode bayar (.option-select-card) ber-outline 2px solid charcoal (#0f172a), hard shadow 2.5px, serta highlight seleksi 3.5px solid var(--color-primary); dilengkapi penyelarasan kotak GPS Maps, drop-point proyek mandor, detail rekening transfer, QRIS, Tempo VIP, dan Putri PayLater.",
+            "Harmonisasi Riwayat Pesanan Pelanggan (#view-orders): Seluruh kartu transaksi pesanan (#orders-items-container > div), badge status, input pelacakan ID pesanan, dan tombol aksi Detail/Status mengadopsi standar neo-brutalism 2px border dan respon tekan taktil.",
+            "Harmonisasi Panggung Promo Kilat (Flash Sale), Katalog Reward Poin & Voucher: Seluruh kartu penawaran khusus storefront terintegrasi penuh dalam grid neo-card ber-border 2px solid dan hard shadow 2.5px.",
+            "Harmonisasi Wishlist Favorit, FAQ Storefront & Modul Keuangan CMS: Seluruh kartu favorit pelanggan, accordion FAQ, serta kartu buku kas pengeluaran toko (#expense-ledger-container) ber-standar industrial neo-brutalist.",
+            "Multi-Channel Distribution v1.20.1 (Android versionCode 12001 & Windows x64)."
+        ]
+    },
+    {
         "id": "log-1-20-0",
         "version": "v1.20.0",
         "date": "2026-10-24",
@@ -86,26 +102,6 @@ export const DEFAULT_CHANGELOG = [
             "Penajaman Kontras Dark Mode Kasir POS (WCAG AA/AAA): Mengoptimalkan total tagihan modal bayar, subtotal baris keranjang kasir, badge varian katalog, dan prefix diskon Rp ke warna Rose-300 cerah kontras tinggi.",
             "Penyelarasan Base Path Relatif (./) di Vite: Menjamin seluruh modul dan aset aplikasi dapat dibuka secara offline langsung dari sistem file komputer tanpa memerlukan web server lokal.",
             "Multi-Channel Distribution v1.19.5 (Android versionCode 11905 & Windows x64)."
-        ]
-    },
-    {
-        "id": "log-1-19-4",
-        "version": "v1.19.4",
-        "date": "2026-10-20",
-        "title": "Persistensi Pustaka Database Bersama (Anti-Hilang saat Reload), Batch Import 'Salin Semua ke Toko' & Pemulihan Tampilan POS Kasir Multi-Device (Tablet & Desktop Split Screen)",
-        "category": "feature",
-        "badge": "Master Presets Persistence, Bulk Import All & Multi-Device POS Harmony v1.19.4",
-        "items": [
-            "Penyimpanan Permanen Master Presets ke Cloud Firestore Sub-Koleksi: Mengintegrasikan penulisan langsung setiap produk yang disalin dari Database Bersama ke sub-koleksi Firestore freshmart/cms_data/products/{id}, pendaftaran otomatis ke susunan produk productOrder, dan pembaruan seketika cache lokal freshmart_products, mengeliminasi produk hilang setelah reload secara permanen.",
-            "Fitur Baru '⚡ Salin Semua ke Toko' (Batch Import All): Menyediakan tombol aksi cepat di toolbar Database Bersama dan kartu interaktif 'Tersedia utk Diimpor' untuk menyalin seluruh template produk, varian, dan spesifikasi sekaligus ke etalase & kasir POS dengan opsi penentuan stok awal massal.",
-            "Batch Write Firestore Berkinerja Tinggi: Eksekusi impor massal diproses menggunakan db.batch() dalam batas aman Firestore (maks 450 dokumen per commit), mendaftarkan kategori & brand baru otomatis, dan menyiarkan sinyal sinkronisasi realtime product_bulk ke seluruh perangkat.",
-            "Proteksi Ganda saveApp di storage.js: Memfilter key 'products' dari dokumen utama cms_data agar terhindar dari pembengkakan batas dokumen 1MB Firestore dan menyediakan mekanisme batch sync otomatis untuk updatedProductIds.",
-            "Pemulihan Antarmuka POS Kasir Split-Screen di Tablet & Desktop: Menghidupkan kembali tata letak split screen kasir (katalog produk di kiri 58-65% dan panel keranjang & billing kasir di kanan 35-42%) melalui Responsive Display Engine di style.css, mengeliminasi konflik .hidden !important yang sebelumnya menimpa utilitas flex tablet/desktop.",
-            "Harmonisasi Header Terminal Kasir Multi-Device: Menyesuaikan kontrol tombol kasir (Live Clock WIB, Tema Gelap/Terang, Estimator Material F3, Pengaturan Printer Thermal F7, Panduan POS, Status Jaringan Online, dan Tombol Keluar) agar tampil proporsional langsung di header tablet & desktop, menyembunyikan tombol mobile titik tiga [⋮] pada layar >= md, serta mempertahankan 100% kebersihan antarmuka Native App di smartphone.",
-            "Universal Dark-Mode Contrast Engine (WCAG AA/AAA): Menajamkan seluruh elemen teks bertema toko di Dark Mode (harga jual produk POS, total akhir keranjang, tombol 'Lihat Semua' kategori/brand, tombol 'Laporan P&L', link 'Analisis', dan tombol Scan F9) ke aksen Rose-300/400 kontras tinggi, mengeliminasi teks gelap/tenggelam secara tuntas.",
-            "Stabilisasi Jaringan Cloud Firestore (Anti-ERR_QUIC_PROTOCOL_ERROR): Mengunci komunikasi data Firestore WebChannel ke standard HTTPS TCP Port 443 via experimentalForceLongPolling, mengeliminasi pemutusan sesi UDP/QUIC dan HTTP 400 Bad Request pada jaringan internet ISP/WiFi lokal sehingga sinkronisasi kasir berjalan 100% hening dan stabil.",
-            "Suite Unit Test test-master-presets-persistence.mjs, test-master-product-presets.mjs & test-pos-header-responsive.mjs (87 pengujian) 100% Passed.",
-            "Multi-Channel Distribution v1.19.4 (Android versionCode 11904)."
         ]
     }
 ];
@@ -182,7 +178,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.20.0';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.20.1';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

@@ -328,6 +328,33 @@ assert(
     'Bilah navigasi bawah (bottom-nav-bar) dan tombol home terlingkupi aksen neo-brutalist'
 );
 
+assert(
+    cssContent.includes('#orders-items-container > div,') &&
+    cssContent.includes('#wishlist-items-container > div,') &&
+    cssContent.includes('#dynamic-flashsale-container .snap-start > div,') &&
+    cssContent.includes('#reward-catalog-container .snap-start > div,') &&
+    cssContent.includes('#dynamic-vouchers-container .snap-start > div,'),
+    'Riwayat pesanan, wishlist, promo flash sale, reward katalog, dan voucher terlingkupi neo-card'
+);
+
+assert(
+    cssContent.includes('.custom-radio:checked + .option-select-card {') &&
+    cssContent.includes('box-shadow: 3px 3px 0px var(--color-primary) !important;') &&
+    cssContent.includes('transform: translate(-1px, -1px) !important;'),
+    'Opsi pengiriman & metode bayar (.option-select-card) terstandarisasi neo-brutalism saat dipilih'
+);
+
+// ─── 8. Verifikasi Service Worker Cache & Versi Sistem ─────────
+console.log('\n⚡ 8. Memeriksa Service Worker & Invalidation Cache...');
+const swPath = path.join(rootDir, 'public', 'sw.js');
+assert(fs.existsSync(swPath), 'Berkas public/sw.js tersedia');
+const swContent = fs.readFileSync(swPath, 'utf-8');
+assert(
+    swContent.includes("CACHE_VERSION = 'v1.20.1';") &&
+    swContent.includes('caches.delete(name);'),
+    'Service Worker Cache ter-bump ke v1.20.1 dengan auto-purge cache usang v1.20.0'
+);
+
 // ─── Hasil Akhir ───────────────────────────────────────────────
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passedTests} Passed, ${totalTests - passedTests} Failed`);
