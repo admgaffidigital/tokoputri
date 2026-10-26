@@ -89,67 +89,69 @@ export const renderStorefrontFlashSale = () => {
         const variantSuffix = item.variantName ? ` (${item.variantName})` : '';
 
         return `
-        <div class="group relative flex w-[150px] sm:w-[172px] md:w-[188px] shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md snap-start text-left" style="transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;">
-            <!-- Badge Diskon Petir Harmonis Tema -->
-            <div class="absolute left-2 top-2 z-10 flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
-                <i class="fa-solid fa-bolt text-amber-300 text-[8.5px]"></i>
-                <span>-${Math.max(1, discountPct)}%</span>
-            </div>
-
-            ${remaining <= 3 && !isSoldOut && quota > 0 ? `
-            <div class="absolute right-2 top-2 z-10 flex items-center gap-1 rounded-md bg-amber-500 px-1.5 py-0.5 text-[8.5px] font-black text-white shadow-2xs">
-                <span><i class="fa-solid fa-fire text-amber-200 text-[8px]"></i> Sisa ${remaining}!</span>
-            </div>` : ''}
-
-            <!-- Foto Produk / Varian: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
-            <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/80 shrink-0" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
-                <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='/favicon.png'">
-                ${isSoldOut ? `
-                <div class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-2 text-center text-white">
-                    <span class="rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest shadow-md text-white" style="background: var(--color-primary-dark);">HABIS</span>
-                    <span class="mt-0.5 text-[8.5px] font-medium text-slate-300">Kuota terpenuhi</span>
-                </div>` : ''}
-            </div>
-
-            <!-- Detail & Harga -->
-            <div class="flex flex-1 flex-col justify-between p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
-                <div>
-                    <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem] cursor-pointer" title="${esc(prodName + variantSuffix)}" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
-                        ${esc(prodName)}
-                        ${item.variantName ? `<span class="inline-flex items-center gap-1 mt-0.5 text-[8.5px] font-black px-1.5 py-0.2 rounded-md uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/80"><i class="fa-solid fa-shapes text-[8px] text-[var(--color-primary)]"></i>${esc(item.variantName)}</span>` : ''}
-                    </h4>
-                    
-                    <!-- Coretan Harga & Harga Kilat Harmonis -->
-                    <div class="mt-1.5 flex flex-col">
-                        <span class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-through leading-tight">
-                            ${fCur(normalPrice)}
-                        </span>
-                        <span class="text-xs sm:text-[14px] lg:text-[15px] font-black truncate leading-tight mt-0.5" style="color: var(--color-primary);">
-                            ${fCur(flashPrice)}
-                        </span>
-                    </div>
+        <div class="snap-start shrink-0 flex flex-col w-[150px] sm:w-[172px] md:w-[188px] ${validItems.length <= 4 ? 'lg:w-[220px] xl:w-[240px]' : ''}">
+            <div class="flash-sale-card group relative flex flex-1 flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md text-left">
+                <!-- Badge Diskon Petir Harmonis Tema Neo-Brutalist -->
+                <div class="absolute left-2 top-2 z-10 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wider text-slate-950 bg-amber-400 border border-slate-950 shadow-[1.5px_1.5px_0px_#0f172a]">
+                    <i class="fa-solid fa-bolt text-slate-950 text-[8.5px]"></i>
+                    <span>-${Math.max(1, discountPct)}%</span>
                 </div>
 
-                <!-- Footer FOMO Progress Bar & Tombol Aksi Beli Kilat -->
-                <div class="mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-800/80">
-                    <div class="mb-1.5">
-                        <div class="flex items-center justify-between text-[8px] sm:text-[8.5px] font-bold text-slate-500 dark:text-slate-400 mb-0.5">
-                            <span>${isSoldOut ? 'Terjual Habis' : `Terjual ${sold}/${quota || '∞'}`}</span>
-                            <span>${quota > 0 ? percentSold + '%' : 'Terbatas'}</span>
-                        </div>
-                        <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
-                            <div class="h-full rounded-full transition-all duration-500 ${isSoldOut ? 'bg-slate-400' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);'} width: ${isSoldOut ? 100 : Math.max(8, percentSold)}%;"></div>
+                ${remaining <= 3 && !isSoldOut && quota > 0 ? `
+                <div class="absolute right-2 top-2 z-10 flex items-center gap-1 rounded-lg bg-rose-600 px-1.5 py-0.5 text-[8.5px] font-black text-white shadow-[1.5px_1.5px_0px_#0f172a] border border-rose-700">
+                    <span><i class="fa-solid fa-fire text-amber-200 text-[8px]"></i> Sisa ${remaining}!</span>
+                </div>` : ''}
+
+                <!-- Foto Produk / Varian: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
+                <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-b border-slate-200 dark:border-slate-800/80 shrink-0" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
+                    <img src="${esc(imgUrl)}" alt="${esc(prodName)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='/favicon.png'">
+                    ${isSoldOut ? `
+                    <div class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-2 text-center text-white">
+                        <span class="rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest shadow-md text-white bg-rose-700">HABIS</span>
+                        <span class="mt-0.5 text-[8.5px] font-medium text-slate-300">Kuota terpenuhi</span>
+                    </div>` : ''}
+                </div>
+
+                <!-- Detail & Harga -->
+                <div class="flex flex-1 flex-col justify-between p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
+                    <div>
+                        <h4 class="line-clamp-2 text-xs sm:text-[13px] font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem] cursor-pointer" title="${esc(prodName + variantSuffix)}" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
+                            ${esc(prodName)}
+                            ${item.variantName ? `<span class="inline-flex items-center gap-1 mt-0.5 text-[8.5px] font-black px-1.5 py-0.2 rounded-md uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/80"><i class="fa-solid fa-shapes text-[8px] text-[var(--color-primary)]"></i>${esc(item.variantName)}</span>` : ''}
+                        </h4>
+                        
+                        <!-- Coretan Harga & Harga Kilat Harmonis -->
+                        <div class="mt-1.5 flex flex-col">
+                            <span class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-through leading-tight">
+                                ${fCur(normalPrice)}
+                            </span>
+                            <span class="text-xs sm:text-[14px] lg:text-[15px] font-black truncate leading-tight mt-0.5 text-rose-600 dark:text-rose-400">
+                                ${fCur(flashPrice)}
+                            </span>
                         </div>
                     </div>
 
-                    ${isSoldOut ? `
-                    <button type="button" disabled class="btn-flash-buy-disabled w-full">
-                        <span>Kuota Habis</span>
-                    </button>` : `
-                    <button type="button" onclick="window.quickBuyFlashSaleItem('${esc(prod.id)}', '${esc(item.variantName || '')}')" class="btn-flash-buy w-full">
-                        <i class="fa-solid fa-bolt text-amber-300 text-[10.5px]"></i>
-                        <span>Beli Kilat</span>
-                    </button>`}
+                    <!-- Footer FOMO Progress Bar & Tombol Aksi Beli Kilat -->
+                    <div class="mt-auto pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                        <div class="mb-1.5">
+                            <div class="flex items-center justify-between text-[8px] sm:text-[8.5px] font-extrabold text-slate-500 dark:text-slate-400 mb-0.5">
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-fire text-amber-500 text-[8px]"></i> ${isSoldOut ? 'Terjual Habis' : `Terjual ${sold}/${quota || '∞'}`}</span>
+                                <span class="${percentSold >= 80 ? 'text-rose-600 dark:text-rose-400 font-black' : ''}">${quota > 0 ? percentSold + '%' : 'Terbatas'}</span>
+                            </div>
+                            <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
+                                <div class="h-full rounded-full transition-all duration-500 ${isSoldOut ? 'bg-slate-400' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);'} width: ${isSoldOut ? 100 : Math.max(8, percentSold)}%;"></div>
+                            </div>
+                        </div>
+
+                        ${isSoldOut ? `
+                        <button type="button" disabled class="btn-flash-buy-disabled w-full">
+                            <span>Kuota Habis</span>
+                        </button>` : `
+                        <button type="button" onclick="window.quickBuyFlashSaleItem('${esc(prod.id)}', '${esc(item.variantName || '')}')" class="btn-flash-buy w-full">
+                            <i class="fa-solid fa-bolt text-amber-300 text-[10.5px]"></i>
+                            <span>Beli Kilat</span>
+                        </button>`}
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -164,41 +166,63 @@ export const renderStorefrontFlashSale = () => {
     container.classList.remove('hidden');
 
     container.innerHTML = `
-    <div class="bento-island-card relative overflow-hidden rounded-[1.75rem] p-4 sm:p-5 shadow-xs border transition-all duration-300" style="border-color: rgba(var(--color-primary-rgb), 0.22);">
+    <div class="bento-island-card relative overflow-hidden rounded-[1.75rem] p-3.5 sm:p-5 shadow-xs border transition-all duration-300" style="border-color: rgba(var(--color-primary-rgb), 0.22);">
+        <!-- Top Caution/Hazard Stripe Accent -->
+        <div class="neo-hazard-stripe-subtle h-1.5 w-full -mx-3.5 -mt-3.5 mb-3 sm:-mx-5 sm:-mt-5 sm:mb-4"></div>
+
         <!-- Header Panggung Flash Sale -->
-        <div class="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b pb-3.5 mb-3.5" style="border-color: rgba(var(--color-primary-rgb), 0.12);">
-            <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-sm" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                    <i class="fa-solid fa-bolt text-xl sm:text-2xl text-amber-300 animate-pulse"></i>
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b pb-3 mb-3" style="border-color: rgba(var(--color-primary-rgb), 0.12);">
+            <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                <div class="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400 text-slate-950 border-2 border-slate-950 shadow-[2px_2px_0px_#0f172a]">
+                    <i class="fa-solid fa-bolt text-xl sm:text-2xl text-slate-950 animate-pulse"></i>
                 </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-2xs" style="background: var(--color-primary);">PROMO KILAT</span>
-                        <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-1.5">
-                            ${esc(session.title || 'FLASH SALE KILAT')}
-                        </h3>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                        <span class="rounded-md px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs bg-rose-600 border border-slate-950">PROMO KILAT</span>
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> LIVE
+                        </span>
                     </div>
-                    <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                    <h3 class="text-sm sm:text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 truncate mt-0.5">
+                        ${esc(session.title || 'Flash Sale Spesial Hari Ini')}
+                    </h3>
+                    <p class="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">
                         Harga spesial terbatas! Segera checkout sebelum waktu atau kuota habis.
                     </p>
                 </div>
             </div>
 
-            <!-- Countdown Timer Block Harmonis Tema (Solid & Bebas Kaca) -->
-            <div class="flex items-center gap-2 self-start sm:self-auto rounded-2xl bg-white dark:bg-slate-800 border px-3 py-1.5 shadow-2xs" style="border-color: rgba(var(--color-primary-rgb), 0.25);">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline">Berakhir:</span>
-                <div class="flex items-center gap-1 font-mono font-black" style="color: var(--color-primary);">
-                    <span id="fs-cd-h" class="min-w-[28px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.h}</span>
-                    <span>:</span>
-                    <span id="fs-cd-m" class="min-w-[28px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.m}</span>
-                    <span>:</span>
-                    <span id="fs-cd-s" class="min-w-[28px] text-center rounded-lg px-1.5 py-0.5 text-xs sm:text-sm font-bold shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border: 1px solid rgba(var(--color-primary-rgb), 0.22); color: var(--color-primary);">${cd.s}</span>
+            <!-- Countdown Timer & Navigasi Desktop -->
+            <div class="flex items-center justify-between sm:justify-end gap-2 shrink-0 self-stretch sm:self-auto pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+                <!-- Countdown Timer Block Harmonis Tema (Digital LED Clock) -->
+                <div class="flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-black text-white border-2 border-slate-900 dark:border-slate-700 px-3 py-1.5 shadow-[2px_2px_0px_#0f172a]">
+                    <div class="flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase text-amber-300">
+                        <i class="fa-solid fa-stopwatch text-rose-500 animate-bounce"></i>
+                        <span class="tracking-wider">BERAKHIR:</span>
+                    </div>
+                    <div class="flex items-center gap-1 font-mono font-black">
+                        <span id="fs-cd-h" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-slate-800 text-amber-300 px-1 py-0.5 text-xs sm:text-sm font-black border border-slate-700">${cd.h}</span>
+                        <span class="text-slate-400 font-bold animate-pulse">:</span>
+                        <span id="fs-cd-m" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-slate-800 text-amber-300 px-1 py-0.5 text-xs sm:text-sm font-black border border-slate-700">${cd.m}</span>
+                        <span class="text-slate-400 font-bold animate-pulse">:</span>
+                        <span id="fs-cd-s" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-rose-600 text-white px-1 py-0.5 text-xs sm:text-sm font-black border border-rose-500">${cd.s}</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Buttons (< >) -->
+                <div class="hidden sm:flex items-center gap-1.5 ml-1">
+                    <button type="button" onclick="window.scrollFlashSaleLeft && window.scrollFlashSaleLeft()" class="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 active:translate-x-0.5 active:translate-y-0.5 transition-all shadow-[1.5px_1.5px_0px_#0f172a] cursor-pointer" title="Geser Kiri">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button type="button" onclick="window.scrollFlashSaleRight && window.scrollFlashSaleRight()" class="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 active:translate-x-0.5 active:translate-y-0.5 transition-all shadow-[1.5px_1.5px_0px_#0f172a] cursor-pointer" title="Geser Kanan">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Slider List Produk Flash Sale -->
-        <div class="relative z-10 flex gap-3 sm:gap-4 overflow-x-auto pb-2 pt-1 hide-scrollbar snap-x">
+        <div id="fs-cards-slider" class="relative z-10 flex gap-3 sm:gap-4 overflow-x-auto pb-2.5 pt-1 hide-scrollbar snap-x -mx-1 px-1 sm:mx-0 sm:px-0 scroll-smooth ${validItems.length <= 4 ? 'sm:justify-start lg:gap-5' : ''}">
             ${cardsHtml}
         </div>
     </div>`;
@@ -267,6 +291,21 @@ export const quickBuyFlashSaleItem = (prodId, variantName = '') => {
     showToast(`"${prod.name}${vName ? ` (${vName})` : ''}" berhasil dimasukkan ke keranjang dengan harga Flash Sale!`, 'success');
 };
 
+/**
+ * Navigasi Geser Slider Flash Sale
+ */
+export const scrollFlashSaleLeft = () => {
+    const slider = el('fs-cards-slider');
+    if (slider) slider.scrollBy({ left: -220, behavior: 'smooth' });
+};
+
+export const scrollFlashSaleRight = () => {
+    const slider = el('fs-cards-slider');
+    if (slider) slider.scrollBy({ left: 220, behavior: 'smooth' });
+};
+
 // Expose ke window
 window.renderStorefrontFlashSale = renderStorefrontFlashSale;
 window.quickBuyFlashSaleItem = quickBuyFlashSaleItem;
+window.scrollFlashSaleLeft = scrollFlashSaleLeft;
+window.scrollFlashSaleRight = scrollFlashSaleRight;

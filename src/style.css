@@ -4195,11 +4195,11 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     gap: 0.375rem !important;
     color: #ffffff !important;
     background: var(--color-primary) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
     cursor: pointer !important;
     user-select: none !important;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: transform 0.08s ease, box-shadow 0.08s ease !important;
     box-sizing: border-box !important;
 }
 
@@ -4217,14 +4217,23 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
 .btn-reward-redeem:hover,
 .btn-flash-buy:hover {
     filter: brightness(1.08) !important;
-    transform: translateY(-0.5px) !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12) !important;
 }
 
 .btn-reward-redeem:active,
 .btn-flash-buy:active {
-    transform: scale(0.94) !important;
-    box-shadow: none !important;
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+
+html.dark .btn-reward-redeem,
+html.dark .btn-flash-buy {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+html.dark .btn-reward-redeem:active,
+html.dark .btn-flash-buy:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 .btn-flash-buy-disabled {
@@ -6687,6 +6696,18 @@ html.dark .neo-box {
                 box-shadow 0.15s ease,
                 border-color 0.15s ease !important;
     box-sizing: border-box !important;
+}
+/* Isolasi internal kartu Flash Sale & Reward agar gambar & detail tetap utuh dan seamless */
+#dynamic-flashsale-container .flash-sale-card > div,
+#dynamic-flashsale-container .flash-sale-card > div > div {
+    border: none !important;
+    box-shadow: none !important;
+}
+#dynamic-flashsale-container .flash-sale-card .aspect-square {
+    border-bottom: 1.5px solid #0f172a !important;
+}
+html.dark #dynamic-flashsale-container .flash-sale-card .aspect-square {
+    border-bottom: 1.5px solid #334155 !important;
 }
 html.dark .neo-card,
 html.dark .catalog-product-card,
