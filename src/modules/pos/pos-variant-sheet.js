@@ -280,14 +280,14 @@ const renderVariantSheetContent = (p) => {
                 <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block">Jumlah</span>
                 ${wholesalePrice !== null ? `<span class="text-[9px] text-amber-600 font-semibold">Harga grosir aktif!</span>` : ''}
             </div>
-            <div class="flex h-10 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-xs dark:border-slate-700 dark:bg-slate-900">
-                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-90 cursor-pointer"
+            <div class="pos-stepper-control flex h-10 items-center overflow-hidden rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-90 cursor-pointer"
                     onclick="window.updatePOSVariantQty(-1)">
                     <i class="fa-solid fa-minus text-xs"></i>
                 </button>
                 <input id="pos-variant-qty-input" type="number" step="any" min="0.01" value="${formatQty(_selectedQty)}" onchange="window.setPOSVariantQty(this.value)"
-                    class="w-14 border-x border-slate-200 bg-transparent text-center text-sm font-extrabold focus:outline-none dark:border-slate-700 dark:text-white px-1">
-                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] active:scale-90 cursor-pointer"
+                    class="stepper-input w-14 border-none bg-transparent text-center text-sm font-extrabold focus:outline-none dark:text-white px-1">
+                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-90 cursor-pointer"
                     onclick="window.updatePOSVariantQty(1)">
                     <i class="fa-solid fa-plus text-xs"></i>
                 </button>

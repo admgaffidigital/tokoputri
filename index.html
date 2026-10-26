@@ -1695,7 +1695,7 @@
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:text-slate-300 active:scale-95 cursor-pointer" onclick="closePrinterSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-        <div class="custom-scrollbar flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+        <div class="custom-scrollbar flex-1 overflow-y-auto p-5 pb-12 sm:pb-8 space-y-5 text-xs">
           <!-- 1. Pilihan Tipe Koneksi -->
           <div>
             <div class="flex items-center justify-between mb-2">
@@ -1728,7 +1728,7 @@
 
               <!-- USB / OTG -->
               <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="usb" onclick="selectPrinterDeviceTypeUI('usb')">
-                <i class="fa-solid fa-usb text-xl text-emerald-500 group-hover:scale-110 transition-transform"></i>
+                <i class="fa-brands fa-usb text-xl text-emerald-500 group-hover:scale-110 transition-transform"></i>
                 <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">USB / OTG</span>
                 <span class="text-[9px] text-slate-400">Kabel Thermal POS</span>
                 <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
@@ -1800,7 +1800,7 @@
             </div>
             <div class="flex gap-2 w-full sm:w-auto self-end">
               <button type="button" onclick="scanBluetoothPrinter()" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Cari Printer Bluetooth Direct"><i class="fa-brands fa-bluetooth-b"></i> Scan BT</button>
-              <button type="button" onclick="scanUsbPrinter()" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Deteksi USB OTG"><i class="fa-solid fa-usb"></i> Scan USB</button>
+              <button type="button" onclick="scanUsbPrinter()" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Deteksi USB OTG"><i class="fa-brands fa-usb"></i> Scan USB</button>
             </div>
           </div>
 
@@ -3439,12 +3439,12 @@
       class="hidden opacity-0 fixed inset-0 z-[9996] flex items-end justify-center bg-slate-900/80 transition-all duration-300"
       onclick="if(event.target===this) window.closePOSVariantSheet && window.closePOSVariantSheet()">
       <div id="pos-variant-sheet-box"
-        class="translate-y-full transition-all duration-300 bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[88dvh]">
-        <!-- Close Handle -->
-        <div class="flex items-center justify-between px-5 pt-4 pb-0 shrink-0">
-          <div class="w-10 h-1 rounded-full bg-slate-200 dark:bg-slate-700 mx-auto"></div>
+        class="relative translate-y-full transition-all duration-300 bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[88dvh] border border-slate-200/80 dark:border-slate-800">
+        <!-- Header & Drag Handle (Clean & Anti-Floating) -->
+        <div class="relative w-full pt-3 pb-2 px-5 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-800/80">
+          <div class="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
           <button onclick="window.closePOSVariantSheet && window.closePOSVariantSheet()"
-            class="absolute right-4 top-3.5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-90">
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition-all active:scale-90 cursor-pointer shadow-xs" title="Tutup">
             <i class="fa-solid fa-xmark text-sm"></i>
           </button>
         </div>

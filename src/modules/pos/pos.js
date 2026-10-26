@@ -1730,7 +1730,7 @@ export const renderCatalog = (isLoadMore = false) => {
         const catHTML = cats.map(c => {
             const isAll  = c === 'Semua';
             const active = isAll ? !posCatFilterVal : posCatFilterVal === c;
-            return `<button type="button" onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'bg-[var(--color-primary)] text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700'}">${esc(c)}</button>`;
+            return `<button type="button" onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'pos-cat-active bg-[var(--color-primary)] text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700'}" ${active ? 'style="background-color:var(--color-primary)!important;color:#ffffff!important;"' : ''}>${esc(c)}</button>`;
         }).join('');
 
         let subCatHTML = '';
@@ -1754,7 +1754,7 @@ export const renderCatalog = (isLoadMore = false) => {
                     <button type="button" onclick="window.posSubCatFilter('')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer touch-manipulation select-none border-2 border-slate-900 dark:border-slate-700 active:translate-x-[1px] active:translate-y-[1px] ${!posSubCatFilterVal ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]'}">Semua Jenis</button>
                     ${subCats.map(sc => {
                         const active = posSubCatFilterVal.toLowerCase() === sc.name.toLowerCase();
-                        return `<button type="button" onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black transition-all border-2 border-slate-900 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'bg-[var(--color-primary)] text-white shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]'}">
+                        return `<button type="button" onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black transition-all border-2 border-slate-900 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'pos-subcat-active bg-[var(--color-primary)] text-white shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]'}" ${active ? 'style="background-color:var(--color-primary)!important;color:#ffffff!important;"' : ''}>
                             <span>${esc(sc.name)}</span>
                             <span class="text-[9px] px-1 py-0.5 rounded-full border border-slate-900 ${active ? 'bg-black/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}">${sc.count}</span>
                         </button>`;
@@ -2141,10 +2141,10 @@ const renderCart = () => {
                 <!-- Stepper & Subtotal -->
                 <div class="flex flex-col items-end shrink-0">
                     <div class="flex items-center gap-1">
-                        <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
+                        <div class="pos-stepper-control flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
                             <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs sm:text-sm flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
                             <input type="number" step="any" min="0.001" value="${formatQty(item.qty)}" onchange="window.posSetQty('${ckey}',this.value)"
-                                class="w-14 sm:w-16 text-center text-xs sm:text-sm font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-1" title="Kuantitas (${esc(item.unit || 'pcs')})">
+                                class="stepper-input w-14 sm:w-16 text-center text-xs sm:text-sm font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-1 border-none outline-none shadow-none" style="border:none!important;border-radius:0!important;box-shadow:none!important;outline:none!important;background:transparent!important;" title="Kuantitas (${esc(item.unit || 'pcs')})">
                             <button onclick="window.posUpdateQty('${ckey}',1)" class="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs sm:text-sm flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
                         </div>
                         <button onclick="window.posRemoveItem('${ckey}')" class="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer active:scale-95 ml-0.5" title="Hapus item">
@@ -2371,7 +2371,7 @@ export const openPayModal = () => {
         </div>
 
         <!-- Body Scrollable -->
-        <div class="p-4 sm:p-5 pb-8 sm:pb-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
+        <div class="p-4 sm:p-5 pb-12 sm:pb-8 space-y-3.5 overflow-y-auto flex-1 custom-scrollbar">
           <!-- Pilih Pelanggan -->
           <div>
             <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Tipe Pelanggan</label>
@@ -2457,20 +2457,20 @@ const renderPayDetail = (method) => {
     const dppVal = tax?.dppAmount !== undefined ? tax.dppAmount : Math.max(0, posSubtotal() - posDiscountAmount() - ptDisc);
 
     const topRow = `
-      <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 mb-2.5 text-xs space-y-1.5">
+      <div class="p-2 sm:p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 mb-2 text-xs space-y-1">
         <div class="flex justify-between items-center">
           <span class="text-slate-500 font-medium">Subtotal Belanja</span>
-          <span class="font-bold font-mono text-xs">${fRp(posSubtotal())}</span>
+          <span class="font-bold text-xs">${fRp(posSubtotal())}</span>
         </div>
         ${posDiscountAmount() > 0 ? `
         <div class="flex justify-between items-center text-rose-500 text-[11px]">
           <span>Diskon Toko</span>
-          <span class="font-bold font-mono">- ${fRp(posDiscountAmount())}</span>
+          <span class="font-bold">- ${fRp(posDiscountAmount())}</span>
         </div>` : ''}
         ${ptDisc > 0 ? `
         <div class="flex justify-between items-center text-emerald-600 dark:text-emerald-400 text-[11px]">
           <span class="flex items-center gap-1 font-bold"><i class="fa-solid fa-tags"></i> Diskon Poin (${posPointsRedeemed} Pts)</span>
-          <span class="font-black font-mono">- ${fRp(ptDisc)}</span>
+          <span class="font-black">- ${fRp(ptDisc)}</span>
         </div>` : ''}
         ${posClaimedReward ? `
         <div class="flex justify-between items-center text-purple-600 dark:text-purple-400 text-[11px]">
@@ -2480,23 +2480,23 @@ const renderPayDetail = (method) => {
         ${hasTax ? `
         <div class="flex justify-between items-center text-slate-500 text-[11px]">
           <span>DPP</span>
-          <span class="font-bold font-mono">${fRp(dppVal)}</span>
+          <span class="font-bold">${fRp(dppVal)}</span>
         </div>
         <div class="flex justify-between items-center text-amber-600 dark:text-amber-400 text-[11px] font-bold">
           <span>${esc(taxLbl)}</span>
-          <span class="font-black font-mono">${taxAmt > 0 ? (isInc ? '' : '+') + fRp(taxAmt) : 'Rp 0'}</span>
+          <span class="font-black">${taxAmt > 0 ? (isInc ? '' : '+') + fRp(taxAmt) : 'Rp 0'}</span>
         </div>` : ''}
-        <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
+        <div class="flex justify-between items-center pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
           <span class="text-slate-700 dark:text-slate-200 font-bold">Total Wajib Bayar</span>
-          <span class="font-black text-sm text-[var(--color-primary)] dark:text-rose-300">${fRp(total)}</span>
+          <span class="font-black text-xs sm:text-sm text-[var(--color-primary)] dark:text-rose-300">${fRp(total)}</span>
         </div>
         ${canViewHpp() && totalCartHpp > 0 ? `
-        <div class="flex justify-between items-center pt-1 border-t border-slate-200/40 dark:border-slate-700/40 text-[10px]">
-          <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Total Modal (HPP):</span>
+        <div class="flex justify-between items-center pt-0.5 border-t border-slate-200/40 dark:border-slate-700/40 text-[9.5px]">
+          <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Modal (HPP):</span>
           <span class="font-bold text-amber-600 dark:text-amber-400">${fRp(totalCartHpp)}</span>
         </div>
-        <div class="flex justify-between items-center text-[10px]">
-          <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500"></i> Estimasi Laba Bersih:</span>
+        <div class="flex justify-between items-center text-[9.5px]">
+          <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500"></i> Est. Laba Bersih:</span>
           <span class="font-bold text-emerald-600 dark:text-emerald-400">+ ${fRp(estMargin)}</span>
         </div>` : ''}
       </div>`;
@@ -4647,7 +4647,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex justify-between items-center pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
                         <div>
                             <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Total Akhir</p>
-                            <p class="pos-total-target text-2xl font-black font-mono tracking-tight text-[var(--color-primary)] dark:text-rose-300">Rp 0</p>
+                            <p class="pos-total-target text-2xl font-black tracking-tight text-[var(--color-primary)] dark:text-rose-300">Rp 0</p>
                         </div>
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Bayar
@@ -4757,7 +4757,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </div>
                     <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/80 dark:border-slate-800">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>
-                        <span class="pos-total-target text-base sm:text-lg font-black font-mono" style="color:var(--color-primary)">Rp 0</span>
+                        <span class="pos-total-target text-base sm:text-lg font-black tracking-tight" style="color:var(--color-primary)">Rp 0</span>
                     </div>
                     <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
                         <span class="pos-keycap-on-btn">F4</span>
