@@ -3240,14 +3240,14 @@ html.dark #bottom-nav-bar,
     -webkit-backdrop-filter: none !important;
 }
 
-/* ─── SMART DUAL-MODE SOLID CLEAN CARDS & BENTO BOXES ─── */
+/* ─── SMART DUAL-MODE INDUSTRIAL NEO-BRUTALIST CARDS & BENTO BOXES ─── */
 html:not(.dark) .card-modern,
 html:not(.dark) .card-native,
 html:not(.dark) .bento-island-card,
 html:not(.dark)[data-bg-style] .bento-island-card {
     background-color: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08) !important;
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -3260,8 +3260,8 @@ html.dark .bento-island-card,
 .dark .bento-island-card,
 html.dark[data-bg-style] .bento-island-card {
     background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    border: 2px solid #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -6631,10 +6631,14 @@ html.dark .neo-box {
 .bento-empty-state-card,
 .storefront-card,
 .option-select-card,
+.footer-bento-hub,
 #sec-categories > div,
 #sec-brands > div,
 #dynamic-banners-container > div,
 #quickmenu-modal-content button,
+#admin-dashboard-view .grid button,
+#admin-dashboard-cashflow-slot .bento-island-card,
+#admin-dashboard-view > .bento-island-card,
 .table-container,
 .overflow-x-auto.rounded-2xl,
 .admin-table-card,
@@ -6666,10 +6670,14 @@ html.dark .category-admin-card,
 html.dark .bento-empty-state-card,
 html.dark .storefront-card,
 html.dark .option-select-card,
+html.dark .footer-bento-hub,
 html.dark #sec-categories > div,
 html.dark #sec-brands > div,
 html.dark #dynamic-banners-container > div,
 html.dark #quickmenu-modal-content button,
+html.dark #admin-dashboard-view .grid button,
+html.dark #admin-dashboard-cashflow-slot .bento-island-card,
+html.dark #admin-dashboard-view > .bento-island-card,
 html.dark .table-container,
 html.dark .overflow-x-auto.rounded-2xl,
 html.dark .admin-table-card,
@@ -6697,6 +6705,7 @@ html.dark #tempo-cards-container > div {
     .category-admin-card:hover,
     .option-select-card:hover,
     #quickmenu-modal-content button:hover,
+    #admin-dashboard-view .grid button:hover,
     #cart-items-container > div:hover {
         transform: translateY(-2px);
         box-shadow: 3.5px 3.5px 0px #0f172a !important;
@@ -6711,6 +6720,7 @@ html.dark #tempo-cards-container > div {
     html.dark .category-admin-card:hover,
     html.dark .option-select-card:hover,
     html.dark #quickmenu-modal-content button:hover,
+    html.dark #admin-dashboard-view .grid button:hover,
     html.dark #cart-items-container > div:hover {
         box-shadow: 3.5px 3.5px 0px #000000 !important;
         border-color: #475569 !important;
@@ -6727,9 +6737,209 @@ html.dark #tempo-cards-container > div {
     .category-admin-card:hover,
     .option-select-card:hover,
     #quickmenu-modal-content button:hover,
+    #admin-dashboard-view .grid button:hover,
     #cart-items-container > div:hover {
         transform: none !important;
     }
+}
+
+/* 1b. Dynamic Storefront Category & Brand Chiclets */
+#dynamic-categories-container [onclick*="filterCategory"] > div,
+#dynamic-categories-container .snap-start > div {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease !important;
+    background-color: #ffffff;
+    box-sizing: border-box !important;
+}
+#dynamic-categories-container [onclick*="filterCategory"] > div:active,
+#dynamic-categories-container .snap-start > div:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #dynamic-categories-container [onclick*="filterCategory"] > div,
+html.dark #dynamic-categories-container .snap-start > div {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background-color: #1e293b;
+}
+html.dark #dynamic-categories-container [onclick*="filterCategory"] > div:active,
+html.dark #dynamic-categories-container .snap-start > div:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#dynamic-brands-container [onclick*="filterBrand"] > div > div,
+#dynamic-brands-container .snap-start > div > div {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease !important;
+    background-color: #ffffff;
+    box-sizing: border-box !important;
+}
+#dynamic-brands-container [onclick*="filterBrand"] > div > div:active,
+#dynamic-brands-container .snap-start > div > div:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #dynamic-brands-container [onclick*="filterBrand"] > div > div,
+html.dark #dynamic-brands-container .snap-start > div > div {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background-color: #1e293b;
+}
+html.dark #dynamic-brands-container [onclick*="filterBrand"] > div > div:active,
+html.dark #dynamic-brands-container .snap-start > div > div:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#sec-categories button[onclick*="openCategoryModal"],
+#sec-brands button[onclick*="openBrandModal"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.625rem !important;
+    font-weight: 800 !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#sec-categories button[onclick*="openCategoryModal"]:active,
+#sec-brands button[onclick*="openBrandModal"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #sec-categories button[onclick*="openCategoryModal"],
+html.dark #sec-brands button[onclick*="openBrandModal"] {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #sec-categories button[onclick*="openCategoryModal"]:active,
+html.dark #sec-brands button[onclick*="openBrandModal"]:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* 1c. Storefront Footer Bento Action Cards & Service Tiles */
+.footer-bento-hub a[onclick*="sendWhatsAppCustomerService"],
+.footer-bento-hub a[href="javascript:void(0)"],
+.footer-bento-hub div[onclick*="openAppDownloadModal"],
+.footer-bento-hub .grid button,
+.footer-bento-hub button[onclick*="changeView('view-orders')"],
+.footer-bento-hub button[onclick*="openVoucherModal"],
+.footer-bento-hub button[onclick*="openFaqModal"],
+.footer-bento-hub button[onclick*="openQualityGuaranteeModal"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+    transition: transform 0.08s ease, box-shadow 0.08s ease !important;
+}
+.footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]:active,
+.footer-bento-hub a[href="javascript:void(0)"]:active,
+.footer-bento-hub div[onclick*="openAppDownloadModal"]:active,
+.footer-bento-hub .grid button:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark .footer-bento-hub a[onclick*="sendWhatsAppCustomerService"],
+html.dark .footer-bento-hub a[href="javascript:void(0)"],
+html.dark .footer-bento-hub div[onclick*="openAppDownloadModal"],
+html.dark .footer-bento-hub .grid button {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark .footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]:active,
+html.dark .footer-bento-hub a[href="javascript:void(0)"]:active,
+html.dark .footer-bento-hub div[onclick*="openAppDownloadModal"]:active,
+html.dark .footer-bento-hub .grid button:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* Storefront Footer Badges: Verification, Shipping, Operational */
+.footer-bento-hub [class*="rounded-xl"][class*="border"],
+.footer-bento-hub .flex-wrap > div,
+.footer-bento-hub span[class*="rounded-full"][class*="border"],
+#footer-container button {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.625rem !important;
+    box-sizing: border-box !important;
+}
+html.dark .footer-bento-hub [class*="rounded-xl"][class*="border"],
+html.dark .footer-bento-hub .flex-wrap > div,
+html.dark .footer-bento-hub span[class*="rounded-full"][class*="border"],
+html.dark #footer-container button {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* 1d. CMS & Header Action Buttons & Icon Pods */
+#view-admin .glass-header button,
+#view-catalog .glass-header button,
+#admin-dashboard-cashflow-slot button,
+.banner-slide-item a,
+.banner-slide-item button,
+.banner-slide-item [role="button"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#view-admin .glass-header button:active,
+#view-catalog .glass-header button:active,
+#admin-dashboard-cashflow-slot button:active,
+.banner-slide-item a:active,
+.banner-slide-item button:active,
+.banner-slide-item [role="button"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #view-admin .glass-header button,
+html.dark #view-catalog .glass-header button,
+html.dark #admin-dashboard-cashflow-slot button,
+html.dark .banner-slide-item a,
+html.dark .banner-slide-item button,
+html.dark .banner-slide-item [role="button"] {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #view-admin .glass-header button:active,
+html.dark #view-catalog .glass-header button:active,
+html.dark #admin-dashboard-cashflow-slot button:active,
+html.dark .banner-slide-item a:active,
+html.dark .banner-slide-item button:active,
+html.dark .banner-slide-item [role="button"]:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* Industrial Icon Pods & Serial Badges across CMS */
+#admin-dashboard-view .grid button .w-14,
+#admin-dashboard-view .grid button .w-16,
+#admin-dashboard-cashflow-slot .w-8.h-8,
+#admin-dashboard-view > .bento-island-card .h-14.w-14,
+#admin-dashboard-view > .bento-island-card .h-16.w-16,
+#admin-logo-box,
+#admin-dashboard-cashflow-slot .w-7.h-7 {
+    border: 2px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    box-sizing: border-box !important;
+}
+html.dark #admin-dashboard-view .grid button .w-14,
+html.dark #admin-dashboard-view .grid button .w-16,
+html.dark #admin-dashboard-cashflow-slot .w-8.h-8,
+html.dark #admin-dashboard-view > .bento-island-card .h-14.w-14,
+html.dark #admin-dashboard-view > .bento-island-card .h-16.w-16,
+html.dark #admin-logo-box,
+html.dark #admin-dashboard-cashflow-slot .w-7.h-7 {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+#admin-dashboard-welcome-tag {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+}
+html.dark #admin-dashboard-welcome-tag {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
 
 /* 2. Universal Mechanical Tactile Button Switch Engine */
@@ -7249,6 +7459,12 @@ html.dark #toast {
     .btn-native-action,
     .admin-input,
     .table-container,
+    .footer-bento-hub,
+    .footer-bento-hub *,
+    #dynamic-categories-container *,
+    #dynamic-brands-container *,
+    #admin-dashboard-view *,
+    #admin-dashboard-cashflow-slot *,
     #bottom-nav-bar,
     .glass-header,
     #thermal-receipt,

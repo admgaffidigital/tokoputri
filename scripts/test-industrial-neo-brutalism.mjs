@@ -178,12 +178,34 @@ assert(
 console.log('\n📊 6. Memeriksa Integrasi CMS Admin Dashboard Bento...');
 assert(
     cssContent.includes('.bento-island-card') &&
-    cssContent.includes('box-shadow: 2.5px 2.5px 0px #0f172a !important;'),
-    'Seluruh kartu bento di Dashboard CMS terintegrasi otomatis dengan styling neo-card'
+    cssContent.includes('box-shadow: 2.5px 2.5px 0px #0f172a !important;') &&
+    cssContent.includes('html:not(.dark) .bento-island-card') &&
+    cssContent.includes('border: 2px solid #0f172a !important;'),
+    'Seluruh kartu bento di Dashboard CMS terintegrasi otomatis dengan styling neo-card & proteksi specificity'
+);
+
+assert(
+    cssContent.includes('#admin-dashboard-view .grid button') &&
+    cssContent.includes('#admin-dashboard-cashflow-slot .bento-island-card') &&
+    cssContent.includes('#view-admin .glass-header button'),
+    'CMS Header, widget arus kas, dan menu navigasi utama terlindungi styling industrial neo-brutalist'
 );
 
 // ─── 7. Verifikasi Universal Neo-Brutalism di Seluruh Web Aplikasi ─
 console.log('\n🌐 7. Memeriksa Cakupan Universal Neo-Brutalism di Seluruh Web Aplikasi...');
+assert(
+    cssContent.includes('#dynamic-categories-container [onclick*="filterCategory"] > div') &&
+    cssContent.includes('#dynamic-brands-container [onclick*="filterBrand"] > div > div'),
+    'Chiclet kategori dan kartu brand etalase terstandarisasi neo-brutalist 2px border & 2px shadow'
+);
+
+assert(
+    cssContent.includes('.footer-bento-hub') &&
+    cssContent.includes('.footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]') &&
+    cssContent.includes('.footer-bento-hub div[onclick*="openAppDownloadModal"]'),
+    'Kartu identitas toko, WhatsApp prioritas, dan unduh APK di footer terstandarisasi neo-brutalism'
+);
+
 assert(
     cssContent.includes('.card-modern,') &&
     cssContent.includes('.card-native,') &&
