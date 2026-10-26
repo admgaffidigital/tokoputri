@@ -32,7 +32,8 @@ export const DEFAULT_CHANGELOG = [
             "Unit Stepper Kuantitas Terpadu & Varian Produk: Mengintegrasikan kontrol jumlah beli (#modal-qty-input) ke dalam blok mekanikal terpadu bebas anomali kotak terisolasi, serta standardisasi tombol varian produk dan swatch warna cat beraksen neo-brutalist tegas.",
             "Harmonisasi Modal Kalkulator Estimasi Bahan Bangunan & SOP Ekosistem: Menyelaraskan seluruh tab kategori, kartu hasil estimasi, tombol aksi Salin/WA, serta kartu-kartu panduan SOP ke standar border 2px solid dan hard shadow.",
             "Isolasi Keamanan Cetak Thermal & Dokumen A4 Resmi: Penjaminan mutlak bahwa hard shadow CSS diisolasi penuh (@media print) sehingga cetakan kertas struk thermal kasir dan PDF A4 tetap 100% putih bersih, pekat, dan hemat ribbon/kertas.",
-            "Suite Unit Test test-industrial-neo-brutalism.mjs (36 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
+            "Harmonisasi Produk Sejenis & Alternatif Pilihan (#product-modal-related-container) serta Modal Kategori (#category-modal): Menyelaraskan seluruh kartu rekomendasi produk dan daftar tombol kategori satu layar penuh ke standar outline 2px solid charcoal, hard shadow 2.5px, dan mekanikal switch taktil.",
+            "Suite Unit Test test-industrial-neo-brutalism.mjs (38 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
             "Multi-Channel Distribution v1.20.0 (Android versionCode 12000 & Windows x64)."
         ]
     },

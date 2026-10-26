@@ -7472,6 +7472,125 @@ html.dark #shopping-guide-modal button[onclick*="closeShoppingGuideModal"]:activ
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
+/* 4f. Produk Sejenis & Alternatif Pilihan (Related Products Harmonization) */
+#product-modal-related-container [onclick*="openProductModal"],
+#product-modal-related-container .group {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+    background-color: #ffffff;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+}
+#product-modal-related-container [onclick*="openProductModal"]:active,
+#product-modal-related-container .group:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #product-modal-related-container [onclick*="openProductModal"],
+html.dark #product-modal-related-container .group {
+    border-color: #475569 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: #0f172a;
+}
+html.dark #product-modal-related-container [onclick*="openProductModal"]:active,
+html.dark #product-modal-related-container .group:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#product-modal-related-container .relative.aspect-square {
+    border: 1.5px solid #0f172a !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+}
+html.dark #product-modal-related-container .relative.aspect-square {
+    border-color: #475569 !important;
+}
+
+#product-modal-related-container span.rounded-full {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.5rem !important;
+    font-weight: 800 !important;
+}
+html.dark #product-modal-related-container span.rounded-full {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* 4g. Category & Brand Storefront Modals Harmonization */
+#modal-category-list button,
+#modal-brand-grid button {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+    background-color: #ffffff;
+    transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.15s ease !important;
+}
+#modal-category-list button[class*="border-[var(--color-primary)]"],
+#modal-brand-grid button[class*="border-[var(--color-primary)]"] {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
+}
+#modal-category-list button:active,
+#modal-brand-grid button:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #modal-category-list button,
+html.dark #modal-brand-grid button {
+    border-color: #475569 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: #1e293b;
+}
+html.dark #modal-category-list button[class*="border-[var(--color-primary)]"],
+html.dark #modal-brand-grid button[class*="border-[var(--color-primary)]"] {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
+}
+html.dark #modal-category-list button:active,
+html.dark #modal-brand-grid button:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#modal-category-list button > div:first-child,
+#modal-brand-grid button > div:first-child {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+    box-sizing: border-box !important;
+}
+html.dark #modal-category-list button > div:first-child,
+html.dark #modal-brand-grid button > div:first-child {
+    border-color: #475569 !important;
+    box-shadow: 1px 1px 0px #000000 !important;
+}
+
+#category-modal button[onclick*="closeCategoryModal"],
+#brand-modal button[onclick*="closeBrandModal"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    font-weight: 800 !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#category-modal button[onclick*="closeCategoryModal"]:active,
+#brand-modal button[onclick*="closeBrandModal"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #category-modal button[onclick*="closeCategoryModal"],
+html.dark #brand-modal button[onclick*="closeBrandModal"] {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+html.dark #category-modal button[onclick*="closeCategoryModal"]:active,
+html.dark #brand-modal button[onclick*="closeBrandModal"]:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
 /* 5. Universal Industrial Neo-Brutalist Modals & Dialogs */
 @media (min-width: 640px) {
     .modal-bottom-sheet,
@@ -7705,6 +7824,10 @@ html.dark #toast {
     .glass-header,
     #product-modal,
     #product-modal *,
+    #category-modal,
+    #category-modal *,
+    #brand-modal,
+    #brand-modal *,
     #modal-material-estimator,
     #modal-material-estimator *,
     #shopping-guide-modal,

@@ -227,6 +227,20 @@ assert(
 );
 
 assert(
+    cssContent.includes('#product-modal-related-container [onclick*="openProductModal"]') &&
+    cssContent.includes('#product-modal-related-container .group') &&
+    cssContent.includes('#product-modal-related-container .relative.aspect-square'),
+    'Kartu produk sejenis & rekomendasi terkait di modal produk terstandarisasi neo-brutalist'
+);
+
+assert(
+    cssContent.includes('#modal-category-list button') &&
+    cssContent.includes('#modal-brand-grid button') &&
+    cssContent.includes('#category-modal button[onclick*="closeCategoryModal"]'),
+    'Daftar kategori modal dan grid brand modal terstandarisasi neo-brutalist'
+);
+
+assert(
     cssContent.includes('.footer-bento-hub') &&
     cssContent.includes('.footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]') &&
     cssContent.includes('.footer-bento-hub div[onclick*="openAppDownloadModal"]'),
