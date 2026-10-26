@@ -6632,9 +6632,6 @@ html.dark .neo-box {
 .storefront-card,
 .option-select-card,
 .footer-bento-hub,
-#sec-categories > div,
-#sec-brands > div,
-#dynamic-banners-container > div,
 #quickmenu-modal-content button,
 #admin-dashboard-view .grid button,
 #admin-dashboard-cashflow-slot .bento-island-card,
@@ -6671,9 +6668,6 @@ html.dark .bento-empty-state-card,
 html.dark .storefront-card,
 html.dark .option-select-card,
 html.dark .footer-bento-hub,
-html.dark #sec-categories > div,
-html.dark #sec-brands > div,
-html.dark #dynamic-banners-container > div,
 html.dark #quickmenu-modal-content button,
 html.dark #admin-dashboard-view .grid button,
 html.dark #admin-dashboard-cashflow-slot .bento-island-card,
@@ -6693,6 +6687,27 @@ html.dark #purchase-cards-list > div,
 html.dark #tempo-cards-container > div {
     border-color: #334155 !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+/* Zero Double-Boxing: Kontainer Seksi Storefront Flat & Bersih, Chiclet di Dalamnya Menjadi Kartu Fokus */
+#sec-categories > div,
+#sec-brands > div,
+#dynamic-banners-container,
+#dynamic-banners-container > div {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+html.dark #sec-categories > div,
+html.dark #sec-brands > div,
+html.dark #dynamic-banners-container,
+html.dark #dynamic-banners-container > div {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -6771,8 +6786,6 @@ html.dark #dynamic-categories-container .snap-start > div:active {
 
 #dynamic-brands-container [onclick*="filterBrand"] > div,
 #dynamic-brands-container .snap-start > div,
-#dynamic-brands-container [onclick*="filterBrand"] > div > div,
-#dynamic-brands-container .snap-start > div > div,
 #modal-brand-grid button {
     border: 2px solid #0f172a !important;
     box-shadow: 2px 2px 0px #0f172a !important;
@@ -6783,16 +6796,12 @@ html.dark #dynamic-categories-container .snap-start > div:active {
 }
 #dynamic-brands-container [onclick*="filterBrand"] > div:active,
 #dynamic-brands-container .snap-start > div:active,
-#dynamic-brands-container [onclick*="filterBrand"] > div > div:active,
-#dynamic-brands-container .snap-start > div > div:active,
 #modal-brand-grid button:active {
     transform: translate(1.5px, 1.5px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
 html.dark #dynamic-brands-container [onclick*="filterBrand"] > div,
 html.dark #dynamic-brands-container .snap-start > div,
-html.dark #dynamic-brands-container [onclick*="filterBrand"] > div > div,
-html.dark #dynamic-brands-container .snap-start > div > div,
 html.dark #modal-brand-grid button {
     border-color: #475569 !important;
     box-shadow: 2px 2px 0px #000000 !important;
@@ -6800,10 +6809,14 @@ html.dark #modal-brand-grid button {
 }
 html.dark #dynamic-brands-container [onclick*="filterBrand"] > div:active,
 html.dark #dynamic-brands-container .snap-start > div:active,
-html.dark #dynamic-brands-container [onclick*="filterBrand"] > div > div:active,
-html.dark #dynamic-brands-container .snap-start > div > div:active,
 html.dark #modal-brand-grid button:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#dynamic-brands-container [onclick*="filterBrand"] > div > div,
+#dynamic-brands-container .snap-start > div > div {
+    border: none !important;
+    box-shadow: none !important;
 }
 
 #sec-categories button[onclick*="openCategoryModal"],
@@ -6886,7 +6899,8 @@ html.dark #footer-container button {
 /* 1d. CMS & Header Action Buttons & Icon Pods */
 #view-admin .glass-header button,
 #view-catalog .glass-header button,
-#admin-dashboard-cashflow-slot button,
+#dashboard-cashflow-refresh-btn,
+#admin-dashboard-cashflow-slot button[onclick*="openAdminTab('reports')"],
 .banner-slide-item a,
 .banner-slide-item button,
 .banner-slide-item [role="button"] {
@@ -6897,7 +6911,8 @@ html.dark #footer-container button {
 }
 #view-admin .glass-header button:active,
 #view-catalog .glass-header button:active,
-#admin-dashboard-cashflow-slot button:active,
+#dashboard-cashflow-refresh-btn:active,
+#admin-dashboard-cashflow-slot button[onclick*="openAdminTab('reports')"]:active,
 .banner-slide-item a:active,
 .banner-slide-item button:active,
 .banner-slide-item [role="button"]:active {
@@ -6906,7 +6921,8 @@ html.dark #footer-container button {
 }
 html.dark #view-admin .glass-header button,
 html.dark #view-catalog .glass-header button,
-html.dark #admin-dashboard-cashflow-slot button,
+html.dark #dashboard-cashflow-refresh-btn,
+html.dark #admin-dashboard-cashflow-slot button[onclick*="openAdminTab('reports')"],
 html.dark .banner-slide-item a,
 html.dark .banner-slide-item button,
 html.dark .banner-slide-item [role="button"] {
@@ -6915,11 +6931,50 @@ html.dark .banner-slide-item [role="button"] {
 }
 html.dark #view-admin .glass-header button:active,
 html.dark #view-catalog .glass-header button:active,
-html.dark #admin-dashboard-cashflow-slot button:active,
+html.dark #dashboard-cashflow-refresh-btn:active,
+html.dark #admin-dashboard-cashflow-slot button[onclick*="openAdminTab('reports')"]:active,
 html.dark .banner-slide-item a:active,
 html.dark .banner-slide-item button:active,
 html.dark .banner-slide-item [role="button"]:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* Cashflow Cards: Lapang, Bebas Sempit, & Unbox Link Navigasi Cepat */
+#admin-dashboard-cashflow-slot .bento-island-card {
+    padding: 1.125rem 1.25rem !important;
+    min-height: 125px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+}
+#admin-dashboard-cashflow-slot .bento-island-card button {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    min-height: unset !important;
+    height: auto !important;
+    padding: 0.2rem 0 !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    letter-spacing: normal !important;
+    transition: color 0.15s ease, opacity 0.15s ease, transform 0.1s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+}
+#admin-dashboard-cashflow-slot .bento-island-card button:hover {
+    opacity: 0.8 !important;
+    text-decoration: underline !important;
+    transform: translateX(2px) !important;
+}
+#admin-dashboard-cashflow-slot .bento-island-card button:active {
+    transform: scale(0.95) !important;
+    box-shadow: none !important;
+}
+#admin-dashboard-cashflow-slot .flex.items-center.gap-2 {
+    gap: 0.5rem !important;
 }
 
 /* Industrial Icon Pods & Serial Badges across CMS */
@@ -7248,6 +7303,33 @@ textarea {
     min-height: 5.5rem !important;
 }
 
+/* 4a-bis. Search Capsule & Scanner Chiclet: Ergonomis, Lapang & Bebas Sempit */
+.header-search-capsule {
+    border-radius: 9999px !important;
+    min-height: 2.75rem !important;
+    height: 2.75rem !important;
+    padding-left: 1rem !important;
+    padding-right: 0.35rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+.header-search-capsule button[onclick*="openCameraScanner"] {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: none !important;
+    border-radius: 9999px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 0.75rem !important;
+    margin-right: 2px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    box-sizing: border-box !important;
+}
+html.dark .header-search-capsule button[onclick*="openCameraScanner"] {
+    border-color: #475569 !important;
+}
+
 /* 4b. Stepper Kuantitas Terpadu (Industrial Mechanical Stepper Unit) */
 #modal-active-controls .overflow-hidden.rounded-xl,
 .product-stepper-control {
@@ -7335,7 +7417,8 @@ html.dark .paint-swatch-card:active:not(:disabled) {
 #product-modal-paint-warning {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
+    border-radius: 1rem !important;
+    padding: 1.25rem 1.5rem !important;
     box-sizing: border-box !important;
 }
 html.dark #product-modal-content .mb-6.rounded-2xl.border,
@@ -7345,16 +7428,45 @@ html.dark #product-modal-paint-warning {
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
 
+/* Deskripsi Produk: Bersih, Terbuka, & Tipografi Bernapas Lapang Tanpa Terkurung Garis */
+#product-modal-desc {
+    font-size: 0.875rem !important;
+    line-height: 1.75 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0.35rem 0 !important;
+    margin-top: 0.25rem !important;
+}
+#product-modal-desc,
+#product-modal-desc * {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
 #product-modal-content button[onclick*="chatWAAboutProduct"] {
     border: 2px solid #059669 !important;
     box-shadow: 2px 2px 0px #059669 !important;
     border-radius: 0.75rem !important;
     font-weight: 800 !important;
+    min-height: 2.75rem !important;
+    margin-top: 1.25rem !important;
     transition: transform 0.06s ease, box-shadow 0.06s ease !important;
 }
 #product-modal-content button[onclick*="chatWAAboutProduct"]:active {
     transform: translate(1.5px, 1.5px) !important;
     box-shadow: 0.5px 0.5px 0px #059669 !important;
+}
+
+#product-modal-spec-table .overflow-hidden.rounded-2xl.border {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+}
+html.dark #product-modal-spec-table .overflow-hidden.rounded-2xl.border {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
 
 #modal-active-controls .rounded-2xl.border {

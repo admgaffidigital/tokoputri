@@ -729,7 +729,8 @@ export const rProdMod = () => {
     // Spesifikasi Produk
     const specTableEl = el('product-modal-spec-table');
     if (specTableEl) {
-        if (p.specTable && p.specTable.length > 0) {
+        const validSpecRows = (p.specTable || []).filter(row => row && ((row.key && String(row.key).trim()) || (row.val && String(row.val).trim())));
+        if (validSpecRows.length > 0) {
             let specHtml = `
             <div class="mt-5">
                 <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-3">
@@ -738,7 +739,7 @@ export const rProdMod = () => {
                 <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <table class="w-full text-[13px] spec-product-table">
                         <tbody>`;
-            p.specTable.forEach((row, idx) => {
+            validSpecRows.forEach((row, idx) => {
                 const rowBg = idx % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/80 dark:bg-slate-800/60';
                 specHtml += `<tr class="${rowBg}">
                     <td class="py-2.5 px-4 font-semibold text-slate-600 dark:text-slate-300 w-5/12 border-r border-slate-100 dark:border-slate-700/60 align-top">${esc(row.key)}</td>
