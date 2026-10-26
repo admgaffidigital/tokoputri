@@ -214,11 +214,6 @@ assert(
     'Varian produk, swatch warna cat, dan bilah tombol aksi beli terstandarisasi neo-brutalist'
 );
 
-assert(
-    cssContent.includes('#modal-material-estimator-body button[onclick*="copyEstimatorSummary"]') &&
-    cssContent.includes('#modal-material-estimator [id^="estimator-tab-btn-"]'),
-    'Modal Kalkulator Estimasi Bahan Bangunan terstandarisasi neo-brutalist'
-);
 
 assert(
     cssContent.includes('#shopping-guide-modal [id^="guide-tab-btn-"]') &&

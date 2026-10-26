@@ -503,7 +503,6 @@ export const MODAL_ELEMENT_MAP = {
     sessionKicked: ['session-kicked-modal'],
     productFifo: ['modal-product-fifo', 'product-fifo-modal'],
     productBarcodeLabel: ['modal-product-barcode-label', 'product-barcode-label-modal'],
-    materialEstimator: ['modal-material-estimator', 'material-estimator-modal'],
     salesReturn: ['modal-sales-return', 'sales-return-modal'],
     vendorReturn: ['modal-vendor-return', 'vendor-return-modal'],
     deliveryOrder: ['modal-delivery-order', 'delivery-order-modal'],
@@ -792,9 +791,6 @@ export const closeModalByName = (m) => {
         case 'productBarcodeLabel':
             if (typeof window.closeProductBarcodeLabelModal === 'function') { window.closeProductBarcodeLabelModal(true); return true; }
             break;
-        case 'materialEstimator':
-            if (typeof window.closeMaterialEstimatorModal === 'function') { window.closeMaterialEstimatorModal(true); return true; }
-            break;
         case 'salesReturn':
             if (typeof window.closeSalesReturnModal === 'function') { window.closeSalesReturnModal(true); return true; }
             break;
@@ -986,7 +982,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         'flashSaleForm',
         'deliverySignature', 'deliveryOrder',
         'salesReturn', 'vendorReturn',
-        'materialEstimator', 'productBarcodeLabel', 'productFifo', 'sessionKicked', 'exitConfirm',
+        'productBarcodeLabel', 'productFifo', 'sessionKicked', 'exitConfirm',
         'colorFloat', 'posLogoutShift',
         'posReceiptFallback', 'posShiftReceipt',
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',

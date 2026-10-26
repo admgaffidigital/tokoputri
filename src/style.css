@@ -7644,43 +7644,6 @@ html.dark #product-modal-content > .absolute.right-3.top-3 button:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
-/* 4d. Material Estimator Modal Harmonization */
-#modal-material-estimator-body button[onclick*="copyEstimatorSummary"],
-#modal-material-estimator-body button[onclick*="shareEstimatorToWA"],
-#modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"],
-#modal-material-estimator button[onclick*="closeMaterialEstimatorModal"],
-#modal-material-estimator [id^="estimator-tab-btn-"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
-    border-radius: 0.75rem !important;
-    font-weight: 800 !important;
-    box-sizing: border-box !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
-}
-#modal-material-estimator-body button[onclick*="copyEstimatorSummary"]:active,
-#modal-material-estimator-body button[onclick*="shareEstimatorToWA"]:active,
-#modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"]:active,
-#modal-material-estimator button[onclick*="closeMaterialEstimatorModal"]:active,
-#modal-material-estimator [id^="estimator-tab-btn-"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-html.dark #modal-material-estimator-body button[onclick*="copyEstimatorSummary"],
-html.dark #modal-material-estimator-body button[onclick*="shareEstimatorToWA"],
-html.dark #modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"],
-html.dark #modal-material-estimator button[onclick*="closeMaterialEstimatorModal"],
-html.dark #modal-material-estimator [id^="estimator-tab-btn-"] {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark #modal-material-estimator-body button[onclick*="copyEstimatorSummary"]:active,
-html.dark #modal-material-estimator-body button[onclick*="shareEstimatorToWA"]:active,
-html.dark #modal-material-estimator-body button[onclick*="addEstimatorToPOSCart"]:active,
-html.dark #modal-material-estimator button[onclick*="closeMaterialEstimatorModal"]:active,
-html.dark #modal-material-estimator [id^="estimator-tab-btn-"]:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
-}
-
 /* 4e. Shopping Guide & SOP Modal Harmonization */
 #shopping-guide-modal .p-4.rounded-2xl.border,
 #shopping-guide-modal .rounded-2xl.border,
@@ -8407,8 +8370,6 @@ html.dark #toast {
     #category-modal *,
     #brand-modal,
     #brand-modal *,
-    #modal-material-estimator,
-    #modal-material-estimator *,
     #shopping-guide-modal,
     #shopping-guide-modal *,
     #admin-content,

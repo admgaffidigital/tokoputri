@@ -289,7 +289,7 @@ const recalcItem = (item) => {
         item.flashSaleDiscount = fsItem.discountPercent || 0;
     } else {
         item.isFlashSale = false;
-        if (!item.isVariant && !item.isEstimatorItem) {
+        if (!item.isVariant) {
             const wPrice = p ? getWholesalePrice(p, item.qty) : null;
             if (wPrice !== null) {
                 item.basePrice   = item.basePrice || item.price;
@@ -607,14 +607,6 @@ const initBarcodeListener = () => {
             return;
         }
 
-        // Pintasan F3: Buka Kalkulator Estimator Bahan Bangunan Proyek
-        if (e.key === 'F3') {
-            e.preventDefault();
-            if (typeof window.openMaterialEstimatorModal === 'function') {
-                window.openMaterialEstimatorModal('pos');
-            }
-            return;
-        }
 
         // 2. Pintasan F4: Buka Dialog Pembayaran (Bayar Sekarang)
         if (e.key === 'F4') {
@@ -1185,36 +1177,6 @@ export const clearCart = () => {
     }
 };
 
-/**
- * Tambah Item Hasil Estimasi Material Proyek ke Keranjang Kasir
- */
-export const addEstimatorToPOSCart = (name, qty, unit, estPrice = 0) => {
-    const numQty = fQty(qty) || 1;
-    const price = parseFloat(estPrice) || 0;
-    const cartKey = `EST-${Date.now().toString(36).toUpperCase()}`;
-
-    posCart.push(recalcItem({
-        id: cartKey,
-        cartKey,
-        name: `[Estimasi] ${name}`,
-        price,
-        basePrice: price,
-        hpp: 0,
-        qty: numQty,
-        unit: unit || 'pcs',
-        poTime: '',
-        discount: 0,
-        subtotal: Math.round(price * numQty),
-        isVariant: false,
-        isWholesale: false,
-        isEstimatorItem: true
-    }));
-
-    playCashierBeep();
-    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    renderCart();
-    showToast(`"${name}" (${formatQty(numQty)} ${unit || 'pcs'}) dimasukkan ke transaksi kasir!`, 'success');
-};
 
 // ─── Sound Chime Sintetis Kasir (Web Audio API) ─────────────
 export const playCashierChime = (type = 'hold') => {
@@ -4392,9 +4354,6 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <button onclick="if(typeof window.toggleTheme==='function') window.toggleTheme();" class="hidden md:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Ubah Mode Gelap / Terang">
                     <i class="fa-solid fa-moon text-amber-300" id="pos-theme-icon"></i>
                 </button>
-                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="hidden md:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
-                    <i class="fa-solid fa-calculator"></i>
-                </button>
                 <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="hidden md:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Pengaturan Printer Kasir & Thermal [F7]">
                     <i class="fa-solid fa-print"></i>
                 </button>
@@ -4445,18 +4404,6 @@ const buildPOSLayout = ({ isStorefront }) => {
                                 <span>Ubah Mode Layar</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Gelap / Terang sesuai selera</div>
-                        </div>
-                    </button>
-                    <button onclick="window.closePOSMobileMenu(); window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos');" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-800/60">
-                            <i class="fa-solid fa-calculator text-xs"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="text-xs font-bold leading-tight flex items-center justify-between">
-                                <span>Estimator Material</span>
-                                <span class="text-[10px] text-slate-400 font-mono">F3</span>
-                            </div>
-                            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">Cat, keramik, semen, atap</div>
                         </div>
                     </button>
                     <button onclick="window.closePOSMobileMenu(); if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-[0.98] transition-all cursor-pointer">
@@ -4550,10 +4497,6 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <button onclick="if(typeof window.toggleTheme==='function') window.toggleTheme();" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Ubah Mode Gelap / Terang">
                     <i class="fa-solid fa-moon text-xs text-amber-400 pos-theme-icon"></i>
                     <span class="hidden xl:inline">Tema</span>
-                </button>
-                <button onclick="window.openMaterialEstimatorModal && window.openMaterialEstimatorModal('pos')" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Kalkulator Kebutuhan Material Proyek (Cat, Keramik, Semen, Atap & Seng) [F3]">
-                    <i class="fa-solid fa-calculator text-xs text-amber-500"></i>
-                    <span class="hidden xl:inline">Estimator</span>
                 </button>
                 <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Pengaturan Printer Kasir & Thermal">
                     <i class="fa-solid fa-print text-xs text-sky-500"></i>
@@ -4956,8 +4899,6 @@ const exposeToWindow = () => {
     window.posAddToCartQty         = posAddToCartQty;
     window.addToCartWithUnit       = addToCartWithUnit;
     window.posChangeItemUnit       = posChangeItemUnit;
-    window.addEstimatorToPOSCart   = addEstimatorToPOSCart;
-    window.posAddEstimatorToCart   = addEstimatorToPOSCart;
     window.addToCartPOSWithVariant = addToCartWithVariant;
     window.posUpdateQty            = updateQty;
     window.posSetQty               = setQty;

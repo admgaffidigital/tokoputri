@@ -44,7 +44,6 @@ console.log('\n✨ 3. Uji Quick Action Menu Popover [⋮] (Khusus Smartphone < m
 assert(posJs.includes('id="pos-mobile-menu-btn" onclick="window.togglePOSMobileMenu(event)" class="md:hidden'), 'Tombol Titik Tiga [⋮] khusus smartphone (md:hidden)');
 assert(posJs.includes('id="pos-mobile-quick-menu"'), 'Kontainer pos-mobile-quick-menu tersedia');
 assert(posJs.includes('id="pos-mobile-menu-backdrop"'), 'Backdrop click-outside dismissal tersedia');
-assert(posJs.includes('openMaterialEstimatorModal(\'pos\')'), 'Quick menu memuat Estimator Material');
 assert(posJs.includes('openPrinterSettingsModal'), 'Quick menu memuat Printer Thermal');
 assert(posJs.includes('openPOSCashMovementModal'), 'Quick menu memuat Catat Kas Laci F11');
 assert(posJs.includes('openPOSShiftSummaryModal'), 'Quick menu memuat Ringkasan Shift');
@@ -53,7 +52,6 @@ assert(posJs.includes('window.cashierLogout()'), 'Quick menu memuat Keluar Mode 
 
 // ── 4. Uji Tombol Aksi Desktop & Tablet serta Split Workspace ──
 console.log('\n🖥️ 4. Uji Tombol Aksi Desktop & Tablet serta Split Workspace:');
-assert(posJs.includes('class="hidden md:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Kalkulator Kebutuhan Material Proyek'), 'Tombol Estimator F3 standalone dibuka sejak tablet (md:flex)');
 assert(posJs.includes('class="hidden md:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Pengaturan Printer Kasir & Thermal [F7]'), 'Tombol Printer F7 standalone dibuka sejak tablet (md:flex)');
 assert(posJs.includes('class="hidden lg:flex w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shrink-0 shadow-2xs" title="Buku Panduan Kasir POS"'), 'Tombol Panduan POS standalone dibuka di laptop/desktop (lg:flex)');
 assert(posJs.includes('class="hidden md:inline-flex h-8 px-2 sm:px-2.5 lg:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer whitespace-nowrap shrink-0"'), 'Tombol Keluar kasir adaptif tampil sejak md:inline-flex');
