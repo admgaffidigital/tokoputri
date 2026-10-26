@@ -182,6 +182,59 @@ assert(
     'Seluruh kartu bento di Dashboard CMS terintegrasi otomatis dengan styling neo-card'
 );
 
+// ─── 7. Verifikasi Universal Neo-Brutalism di Seluruh Web Aplikasi ─
+console.log('\n🌐 7. Memeriksa Cakupan Universal Neo-Brutalism di Seluruh Web Aplikasi...');
+assert(
+    cssContent.includes('.card-modern,') &&
+    cssContent.includes('.card-native,') &&
+    cssContent.includes('.product-admin-card,') &&
+    cssContent.includes('.kpi-card,') &&
+    cssContent.includes('#address-container,'),
+    'Semua kartu admin, native card, KPI card, dan checkout card terlingkupi neo-brutalism'
+);
+
+assert(
+    cssContent.includes('.btn-primary,') &&
+    cssContent.includes('.btn-secondary,') &&
+    cssContent.includes('.btn-native-action,') &&
+    cssContent.includes('#btn-checkout-next,') &&
+    cssContent.includes('#btn-floating-wa,'),
+    'Semua tombol utama, sekunder, aksi native, checkout, dan floating button terlingkupi neo-btn'
+);
+
+assert(
+    cssContent.includes('.admin-input,') &&
+    cssContent.includes('.header-search-capsule') &&
+    cssContent.includes('textarea.admin-input,'),
+    'Semua kolom input form admin, header search bar, dan textarea terlingkupi neo-input'
+);
+
+assert(
+    cssContent.includes('.status-pill,') &&
+    cssContent.includes('[class*="status-badge"],'),
+    'Semua badge status transaksi, order, PO, dan supplier terlingkupi neo-badge'
+);
+
+assert(
+    cssContent.includes('.admin-table-container,') &&
+    cssContent.includes('.table-container,') &&
+    cssContent.includes('table thead th {'),
+    'Semua tabel data CMS Admin terlingkupi neo-table dengan border & header tegas'
+);
+
+assert(
+    cssContent.includes('.modal-bottom-sheet,') &&
+    cssContent.includes('[id$="-modal-box"],') &&
+    cssContent.includes('#custom-confirm-box,'),
+    'Semua modal bottom sheet, dialog popup, dan confirm box terlingkupi neo-modal'
+);
+
+assert(
+    cssContent.includes('#bottom-nav-bar {') &&
+    cssContent.includes('#bnav-home .bnav-hero-button {'),
+    'Bilah navigasi bawah (bottom-nav-bar) dan tombol home terlingkupi aksen neo-brutalist'
+);
+
 // ─── Hasil Akhir ───────────────────────────────────────────────
 console.log('\n============================================================');
 console.log(`🎯 TOTAL HASIL: ${passedTests} Passed, ${totalTests - passedTests} Failed`);

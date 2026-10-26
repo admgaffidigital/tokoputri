@@ -6607,7 +6607,7 @@ html.dark #pos-paid-input::placeholder {
     --neo-safety-green: #16a34a;
 }
 
-/* 1. Industrial Neo-Brutalist Box & Cards */
+/* 1. Universal Industrial Neo-Brutalist Box, Cards & Bento Surfaces */
 .neo-box {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
@@ -6623,7 +6623,31 @@ html.dark .neo-box {
 
 .neo-card,
 .catalog-product-card,
-.bento-island-card {
+.bento-island-card,
+.card-modern,
+.card-native,
+.product-admin-card,
+.category-admin-card,
+.bento-empty-state-card,
+.storefront-card,
+.option-select-card,
+#sec-categories > div,
+#sec-brands > div,
+#dynamic-banners-container > div,
+#quickmenu-modal-content button,
+.table-container,
+.overflow-x-auto.rounded-2xl,
+.admin-table-card,
+.stat-card-neo,
+.kpi-card,
+.bento-stat-card,
+#address-container,
+#cust-info-card,
+.checkout-stepper-bar,
+#cart-items-container > div,
+#supplier-cards-list > div,
+#purchase-cards-list > div,
+#tempo-cards-container > div {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     border-radius: 0.875rem !important;
@@ -6634,7 +6658,31 @@ html.dark .neo-box {
 }
 html.dark .neo-card,
 html.dark .catalog-product-card,
-html.dark .bento-island-card {
+html.dark .bento-island-card,
+html.dark .card-modern,
+html.dark .card-native,
+html.dark .product-admin-card,
+html.dark .category-admin-card,
+html.dark .bento-empty-state-card,
+html.dark .storefront-card,
+html.dark .option-select-card,
+html.dark #sec-categories > div,
+html.dark #sec-brands > div,
+html.dark #dynamic-banners-container > div,
+html.dark #quickmenu-modal-content button,
+html.dark .table-container,
+html.dark .overflow-x-auto.rounded-2xl,
+html.dark .admin-table-card,
+html.dark .stat-card-neo,
+html.dark .kpi-card,
+html.dark .bento-stat-card,
+html.dark #address-container,
+html.dark #cust-info-card,
+html.dark .checkout-stepper-bar,
+html.dark #cart-items-container > div,
+html.dark #supplier-cards-list > div,
+html.dark #purchase-cards-list > div,
+html.dark #tempo-cards-container > div {
     border-color: #334155 !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
@@ -6642,14 +6690,28 @@ html.dark .bento-island-card {
 @media (hover: hover) and (pointer: fine) {
     .neo-card:hover,
     .catalog-product-card:hover,
-    .bento-island-card:hover {
+    .bento-island-card:hover,
+    .card-modern:hover,
+    .card-native:hover,
+    .product-admin-card:hover,
+    .category-admin-card:hover,
+    .option-select-card:hover,
+    #quickmenu-modal-content button:hover,
+    #cart-items-container > div:hover {
         transform: translateY(-2px);
         box-shadow: 3.5px 3.5px 0px #0f172a !important;
         border-color: #0f172a !important;
     }
     html.dark .neo-card:hover,
     html.dark .catalog-product-card:hover,
-    html.dark .bento-island-card:hover {
+    html.dark .bento-island-card:hover,
+    html.dark .card-modern:hover,
+    html.dark .card-native:hover,
+    html.dark .product-admin-card:hover,
+    html.dark .category-admin-card:hover,
+    html.dark .option-select-card:hover,
+    html.dark #quickmenu-modal-content button:hover,
+    html.dark #cart-items-container > div:hover {
         box-shadow: 3.5px 3.5px 0px #000000 !important;
         border-color: #475569 !important;
     }
@@ -6658,12 +6720,19 @@ html.dark .bento-island-card {
 @media (hover: none) {
     .neo-card:hover,
     .catalog-product-card:hover,
-    .bento-island-card:hover {
+    .bento-island-card:hover,
+    .card-modern:hover,
+    .card-native:hover,
+    .product-admin-card:hover,
+    .category-admin-card:hover,
+    .option-select-card:hover,
+    #quickmenu-modal-content button:hover,
+    #cart-items-container > div:hover {
         transform: none !important;
     }
 }
 
-/* 2. Mechanical Tactile Button Switch Engine */
+/* 2. Universal Mechanical Tactile Button Switch Engine */
 .neo-btn {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
@@ -6678,37 +6747,173 @@ html.dark .bento-island-card {
     box-sizing: border-box !important;
     transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
 }
-html.dark .neo-btn {
-    border-color: #475569 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
-}
+
 .neo-btn:active:not(:disabled) {
     transform: translate(2px, 2px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
-html.dark .neo-btn:active:not(:disabled) {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
-}
 
-/* Enhancing .btn-catalog-action with Industrial Mechanical Tactile Switch */
-.btn-catalog-action {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+.btn-primary,
+.utp-btn-primary,
+.btn-solid,
+.btn-secondary,
+.btn-secondary-neutral,
+.btn-native-action,
+button.primary-bg,
+a.primary-bg[role="button"],
+button[type="submit"],
+.btn-catalog-action,
+#btn-checkout-next,
+#btn-floating-wa,
+#btn-floating-action,
+#btn-scroll-top,
+.modal-bottom-sheet button[type="submit"],
+.modal-bottom-sheet button.primary-bg,
+.modal-bottom-sheet button.btn-primary,
+#custom-confirm-box button,
+#exit-confirm-modal-box button,
+#pos-pay-modal button.pos-pay-btn-target {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.75rem !important; /* 12px squircle */
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+    touch-action: manipulation;
+    min-height: 2.75rem !important; /* 44px golden touch target */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box !important;
     transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
 }
-html.dark .btn-catalog-action {
+
+html.dark .neo-btn,
+html.dark .btn-primary,
+html.dark .utp-btn-primary,
+html.dark .btn-solid,
+html.dark .btn-secondary,
+html.dark .btn-secondary-neutral,
+html.dark .btn-native-action,
+html.dark button.primary-bg,
+html.dark a.primary-bg[role="button"],
+html.dark button[type="submit"],
+html.dark .btn-catalog-action,
+html.dark #btn-checkout-next,
+html.dark #btn-floating-wa,
+html.dark #btn-floating-action,
+html.dark #btn-scroll-top,
+html.dark .modal-bottom-sheet button[type="submit"],
+html.dark .modal-bottom-sheet button.primary-bg,
+html.dark .modal-bottom-sheet button.btn-primary,
+html.dark #custom-confirm-box button,
+html.dark #exit-confirm-modal-box button,
+html.dark #pos-pay-modal button.pos-pay-btn-target {
     border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
-.btn-catalog-action:active {
-    transform: translate(1.5px, 1.5px) !important;
+
+/* Mechanical Switch Tactile Press (Translate 2px, 2px) */
+.neo-btn:active:not(:disabled):not(.btn-disabled),
+.btn-primary:active:not(:disabled):not(.btn-disabled),
+.utp-btn-primary:active:not(:disabled):not(.btn-disabled),
+.btn-solid:active:not(:disabled):not(.btn-disabled),
+.btn-secondary:active:not(:disabled):not(.btn-disabled),
+.btn-secondary-neutral:active:not(:disabled):not(.btn-disabled),
+.btn-native-action:active:not(:disabled):not(.btn-disabled),
+button.primary-bg:active:not(:disabled):not(.btn-disabled),
+button[type="submit"]:active:not(:disabled):not(.btn-disabled),
+.btn-catalog-action:active:not(:disabled):not(.btn-disabled),
+#btn-checkout-next:active:not(:disabled):not(.btn-disabled),
+#btn-floating-wa:active:not(:disabled):not(.btn-disabled),
+#btn-floating-action:active:not(:disabled):not(.btn-disabled),
+#btn-scroll-top:active:not(:disabled):not(.btn-disabled),
+.modal-bottom-sheet button[type="submit"]:active:not(:disabled):not(.btn-disabled),
+.modal-bottom-sheet button.primary-bg:active:not(:disabled):not(.btn-disabled),
+.modal-bottom-sheet button.btn-primary:active:not(:disabled):not(.btn-disabled),
+#custom-confirm-box button:active:not(:disabled):not(.btn-disabled),
+#exit-confirm-modal-box button:active:not(:disabled):not(.btn-disabled),
+#pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled) {
+    transform: translate(2px, 2px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
-html.dark .btn-catalog-action:active {
+
+html.dark .neo-btn:active:not(:disabled),
+html.dark .neo-btn:active:not(:disabled):not(.btn-disabled),
+html.dark .btn-primary:active:not(:disabled):not(.btn-disabled),
+html.dark .utp-btn-primary:active:not(:disabled):not(.btn-disabled),
+html.dark .btn-solid:active:not(:disabled):not(.btn-disabled),
+html.dark .btn-secondary:active:not(:disabled):not(.btn-disabled),
+html.dark .btn-secondary-neutral:active:not(:disabled):not(.btn-disabled),
+html.dark .btn-native-action:active:not(:disabled):not(.btn-disabled),
+html.dark button.primary-bg:active:not(:disabled):not(.btn-disabled),
+html.dark button[type="submit"]:active:not(:disabled):not(.btn-disabled),
+html.dark .btn-catalog-action:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-checkout-next:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-floating-wa:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-floating-action:active:not(:disabled):not(.btn-disabled),
+html.dark #btn-scroll-top:active:not(:disabled):not(.btn-disabled),
+html.dark .modal-bottom-sheet button[type="submit"]:active:not(:disabled):not(.btn-disabled),
+html.dark .modal-bottom-sheet button.primary-bg:active:not(:disabled):not(.btn-disabled),
+html.dark .modal-bottom-sheet button.btn-primary:active:not(:disabled):not(.btn-disabled),
+html.dark #custom-confirm-box button:active:not(:disabled):not(.btn-disabled),
+html.dark #exit-confirm-modal-box button:active:not(:disabled):not(.btn-disabled),
+html.dark #pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled) {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
-/* 3. Industrial Serial Plate Badges & SKU Stickers */
+/* Compact Tool Buttons & Micro Actions (e.g. 32px close buttons, header icons, pagination, table actions) */
+button.h-8.w-8,
+button.h-9.w-9,
+button.h-10.w-10:not(.btn-primary):not(.btn-catalog-action),
+.btn-compact,
+.btn-micro,
+#btn-admin-refresh,
+#btn-admin-theme-toggle,
+#btn-view-grid,
+#btn-view-list {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    box-sizing: border-box !important;
+    min-height: unset !important;
+    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
+}
+html.dark button.h-8.w-8,
+html.dark button.h-9.w-9,
+html.dark button.h-10.w-10:not(.btn-primary):not(.btn-catalog-action),
+html.dark .btn-compact,
+html.dark .btn-micro,
+html.dark #btn-admin-refresh,
+html.dark #btn-admin-theme-toggle,
+html.dark #btn-view-grid,
+html.dark #btn-view-list {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+button.h-8.w-8:active:not(:disabled),
+button.h-9.w-9:active:not(:disabled),
+button.h-10.w-10:not(.btn-primary):not(.btn-catalog-action):active:not(:disabled),
+.btn-compact:active:not(:disabled),
+.btn-micro:active:not(:disabled),
+#btn-admin-refresh:active:not(:disabled),
+#btn-admin-theme-toggle:active:not(:disabled),
+#btn-view-grid:active:not(:disabled),
+#btn-view-list:active:not(:disabled) {
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark button.h-8.w-8:active:not(:disabled),
+html.dark button.h-9.w-9:active:not(:disabled),
+html.dark button.h-10.w-10:not(.btn-primary):not(.btn-catalog-action):active:not(:disabled),
+html.dark .btn-compact:active:not(:disabled),
+html.dark .btn-micro:active:not(:disabled),
+html.dark #btn-admin-refresh:active:not(:disabled),
+html.dark #btn-admin-theme-toggle:active:not(:disabled),
+html.dark #btn-view-grid:active:not(:disabled),
+html.dark #btn-view-list:active:not(:disabled) {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* 3. Universal Industrial Serial Plate Badges & SKU Stickers */
 .neo-badge {
     border: 1.5px solid #0f172a !important;
     box-shadow: 1.5px 1.5px 0px #0f172a !important;
@@ -6721,12 +6926,45 @@ html.dark .btn-catalog-action:active {
     line-height: 1.15 !important;
     box-sizing: border-box !important;
 }
-html.dark .neo-badge {
+
+span.badge,
+.status-pill,
+[class*="status-badge"],
+span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]),
+span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]),
+span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge) {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.5rem !important; /* 8px squircle */
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.035em !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    line-height: 1.15 !important;
+    box-sizing: border-box !important;
+}
+html.dark .neo-badge,
+html.dark span.badge,
+html.dark .status-pill,
+html.dark [class*="status-badge"],
+html.dark span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]),
+html.dark span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]),
+html.dark span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge) {
     border-color: #475569 !important;
     box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
 
-/* 4. Industrial High-Contrast Input Form Fields */
+/* Guard: Pastikan badge counter bulat (misal badge cart '0', wishlist '0') tetap bulat */
+#bottom-nav-cart-badge,
+#wishlist-badge,
+span[id$="-badge"][class*="min-w-"] {
+    border-radius: 9999px !important;
+    box-shadow: none !important;
+    border: 1.5px solid #0f172a !important;
+}
+
+/* 4. Universal Industrial High-Contrast Input Form Fields */
 .neo-input {
     border: 2px solid #0f172a !important;
     box-shadow: 1.5px 1.5px 0px #0f172a !important;
@@ -6735,21 +6973,241 @@ html.dark .neo-badge {
     box-sizing: border-box !important;
     transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
+
 .neo-input:focus {
     border-color: var(--color-primary) !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     outline: none !important;
 }
-html.dark .neo-input {
+
+.admin-input,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]),
+select,
+textarea,
+.header-search-capsule {
+    border: 2px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    min-height: 2.75rem !important;
+    box-sizing: border-box !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.admin-input:focus,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):focus,
+select:focus,
+textarea:focus,
+.header-search-capsule:focus-within {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    outline: none !important;
+}
+html.dark .neo-input,
+html.dark .admin-input,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]),
+html.dark select,
+html.dark textarea,
+html.dark .header-search-capsule {
     border-color: #475569 !important;
     box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
-html.dark .neo-input:focus {
+html.dark .neo-input:focus,
+html.dark .admin-input:focus,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):focus,
+html.dark select:focus,
+html.dark textarea:focus,
+html.dark .header-search-capsule:focus-within {
     border-color: var(--color-primary) !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
 
-/* 5. Industrial Hazard Caution Stripe (Garis Pita Proyek) */
+textarea.admin-input,
+textarea.neo-input,
+textarea {
+    min-height: 5.5rem !important;
+}
+
+/* 5. Universal Industrial Neo-Brutalist Modals & Dialogs */
+@media (min-width: 640px) {
+    .modal-bottom-sheet,
+    [id$="-modal-box"],
+    [id$="-modal-content"],
+    [id*="modal-"][class*="max-w-"],
+    #custom-confirm-box,
+    #exit-confirm-modal-box,
+    #doc-preview-modal-box,
+    #pos-login-modal-box,
+    #pos-variant-sheet-box,
+    .swal2-popup {
+        border: 2.5px solid #0f172a !important;
+        box-shadow: 4.5px 4.5px 0px #0f172a !important;
+        border-radius: 1.5rem !important;
+        box-sizing: border-box !important;
+    }
+    html.dark .modal-bottom-sheet,
+    html.dark [id$="-modal-box"],
+    html.dark [id$="-modal-content"],
+    html.dark [id*="modal-"][class*="max-w-"],
+    html.dark #custom-confirm-box,
+    html.dark #exit-confirm-modal-box,
+    html.dark #doc-preview-modal-box,
+    html.dark #pos-login-modal-box,
+    html.dark #pos-variant-sheet-box,
+    html.dark .swal2-popup {
+        border-color: #334155 !important;
+        box-shadow: 4.5px 4.5px 0px #000000 !important;
+    }
+}
+
+@media (max-width: 639.98px) {
+    .modal-bottom-sheet,
+    [id$="-modal-box"],
+    [id$="-modal-content"],
+    #pos-login-modal-box,
+    #pos-variant-sheet-box {
+        border-top: 2.5px solid #0f172a !important;
+        border-left: 2px solid #0f172a !important;
+        border-right: 2px solid #0f172a !important;
+        border-bottom: none !important;
+        box-shadow: 0 -4px 0px #0f172a !important;
+        box-sizing: border-box !important;
+    }
+    html.dark .modal-bottom-sheet,
+    html.dark [id$="-modal-box"],
+    html.dark [id$="-modal-content"],
+    html.dark #pos-login-modal-box,
+    html.dark #pos-variant-sheet-box {
+        border-top-color: #334155 !important;
+        border-left-color: #334155 !important;
+        border-right-color: #334155 !important;
+        box-shadow: 0 -4px 0px #000000 !important;
+    }
+
+    #custom-confirm-box,
+    #exit-confirm-modal-box {
+        border: 2.5px solid #0f172a !important;
+        box-shadow: 3.5px 3.5px 0px #0f172a !important;
+        border-radius: 1.5rem !important;
+    }
+    html.dark #custom-confirm-box,
+    html.dark #exit-confirm-modal-box {
+        border-color: #334155 !important;
+        box-shadow: 3.5px 3.5px 0px #000000 !important;
+    }
+}
+
+/* Modal Inner Section Dividers */
+.modal-bottom-sheet > div:first-child [class*="border-b"],
+[id*="modal-box"] [class*="border-b"]:first-of-type,
+[id*="modal-content"] [class*="border-b"]:first-of-type {
+    border-bottom: 2px solid #0f172a !important;
+}
+html.dark .modal-bottom-sheet > div:first-child [class*="border-b"],
+html.dark [id*="modal-box"] [class*="border-b"]:first-of-type,
+html.dark [id*="modal-content"] [class*="border-b"]:first-of-type {
+    border-bottom-color: #334155 !important;
+}
+
+.modal-bottom-sheet [class*="border-t"]:last-child,
+[id*="modal-box"] [class*="border-t"]:last-child,
+[id*="modal-content"] [class*="border-t"]:last-child {
+    border-top: 2px solid #0f172a !important;
+}
+html.dark .modal-bottom-sheet [class*="border-t"]:last-child,
+html.dark [id*="modal-box"] [class*="border-t"]:last-child,
+html.dark [id*="modal-content"] [class*="border-t"]:last-child {
+    border-top-color: #334155 !important;
+}
+
+/* 6. Universal Industrial Neo-Brutalist Data Tables */
+.admin-table-container,
+.table-container,
+.overflow-x-auto.rounded-2xl {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+html.dark .admin-table-container,
+html.dark .table-container,
+html.dark .overflow-x-auto.rounded-2xl {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+table thead th {
+    border-bottom: 2px solid #0f172a !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+}
+html.dark table thead th {
+    border-bottom-color: #334155 !important;
+}
+
+table tbody tr {
+    border-bottom: 1.5px solid #e2e8f0;
+}
+html.dark table tbody tr {
+    border-bottom-color: #334155;
+}
+table tbody tr:last-child {
+    border-bottom: none !important;
+}
+
+/* 7. Universal Industrial Neo-Brutalist Navigation & Floating Elements */
+#bottom-nav-bar {
+    border-top: 2.5px solid #0f172a !important;
+    box-shadow: 0 -3px 0px #0f172a !important;
+}
+html.dark #bottom-nav-bar {
+    border-top-color: #334155 !important;
+    box-shadow: 0 -3px 0px #000000 !important;
+}
+
+#bnav-home .bnav-hero-button {
+    border: 2.5px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+}
+html.dark #bnav-home .bnav-hero-button {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+.glass-header {
+    border-bottom: 2px solid #0f172a !important;
+    box-shadow: 0 2.5px 0px #0f172a !important;
+}
+html.dark .glass-header {
+    border-bottom-color: #334155 !important;
+    box-shadow: 0 2.5px 0px #000000 !important;
+}
+
+#btn-floating-wa,
+#btn-floating-action,
+#btn-scroll-top {
+    border: 2px solid #0f172a !important;
+    box-shadow: 3px 3px 0px #0f172a !important;
+}
+html.dark #btn-floating-wa,
+html.dark #btn-floating-action,
+html.dark #btn-scroll-top {
+    border-color: #475569 !important;
+    box-shadow: 3px 3px 0px #000000 !important;
+}
+
+/* 8. Industrial Toast & Notifications */
+#toast {
+    border: 2px solid #0f172a !important;
+    box-shadow: 3.5px 3.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+}
+html.dark #toast {
+    border-color: #334155 !important;
+    box-shadow: 3.5px 3.5px 0px #000000 !important;
+}
+
+/* 9. Industrial Hazard Caution Stripe (Garis Pita Proyek) */
 .neo-hazard-stripe {
     background: repeating-linear-gradient(
         -45deg,
@@ -6769,7 +7227,7 @@ html.dark .neo-input:focus {
     ) !important;
 }
 
-/* 6. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak) */
+/* 10. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak Guarantee) */
 @media print {
     .neo-box,
     .neo-card,
@@ -6778,14 +7236,34 @@ html.dark .neo-input:focus {
     .neo-input,
     .catalog-product-card,
     .bento-island-card,
+    .card-modern,
+    .card-native,
+    .product-admin-card,
+    .category-admin-card,
+    .storefront-card,
     .btn-catalog-action,
+    .btn-primary,
+    .utp-btn-primary,
+    .btn-solid,
+    .btn-secondary,
+    .btn-native-action,
+    .admin-input,
+    .table-container,
+    #bottom-nav-bar,
+    .glass-header,
     #thermal-receipt,
     #thermal-receipt *,
     .receipt-content,
     .receipt-content *,
     #doc-preview-modal,
-    #doc-preview-modal * {
+    #doc-preview-modal *,
+    .a4-sheet,
+    .a4-sheet *,
+    .print-area,
+    .print-area * {
         box-shadow: none !important;
         text-shadow: none !important;
+        filter: none !important;
     }
 }
+
