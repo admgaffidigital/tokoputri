@@ -33,7 +33,8 @@ export const DEFAULT_CHANGELOG = [
             "Harmonisasi Modal Kalkulator Estimasi Bahan Bangunan & SOP Ekosistem: Menyelaraskan seluruh tab kategori, kartu hasil estimasi, tombol aksi Salin/WA, serta kartu-kartu panduan SOP ke standar border 2px solid dan hard shadow.",
             "Isolasi Keamanan Cetak Thermal & Dokumen A4 Resmi: Penjaminan mutlak bahwa hard shadow CSS diisolasi penuh (@media print) sehingga cetakan kertas struk thermal kasir dan PDF A4 tetap 100% putih bersih, pekat, dan hemat ribbon/kertas.",
             "Harmonisasi Produk Sejenis & Alternatif Pilihan (#product-modal-related-container) serta Modal Kategori (#category-modal): Menyelaraskan seluruh kartu rekomendasi produk dan daftar tombol kategori satu layar penuh ke standar outline 2px solid charcoal, hard shadow 2.5px, dan mekanikal switch taktil.",
-            "Suite Unit Test test-industrial-neo-brutalism.mjs (38 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
+            "Harmonisasi Menyeluruh Pengaturan Toko, Kartu Metrik KPI, Toolbar & Modal Supplier: Menjamin seluruh 8 menu bento Pengaturan Toko, kartu metrik KPI di modul Supplier & Produk, tombol aksi toolbar (Daftar Harga, Stock Opname, Urutkan Cepat), aksi baris produk, dan modal detail supplier (#modal-supplier-detail) 100% konsisten ber-border 2px, hard shadow 2.5px, dan respon tekan taktil mekanikal.",
+            "Suite Unit Test test-industrial-neo-brutalism.mjs (42 pengujian arsitektural) 100% Passed dan terintegrasi otomatis ke pipeline audit kesehatan sistem.",
             "Multi-Channel Distribution v1.20.0 (Android versionCode 12000 & Windows x64)."
         ]
     },

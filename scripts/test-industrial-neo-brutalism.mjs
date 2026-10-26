@@ -241,6 +241,36 @@ assert(
 );
 
 assert(
+    cssContent.includes('#admin-content button[onclick*="openSettingForm"]') &&
+    cssContent.includes('#admin-content button[onclick*="openPrinterSettingsModal"]') &&
+    cssContent.includes('#admin-content button[onclick*="openAdminTab(\'backup_sync\')"]') &&
+    cssContent.includes('#admin-content > div > .mb-5.flex.items-center.justify-between'),
+    'Menu kartu bento grid Pengaturan Toko dan header banner terstandarisasi neo-brutalist'
+);
+
+assert(
+    cssContent.includes('#admin-product-stats .grid > div') &&
+    cssContent.includes('#admin-content .grid-cols-2.lg\\:grid-cols-4 > div') &&
+    cssContent.includes('#admin-content > div > .relative.overflow-hidden.p-5'),
+    'Seluruh kartu metrik KPI dan banner modul CMS Admin terstandarisasi neo-brutalist'
+);
+
+assert(
+    cssContent.includes('button[onclick*="openPriceListExportModal"]') &&
+    cssContent.includes('button[onclick*="oAAdd()"]') &&
+    cssContent.includes('#admin-list-container button[onclick*="toggleProductStatus"]') &&
+    cssContent.includes('#admin-list-container button[onclick*="oAEd"]'),
+    'Tombol aksi toolbar dan kartu baris produk terstandarisasi neo-brutalist'
+);
+
+assert(
+    cssContent.includes('#modal-supplier-detail-box') &&
+    cssContent.includes('#modal-supplier-detail button[onclick*="closeSupplierDetailModal"]') &&
+    cssContent.includes('#modal-supplier-detail button[onclick*="quickCreatePOForSupplier"]'),
+    'Modal detail supplier, segmented tabs, dan aksi kulakan terstandarisasi neo-brutalist'
+);
+
+assert(
     cssContent.includes('.footer-bento-hub') &&
     cssContent.includes('.footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]') &&
     cssContent.includes('.footer-bento-hub div[onclick*="openAppDownloadModal"]'),

@@ -7591,12 +7591,335 @@ html.dark #brand-modal button[onclick*="closeBrandModal"]:active {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
+/* 4h. CMS Settings Bento Hub & Menu Cards (Pengaturan Toko) */
+#admin-content button[onclick*="openSettingForm"],
+#admin-content button[onclick*="openPrinterSettingsModal"],
+#admin-content button[onclick*="openAdminTab('backup_sync')"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    background-color: #ffffff;
+    box-sizing: border-box !important;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+}
+#admin-content button[onclick*="openSettingForm"]:active,
+#admin-content button[onclick*="openPrinterSettingsModal"]:active,
+#admin-content button[onclick*="openAdminTab('backup_sync')"]:active {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #admin-content button[onclick*="openSettingForm"],
+html.dark #admin-content button[onclick*="openPrinterSettingsModal"],
+html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"] {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: #1e293b;
+}
+html.dark #admin-content button[onclick*="openSettingForm"]:active,
+html.dark #admin-content button[onclick*="openPrinterSettingsModal"]:active,
+html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"]:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+#admin-content button[onclick*="openSettingForm"] .h-14,
+#admin-content button[onclick*="openSettingForm"] .h-16,
+#admin-content button[onclick*="openPrinterSettingsModal"] .h-14,
+#admin-content button[onclick*="openPrinterSettingsModal"] .h-16,
+#admin-content button[onclick*="openAdminTab('backup_sync')"] .h-14,
+#admin-content button[onclick*="openAdminTab('backup_sync')"] .h-16 {
+    border: 2px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+}
+html.dark #admin-content button[onclick*="openSettingForm"] .h-14,
+html.dark #admin-content button[onclick*="openSettingForm"] .h-16,
+html.dark #admin-content button[onclick*="openPrinterSettingsModal"] .h-14,
+html.dark #admin-content button[onclick*="openPrinterSettingsModal"] .h-16,
+html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"] .h-14,
+html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"] .h-16 {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+#admin-content > div > .mb-5.flex.items-center.justify-between {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+}
+html.dark #admin-content > div > .mb-5.flex.items-center.justify-between {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+#admin-content > div > .mb-5 .w-12.h-12 {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+}
+html.dark #admin-content > div > .mb-5 .w-12.h-12 {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+#admin-content > div > .mb-5 span[class*="rounded-xl"] {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+}
+html.dark #admin-content > div > .mb-5 span[class*="rounded-xl"] {
+    border-color: #475569 !important;
+    box-shadow: 1px 1px 0px #000000 !important;
+}
+
+/* 4i. Universal CMS KPI Stat Cards Across All Modules */
+#admin-product-stats .grid > div,
+#admin-content .grid-cols-2.lg\:grid-cols-4 > div,
+#admin-content .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 > div,
+#admin-content .grid-cols-2.sm\:grid-cols-2.md\:grid-cols-4 > div,
+#admin-content .grid-cols-2.md\:grid-cols-4 > div,
+#admin-content .grid.grid-cols-2 > div.flex.flex-col.justify-between,
+#admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    background-color: #ffffff;
+    box-sizing: border-box !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+}
+html.dark #admin-product-stats .grid > div,
+html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-2.sm\:grid-cols-2.md\:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-2.md\:grid-cols-4 > div,
+html.dark #admin-content .grid.grid-cols-2 > div.flex.flex-col.justify-between,
+html.dark #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: #1e293b;
+}
+
+#admin-product-stats .grid > div .w-9.h-9,
+#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-9.h-9,
+#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-8.h-8,
+#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7 {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    box-sizing: border-box !important;
+}
+html.dark #admin-product-stats .grid > div .w-9.h-9,
+html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-9.h-9,
+html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-8.h-8,
+html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7 {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* Admin Module Top Hero Banners */
+#admin-content > div > .relative.overflow-hidden.p-5,
+#admin-content > div > .relative.overflow-hidden.p-7,
+#admin-content > div > .mb-5.p-4[class*="rounded-"],
+#admin-content > div > .mb-5.p-5[class*="rounded-"],
+#admin-content #subscription-bento-card,
+#admin-content #subscription-bento-card > div {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+    box-sizing: border-box !important;
+}
+html.dark #admin-content > div > .relative.overflow-hidden.p-5,
+html.dark #admin-content > div > .relative.overflow-hidden.p-7,
+html.dark #admin-content > div > .mb-5.p-4[class*="rounded-"],
+html.dark #admin-content > div > .mb-5.p-5[class*="rounded-"],
+html.dark #admin-content #subscription-bento-card,
+html.dark #admin-content #subscription-bento-card > div {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+/* 4j. Admin Toolbar Action Buttons & Select Controls */
+button[onclick*="openPriceListExportModal"],
+button[onclick*="openAdminTab('stock_opname')"],
+button[onclick*="oAAdd()"],
+button[onclick*="autoGroupProductsByCategory"],
+button[onclick*="toggleProductOrderMenu"],
+button[onclick*="openSupplierFormModal"],
+button[onclick*="openAdminTab('purchases')"],
+#admin-content button[onclick*="hasDebt"],
+#admin-content button[onclick*="filter"],
+#admin-product-order-dropdown,
+#admin-product-order-dropdown button {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    box-sizing: border-box !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+button[onclick*="openPriceListExportModal"]:active,
+button[onclick*="openAdminTab('stock_opname')"]:active,
+button[onclick*="oAAdd()"]:active,
+button[onclick*="autoGroupProductsByCategory"]:active,
+button[onclick*="toggleProductOrderMenu"]:active,
+button[onclick*="openSupplierFormModal"]:active,
+button[onclick*="openAdminTab('purchases')"]:active,
+#admin-content button[onclick*="hasDebt"]:active,
+#admin-content button[onclick*="filter"]:active {
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark button[onclick*="openPriceListExportModal"],
+html.dark button[onclick*="openAdminTab('stock_opname')"],
+html.dark button[onclick*="oAAdd()"],
+html.dark button[onclick*="autoGroupProductsByCategory"],
+html.dark button[onclick*="toggleProductOrderMenu"],
+html.dark button[onclick*="openSupplierFormModal"],
+html.dark button[onclick*="openAdminTab('purchases')"],
+html.dark #admin-content button[onclick*="hasDebt"],
+html.dark #admin-content button[onclick*="filter"],
+html.dark #admin-product-order-dropdown,
+html.dark #admin-product-order-dropdown button {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* Product & Data Item Action Buttons (Row Actions) */
+#admin-list-container button[onclick*="toggleProductStatus"],
+#admin-list-container button[onclick*="openRestockModal"],
+#admin-list-container button[onclick*="openQuickPriceModal"],
+#admin-list-container button[onclick*="openProductBarcodeLabelModal"],
+#admin-list-container button[onclick*="confirmExportProductToMaster"],
+#admin-list-container button[onclick*="duplicateProduct"],
+#admin-list-container button[onclick*="oAEd"],
+#admin-list-container button[onclick*="oADel"],
+#admin-list-container button[onclick*="openMemberModal"],
+#admin-list-container button[onclick*="adminResetMemberPin"],
+#admin-list-container .btn-native-action {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    box-sizing: border-box !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#admin-list-container button[onclick*="toggleProductStatus"]:active,
+#admin-list-container button[onclick*="openRestockModal"]:active,
+#admin-list-container button[onclick*="openQuickPriceModal"]:active,
+#admin-list-container button[onclick*="openProductBarcodeLabelModal"]:active,
+#admin-list-container button[onclick*="confirmExportProductToMaster"]:active,
+#admin-list-container button[onclick*="duplicateProduct"]:active,
+#admin-list-container button[onclick*="oAEd"]:active,
+#admin-list-container button[onclick*="oADel"]:active,
+#admin-list-container button[onclick*="openMemberModal"]:active,
+#admin-list-container button[onclick*="adminResetMemberPin"]:active,
+#admin-list-container .btn-native-action:active {
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #admin-list-container button[onclick*="toggleProductStatus"],
+html.dark #admin-list-container button[onclick*="openRestockModal"],
+html.dark #admin-list-container button[onclick*="openQuickPriceModal"],
+html.dark #admin-list-container button[onclick*="openProductBarcodeLabelModal"],
+html.dark #admin-list-container button[onclick*="confirmExportProductToMaster"],
+html.dark #admin-list-container button[onclick*="duplicateProduct"],
+html.dark #admin-list-container button[onclick*="oAEd"],
+html.dark #admin-list-container button[onclick*="oADel"],
+html.dark #admin-list-container button[onclick*="openMemberModal"],
+html.dark #admin-list-container button[onclick*="adminResetMemberPin"],
+html.dark #admin-list-container .btn-native-action {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* 4k. Supplier Detail & Admin Entity Modals */
+[id*="modal-"][id$="-box"],
+[id^="modal-"][class*="max-w-"],
+#modal-supplier-detail-box,
+#modal-po-detail-box,
+#modal-tempo-detail-box,
+#modal-attendance-rekap-box {
+    border: 2.5px solid #0f172a !important;
+    box-shadow: 4.5px 4.5px 0px #0f172a !important;
+    border-radius: 1.25rem !important;
+    box-sizing: border-box !important;
+}
+html.dark [id*="modal-"][id$="-box"],
+html.dark [id^="modal-"][class*="max-w-"],
+html.dark #modal-supplier-detail-box,
+html.dark #modal-po-detail-box,
+html.dark #modal-tempo-detail-box,
+html.dark #modal-attendance-rekap-box {
+    border-color: #334155 !important;
+    box-shadow: 4.5px 4.5px 0px #000000 !important;
+}
+
+#modal-supplier-detail-box .w-13.h-13,
+#modal-supplier-detail-box .w-16.h-16,
+#modal-supplier-detail-box .w-14.h-14 {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    box-sizing: border-box !important;
+}
+html.dark #modal-supplier-detail-box .w-13.h-13,
+html.dark #modal-supplier-detail-box .w-16.h-16,
+html.dark #modal-supplier-detail-box .w-14.h-14 {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+
+#modal-supplier-detail button[onclick*="switchSupplierDetailTab"] {
+    border: 1.5px solid transparent !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.1s ease !important;
+}
+#modal-supplier-detail button[onclick*="switchSupplierDetailTab"].bg-white,
+#modal-supplier-detail button[onclick*="switchSupplierDetailTab"].dark\:bg-slate-700 {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+}
+html.dark #modal-supplier-detail button[onclick*="switchSupplierDetailTab"].bg-white,
+html.dark #modal-supplier-detail button[onclick*="switchSupplierDetailTab"].dark\:bg-slate-700 {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+#modal-supplier-detail button[onclick*="closeSupplierDetailModal"],
+#modal-supplier-detail button[onclick*="quickCreatePOForSupplier"],
+#modal-supplier-detail button[onclick*="openAdminTab('products')"] {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    font-weight: 800 !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+#modal-supplier-detail button[onclick*="closeSupplierDetailModal"]:active,
+#modal-supplier-detail button[onclick*="quickCreatePOForSupplier"]:active,
+#modal-supplier-detail button[onclick*="openAdminTab('products')"]:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark #modal-supplier-detail button[onclick*="closeSupplierDetailModal"],
+html.dark #modal-supplier-detail button[onclick*="quickCreatePOForSupplier"],
+html.dark #modal-supplier-detail button[onclick*="openAdminTab('products')"] {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+
+#modal-supplier-detail [class*="rounded-3xl"].bg-white,
+#modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.875rem !important;
+}
+html.dark #modal-supplier-detail [class*="rounded-3xl"].bg-white,
+html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
+    border-color: #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+
 /* 5. Universal Industrial Neo-Brutalist Modals & Dialogs */
 @media (min-width: 640px) {
     .modal-bottom-sheet,
+    [id*="modal-"][id$="-box"],
+    [id^="modal-"][id$="-box"],
     [id$="-modal-box"],
     [id$="-modal-content"],
     [id*="modal-"][class*="max-w-"],
+    [id^="modal-"][class*="max-w-"],
     #custom-confirm-box,
     #exit-confirm-modal-box,
     #doc-preview-modal-box,
@@ -7609,9 +7932,12 @@ html.dark #brand-modal button[onclick*="closeBrandModal"]:active {
         box-sizing: border-box !important;
     }
     html.dark .modal-bottom-sheet,
+    html.dark [id*="modal-"][id$="-box"],
+    html.dark [id^="modal-"][id$="-box"],
     html.dark [id$="-modal-box"],
     html.dark [id$="-modal-content"],
     html.dark [id*="modal-"][class*="max-w-"],
+    html.dark [id^="modal-"][class*="max-w-"],
     html.dark #custom-confirm-box,
     html.dark #exit-confirm-modal-box,
     html.dark #doc-preview-modal-box,
@@ -7625,6 +7951,8 @@ html.dark #brand-modal button[onclick*="closeBrandModal"]:active {
 
 @media (max-width: 639.98px) {
     .modal-bottom-sheet,
+    [id*="modal-"][id$="-box"],
+    [id^="modal-"][id$="-box"],
     [id$="-modal-box"],
     [id$="-modal-content"],
     #pos-login-modal-box,
@@ -7637,6 +7965,8 @@ html.dark #brand-modal button[onclick*="closeBrandModal"]:active {
         box-sizing: border-box !important;
     }
     html.dark .modal-bottom-sheet,
+    html.dark [id*="modal-"][id$="-box"],
+    html.dark [id^="modal-"][id$="-box"],
     html.dark [id$="-modal-box"],
     html.dark [id$="-modal-content"],
     html.dark #pos-login-modal-box,
@@ -7832,6 +8162,12 @@ html.dark #toast {
     #modal-material-estimator *,
     #shopping-guide-modal,
     #shopping-guide-modal *,
+    #admin-content,
+    #admin-content *,
+    #modal-supplier-detail,
+    #modal-supplier-detail *,
+    [id*="modal-"],
+    [id*="modal-"] *,
     #thermal-receipt,
     #thermal-receipt *,
     .receipt-content,
