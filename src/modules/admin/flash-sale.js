@@ -161,12 +161,12 @@ export const renderFlashSaleAdminView = () => {
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-1.5">
                                             <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${esc(pName + vName)}</p>
-                                            ${isSoldOut ? `<span class="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">HABIS</span>` : ''}
+                                            ${isSoldOut ? `<span class="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">HABIS</span>` : ''}
                                         </div>
                                         <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                                             <span class="text-[11px] text-slate-400 line-through">${fCur(normP)}</span>
                                             <span class="font-black" style="color: var(--color-primary);">${fCur(fsP)} (-${discountPct}%)</span>
-                                            ${isMarginLoss ? `<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-300 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8.5px]"></i> DI BAWAH HPP (${fCur(hpp)})</span>` : ''}
+                                            ${isMarginLoss ? `<span class="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-300 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8.5px]"></i> DI BAWAH HPP (${fCur(hpp)})</span>` : ''}
                                         </div>
                                     </div>
 

@@ -455,7 +455,7 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
                 <td class="py-2 px-3 border-r border-slate-200">
                     <div class="flex items-center gap-1.5 flex-wrap">
                         <span class="font-bold text-slate-900 text-xs uppercase">${esc(p.name)}</span>
-                        ${p.brand ? `<span class="px-1.5 py-0.2 rounded text-[8px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">${esc(p.brand)}</span>` : ''}
+                        ${p.brand ? `<span class="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">${esc(p.brand)}</span>` : ''}
                     </div>
                     ${p.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(p.sku)}</span>` : ''}
                     ${variantsHtml}
@@ -2324,12 +2324,12 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
 
                                     let badge = '';
                                     if (paidAll >= runningTgt) {
-                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">LUNAS</span>`;
+                                        badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">LUNAS</span>`;
                                     } else if (!foundUnpaid) {
                                         foundUnpaid = true;
-                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">BULAN INI</span>`;
+                                        badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">BULAN INI</span>`;
                                     } else {
-                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-medium uppercase bg-slate-100 text-slate-500">MENDATANG</span>`;
+                                        badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-medium uppercase bg-slate-100 text-slate-500">MENDATANG</span>`;
                                     }
 
                                     return `

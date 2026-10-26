@@ -923,13 +923,16 @@ html.dark .pos-img-box {
 }
 
 .product-chips-wrap > span {
-    line-height: 1.2 !important;
+    line-height: 1.25 !important;
     letter-spacing: 0.02em !important;
     box-sizing: border-box !important;
+    min-height: 22px !important;
+    padding: 2px 8px !important;
 }
 
 .pos-product-card .product-chips-wrap,
 .pos-catalog-grid-mode .product-chips-wrap,
+.catalog-product-card .product-chips-wrap,
 #product-container.grid .product-chips-wrap {
     min-height: 22px !important;
     max-height: 52px !important;
@@ -5972,7 +5975,7 @@ html.dark ::placeholder {
       - Small Pods (w-6 / w-7): 0.5rem (8px squircle)
    ============================================================ */
 
-/* ─── 1. UNIVERSAL BADGE & STATUS PILL HARMONY (ANTI-WRAP & ANTI-BLOAT) ─── */
+/* ─── 1. UNIVERSAL BADGE & STATUS PILL HARMONY (ANTI-WRAP, ANTI-BLOAT & ANTI-GEPENG) ─── */
 [class*="badge"]:not(.hidden):not([hidden]),
 .badge-native:not(.hidden):not([hidden]),
 .status-pill:not(.hidden):not([hidden]),
@@ -5994,11 +5997,13 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     display: inline-flex;
     align-items: center !important;
     justify-content: center !important;
-    line-height: 1.15 !important;
+    line-height: 1.25 !important;
     letter-spacing: 0.02em !important; /* Mencegah tracking melebar berlebihan yang membuat teks tumpah */
     border-radius: 0.5rem !important; /* 8px modern squircle chip */
     box-sizing: border-box !important;
     vertical-align: middle !important;
+    min-height: 22px !important;
+    padding: 2px 8px !important;
     max-height: 26px !important;
 }
 
@@ -6016,6 +6021,8 @@ span[class*="rounded-"][class*="text-["] * {
 .badge-counter-circle {
     border-radius: 9999px !important;
     max-height: none !important;
+    min-height: 18px !important;
+    padding: 0 4px !important;
 }
 
 /* ─── 2. UNIVERSAL BUTTON BORDER RADIUS HARMONY ─── */
@@ -7419,7 +7426,9 @@ html.dark #btn-view-list:active:not(:disabled) {
     letter-spacing: 0.035em !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
-    line-height: 1.15 !important;
+    line-height: 1.25 !important;
+    min-height: 22px !important;
+    padding: 2px 8px !important;
     box-sizing: border-box !important;
 }
 
@@ -7437,7 +7446,9 @@ span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#
     letter-spacing: 0.035em !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
-    line-height: 1.15 !important;
+    line-height: 1.25 !important;
+    min-height: 22px !important;
+    padding: 2px 8px !important;
     box-sizing: border-box !important;
 }
 html.dark .neo-badge,
@@ -7458,6 +7469,8 @@ span[id$="-badge"][class*="min-w-"] {
     border-radius: 9999px !important;
     box-shadow: none !important;
     border: 1.5px solid #0f172a !important;
+    min-height: 18px !important;
+    padding: 0 4px !important;
 }
 
 /* 4. Universal Industrial High-Contrast Input Form Fields */

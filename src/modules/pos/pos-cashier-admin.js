@@ -482,7 +482,7 @@ const renderStaffRoleFilterChiclets = () => {
             style="${isActive ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}">
             <i class="fa-solid ${f.icon} text-[10px]"></i>
             <span>${f.label}</span>
-            <span class="ml-0.5 px-1.5 py-0.2 rounded-md text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}">${f.count}</span>
+            <span class="ml-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}">${f.count}</span>
         </button>`;
     }).join('');
 };

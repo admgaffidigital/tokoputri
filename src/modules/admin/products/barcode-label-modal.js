@@ -247,7 +247,7 @@ export const renderBarcodeLabelModalContent = () => {
                             <button type="button" onclick="window.setBarcodeLabelPaper('thermal-40x30')" class="${paperBtnClass('thermal-40x30')}" style="${paperBtnStyle('thermal-40x30')}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[11px] font-black">Thermal 40x30</span>
-                                    <span class="text-[9px] px-1 py-0.2 rounded font-bold" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">Populer</span>
+                                    <span class="text-[9px] px-1 py-0.5 rounded font-bold" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">Populer</span>
                                 </div>
                                 <span class="text-[10px] text-slate-400 block font-normal">Stiker Rak &amp; Barang</span>
                             </button>
@@ -270,7 +270,7 @@ export const renderBarcodeLabelModalContent = () => {
                             <button type="button" onclick="window.setBarcodeLabelPaper('a4-3x10')" class="${paperBtnClass('a4-3x10')}" style="${paperBtnStyle('a4-3x10')}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[11px] font-black">Kertas A4 (3x10)</span>
-                                    <span class="text-[9px] px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">30 Pcs</span>
+                                    <span class="text-[9px] px-1 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">30 Pcs</span>
                                 </div>
                                 <span class="text-[10px] text-slate-400 block font-normal">Printer Biasa / Inkjet</span>
                             </button>
@@ -278,7 +278,7 @@ export const renderBarcodeLabelModalContent = () => {
                             <button type="button" onclick="window.setBarcodeLabelPaper('a4-2x7')" class="${paperBtnClass('a4-2x7')}" style="${paperBtnStyle('a4-2x7')}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[11px] font-black">Kertas A4 (2x7)</span>
-                                    <span class="text-[9px] px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">14 Pcs</span>
+                                    <span class="text-[9px] px-1 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">14 Pcs</span>
                                 </div>
                                 <span class="text-[10px] text-slate-400 block font-normal">Label Besar A4</span>
                             </button>
@@ -326,7 +326,7 @@ export const renderBarcodeLabelModalContent = () => {
                                                     <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-white line-clamp-1 sm:line-clamp-2">
                                                         ${esc(it.variantName || it.name)}
                                                     </span>
-                                                    ${isInspected ? `<span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase text-white shadow-2xs shrink-0" style="background: var(--color-primary);">Preview</span>` : ''}
+                                                    ${isInspected ? `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-black uppercase text-white shadow-2xs shrink-0" style="background: var(--color-primary);">Preview</span>` : ''}
                                                 </div>
                                                 <div class="flex items-center gap-1.5 sm:gap-2 text-[10.5px] text-slate-400 font-medium flex-wrap mt-0.5">
                                                     <span class="font-mono font-bold text-slate-700 dark:text-slate-200 whitespace-nowrap bg-slate-100 dark:bg-slate-700/60 px-1.5 py-0.5 rounded">${esc(it.sku)}</span>

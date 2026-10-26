@@ -1756,7 +1756,7 @@ export const renderCatalog = (isLoadMore = false) => {
                         const active = posSubCatFilterVal.toLowerCase() === sc.name.toLowerCase();
                         return `<button type="button" onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black transition-all border-2 border-slate-900 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'bg-[var(--color-primary)] text-white shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]'}">
                             <span>${esc(sc.name)}</span>
-                            <span class="text-[9px] px-1 py-0.2 rounded-full border border-slate-900 ${active ? 'bg-black/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}">${sc.count}</span>
+                            <span class="text-[9px] px-1 py-0.5 rounded-full border border-slate-900 ${active ? 'bg-black/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}">${sc.count}</span>
                         </button>`;
                     }).join('')}
                 </div>`;
@@ -2156,10 +2156,10 @@ const renderCart = () => {
                     ` : ''}
                     ${/^(kg|kilo|kilogram|meter|m|ltr|liter|m2|m3|ons|gram|g)$/i.test((item.unit || '').trim()) ? `
                     <div class="flex items-center gap-0.5 mt-1 justify-end">
-                        <button type="button" onclick="window.posSetQty('${ckey}', 0.25)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.25 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.25 (1/4)">¼</button>
-                        <button type="button" onclick="window.posSetQty('${ckey}', 0.5)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.5 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.5 (1/2)">½</button>
-                        <button type="button" onclick="window.posSetQty('${ckey}', 0.75)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 0.75 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.75 (3/4)">¾</button>
-                        <button type="button" onclick="window.posSetQty('${ckey}', 1)" class="px-1 py-0.2 rounded text-[7.5px] font-black ${item.qty === 1 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 1">1</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 0.25)" class="px-1 py-0.5 rounded text-[7.5px] font-black ${item.qty === 0.25 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.25 (1/4)">¼</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 0.5)" class="px-1 py-0.5 rounded text-[7.5px] font-black ${item.qty === 0.5 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.5 (1/2)">½</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 0.75)" class="px-1 py-0.5 rounded text-[7.5px] font-black ${item.qty === 0.75 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 0.75 (3/4)">¾</button>
+                        <button type="button" onclick="window.posSetQty('${ckey}', 1)" class="px-1 py-0.5 rounded text-[7.5px] font-black ${item.qty === 1 ? 'bg-[var(--color-primary)] text-white shadow-2xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 text-slate-600'} transition-all cursor-pointer active:scale-90" title="Set 1">1</button>
                     </div>
                     ` : ''}
                     <div class="flex items-baseline gap-1 mt-1.5">
@@ -4390,7 +4390,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Antrean Parkir</span>
-                                <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F8</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F8</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Daftar transaksi tertahan</div>
                         </div>
@@ -4413,7 +4413,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Printer Thermal</span>
-                                <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F7</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F7</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Bluetooth ESC/POS & kertas</div>
                         </div>
@@ -4425,7 +4425,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Catat Kas Laci</span>
-                                <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F11</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F11</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Kas masuk / biaya operasional</div>
                         </div>
@@ -4437,7 +4437,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Buka / Ringkasan Shift</span>
-                                <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F10</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F10</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">X-Report saldo & rekap kasir</div>
                         </div>

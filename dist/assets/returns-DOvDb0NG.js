@@ -1,4 +1,4 @@
-import{e as u,a as c,i as l,k as g,H as $,l as N,n as R,f as k,o as V,b as U,v as L}from"./module-print-DqLQhhAD.js";import{Q as G,s as C,R as Y,S as W,T as z}from"./module-pos-DgTC3RP6.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-DqB1jc8p.js";import"./module-faq-CEX-NgnC.js";let y="sales",A="",P="card",h=null,f=[];const E=t=>{if(!t)return"PL";const a=t.trim().split(/\s+/).filter(Boolean);return a.length===1?a[0].substring(0,2).toUpperCase():(a[0][0]+a[a.length-1][0]).toUpperCase()},M=()=>{if(!u("admin-content"))return;Array.isArray(c.salesReturns)||(c.salesReturns=[]),Array.isArray(c.vendorReturns)||(c.vendorReturns=[]);const a=c.salesReturns.reduce((d,o)=>d+(parseFloat(o.totalRefund)||0),0),e=c.salesReturns.length,r=c.vendorReturns.reduce((d,o)=>d+(parseFloat(o.totalClaim)||0),0),n=(c.products||[]).reduce((d,o)=>{let p=parseFloat(o.damagedStock)||0;return Array.isArray(o.variants)&&(p+=o.variants.reduce((m,i)=>m+(parseFloat(i.damagedStock)||0),0)),d+p},0),s=`
+import{e as u,a as c,i as l,k as g,H as $,l as N,n as R,f as k,o as V,b as U,v as L}from"./module-print-Bg0XtXGP.js";import{Q as G,s as C,R as Y,S as W,T as z}from"./module-pos-CuV1Qpjr.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-kpsRtBOf.js";import"./module-faq-D0xZ0r6r.js";let y="sales",A="",P="card",h=null,f=[];const E=t=>{if(!t)return"PL";const a=t.trim().split(/\s+/).filter(Boolean);return a.length===1?a[0].substring(0,2).toUpperCase():(a[0][0]+a[a.length-1][0]).toUpperCase()},M=()=>{if(!u("admin-content"))return;Array.isArray(c.salesReturns)||(c.salesReturns=[]),Array.isArray(c.vendorReturns)||(c.vendorReturns=[]);const a=c.salesReturns.reduce((d,o)=>d+(parseFloat(o.totalRefund)||0),0),e=c.salesReturns.length,r=c.vendorReturns.reduce((d,o)=>d+(parseFloat(o.totalClaim)||0),0),n=(c.products||[]).reduce((d,o)=>{let p=parseFloat(o.damagedStock)||0;return Array.isArray(o.variants)&&(p+=o.variants.reduce((m,i)=>m+(parseFloat(i.damagedStock)||0),0)),d+p},0),s=`
         <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: PUSAT RETUR & REKONSILIASI RMA (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-white dark:bg-slate-900 shadow-xs card-native">
@@ -89,7 +89,7 @@ import{e as u,a as c,i as l,k as g,H as $,l as N,n as R,f as k,o as V,b as U,v a
                     >
                         <i class="fa-solid fa-basket-shopping"></i>
                         <span>Retur Penjualan</span>
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold ${y==="sales"?"bg-white/20 text-white":"bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"}">
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold ${y==="sales"?"bg-white/20 text-white":"bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"}">
                             ${c.salesReturns.length}
                         </span>
                     </button>
@@ -101,7 +101,7 @@ import{e as u,a as c,i as l,k as g,H as $,l as N,n as R,f as k,o as V,b as U,v a
                     >
                         <i class="fa-solid fa-truck-ramp-box"></i>
                         <span>Retur Supplier</span>
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold ${y==="vendor"?"bg-white/20 text-white":"bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"}">
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold ${y==="vendor"?"bg-white/20 text-white":"bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"}">
                             ${c.vendorReturns.length}
                         </span>
                     </button>
@@ -213,7 +213,7 @@ import{e as u,a as c,i as l,k as g,H as $,l as N,n as R,f as k,o as V,b as U,v a
                                         ${(e.items||[]).slice(0,3).map(p=>{const m=p.condition==="damaged"?'<span class="text-[9.5px] font-black text-rose-500 shrink-0"><i class="fa-solid fa-triangle-exclamation"></i> Karantina</span>':'<span class="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0"><i class="fa-solid fa-check"></i> Rak Toko</span>';return`
                                                 <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 text-xs">
                                                     <div class="flex items-center gap-1.5 min-w-0">
-                                                        <span class="px-1.5 py-0.2 rounded-md font-black text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">${p.qty}x</span>
+                                                        <span class="px-1.5 py-0.5 rounded-md font-black text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">${p.qty}x</span>
                                                         <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">${l(p.name)}</span>
                                                         ${p.variantName?`<span class="text-[9.5px] text-slate-400 shrink-0">[${l(p.variantName)}]</span>`:""}
                                                     </div>
@@ -358,7 +358,7 @@ import{e as u,a as c,i as l,k as g,H as $,l as N,n as R,f as k,o as V,b as U,v a
                                         ${(e.items||[]).slice(0,3).map(p=>{const m=p.fromLocation==="warehouse"?"Gudang":p.fromLocation==="quarantine"?"Karantina":"Rak Toko";return`
                                                 <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 text-xs">
                                                     <div class="flex items-center gap-1.5 min-w-0">
-                                                        <span class="px-1.5 py-0.2 rounded-md font-black text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">${p.qty}x</span>
+                                                        <span class="px-1.5 py-0.5 rounded-md font-black text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">${p.qty}x</span>
                                                         <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">${l(p.name)}</span>
                                                         ${p.variantName?`<span class="text-[9.5px] text-slate-400 shrink-0">[${l(p.variantName)}]</span>`:""}
                                                     </div>

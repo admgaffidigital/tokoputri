@@ -606,7 +606,7 @@ window.rAdmItms = (t, skipStats = false) => {
                             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all group">
                                 <i class="fa-solid fa-shapes text-[10px] text-[var(--color-primary)]"></i>
                                 <span>${esc(sc)}</span>
-                                <span class="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600" title="${subCount} Produk">${subCount}</span>
+                                <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600" title="${subCount} Produk">${subCount}</span>
                                 <button type="button" onclick="event.stopPropagation(); window.removeCategorySubCategory('${x.id}', '${esc(sc).replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-rose-500 p-0.5 rounded ml-0.5 transition-colors cursor-pointer" title="Hapus Sub-Kategori '${esc(sc)}'">
                                     <i class="fa-solid fa-xmark text-[11px]"></i>
                                 </button>
@@ -722,7 +722,7 @@ window.rAdmItms = (t, skipStats = false) => {
                                 <button type="button" onclick="event.stopPropagation(); window.openProductFifoModal?.('${x.id}');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 border border-teal-200 dark:border-teal-800 transition-all cursor-pointer shadow-2xs" title="Lihat Rekanan Supplier &amp; Antrean Batch FIFO">
                                     <i class="fa-solid fa-truck-field text-[8.5px]"></i>
                                     <span class="max-w-[120px] truncate">${esc(sName)}</span>
-                                    ${extraCount > 0 ? `<span class="bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-1 py-0.2 rounded text-[8.5px] font-black">+${extraCount}</span>` : ''}
+                                    ${extraCount > 0 ? `<span class="bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-1 py-0.5 rounded text-[8.5px] font-black">+${extraCount}</span>` : ''}
                                 </button>
                                 ${batchCount > 0 ? `
                                     <button type="button" onclick="event.stopPropagation(); window.openProductFifoModal?.('${x.id}');" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-black text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 transition-all cursor-pointer" title="Lacak Antrean FIFO">

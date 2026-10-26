@@ -2314,11 +2314,11 @@ const renderTempoCustomersTab = () => {
                                         <p class="text-[11px] font-bold text-slate-500 font-mono flex items-center gap-1">
                                             <i class="fa-brands fa-whatsapp text-emerald-500"></i> +${esc(waNum || '-')}
                                         </p>
-                                        <span class="text-[9px] font-bold px-2 py-0.2 rounded-lg uppercase tracking-wider border ${c.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider border ${c.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
                                             ${c.customerType}
                                         </span>
                                         ${c.paylaterActive ? `
-                                            <span class="text-[9px] font-black px-2 py-0.2 rounded-lg uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                                            <span class="text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
                                                 <i class="fa-solid fa-bolt text-emerald-500"></i>PayLater Aktif
                                             </span>
                                         ` : ''}

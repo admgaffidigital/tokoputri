@@ -165,7 +165,7 @@ export const renderReturnsView = () => {
                     >
                         <i class="fa-solid fa-basket-shopping"></i>
                         <span>Retur Penjualan</span>
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold ${currentReturnTab === 'sales' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold ${currentReturnTab === 'sales' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">
                             ${appData.salesReturns.length}
                         </span>
                     </button>
@@ -177,7 +177,7 @@ export const renderReturnsView = () => {
                     >
                         <i class="fa-solid fa-truck-ramp-box"></i>
                         <span>Retur Supplier</span>
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold ${currentReturnTab === 'vendor' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold ${currentReturnTab === 'vendor' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">
                             ${appData.vendorReturns.length}
                         </span>
                     </button>
@@ -386,7 +386,7 @@ const renderSalesReturnsTableHtml = () => {
                                             return `
                                                 <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 text-xs">
                                                     <div class="flex items-center gap-1.5 min-w-0">
-                                                        <span class="px-1.5 py-0.2 rounded-md font-black text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">${i.qty}x</span>
+                                                        <span class="px-1.5 py-0.5 rounded-md font-black text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">${i.qty}x</span>
                                                         <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">${esc(i.name)}</span>
                                                         ${i.variantName ? `<span class="text-[9.5px] text-slate-400 shrink-0">[${esc(i.variantName)}]</span>` : ''}
                                                     </div>
@@ -589,7 +589,7 @@ const renderVendorReturnsTableHtml = () => {
                                             return `
                                                 <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 text-xs">
                                                     <div class="flex items-center gap-1.5 min-w-0">
-                                                        <span class="px-1.5 py-0.2 rounded-md font-black text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">${i.qty}x</span>
+                                                        <span class="px-1.5 py-0.5 rounded-md font-black text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">${i.qty}x</span>
                                                         <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">${esc(i.name)}</span>
                                                         ${i.variantName ? `<span class="text-[9.5px] text-slate-400 shrink-0">[${esc(i.variantName)}]</span>` : ''}
                                                     </div>

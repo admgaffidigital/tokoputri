@@ -1701,7 +1701,7 @@ export const renderStockValuationTab = () => {
                 : 'bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 hover:border-[var(--color-primary)]'
             }">
                 <span>${p.label}</span>
-                <span class="px-1.5 py-0.2 rounded-md text-[10px] ${isSel ? 'bg-white/25 text-white' : 'bg-slate-200/80 dark:bg-slate-700 ' + (p.colorClass || 'text-slate-600 dark:text-slate-300')}">${p.count}</span>
+                <span class="px-1.5 py-0.5 rounded-md text-[10px] ${isSel ? 'bg-white/25 text-white' : 'bg-slate-200/80 dark:bg-slate-700 ' + (p.colorClass || 'text-slate-600 dark:text-slate-300')}">${p.count}</span>
             </button>
         `;
     }).join('');
@@ -2502,7 +2502,7 @@ export const renderTaxComplianceTab = () => {
                             isActiveRow ? 'bg-[var(--color-primary)] text-white' : 'bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                         }">${m}</span>
                         <span class="text-xs font-black ${isActiveRow ? 'text-[var(--color-primary)]' : 'text-slate-800 dark:text-white'}">${MONTH_NAMES[m - 1]}</span>
-                        ${isActiveRow ? '<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[var(--color-primary)] text-white">Bulan Aktif</span>' : ''}
+                        ${isActiveRow ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--color-primary)] text-white">Bulan Aktif</span>' : ''}
                     </div>
                     <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                         ${d.orderCount} Pesanan

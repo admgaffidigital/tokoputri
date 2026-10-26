@@ -521,7 +521,7 @@ const renderPOCardHtml = (po) => {
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-700 dark:text-slate-200">
                                 <span>${esc(it.name)}</span>
                                 ${it.variantName ? `<span class="opacity-75 font-normal text-[10px]">[${esc(it.variantName)}]</span>` : ''}
-                                <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-700 text-[10px] font-black" style="color:var(--color-primary)">${formatQty(it.qty)} ${esc(it.unit || 'pcs')}</span>
+                                <span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-[10px] font-black" style="color:var(--color-primary)">${formatQty(it.qty)} ${esc(it.unit || 'pcs')}</span>
                             </span>
                         `).join('')}
                         ${itemsCount > 4 ? `

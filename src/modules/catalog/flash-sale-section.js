@@ -91,15 +91,15 @@ export const renderStorefrontFlashSale = () => {
         return `
         <div class="snap-start shrink-0 flex flex-col w-[150px] sm:w-[172px] md:w-[188px] ${validItems.length <= 4 ? 'lg:w-[220px] xl:w-[240px]' : ''}">
             <div class="flash-sale-card group relative flex flex-1 flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md text-left">
-                <!-- Badge Diskon Petir Harmonis Tema Neo-Brutalist -->
-                <div class="absolute left-2 top-2 z-10 flex items-center gap-1 rounded-lg px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wider text-slate-950 bg-amber-400 border border-slate-950 shadow-[1.5px_1.5px_0px_#0f172a]">
-                    <i class="fa-solid fa-bolt text-slate-950 text-[8.5px]"></i>
+                <!-- Badge Diskon Petir Harmonis Tema Neo-Brutalist (Anti-Gepeng, Touch & Visual Nyaman) -->
+                <div class="absolute left-2 top-2 z-10 min-h-[22px] flex items-center gap-1 rounded-lg px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950 bg-amber-400 border-1.5 border-slate-950 shadow-[1.5px_1.5px_0px_#0f172a]">
+                    <i class="fa-solid fa-bolt text-slate-950 text-[9px]"></i>
                     <span>-${Math.max(1, discountPct)}%</span>
                 </div>
 
                 ${remaining <= 3 && !isSoldOut && quota > 0 ? `
-                <div class="absolute right-2 top-2 z-10 flex items-center gap-1 rounded-lg bg-rose-600 px-1.5 py-0.5 text-[8.5px] font-black text-white shadow-[1.5px_1.5px_0px_#0f172a] border border-rose-700">
-                    <span><i class="fa-solid fa-fire text-amber-200 text-[8px]"></i> Sisa ${remaining}!</span>
+                <div class="absolute right-2 top-2 z-10 min-h-[22px] flex items-center gap-1 rounded-lg bg-rose-600 px-2 py-0.5 text-[9px] font-black text-white shadow-[1.5px_1.5px_0px_#0f172a] border-1.5 border-slate-950">
+                    <span><i class="fa-solid fa-fire text-amber-200 text-[8.5px]"></i> Sisa ${remaining}!</span>
                 </div>` : ''}
 
                 <!-- Foto Produk / Varian: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
@@ -117,8 +117,17 @@ export const renderStorefrontFlashSale = () => {
                     <div>
                         <h4 class="line-clamp-2 text-xs sm:text-[13px] font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem] cursor-pointer" title="${esc(prodName + variantSuffix)}" onclick="window.openProductModal && window.openProductModal('${esc(prod.id)}', false, '${esc(item.variantName || '')}')">
                             ${esc(prodName)}
-                            ${item.variantName ? `<span class="inline-flex items-center gap-1 mt-0.5 text-[8.5px] font-black px-1.5 py-0.2 rounded-md uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/80"><i class="fa-solid fa-shapes text-[8px] text-[var(--color-primary)]"></i>${esc(item.variantName)}</span>` : ''}
                         </h4>
+                        
+                        <!-- Baris Badge Varian Terdedikasi: Bebas Jepit Line-Clamp & Anti-Gepeng -->
+                        <div class="mt-1 flex items-center min-h-[22px]">
+                            ${item.variantName ? `
+                                <span class="neo-badge inline-flex items-center gap-1 text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shrink-0 max-w-full truncate">
+                                    <i class="fa-solid fa-shapes text-[8px] text-[var(--color-primary)] shrink-0"></i>
+                                    <span class="truncate">${esc(item.variantName)}</span>
+                                </span>
+                            ` : `<span class="invisible text-[9px] py-0.5 select-none" aria-hidden="true">&nbsp;</span>`}
+                        </div>
                         
                         <!-- Coretan Harga & Harga Kilat Harmonis -->
                         <div class="mt-1.5 flex flex-col">

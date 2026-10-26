@@ -1039,8 +1039,8 @@ window.openMasterProductImportModal = (presetId, isUpdate = false) => {
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 mb-0.5">
-                        <span class="px-2 py-0.2 rounded text-[8.5px] font-black uppercase bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">${esc(preset.category)}</span>
-                        ${preset.brand ? `<span class="px-2 py-0.2 rounded text-[8.5px] font-black uppercase primary-bg-soft text-[var(--color-primary)]">${esc(preset.brand)}</span>` : ''}
+                        <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">${esc(preset.category)}</span>
+                        ${preset.brand ? `<span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase primary-bg-soft text-[var(--color-primary)]">${esc(preset.brand)}</span>` : ''}
                     </div>
                     <h4 class="font-black text-xs sm:text-sm text-slate-800 dark:text-white truncate">${esc(preset.name)}</h4>
                     <p class="text-[10px] text-slate-400 mt-0.5">Satuan: <b>${esc(defaultUnit)}</b> &bull; ${variants.length} Varian Tersedia di Database</p>

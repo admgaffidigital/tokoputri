@@ -1009,7 +1009,7 @@ export const rProdMod = () => {
 
                     let priceBadge = '';
                     if (isVarInFs) {
-                        priceBadge = `<span class="inline-flex items-center gap-1 text-[9.5px] font-black px-1.5 py-0.2 rounded text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-300"></i> ${fCur(varFs.flashSalePrice)} <span class="text-[8px] opacity-90">(-${varFs.discountPercent}%)</span></span>`;
+                        priceBadge = `<span class="inline-flex items-center gap-1 text-[9.5px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-300"></i> ${fCur(varFs.flashSalePrice)} <span class="text-[8px] opacity-90">(-${varFs.discountPercent}%)</span></span>`;
                     } else if (r.price && parseFloat(r.price) !== parseFloat(p.price)) {
                         priceBadge = `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`;
                     }
@@ -1218,14 +1218,14 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
             <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
                 <span class="text-[11px] flex items-center gap-1.5">
                     <span>Biaya Administrasi</span>
-                    ${activeBreakdown.adminFeeType === 'percent' && activeBreakdown.adminFeeValue > 0 ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 font-mono">${activeBreakdown.adminFeeValue}%</span>` : ''}
+                    ${activeBreakdown.adminFeeType === 'percent' && activeBreakdown.adminFeeValue > 0 ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">${activeBreakdown.adminFeeValue}%</span>` : ''}
                 </span>
                 ${adminFeeText}
             </div>
             <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
                 <span class="text-[11px] flex items-center gap-1.5">
                     <span>Biaya Penanganan &amp; Layanan</span>
-                    ${activeBreakdown.serviceFeeType === 'percent' && activeBreakdown.serviceFeeValue > 0 ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 font-mono">${activeBreakdown.serviceFeeValue}%</span>` : ''}
+                    ${activeBreakdown.serviceFeeType === 'percent' && activeBreakdown.serviceFeeValue > 0 ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">${activeBreakdown.serviceFeeValue}%</span>` : ''}
                 </span>
                 ${serviceFeeText}
             </div>

@@ -68,7 +68,7 @@ export const renderFooter = () => {
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <h3 class="text-xs font-black tracking-tight text-slate-900 dark:text-white truncate">${esc(storeName)}</h3>
-                  <span class="inline-flex items-center gap-0.5 rounded-full border border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.2 text-[8px] font-black uppercase text-[var(--color-primary)]">
+                  <span class="inline-flex items-center gap-0.5 rounded-full border border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 text-[8px] font-black uppercase text-[var(--color-primary)]">
                     <i class="fa-solid fa-circle-check text-[8px]"></i> Official
                   </span>
                 </div>
@@ -221,7 +221,7 @@ export const renderFooter = () => {
                   </div>
                   <div class="min-w-0 text-left">
                     <div class="flex items-center gap-1.5">
-                      <span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase text-white shadow-2xs" style="background:var(--color-primary)">APK RESMI</span>
+                      <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase text-white shadow-2xs" style="background:var(--color-primary)">APK RESMI</span>
                       <span class="text-[9px] font-black uppercase tracking-widest text-[var(--color-primary)]">Android App</span>
                     </div>
                     <p class="truncate text-xs font-black text-slate-900 dark:text-white">Unduh Aplikasi Android</p>
