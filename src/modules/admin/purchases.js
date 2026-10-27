@@ -284,7 +284,7 @@ export const renderPurchasesView = () => {
                             <i class="fa-solid fa-chart-pie text-amber-600 dark:text-amber-400"></i>
                             <span>Laporan Utang</span>
                         </button>
-                        <button onclick="window.openCreatePOModal()" class="px-4 sm:px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openCreatePOModal()" class="neo-btn px-4 sm:px-5 py-3 rounded-xl text-xs font-black text-white flex items-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Buat Order PO</span>
                         </button>
@@ -365,8 +365,8 @@ export const renderPurchasesView = () => {
 
                     <button 
                         onclick="window.openCreatePOModal()" 
-                        class="px-4 sm:px-5 py-3 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow transition-all active:scale-95 shrink-0 cursor-pointer"
-                        style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
+                        class="neo-btn px-4 sm:px-5 py-3 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 cursor-pointer"
+                        style="background: var(--color-primary);"
                     >
                         <i class="fa-solid fa-cart-plus text-xs"></i>
                         <span>Buat Order PO</span>
@@ -379,7 +379,7 @@ export const renderPurchasesView = () => {
                 <button 
                     onclick="window.setPurchaseFilter('all')" 
                     class="px-4 py-2.5 rounded-xl transition-all shrink-0 cursor-pointer ${activePOFilter === 'all' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
-                    style="${activePOFilter === 'all' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
+                    style="${activePOFilter === 'all' ? 'background: var(--color-primary);' : ''}"
                 >
                     Semua PO (${purchases.length})
                 </button>
@@ -387,7 +387,7 @@ export const renderPurchasesView = () => {
                 <button 
                     onclick="window.setPurchaseFilter('ordered')" 
                     class="px-4 py-2.5 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'ordered' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
-                    style="${activePOFilter === 'ordered' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
+                    style="${activePOFilter === 'ordered' ? 'background: var(--color-primary);' : ''}"
                 >
                     <i class="fa-solid fa-clock text-[10px]"></i>
                     Dipesan (${purchases.filter(p => p.status === 'ordered').length})
@@ -396,7 +396,7 @@ export const renderPurchasesView = () => {
                 <button 
                     onclick="window.setPurchaseFilter('received')" 
                     class="px-4 py-2.5 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'received' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
-                    style="${activePOFilter === 'received' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
+                    style="${activePOFilter === 'received' ? 'background: var(--color-primary);' : ''}"
                 >
                     <i class="fa-solid fa-boxes-stacked text-[10px]"></i>
                     Barang Diterima (${purchases.filter(p => p.status === 'received').length})
@@ -405,7 +405,7 @@ export const renderPurchasesView = () => {
                 <button 
                     onclick="window.setPurchaseFilter('unpaid')" 
                     class="px-4 py-2.5 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'unpaid' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
-                    style="${activePOFilter === 'unpaid' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
+                    style="${activePOFilter === 'unpaid' ? 'background: var(--color-primary);' : ''}"
                 >
                     <i class="fa-solid fa-file-invoice-dollar text-[10px]"></i>
                     Hutang Tempo
@@ -414,7 +414,7 @@ export const renderPurchasesView = () => {
                 <button 
                     onclick="window.setPurchaseFilter('completed')" 
                     class="px-4 py-2.5 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'completed' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
-                    style="${activePOFilter === 'completed' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
+                    style="${activePOFilter === 'completed' ? 'background: var(--color-primary);' : ''}"
                 >
                     <i class="fa-solid fa-check-double text-[10px]"></i>
                     Selesai / Lunas
@@ -430,7 +430,7 @@ export const renderPurchasesView = () => {
                         </div>
                         <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Order Pembelian (PO)</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-sm">Buat order pembelian kulakan ke supplier untuk mencatat barang masuk, memperbarui stok toko otomatis, dan melacak jatuh tempo hutang.</p>
-                        <button onclick="window.openCreatePOModal()" class="mt-4 px-6 py-3 rounded-2xl text-white font-bold text-xs shadow-glow cursor-pointer transition-all active:scale-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openCreatePOModal()" class="neo-btn mt-4 px-6 py-3 rounded-xl text-white font-bold text-xs cursor-pointer" style="background: var(--color-primary);">
                             <i class="fa-solid fa-cart-plus mr-1.5"></i> Buat Order PO Pertama
                         </button>
                     </div>
@@ -571,8 +571,8 @@ const renderPOCardHtml = (po) => {
                         <button 
                             type="button"
                             onclick="event.stopPropagation(); window.receiveAndRestockPO('${po.id}')" 
-                            class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer"
-                            style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
+                            class="neo-btn flex-1 sm:flex-initial h-11 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
+                            style="background: var(--color-primary);"
                             title="Barang Telah Tiba: Tambah Stok ke Gudang &amp; Etalase Otomatis"
                         >
                             <i class="fa-solid fa-boxes-stacked text-xs"></i>
@@ -582,8 +582,8 @@ const renderPOCardHtml = (po) => {
                         <button 
                             type="button"
                             onclick="event.stopPropagation(); window.openPurchasePaymentModal('${po.id}')" 
-                            class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer"
-                            style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
+                            class="neo-btn flex-1 sm:flex-initial h-11 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
+                            style="background: var(--color-primary);"
                             title="Catat Pembayaran Cicilan Hutang Tempo"
                         >
                             <i class="fa-solid fa-money-bill-wave text-xs"></i>
@@ -1013,7 +1013,7 @@ const renderPOFormModalContent = (po, isEdit) => {
                         id="pof-type-btn-cash" 
                         onclick="window.setPOPaymentType('cash')" 
                         class="pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${po.paymentType === 'cash' ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
-                        style="${po.paymentType === 'cash' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                        style="${po.paymentType === 'cash' ? 'background: var(--color-primary);' : ''}"
                     >
                         <i class="fa-solid fa-money-bill-wave text-xs"></i>
                         <span>Tunai / Cash</span>
@@ -1024,7 +1024,7 @@ const renderPOFormModalContent = (po, isEdit) => {
                         id="pof-type-btn-tempo" 
                         onclick="window.setPOPaymentType('tempo')" 
                         class="pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${(!po.paymentType || po.paymentType === 'tempo') ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
-                        style="${(!po.paymentType || po.paymentType === 'tempo') ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                        style="${(!po.paymentType || po.paymentType === 'tempo') ? 'background: var(--color-primary);' : ''}"
                     >
                         <i class="fa-solid fa-clock text-xs"></i>
                         <span>Tempo (Hutang)</span>
@@ -1035,7 +1035,7 @@ const renderPOFormModalContent = (po, isEdit) => {
                         id="pof-type-btn-konsinyasi" 
                         onclick="window.setPOPaymentType('konsinyasi')" 
                         class="pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${po.paymentType === 'konsinyasi' ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
-                        style="${po.paymentType === 'konsinyasi' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                        style="${po.paymentType === 'konsinyasi' ? 'background: var(--color-primary);' : ''}"
                     >
                         <i class="fa-solid fa-handshake text-xs"></i>
                         <span>Konsinyasi</span>
@@ -1103,8 +1103,8 @@ const renderPOFormModalContent = (po, isEdit) => {
                     <button 
                         type="button" 
                         onclick="window.openPOProductPicker(null)" 
-                        class="px-3.5 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer"
-                        style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25);"
+                        class="neo-btn px-3.5 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                        style="background: var(--color-primary);"
                     >
                         <i class="fa-solid fa-cart-plus text-xs"></i>
                         <span>+ Tambah Barang</span>
@@ -1211,8 +1211,8 @@ const renderPOFormModalContent = (po, isEdit) => {
                 </button>
                 <button 
                     type="submit" 
-                    class="flex-1 sm:flex-initial h-12 px-8 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
+                    class="neo-btn flex-1 sm:flex-initial h-12 px-8 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
+                    style="background: var(--color-primary);"
                 >
                     <i class="fa-solid fa-floppy-disk text-sm"></i>
                     <span>Simpan Order PO</span>
@@ -1582,7 +1582,7 @@ const renderPOItemsTable = () => {
                     <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Ambil data barang langsung dari katalog toko dengan antarmuka cepat &amp; modern.</p>
                 </div>
                 <div class="flex items-center gap-2 pt-1 flex-wrap justify-center">
-                    <button type="button" onclick="window.openPOProductPicker(null)" class="px-5 py-2.5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                    <button type="button" onclick="window.openPOProductPicker(null)" class="neo-btn px-5 py-2.5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cart-plus"></i>
                         <span>+ Ambil Barang dari Katalog Toko</span>
                     </button>
@@ -1644,7 +1644,7 @@ const renderPOItemsTable = () => {
                                         ` : ''}
 
                                         ${item.variantName ? `
-                                            <span class="px-3 py-0.5 rounded-full text-[11px] font-black text-white shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.25);">
+                                            <span class="neo-badge px-2.5 py-0.5 rounded-lg text-[10px] font-black text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                                                 Varian: ${esc(item.variantName)}
                                             </span>
                                         ` : ''}
@@ -1698,7 +1698,7 @@ const renderPOItemsTable = () => {
                                                 type="button" 
                                                 onclick="window.selectPOItemVariant(${idx}, ${vIdx})" 
                                                 class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 ${isVarSelected ? 'text-white border-transparent shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
-                                                style="${isVarSelected ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                                                style="${isVarSelected ? 'background: var(--color-primary);' : ''}"
                                             >
                                                 ${isVarSelected ? '<i class="fa-solid fa-circle-check text-xs"></i>' : ''}
                                                 <span>${esc(v.name)}</span>
@@ -1887,8 +1887,8 @@ const renderPOPickerItemsHtml = (list, currentSupplierId) => {
                         <button 
                             type="button" 
                             onclick="window.selectProductForPO('${prod.id}')" 
-                            class="h-10 px-5 rounded-xl text-white font-bold text-xs sm:text-sm shadow-sm active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1.5 mt-1"
-                            style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.25);"
+                            class="neo-btn h-10 px-5 rounded-xl text-white font-bold text-xs sm:text-sm cursor-pointer shrink-0 flex items-center gap-1.5 mt-1"
+                            style="background: var(--color-primary);"
                         >
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Pilih</span>
@@ -2033,7 +2033,7 @@ const renderPOProductPickerContent = (forceFull = false) => {
                         type="button" 
                         onclick="window.setPOPickerSupplierFilter(true)" 
                         class="flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 ${poPickerFilterSupplier ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
-                        style="${poPickerFilterSupplier ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                        style="${poPickerFilterSupplier ? 'background: var(--color-primary);' : ''}"
                     >
                         <i class="fa-solid fa-star text-[10px] ${poPickerFilterSupplier ? 'text-amber-300' : 'text-amber-500'}"></i>
                         <span class="truncate">Barang Rekanan (${supplierProductsCount})</span>
@@ -2044,7 +2044,7 @@ const renderPOProductPickerContent = (forceFull = false) => {
                     type="button" 
                     onclick="window.setPOPickerSupplierFilter(false)" 
                     class="flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 ${(!poPickerFilterSupplier || supplierProductsCount === 0) ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
-                    style="${(!poPickerFilterSupplier || supplierProductsCount === 0) ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                    style="${(!poPickerFilterSupplier || supplierProductsCount === 0) ? 'background: var(--color-primary);' : ''}"
                 >
                     <i class="fa-solid fa-boxes-stacked text-[10px]"></i>
                     <span class="truncate">Semua Katalog Toko (${allProductsCount})</span>
@@ -2419,7 +2419,7 @@ window.openPurchaseDetailModal = (poId) => {
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="w-5 h-5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">#${idx + 1}</span>
                                             <p class="font-black text-sm text-slate-800 dark:text-slate-100">${esc(item.name)}</p>
-                                            ${item.variantName ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black text-white shrink-0" style="background:var(--color-primary); box-shadow: 0 1px 4px rgba(var(--color-primary-rgb),0.3);">Varian: ${esc(item.variantName)}</span>` : ''}
+                                            ${item.variantName ? `<span class="neo-badge px-2 py-0.5 rounded-md text-[9px] font-black uppercase text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background:var(--color-primary);">Varian: ${esc(item.variantName)}</span>` : ''}
                                         </div>
                                         ${item.sku ? `<span class="text-[11px] font-mono text-slate-400 ml-6 block mt-0.5">SKU: ${esc(item.sku)}</span>` : ''}
                                     </div>
@@ -2455,7 +2455,7 @@ window.openPurchaseDetailModal = (poId) => {
                                     <td class="py-3 px-4">
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <p class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">${esc(item.name)}</p>
-                                            ${item.variantName ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black text-white shrink-0" style="background:var(--color-primary); box-shadow: 0 1px 4px rgba(var(--color-primary-rgb),0.3);">Varian: ${esc(item.variantName)}</span>` : ''}
+                                            ${item.variantName ? `<span class="neo-badge px-2 py-0.5 rounded-md text-[9px] font-black uppercase text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background:var(--color-primary);">Varian: ${esc(item.variantName)}</span>` : ''}
                                         </div>
                                         ${item.sku ? `<span class="text-[11px] font-mono text-slate-400">SKU: ${esc(item.sku)}</span>` : ''}
                                     </td>
@@ -2547,8 +2547,8 @@ window.openPurchaseDetailModal = (poId) => {
                 <button 
                     type="button" 
                     onclick="window.closePurchaseDetailModal(); window.receiveAndRestockPO('${po.id}');" 
-                    class="w-full sm:w-auto sm:order-2 h-12 px-6 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
-                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
+                    class="neo-btn w-full sm:w-auto sm:order-2 h-12 px-6 rounded-xl text-white font-bold text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-2"
+                    style="background: var(--color-primary);"
                 >
                     <i class="fa-solid fa-boxes-stacked"></i>
                     <span>Terima Barang &amp; Restock</span>
@@ -2557,8 +2557,8 @@ window.openPurchaseDetailModal = (poId) => {
                 <button 
                     type="button" 
                     onclick="window.closePurchaseDetailModal(); window.openPurchasePaymentModal('${po.id}');" 
-                    class="w-full sm:w-auto sm:order-2 h-12 px-6 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
-                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
+                    class="neo-btn w-full sm:w-auto sm:order-2 h-12 px-6 rounded-xl text-white font-bold text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-2"
+                    style="background: var(--color-primary);"
                 >
                     <i class="fa-solid fa-money-bill-wave"></i>
                     <span>+ Bayar Cicilan Hutang</span>
@@ -2745,7 +2745,7 @@ window.openPurchasePaymentModal = (poId) => {
                 <button type="button" onclick="window.closePurchasePaymentModal()" class="flex-1 sm:flex-initial h-12 px-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="flex-1 sm:flex-initial h-12 px-8 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-glow transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="submit" class="neo-btn flex-1 sm:flex-initial h-12 px-8 rounded-xl text-white font-bold text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-check"></i>
                     <span>Simpan Pembayaran</span>
                 </button>

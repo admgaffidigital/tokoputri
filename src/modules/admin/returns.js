@@ -98,7 +98,7 @@ export const renderReturnsView = () => {
                             <i class="fa-solid fa-truck-ramp-box text-amber-500"></i>
                             <span>+ Retur Supplier</span>
                         </button>
-                        <button type="button" onclick="window.openSalesReturnModal()" class="btn-native-action px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button type="button" onclick="window.openSalesReturnModal()" class="btn-native-action neo-btn px-5 py-3 rounded-xl text-xs font-black text-white flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
                             <i class="fa-solid fa-cart-arrow-down text-xs"></i>
                             <span>+ Retur Penjualan</span>
                         </button>
@@ -161,7 +161,7 @@ export const renderReturnsView = () => {
                         type="button" 
                         onclick="window.switchReturnsTab('sales')" 
                         class="px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${currentReturnTab === 'sales' ? 'shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
-                        style="${currentReturnTab === 'sales' ? 'background: var(--color-primary); color: #fff; box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                        style="${currentReturnTab === 'sales' ? 'background: var(--color-primary); color: #fff;' : ''}"
                     >
                         <i class="fa-solid fa-basket-shopping"></i>
                         <span>Retur Penjualan</span>
@@ -173,7 +173,7 @@ export const renderReturnsView = () => {
                         type="button" 
                         onclick="window.switchReturnsTab('vendor')" 
                         class="px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${currentReturnTab === 'vendor' ? 'shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
-                        style="${currentReturnTab === 'vendor' ? 'background: var(--color-primary); color: #fff; box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                        style="${currentReturnTab === 'vendor' ? 'background: var(--color-primary); color: #fff;' : ''}"
                     >
                         <i class="fa-solid fa-truck-ramp-box"></i>
                         <span>Retur Supplier</span>
@@ -308,7 +308,7 @@ const renderSalesReturnsTableHtml = () => {
                 </div>
                 <h4 class="font-black text-sm text-slate-800 dark:text-slate-200">Belum Ada Riwayat Retur Penjualan</h4>
                 <p class="text-xs mt-1 max-w-sm mx-auto text-slate-500 dark:text-slate-400">Semua retur dari kasir POS maupun web akan tercatat otomatis di sini.</p>
-                <button type="button" onclick="window.openSalesReturnModal()" class="btn-native-action mt-4 px-5 py-2.5 rounded-2xl text-white font-black text-xs shadow-sm active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="window.openSalesReturnModal()" class="btn-native-action neo-btn mt-4 px-5 py-2.5 rounded-xl text-white font-black text-xs cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-plus text-xs"></i> Buat Retur Penjualan Baru
                 </button>
             </div>

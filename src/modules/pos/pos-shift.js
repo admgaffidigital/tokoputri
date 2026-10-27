@@ -1771,7 +1771,7 @@ const showClosedShiftSuccessModal = (closedShift) => {
 
             <!-- Action Buttons -->
             <div class="space-y-2 pt-2">
-                <button onclick="window.printShiftSettlementReceipt(window.getLastClosedShift(), false)" class="w-full py-3.5 rounded-2xl text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                <button onclick="window.printShiftSettlementReceipt(window.getLastClosedShift(), false)" class="neo-btn w-full py-3.5 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                     <i class="fa-solid fa-eye"></i>
                     <i class="fa-solid fa-print"></i>
                     <span>Preview & Cetak Slip Shift (Z-Report)</span>
@@ -1903,7 +1903,7 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
                 </div>
             </div>
             <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
-                <button onclick="window.executeShiftPrintDirect()" class="flex-1 py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all active:scale-95 hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                <button onclick="window.executeShiftPrintDirect()" class="neo-btn flex-1 py-3.5 rounded-xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                     <i class="fa-solid fa-bolt text-white/90"></i><i class="fa-solid fa-print"></i> Cetak Sekarang
                 </button>
             </div>
@@ -2156,7 +2156,7 @@ export const loadAdminShiftReports = async () => {
             <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all space-y-3.5">
                 <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3 flex-wrap sm:flex-nowrap">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm text-white shrink-0 shadow-2xs ${isClosed ? 'bg-slate-800 dark:bg-slate-700' : ''}" style="${!isClosed ? 'background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);' : ''}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] ${isClosed ? 'bg-slate-800 dark:bg-slate-700' : ''}" style="${!isClosed ? 'background: var(--color-primary);' : ''}">
                             <i class="fa-solid ${!isClosed ? 'fa-cash-register' : 'fa-receipt'}"></i>
                         </div>
                         <div class="min-w-0">

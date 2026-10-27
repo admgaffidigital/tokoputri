@@ -83,7 +83,7 @@ export const renderFooter = () => {
             </div>
 
             <!-- APK Shortcut Pill -->
-            <button type="button" onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();" class="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase text-white shadow-2xs active:scale-95 transition-transform cursor-pointer" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+            <button type="button" onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();" class="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase text-white shadow-2xs active:scale-95 transition-transform cursor-pointer" style="background: var(--color-primary);">
               <i class="fa-brands fa-android text-xs"></i>
               <span>APK</span>
             </button>
@@ -216,7 +216,7 @@ export const renderFooter = () => {
                   class="group flex-1 flex items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.10)] via-[rgba(var(--color-primary-rgb),0.04)] to-transparent hover:border-[rgba(var(--color-primary-rgb),0.45)] p-3.5 transition-all duration-200 shadow-2xs active:scale-98 cursor-pointer"
                   onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();"
                 >
-                  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white text-xl shadow-md transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white text-xl shadow-md transition-transform group-hover:scale-105" style="background: var(--color-primary);">
                     <i class="fa-brands fa-google-play"></i>
                   </div>
                   <div class="min-w-0 text-left">
@@ -245,7 +245,7 @@ export const renderFooter = () => {
                 
                 <!-- Tile 1: Lacak Pesanan -->
                 <button type="button" onclick="changeView('view-orders')" class="group flex items-center sm:items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
-                  <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);">
+                  <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs transition-transform group-hover:scale-105" style="background: var(--color-primary);">
                     <i class="fa-solid fa-clock-rotate-left text-xs sm:text-sm"></i>
                   </div>
                   <div class="min-w-0 flex-1">

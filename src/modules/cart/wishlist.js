@@ -132,7 +132,7 @@ export const renderWish = () => {
                 
                 <div class="flex justify-between items-end mt-auto pt-1">
                     <p class="text-[var(--color-primary)] font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(i.price)}</p>
-                    <button onclick="moveWish(${x})" class="min-h-[38px] sm:min-h-[40px] px-4 sm:px-5 py-2 rounded-xl text-white font-black text-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-sm" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-cart-plus"></i> Beli</button>
+                    <button onclick="moveWish(${x})" class="neo-btn min-h-[38px] sm:min-h-[40px] px-4 sm:px-5 py-2 rounded-xl text-white font-black text-xs flex items-center gap-1.5 cursor-pointer" style="background: var(--color-primary);"><i class="fa-solid fa-cart-plus"></i> Beli</button>
                 </div>
             </div>
         </div>`;

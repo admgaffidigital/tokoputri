@@ -210,7 +210,7 @@ export const openDeliveryModal = (orderId) => {
                     type="button" 
                     onclick="setDeliveryStatusQuick('${esc(orderId)}', 'pending_dispatch')" 
                     class="flex-1 py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${isPending ? 'shadow-sm text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
-                    style="${isPending ? 'background: var(--color-primary); color: #fff; box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);' : ''}"
+                    style="${isPending ? 'background: var(--color-primary); color: #fff;' : ''}"
                 >
                     <i class="fa-solid fa-boxes-packing text-xs"></i>
                     <span>1. Muat Barang</span>
@@ -219,7 +219,7 @@ export const openDeliveryModal = (orderId) => {
                     type="button" 
                     onclick="setDeliveryStatusQuick('${esc(orderId)}', 'out_for_delivery')" 
                     class="flex-1 py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${isDispatch ? 'shadow-sm text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
-                    style="${isDispatch ? 'background: var(--color-primary); color: #fff; box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);' : ''}"
+                    style="${isDispatch ? 'background: var(--color-primary); color: #fff;' : ''}"
                 >
                     <i class="fa-solid fa-truck-fast text-xs"></i>
                     <span>2. Kirim Truk</span>
@@ -228,7 +228,7 @@ export const openDeliveryModal = (orderId) => {
                     type="button" 
                     onclick="openDeliverySignatureModal('${esc(orderId)}')" 
                     class="flex-1 py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${isDelivered ? 'shadow-sm text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
-                    style="${isDelivered ? 'background: var(--color-primary); color: #fff; box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);' : ''}"
+                    style="${isDelivered ? 'background: var(--color-primary); color: #fff;' : ''}"
                 >
                     <i class="fa-solid fa-file-signature text-xs"></i>
                     <span>3. TTD Mandor</span>

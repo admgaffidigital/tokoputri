@@ -1,4 +1,4 @@
-import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k,k as f,H as F,aa as B}from"./module-print-B-xz-wsi.js";import{s as N}from"./module-pos-SdUx7tiI.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-AtuUMAN6.js";import"./module-faq-BkqSbOyx.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const s=document.querySelector("#admin-content #modal-supplier-form");if(s&&s.remove(),!u("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
+import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k,k as f,H as F,aa as B}from"./module-print-CAUcStCc.js";import{s as N}from"./module-pos-DLmEA30i.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-C9ElBdZm.js";import"./module-faq-uIobd2bv.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!u("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
@@ -6,7 +6,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
             <div id="modal-supplier-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
-        `,document.body.appendChild(e)}};let S="",g="all",j=null,b="products";const C=t=>{if(!t)return"-";try{return new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return t}},O=()=>{if(!Array.isArray(p.suppliers)||p.suppliers.length===0||!Array.isArray(p.purchases)||p.purchases.length===0)try{const o=localStorage.getItem("freshmart_cms_private");if(o){const d=JSON.parse(o);(!Array.isArray(p.suppliers)||p.suppliers.length===0)&&Array.isArray(d.suppliers)&&d.suppliers.length>0&&(p.suppliers=d.suppliers),(!Array.isArray(p.purchases)||p.purchases.length===0)&&Array.isArray(d.purchases)&&d.purchases.length>0&&(p.purchases=d.purchases)}}catch{}const t=p.suppliers||[],s=p.products||[],e=p.purchases||[],a=t.length,r=s.filter(o=>o.supplierId&&t.some(d=>String(d.id)===String(o.supplierId))||Array.isArray(o.suppliers)&&o.suppliers.some(d=>t.some(c=>String(c.id)===String(d.supplierId)))).length,l=e.reduce((o,d)=>{if(d.paymentType==="tempo"&&d.paymentStatus!=="lunas"){const c=(parseFloat(d.total)||0)-(parseFloat(d.amountPaid)||0);return o+(c>0?c:0)}return o},0),n=e.filter(o=>o.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:r,totalOutstandingDebt:l,activePurchasesCount:n}},h=()=>{if(P(),!u("admin-content"))return;if(!Array.isArray(p.suppliers)||p.suppliers.length===0)try{const l=localStorage.getItem("freshmart_cms_private");if(l){const n=JSON.parse(l);Array.isArray(n.suppliers)&&n.suppliers.length>0&&(p.suppliers=n.suppliers)}}catch{}const s=O(),e=p.suppliers||[],a=S.toLowerCase().trim();let r=e.filter(l=>!a||(l.name||"").toLowerCase().includes(a)||(l.code||"").toLowerCase().includes(a)||(l.salesName||"").toLowerCase().includes(a)||(l.phone||"").includes(a)||(l.address||"").toLowerCase().includes(a)?g==="has_debt"?(p.purchases||[]).some(d=>String(d.supplierId)===String(l.id)&&d.paymentType==="tempo"&&d.paymentStatus!=="lunas"&&(parseFloat(d.total)||0)-(parseFloat(d.amountPaid)||0)>0):!0:!1);A("admin-content",`
+        `,document.body.appendChild(e)}};let S="",g="all",j=null,b="products";const C=t=>{if(!t)return"-";try{return new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return t}},O=()=>{if(!Array.isArray(p.suppliers)||p.suppliers.length===0||!Array.isArray(p.purchases)||p.purchases.length===0)try{const o=localStorage.getItem("freshmart_cms_private");if(o){const d=JSON.parse(o);(!Array.isArray(p.suppliers)||p.suppliers.length===0)&&Array.isArray(d.suppliers)&&d.suppliers.length>0&&(p.suppliers=d.suppliers),(!Array.isArray(p.purchases)||p.purchases.length===0)&&Array.isArray(d.purchases)&&d.purchases.length>0&&(p.purchases=d.purchases)}}catch{}const t=p.suppliers||[],r=p.products||[],e=p.purchases||[],a=t.length,s=r.filter(o=>o.supplierId&&t.some(d=>String(d.id)===String(o.supplierId))||Array.isArray(o.suppliers)&&o.suppliers.some(d=>t.some(c=>String(c.id)===String(d.supplierId)))).length,l=e.reduce((o,d)=>{if(d.paymentType==="tempo"&&d.paymentStatus!=="lunas"){const c=(parseFloat(d.total)||0)-(parseFloat(d.amountPaid)||0);return o+(c>0?c:0)}return o},0),n=e.filter(o=>o.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:s,totalOutstandingDebt:l,activePurchasesCount:n}},h=()=>{if(P(),!u("admin-content"))return;if(!Array.isArray(p.suppliers)||p.suppliers.length===0)try{const l=localStorage.getItem("freshmart_cms_private");if(l){const n=JSON.parse(l);Array.isArray(n.suppliers)&&n.suppliers.length>0&&(p.suppliers=n.suppliers)}}catch{}const r=O(),e=p.suppliers||[],a=S.toLowerCase().trim();let s=e.filter(l=>!a||(l.name||"").toLowerCase().includes(a)||(l.code||"").toLowerCase().includes(a)||(l.salesName||"").toLowerCase().includes(a)||(l.phone||"").includes(a)||(l.address||"").toLowerCase().includes(a)?g==="has_debt"?(p.purchases||[]).some(d=>String(d.supplierId)===String(l.id)&&d.paymentType==="tempo"&&d.paymentStatus!=="lunas"&&(parseFloat(d.total)||0)-(parseFloat(d.amountPaid)||0)>0):!0:!1);A("admin-content",`
         <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: MASTER DATA SUPPLIER & REKANAN (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-white dark:bg-slate-900 shadow-xs">
@@ -30,7 +30,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                             <i class="fa-solid fa-cart-flatbed" style="color:var(--color-primary)"></i>
                             <span>Order Kulakan</span>
                         </button>
-                        <button onclick="window.openSupplierFormModal()" class="px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openSupplierFormModal()" class="neo-btn px-5 py-3 rounded-xl text-xs font-black text-white flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Tambah Supplier</span>
                         </button>
@@ -46,7 +46,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                                 <i class="fa-solid fa-truck-field"></i>
                             </div>
                         </div>
-                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${s.totalSuppliers}</p>
+                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${r.totalSuppliers}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Pabrik &amp; Distributor Aktif</p>
                     </div>
 
@@ -57,7 +57,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                                 <i class="fa-solid fa-boxes-stacked"></i>
                             </div>
                         </div>
-                        <p class="text-2xl font-black text-teal-600 dark:text-teal-400 tracking-tight">${s.linkedProductsCount}</p>
+                        <p class="text-2xl font-black text-teal-600 dark:text-teal-400 tracking-tight">${r.linkedProductsCount}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Produk Terlacak Asalnya</p>
                     </div>
 
@@ -68,18 +68,18 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                                 <i class="fa-solid fa-file-invoice-dollar"></i>
                             </div>
                         </div>
-                        <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${m(s.totalOutstandingDebt)}</p>
+                        <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${m(r.totalOutstandingDebt)}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Kewajiban Belum Lunas</p>
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
-                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: var(--color-primary);">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                         </div>
-                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${s.activePurchasesCount}</p>
+                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${r.activePurchasesCount}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Menunggu Barang Datang</p>
                     </div>
                 </div>
@@ -102,7 +102,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                     <button 
                         onclick="window.toggleSupplierFilter()" 
                         class="px-4 py-3 rounded-2xl border text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${g==="has_debt"?"text-white shadow-sm":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"}"
-                        style="${g==="has_debt"?"background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;":""}"
+                        style="${g==="has_debt"?"background: var(--color-primary);":""}"
                         title="Tampilkan hanya supplier yang ada sisa hutang tempo"
                     >
                         <i class="fa-solid fa-filter text-xs"></i>
@@ -113,21 +113,21 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
 
             <!-- 3. DAFTAR SUPPLIER / REKANAN -->
             <div id="supplier-cards-list" class="space-y-3">
-                ${r.length===0?`
+                ${s.length===0?`
                     <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
                         <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                             <i class="fa-solid fa-truck-field"></i>
                         </div>
                         <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Data Supplier</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-sm">Daftarkan supplier / distributor rekanan untuk melacak asal-usul barang, mengelola kulakan produk, dan memantau hutang tempo usaha.</p>
-                        <button onclick="window.openSupplierFormModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openSupplierFormModal()" class="neo-btn mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs cursor-pointer" style="background: var(--color-primary);">
                             <i class="fa-solid fa-plus mr-1.5"></i> Tambah Supplier Pertama
                         </button>
                     </div>
-                `:r.map(l=>H(l)).join("")}
+                `:s.map(l=>H(l)).join("")}
             </div>
         </div>
-    `)},H=t=>{const s=p.products||[],e=p.purchases||[],a=s.filter(d=>String(d.supplierId)===String(t.id)||Array.isArray(d.suppliers)&&d.suppliers.some(c=>String(c.supplierId)===String(t.id))),l=e.filter(d=>String(d.supplierId)===String(t.id)).reduce((d,c)=>{if(c.paymentType==="tempo"&&c.paymentStatus!=="lunas"){const x=(parseFloat(c.total)||0)-(parseFloat(c.amountPaid)||0);return d+(x>0?x:0)}return d},0),n={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},o=t.phone?T(t.phone):"";return`
+    `)},H=t=>{const r=p.products||[],e=p.purchases||[],a=r.filter(d=>String(d.supplierId)===String(t.id)||Array.isArray(d.suppliers)&&d.suppliers.some(c=>String(c.supplierId)===String(t.id))),l=e.filter(d=>String(d.supplierId)===String(t.id)).reduce((d,c)=>{if(c.paymentType==="tempo"&&c.paymentStatus!=="lunas"){const x=(parseFloat(c.total)||0)-(parseFloat(c.amountPaid)||0);return d+(x>0?x:0)}return d},0),n={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},o=t.phone?T(t.phone):"";return`
         <div class="bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/50 transition-all rounded-3xl p-4 sm:p-6 shadow-2xs group space-y-4">
             <!-- 1. IDENTITAS UTAMA SUPPLIER & STATUS -->
             <div class="flex items-start justify-between gap-3.5">
@@ -179,7 +179,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                         type="button"
                         onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${t.id}')" 
                         class="flex-1 sm:flex-initial h-11 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer" 
-                        style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
+                        style="background: var(--color-primary);"
                         title="Buat Order Kulakan Produk ke Supplier Ini"
                     >
                         <i class="fa-solid fa-cart-flatbed text-xs"></i>
@@ -236,7 +236,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                 </div>
             </div>
         </div>
-    `},K=()=>{const t=u("supplier-cards-list");if(!t){h();return}let e=p.suppliers||[];g==="has_debt"&&(e=e.filter(r=>getSupplierOutstandingDebt(r)>0));const a=(S||"").toLowerCase().trim();a&&(e=e.filter(r=>{const l=(r.name||"").toLowerCase().includes(a),n=(r.code||"").toLowerCase().includes(a),o=(r.phone||"").toLowerCase().includes(a),d=(r.contactPerson||"").toLowerCase().includes(a),c=(r.address||"").toLowerCase().includes(a),x=(r.productsSupplied||"").toLowerCase().includes(a);return l||n||o||d||c||x})),t.innerHTML=e.length===0?`
+    `},_=()=>{const t=u("supplier-cards-list");if(!t){h();return}let e=p.suppliers||[];g==="has_debt"&&(e=e.filter(s=>getSupplierOutstandingDebt(s)>0));const a=(S||"").toLowerCase().trim();a&&(e=e.filter(s=>{const l=(s.name||"").toLowerCase().includes(a),n=(s.code||"").toLowerCase().includes(a),o=(s.phone||"").toLowerCase().includes(a),d=(s.contactPerson||"").toLowerCase().includes(a),c=(s.address||"").toLowerCase().includes(a),x=(s.productsSupplied||"").toLowerCase().includes(a);return l||n||o||d||c||x})),t.innerHTML=e.length===0?`
         <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
             <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                 <i class="fa-solid fa-truck-field"></i>
@@ -244,8 +244,8 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
             <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Tidak ada supplier yang cocok</p>
             <p class="text-xs text-slate-400 mt-1 max-w-sm">Coba kata kunci pencarian lain atau kosongkan filter pencarian.</p>
         </div>
-    `:e.map(r=>H(r)).join("")};window.handleSupplierSearch=t=>{S=t||"",K()};window.toggleSupplierFilter=()=>{g=g==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(t,s,e)=>{const r=`${e?`Halo Pak/Bu ${e}`:`Halo Tim Sales ${s}`} dari *${p.store?.name||"Toko Putri"}*.
-Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;R(t,r)};window.openSupplierFormModal=(t=null)=>{P();const s=p.suppliers||[],e=!!t,a=e?s.find(o=>String(o.id)===String(t))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},r=u("modal-supplier-form"),l=u("modal-supplier-form-box"),n=u("modal-supplier-form-content");!r||!n||(A("modal-supplier-form-content",`
+    `:e.map(s=>H(s)).join("")};window.handleSupplierSearch=t=>{S=t||"",_()};window.toggleSupplierFilter=()=>{g=g==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(t,r,e)=>{const s=`${e?`Halo Pak/Bu ${e}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
+Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;R(t,s)};window.openSupplierFormModal=(t=null)=>{P();const r=p.suppliers||[],e=!!t,a=e?r.find(o=>String(o.id)===String(t))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},s=u("modal-supplier-form"),l=u("modal-supplier-form-box"),n=u("modal-supplier-form-content");!s||!n||(A("modal-supplier-form-content",`
         <!-- Pull Indicator for Mobile Bottom Sheet -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -343,13 +343,13 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <button type="button" onclick="window.closeSupplierFormModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="submit" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Simpan Data Supplier</span>
                 </button>
             </div>
         </form>
-    `),r.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierForm"),M(r,l))};window.closeSupplierFormModal=(t=!1)=>{const s=u("modal-supplier-form"),e=u("modal-supplier-form-box");s&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierForm",!1,()=>y(s,e)):y(s,e))};window.saveSupplierForm=async(t,s)=>{t.preventDefault(),D("Menyimpan Data Supplier...");try{const e=(u("sf-name")?.value||"").trim(),a=(u("sf-code")?.value||"").trim(),r=(u("sf-salesName")?.value||"").trim();let l=(u("sf-phone")?.value||"").trim();const n=u("sf-defaultTerms")?.value||"tempo_14",o=(u("sf-email")?.value||"").trim(),d=(u("sf-bankName")?.value||"").trim(),c=(u("sf-bankAccount")?.value||"").trim(),x=(u("sf-bankHolder")?.value||"").trim(),v=(u("sf-address")?.value||"").trim(),E=(u("sf-notes")?.value||"").trim();if(!e)return k(),f("Nama supplier wajib diisi!");l&&(l=T(l)),p.suppliers||(p.suppliers=[]);const w={id:s||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:e,code:a,salesName:r,phone:l,defaultTerms:n,email:o,bankName:d,bankAccount:c,bankHolder:x,address:v,notes:E,updatedAt:new Date().toISOString()};if(!s)w.createdAt=new Date().toISOString(),p.suppliers.unshift(w);else{const $=p.suppliers.findIndex(I=>String(I.id)===String(s));$>-1?p.suppliers[$]={...p.suppliers[$],...w}:p.suppliers.push(w)}await N(["suppliers"]),k(),window.closeSupplierFormModal(),f(s?"Data supplier diperbarui!":"Supplier baru berhasil ditambahkan!"),h()}catch(e){k(),console.error("Gagal menyimpan supplier:",e),f("Gagal menyimpan: "+(e.message||""))}};window.deleteSupplier=t=>{const e=(p.suppliers||[]).find(n=>String(n.id)===String(t));if(!e)return;const a=(p.products||[]).filter(n=>String(n.supplierId)===String(t)||Array.isArray(n.suppliers)&&n.suppliers.some(o=>String(o.supplierId)===String(t))),r=(p.purchases||[]).filter(n=>String(n.supplierId)===String(t));let l=`Hapus supplier <b>${i(e.name)}</b>?`;a.length>0&&(l+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),r.length>0&&(l+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${r.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),F("Hapus Supplier",l,async()=>{D("Menghapus...");try{p.suppliers=(p.suppliers||[]).filter(o=>String(o.id)!==String(t));let n=!1;(p.products||[]).forEach(o=>{String(o.supplierId)===String(t)&&(delete o.supplierId,n=!0)}),await N(n?["suppliers","products"]:["suppliers"]),k(),f("Supplier berhasil dihapus."),h()}catch(n){k(),console.error("Gagal menghapus supplier:",n),f("Gagal menghapus: "+n.message)}},"Hapus Permanen",!0)};window.openSupplierDetailModal=(t,s="products")=>{P(),j=t,b=s;const a=(p.suppliers||[]).find(o=>String(o.id)===String(t));if(!a)return f("Supplier tidak ditemukan!");const r=u("modal-supplier-detail"),l=u("modal-supplier-detail-box"),n=u("modal-supplier-detail-content");!r||!n||(L(a),r.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierDetail"),M(r,l))};window.closeSupplierDetailModal=(t=!1)=>{const s=u("modal-supplier-detail"),e=u("modal-supplier-detail-box");s&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierDetail",!1,()=>y(s,e)):y(s,e))};window.switchSupplierDetailTab=t=>{b=t;const e=(p.suppliers||[]).find(a=>String(a.id)===String(j));e&&L(e)};const L=t=>{const s=u("modal-supplier-detail-content");if(!s)return;s.className="flex-1 flex flex-col overflow-hidden";const e=p.products||[],a=p.purchases||[],r=e.filter(c=>String(c.supplierId)===String(t.id)||Array.isArray(c.suppliers)&&c.suppliers.some(x=>String(x.supplierId)===String(t.id))),l=a.filter(c=>String(c.supplierId)===String(t.id));l.sort((c,x)=>new Date(x.date||x.createdAt||0)-new Date(c.date||c.createdAt||0));const n=l.filter(c=>c.paymentType==="tempo"),o=n.reduce((c,x)=>{if(x.paymentStatus!=="lunas"){const v=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return c+(v>0?v:0)}return c},0),d=t.phone?T(t.phone):"";A("modal-supplier-detail-content",`
+    `),s.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierForm"),M(s,l))};window.closeSupplierFormModal=(t=!1)=>{const r=u("modal-supplier-form"),e=u("modal-supplier-form-box");r&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierForm",!1,()=>y(r,e)):y(r,e))};window.saveSupplierForm=async(t,r)=>{t.preventDefault(),D("Menyimpan Data Supplier...");try{const e=(u("sf-name")?.value||"").trim(),a=(u("sf-code")?.value||"").trim(),s=(u("sf-salesName")?.value||"").trim();let l=(u("sf-phone")?.value||"").trim();const n=u("sf-defaultTerms")?.value||"tempo_14",o=(u("sf-email")?.value||"").trim(),d=(u("sf-bankName")?.value||"").trim(),c=(u("sf-bankAccount")?.value||"").trim(),x=(u("sf-bankHolder")?.value||"").trim(),v=(u("sf-address")?.value||"").trim(),E=(u("sf-notes")?.value||"").trim();if(!e)return k(),f("Nama supplier wajib diisi!");l&&(l=T(l)),p.suppliers||(p.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:e,code:a,salesName:s,phone:l,defaultTerms:n,email:o,bankName:d,bankAccount:c,bankHolder:x,address:v,notes:E,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),p.suppliers.unshift(w);else{const $=p.suppliers.findIndex(I=>String(I.id)===String(r));$>-1?p.suppliers[$]={...p.suppliers[$],...w}:p.suppliers.push(w)}await N(["suppliers"]),k(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui!":"Supplier baru berhasil ditambahkan!"),h()}catch(e){k(),console.error("Gagal menyimpan supplier:",e),f("Gagal menyimpan: "+(e.message||""))}};window.deleteSupplier=t=>{const e=(p.suppliers||[]).find(n=>String(n.id)===String(t));if(!e)return;const a=(p.products||[]).filter(n=>String(n.supplierId)===String(t)||Array.isArray(n.suppliers)&&n.suppliers.some(o=>String(o.supplierId)===String(t))),s=(p.purchases||[]).filter(n=>String(n.supplierId)===String(t));let l=`Hapus supplier <b>${i(e.name)}</b>?`;a.length>0&&(l+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),s.length>0&&(l+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${s.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),F("Hapus Supplier",l,async()=>{D("Menghapus...");try{p.suppliers=(p.suppliers||[]).filter(o=>String(o.id)!==String(t));let n=!1;(p.products||[]).forEach(o=>{String(o.supplierId)===String(t)&&(delete o.supplierId,n=!0)}),await N(n?["suppliers","products"]:["suppliers"]),k(),f("Supplier berhasil dihapus."),h()}catch(n){k(),console.error("Gagal menghapus supplier:",n),f("Gagal menghapus: "+n.message)}},"Hapus Permanen",!0)};window.openSupplierDetailModal=(t,r="products")=>{P(),j=t,b=r;const a=(p.suppliers||[]).find(o=>String(o.id)===String(t));if(!a)return f("Supplier tidak ditemukan!");const s=u("modal-supplier-detail"),l=u("modal-supplier-detail-box"),n=u("modal-supplier-detail-content");!s||!n||(L(a),s.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierDetail"),M(s,l))};window.closeSupplierDetailModal=(t=!1)=>{const r=u("modal-supplier-detail"),e=u("modal-supplier-detail-box");r&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierDetail",!1,()=>y(r,e)):y(r,e))};window.switchSupplierDetailTab=t=>{b=t;const e=(p.suppliers||[]).find(a=>String(a.id)===String(j));e&&L(e)};const L=t=>{const r=u("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const e=p.products||[],a=p.purchases||[],s=e.filter(c=>String(c.supplierId)===String(t.id)||Array.isArray(c.suppliers)&&c.suppliers.some(x=>String(x.supplierId)===String(t.id))),l=a.filter(c=>String(c.supplierId)===String(t.id));l.sort((c,x)=>new Date(x.date||x.createdAt||0)-new Date(c.date||c.createdAt||0));const n=l.filter(c=>c.paymentType==="tempo"),o=n.reduce((c,x)=>{if(x.paymentStatus!=="lunas"){const v=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return c+(v>0?v:0)}return c},0),d=t.phone?T(t.phone):"";A("modal-supplier-detail-content",`
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -393,7 +393,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     ${b==="products"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-boxes-stacked text-xs shrink-0"></i>
-                    <span class="truncate">Produk (${r.length})</span>
+                    <span class="truncate">Produk (${s.length})</span>
                 </button>
 
                 <button 
@@ -421,7 +421,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
         <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
-            ${b==="products"?_(r,t):""}
+            ${b==="products"?K(s,t):""}
             ${b==="orders"?U(l,t):""}
             ${b==="debt"?q(n,o,t):""}
         </div>
@@ -431,18 +431,18 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             <button type="button" onclick="window.closeSupplierDetailModal()" class="h-12 px-5 sm:px-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                 Tutup
             </button>
-            <button type="button" onclick="window.quickCreatePOForSupplier('${t.id}')" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <button type="button" onclick="window.quickCreatePOForSupplier('${t.id}')" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                 <i class="fa-solid fa-cart-flatbed"></i>
                 <span>Buat Order Kulakan (PO)</span>
             </button>
         </div>
-    `)},_=(t,s)=>t.length===0?`
+    `)},K=(t,r)=>t.length===0?`
             <div class="text-center py-10 sm:py-12 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-box-open"></i>
                 </div>
                 <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Produk yang Dihubungkan</p>
-                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${i(s.name)}</b> pada field Rekanan/Supplier Asal.</p>
+                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${i(r.name)}</b> pada field Rekanan/Supplier Asal.</p>
                 <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('products');" class="mt-4 px-5 py-2.5 rounded-2xl font-bold text-xs cursor-pointer active:scale-95 transition-all inline-flex items-center gap-2 border shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-box-archive text-xs"></i>
                     <span>Buka Katalog Produk Toko</span>
@@ -452,18 +452,18 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
         <div class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${t.length}</b> macam produk toko dari supplier ini:</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="h-10 px-4 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-95 transition-all self-stretch sm:self-auto shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <button onclick="window.quickCreatePOForSupplier('${r.id}')" class="neo-btn h-10 px-4 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer self-stretch sm:self-auto shrink-0" style="background: var(--color-primary);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
                     <span>Kulakan Produk Ini</span>
                 </button>
             </div>
 
             <div class="space-y-3">
-                ${t.map(e=>{const a=B(e,{size:"thumb"}),r=e.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${i(e.img)}" alt="${i(e.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,l=e.variants&&e.variants.length?e.variants.reduce((d,c)=>d+(parseFloat(c.stock)||0),0):parseFloat(e.stock)||0,n=e.price&&e.hpp?e.price-e.hpp:0,o=e.price&&e.hpp&&e.hpp>0?Math.round(n/e.hpp*100):0;return`
+                ${t.map(e=>{const a=B(e,{size:"thumb"}),s=e.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${i(e.img)}" alt="${i(e.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,l=e.variants&&e.variants.length?e.variants.reduce((d,c)=>d+(parseFloat(c.stock)||0),0):parseFloat(e.stock)||0,n=e.price&&e.hpp?e.price-e.hpp:0,o=e.price&&e.hpp&&e.hpp>0?Math.round(n/e.hpp*100):0;return`
                         <div class="p-3.5 sm:p-4 rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="flex items-start gap-3 min-w-0 flex-1">
-                                    <div class="shrink-0">${r}</div>
+                                    <div class="shrink-0">${s}</div>
                                     <div class="min-w-0 flex-1">
                                         <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${i(e.name)}</h5>
                                         <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1 flex-wrap">
@@ -498,21 +498,21 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     `}).join("")}
             </div>
         </div>
-    `,U=(t,s)=>t.length===0?`
+    `,U=(t,r)=>t.length===0?`
             <div class="text-center py-10 sm:py-12 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-receipt"></i>
                 </div>
                 <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Riwayat Order PO</p>
                 <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Mulai buat surat pesanan kulakan (Purchase Order) untuk mencatat barang masuk, harga modal, dan termin pembayaran.</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="mt-4 px-5 py-2.5 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button onclick="window.quickCreatePOForSupplier('${r.id}')" class="neo-btn mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-cart-flatbed text-xs"></i>
                     <span>Buat Order PO Pertama</span>
                 </button>
             </div>
         `:`
         <div class="space-y-3">
-            ${t.map(e=>{const a={ordered:'<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',received:'<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',completed:'<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',cancelled:'<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'}[e.status||"ordered"],r=e.paymentType==="tempo"?`
+            ${t.map(e=>{const a={ordered:'<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',received:'<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',completed:'<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',cancelled:'<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'}[e.status||"ordered"],s=e.paymentType==="tempo"?`
                     <span class="px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
                         Tempo ${e.tempoDays?`${e.tempoDays} Hari`:""} (${e.paymentStatus==="lunas"?"Lunas":"Belum Lunas"})
                     </span>
@@ -522,7 +522,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${i(e.poNumber||e.id)}</span>
                                 ${a}
-                                ${r}
+                                ${s}
                             </div>
                             <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-3">
                                 <span><i class="fa-regular fa-calendar mr-1"></i>${C(e.date||e.createdAt)}</span>
@@ -543,15 +543,15 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     </div>
                 `}).join("")}
         </div>
-    `,q=(t,s,e)=>{const a=t.filter(r=>(parseFloat(r.total)||0)-(parseFloat(r.amountPaid)||0)>0&&r.paymentStatus!=="lunas");return`
+    `,q=(t,r,e)=>{const a=t.filter(s=>(parseFloat(s.total)||0)-(parseFloat(s.amountPaid)||0)>0&&s.paymentStatus!=="lunas");return`
         <div class="space-y-4">
             <!-- RINGKASAN TOTAL HUTANG USAHA -->
-            <div class="p-4 sm:p-5 rounded-3xl ${s>0?"bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700":"bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60"} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+            <div class="p-4 sm:p-5 rounded-3xl ${r>0?"bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700":"bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60"} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
                 <div>
-                    <span class="block text-[10px] font-black uppercase tracking-widest ${s>0?"text-slate-400":"text-emerald-600 dark:text-emerald-400"}">Total Hutang Usaha Berjalan</span>
-                    <p class="text-2xl font-black ${s>0?"text-slate-900 dark:text-white":"text-emerald-600 dark:text-emerald-400"} tracking-tight mt-0.5">${m(s)}</p>
+                    <span class="block text-[10px] font-black uppercase tracking-widest ${r>0?"text-slate-400":"text-emerald-600 dark:text-emerald-400"}">Total Hutang Usaha Berjalan</span>
+                    <p class="text-2xl font-black ${r>0?"text-slate-900 dark:text-white":"text-emerald-600 dark:text-emerald-400"} tracking-tight mt-0.5">${m(r)}</p>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        ${s>0?`Ada <b class="text-rose-500 font-black">${a.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.`:'Semua tagihan pembelian ke supplier ini sudah lunas sempurna! <i class="fa-solid fa-circle-check text-emerald-500 ml-0.5"></i>'}
+                        ${r>0?`Ada <b class="text-rose-500 font-black">${a.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.`:'Semua tagihan pembelian ke supplier ini sudah lunas sempurna! <i class="fa-solid fa-circle-check text-emerald-500 ml-0.5"></i>'}
                     </p>
                 </div>
 
@@ -572,21 +572,21 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                         <i class="fa-solid fa-circle-check text-2xl text-emerald-500 mb-2"></i>
                         <p class="font-bold text-xs text-slate-600 dark:text-slate-300">Tidak ada tanggungan hutang yang aktif</p>
                     </div>
-                `:a.map(r=>{const l=(parseFloat(r.total)||0)-(parseFloat(r.amountPaid)||0),n=parseFloat(r.amountPaid)||0,o=r.tempoDueDate?C(r.tempoDueDate):"-";return`
+                `:a.map(s=>{const l=(parseFloat(s.total)||0)-(parseFloat(s.amountPaid)||0),n=parseFloat(s.amountPaid)||0,o=s.tempoDueDate?C(s.tempoDueDate):"-";return`
                         <div class="bg-white/95 dark:bg-slate-800/90 p-4 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${i(r.poNumber||r.id)}</span>
+                                    <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${i(s.poNumber||s.id)}</span>
                                     <span class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold border border-slate-200/80 dark:border-slate-600">Jatuh Tempo: ${o}</span>
                                 </div>
                                 <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1.5 flex-wrap">
-                                    <span>Total: <b>${m(r.total)}</b></span>
+                                    <span>Total: <b>${m(s.total)}</b></span>
                                     <span>Sudah Dibayar: <b class="text-emerald-500">${m(n)}</b></span>
                                     <span>Sisa: <b class="text-rose-500 font-bold">${m(l)}</b></span>
                                 </div>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${r.id}'); }, 200);" class="h-11 px-5 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${s.id}'); }, 200);" class="neo-btn h-11 px-5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shrink-0" style="background: var(--color-primary);">
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
                                 <span>Bayar / Cicil</span>
                             </button>
@@ -594,4 +594,4 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     `}).join("")}
             </div>
         </div>
-    `};window.quickCreatePOForSupplier=t=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(t)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=O;export{O as computeSupplierMetrics,P as ensureSupplierModals,K as renderSupplierCardsOnly,h as renderSuppliersView};
+    `};window.quickCreatePOForSupplier=t=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(t)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=O;export{O as computeSupplierMetrics,P as ensureSupplierModals,_ as renderSupplierCardsOnly,h as renderSuppliersView};

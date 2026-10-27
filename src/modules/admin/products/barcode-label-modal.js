@@ -204,7 +204,7 @@ export const renderBarcodeLabelModalContent = () => {
         <!-- 1. HEADER MODAL (SOLID PINNED) -->
         <div class="shrink-0 px-5 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
             <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                     <i class="fa-solid fa-barcode"></i>
                 </div>
                 <div class="min-w-0">
@@ -492,7 +492,7 @@ export const renderBarcodeLabelModalContent = () => {
                     <span>RawBT<span class="hidden sm:inline"> / Bluetooth</span></span>
                 </button>
 
-                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="btn-native-action flex-1 sm:flex-initial h-11 sm:h-12 px-3.5 sm:px-6 rounded-xl text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="btn-native-action neo-btn flex-1 sm:flex-initial h-11 sm:h-12 px-3.5 sm:px-6 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap" style="background: var(--color-primary);">
                     <i class="fa-solid fa-print text-xs"></i>
                     <span id="barcode-label-print-btn-text">Cetak<span class="hidden sm:inline"> Sekarang</span> (${totalLabelsCount})</span>
                 </button>

@@ -2111,7 +2111,7 @@ const renderCart = () => {
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${esc(item.name)}">${baseName}</p>
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
                         ${item.isPackagingUnit ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)"><i class="fa-solid fa-box text-[7px]"></i>1 ${esc(item.unit)} = ${item.unitMultiplier} ${esc(item.baseUnit || 'pcs')}</span>` : ''}
-                        ${item.isFlashSale ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-[7px] text-amber-300"></i>FLASH SALE ${item.flashSaleDiscount ? `-${item.flashSaleDiscount}%` : ''}</span>` : ''}
+                        ${item.isFlashSale ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background: var(--color-primary);"><i class="fa-solid fa-bolt text-[7px] text-amber-300"></i>FLASH SALE ${item.flashSaleDiscount ? `-${item.flashSaleDiscount}%` : ''}</span>` : ''}
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
                         ${itemHpp > 0 && item.price < itemHpp ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-rose-600 bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800" title="Harga Jual di bawah HPP Modal!"><i class="fa-solid fa-triangle-exclamation text-[7px]"></i>DI BAWAH HPP</span>` : ''}
@@ -2401,7 +2401,7 @@ export const openPayModal = () => {
         <!-- Footer -->
         <div class="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-slate-100 dark:border-slate-800 flex gap-2.5 shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
           <button onclick="window.closePayModal()" class="neo-btn w-1/3 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
-          <button onclick="window.processPOSTx()" id="pos-process-btn" class="neo-btn w-2/3 py-3 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+          <button onclick="window.processPOSTx()" id="pos-process-btn" class="neo-btn w-2/3 py-3 rounded-xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
             <i class="fa-solid fa-check-circle"></i>
             <span>Selesaikan Transaksi</span>
           </button>
@@ -3822,7 +3822,7 @@ const showPOSSuccess = (tx) => {
           </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
-          <button onclick="window.printPOSReceiptDirect(window._lastPOSTx)" class="w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+          <button onclick="window.printPOSReceiptDirect(window._lastPOSTx)" class="neo-btn w-full py-3.5 rounded-xl text-white font-black text-sm flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
             <i class="fa-solid fa-eye text-white/90"></i> Preview &amp; Cetak Struk
           </button>
           <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 font-medium text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Transaksi Baru</button>
@@ -4653,7 +4653,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Bayar
                         </span>
                     </div>
-                    <button onclick="window.openPayModal()" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                    <button onclick="window.openPayModal()" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-xl text-white font-black text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                         <span class="pos-keycap-on-btn">F4</span>
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">PROSES PEMBAYARAN</span>
@@ -4666,7 +4666,7 @@ const buildPOSLayout = ({ isStorefront }) => {
         <div id="pos-mobile-floating-bar" class="md:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
             <div class="bg-slate-900 dark:bg-slate-950 text-white p-3 rounded-2xl flex items-center justify-between border border-slate-700/80 cursor-pointer active:scale-[0.99] transition-all" onclick="window.openPOSCartDrawer()">
                 <div class="flex items-center gap-2.5">
-                    <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shrink-0" style="background:linear-gradient(135deg, var(--color-primary-light,#34d399), var(--color-primary,#10b981))">
+                    <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cart-shopping"></i>
                         <span class="pos-item-count-target absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center border-2 border-slate-900 shadow-xs">0</span>
                     </div>
@@ -4677,7 +4677,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <p class="pos-total-target text-sm font-black text-emerald-400 dark:text-emerald-300">Rp 0</p>
                     </div>
                 </div>
-                <button onclick="event.stopPropagation(); window.openPOSCartDrawer();" class="px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-white shadow-lg active:scale-95 transition-all flex items-center gap-1.5 shrink-0" style="background:linear-gradient(135deg, var(--color-primary-light,#34d399), var(--color-primary,#10b981)); box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                <button onclick="event.stopPropagation(); window.openPOSCartDrawer();" class="neo-btn px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-white flex items-center gap-1.5 shrink-0" style="background: var(--color-primary);">
                     <span>Lihat Keranjang</span>
                     <i class="fa-solid fa-chevron-up text-xs"></i>
                 </button>
@@ -4759,7 +4759,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>
                         <span class="pos-total-target text-base sm:text-lg font-black tracking-tight" style="color:var(--color-primary)">Rp 0</span>
                     </div>
-                    <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                    <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target neo-btn w-full py-3.5 rounded-xl text-white font-black text-xs sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                         <span class="pos-keycap-on-btn">F4</span>
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">LANJUT KE PEMBAYARAN</span>

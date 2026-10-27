@@ -336,7 +336,7 @@ window.rAdmL = t => {
                         <i class="fa-solid fa-clipboard-check text-sm text-[var(--color-primary)] dark:text-rose-400"></i>
                         <span class="hidden sm:inline">Stock Opname</span>
                     </button>` : ''}
-                    <button onclick="oAAdd()" class="h-12 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <button onclick="oAAdd()" class="neo-btn h-12 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Tambah ${t === 'products' ? 'Produk' : t === 'categories' ? 'Kategori' : t === 'brands' ? 'Merek' : 'Data'}</span>
                     </button>
@@ -388,7 +388,7 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk Aktif</span>
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                             <i class="fa-solid fa-box-open"></i>
                         </div>
                     </div>
@@ -399,7 +399,7 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-[var(--color-primary)] dark:text-rose-400">Varian Aktif</span>
-                        <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                        <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
                     </div>

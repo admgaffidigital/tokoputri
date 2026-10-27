@@ -8592,6 +8592,101 @@ html.dark #toast {
     ) !important;
 }
 
+/* ==========================================================================
+   11. UNIVERSAL INDUSTRIAL NEO-BRUTALISM ZERO-HARDCODE PRECISION ENGINE
+   Standarisasi menyeluruh hingga detail terkecil di seluruh aplikasi:
+   - Eliminasi mutlak soft blur shadows (box-shadow: 0 Xpx ... dinetralkan menjadi hard offset shadow)
+   - Garis batas tebal industrial 2px solid charcoal (#0f172a / dark: #334155)
+   - Hard offset shadow tegas (2.5px 2.5px 0px / 1.5px 1.5px 0px) tanpa blur
+   - Universal tactile switch response active: translate(1.5px, 1.5px) / (2px, 2px)
+   - Universal badge squircle radius 0.5rem (8px) anti-oval / anti-bloat
+   - Isolasi cetak thermal & preview dokumen A4 tetap 100% terlindungi
+   ========================================================================== */
+
+/* 11a. Netralisasi Universal Segala Soft Shadows & Penegakan Hard Shadow */
+button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
+[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle),
+.neo-btn,
+.btn-primary,
+.btn-secondary,
+.btn-native-action {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+}
+html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
+html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle),
+html.dark .neo-btn,
+html.dark .btn-primary,
+html.dark .btn-secondary,
+html.dark .btn-native-action {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+/* 11b. Tombol Aksi Kompak / Ikon (h-8 s.d. h-10) Hard Shadow 1.5px */
+button.h-8, button.h-9, button.h-10,
+button[class*="px-3"][class*="py-1"],
+button[class*="px-2"][class*="py-1"] {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+}
+html.dark button.h-8, html.dark button.h-9, html.dark button.h-10,
+html.dark button[class*="px-3"][class*="py-1"],
+html.dark button[class*="px-2"][class*="py-1"] {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* 11c. Efek Tekan Saklar Mekanikal Aktif Universal */
+button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
+[role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
+html.dark [role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+
+/* 11d. Standarisasi Universal Wadah Ikon (Icon Pods) Neo-Brutalisme */
+div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-11"][class*="h-11"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    box-sizing: border-box !important;
+}
+html.dark div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-11"][class*="h-11"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
+html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+    border-color: #475569 !important;
+    box-shadow: 1.5px 1.5px 0px #000000 !important;
+}
+
+/* 11e. Pengecualian Khusus & Stepper Controls */
+.flash-variant-badge,
+.flash-variant-badge * {
+    border: none !important;
+    box-shadow: none !important;
+}
+.cart-stepper-control button,
+.pos-stepper-control button,
+#modal-active-controls button {
+    border: none !important;
+    box-shadow: none !important;
+}
+
 /* 10. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak Guarantee) */
 @media print {
     .neo-box,

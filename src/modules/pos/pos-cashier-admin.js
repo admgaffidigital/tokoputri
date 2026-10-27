@@ -113,7 +113,7 @@ export const renderCashierAccounts = async () => {
             <div class="p-1.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-2xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar border border-slate-200/90 dark:border-slate-700/80 shadow-xs sm:grid sm:grid-cols-5">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
                     class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
-                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    style="background: var(--color-primary);">
                     <i class="fa-solid fa-users-gear text-white"></i>
                     <span class="truncate">Staf &amp; Akses</span>
                 </button>
@@ -166,7 +166,7 @@ export const renderCashierAccounts = async () => {
                             <i class="fa-solid fa-crown text-amber-500"></i>
                             <span>Profil Owner</span>
                         </button>
-                        <button onclick="window.openAddStaffModal()" class="px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openAddStaffModal()" class="neo-btn px-5 py-3 rounded-xl text-xs font-black text-white flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
                             <i class="fa-solid fa-user-plus text-xs"></i>
                             <span>Tambah Staf</span>
                         </button>
@@ -246,7 +246,7 @@ const getOwnerCardHtml = (ownerProfile, authStatusBadge) => {
     <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-white/95 dark:bg-slate-800/90 shadow-2xs hover:border-[var(--color-primary)] transition-all">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
-                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-xl shrink-0 shadow-md text-white" style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.28);">
+                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-xl shrink-0 text-white border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-crown text-amber-300"></i>
                 </div>
                 <div class="min-w-0 flex-1 space-y-1">
@@ -479,7 +479,7 @@ const renderStaffRoleFilterChiclets = () => {
                     ? 'text-white border-transparent'
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/90 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600'
             }"
-            style="${isActive ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}">
+            style="${isActive ? 'background: var(--color-primary);' : ''}">
             <i class="fa-solid ${f.icon} text-[10px]"></i>
             <span>${f.label}</span>
             <span class="ml-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}">${f.count}</span>
@@ -1740,7 +1740,7 @@ export const openOwnerHrModal = () => {
                 </button>
                 <button onclick="window.saveOwnerHrProfile()" id="save-owner-hr-btn"
                     class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    style="background: var(--color-primary);">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Kompensasi Owner
                 </button>
             </div>

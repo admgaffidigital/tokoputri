@@ -992,7 +992,7 @@ export const openMonthlyAttendanceRecapModal = async (yearMonth = (_selectedAtte
             </button>
             <button onclick="window.openDocPreview ? window.openDocPreview('attendance_recap', '${yearMonth}') : window.printMonthlyAttendanceA4('${yearMonth}')"
                 class="btn-native-action flex-1 min-h-[44px] px-3.5 sm:px-5 rounded-xl text-white font-black text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
-                style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                style="background: var(--color-primary);">
                 <i class="fa-solid fa-file-invoice text-xs"></i>
                 <span class="hidden sm:inline">Pratinjau &amp; Cetak A4</span>
                 <span class="sm:hidden">Preview A4</span>

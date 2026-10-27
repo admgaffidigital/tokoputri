@@ -726,7 +726,7 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
             <button type="button" onclick="window.closeClientPaymentModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
                 Batal
             </button>
-            <button type="button" id="client-pay-submit-btn" onclick="window.submitClientPaymentConfirmation()" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <button type="button" id="client-pay-submit-btn" onclick="window.submitClientPaymentConfirmation()" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                 <i class="fa-solid fa-paper-plane text-xs"></i>
                 <span>Kirim Konfirmasi Pembayaran</span>
             </button>
@@ -1059,7 +1059,7 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
                         <p class="text-[11px] text-slate-400 font-medium mt-0.5">Nota #${esc(o.orderId)} • ${esc(tenorName)}</p>
                     </div>
                     ${tempoBal > 0 ? `
-                    <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="px-3.5 py-2 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                    <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="neo-btn px-3.5 py-2 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer" style="background: var(--color-primary);">
                         <i class="fa-solid fa-credit-card text-[10px]"></i> Bayar Angsuran Ini
                     </button>
                     ` : ''}
@@ -1151,7 +1151,7 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
                     <p class="text-[10px] text-slate-400 font-medium">Nota #${esc(o.orderId)} • Jatuh Tempo: ${o.payment?.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-'}</p>
                 </div>
                 ${tempoBal > 0 ? `
-                <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="neo-btn px-3 py-1.5 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer" style="background: var(--color-primary);">
                     <i class="fa-solid fa-credit-card text-[9px]"></i> Bayar Sekarang
                 </button>
                 ` : ''}
@@ -1227,7 +1227,7 @@ export const showClientPaymentSuccessModal = ({ orderId, amount }) => {
             </div>
 
             <!-- Tombol CTA Selesai -->
-            <button type="button" onclick="window.closeClientPaymentSuccessModal()" class="w-full h-12 py-3 px-5 rounded-2xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-lg" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <button type="button" onclick="window.closeClientPaymentSuccessModal()" class="neo-btn w-full h-12 py-3 px-5 rounded-xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                 <i class="fa-solid fa-check-double mr-1"></i> Mengerti &amp; Selesai
             </button>
         </div>

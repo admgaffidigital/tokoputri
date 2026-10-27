@@ -79,7 +79,7 @@ export const renderFlashSaleAdminView = () => {
             <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-5 leading-relaxed">
                 Buat sesi promo kilat untuk meningkatkan penjualan, cuci gudang barang lambat, atau memberikan diskon berbatas waktu dengan batas kuota khusus.
             </p>
-            <button onclick="window.openFlashSaleModal()" class="btn-native-action px-5 py-2.5 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <button onclick="window.openFlashSaleModal()" class="btn-native-action neo-btn px-5 py-2.5 rounded-xl text-white text-xs font-bold cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary);">
                 <i class="fa-solid fa-plus"></i>
                 <span>Buat Sesi Flash Sale Pertama</span>
             </button>
@@ -180,7 +180,7 @@ export const renderFlashSaleAdminView = () => {
                                             </button>` : ''}
                                         </div>
                                         <div class="w-20 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-200/50 dark:border-slate-700/50">
-                                            <div class="h-full rounded-full ${isSoldOut ? 'bg-rose-500' : ''}" style="${isSoldOut ? '' : 'background: linear-gradient(90deg, #f59e0b 0%, var(--color-primary) 100%);'} width: ${quota > 0 ? Math.min(100, Math.round((sold / quota) * 100)) : 100}%;"></div>
+                                            <div class="h-full rounded-full ${isSoldOut ? 'bg-rose-500' : ''}" style="${isSoldOut ? '' : 'background: var(--color-primary);'} width: ${quota > 0 ? Math.min(100, Math.round((sold / quota) * 100)) : 100}%;"></div>
                                         </div>
                                     </div>
                                 </div>`;
@@ -199,7 +199,7 @@ export const renderFlashSaleAdminView = () => {
                     </div>
                     <div class="flex items-center gap-1.5">
                         ${status === 'ended' ? `
-                        <button onclick="window.reactivateFlashSaleSession('${esc(sess.id)}', 4)" class="btn-native-action px-3 py-1 rounded-xl text-white text-xs font-black active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);">
+                        <button onclick="window.reactivateFlashSaleSession('${esc(sess.id)}', 4)" class="btn-native-action neo-btn px-3 py-1 rounded-xl text-white text-xs font-black cursor-pointer flex items-center gap-1" style="background: var(--color-primary);">
                             <i class="fa-solid fa-bolt text-amber-300"></i>
                             <span>Naikkan Lagi</span>
                         </button>` : ''}
@@ -217,7 +217,7 @@ export const renderFlashSaleAdminView = () => {
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-2xl text-white flex items-center justify-center text-lg shadow-sm" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                    <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-lg border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                         <i class="fa-solid fa-bolt text-amber-300"></i>
                     </div>
                     <span>Flash Sale &amp; Promo Kilat</span>
@@ -228,7 +228,7 @@ export const renderFlashSaleAdminView = () => {
             </div>
 
             <div class="flex items-center gap-2">
-                <button onclick="window.openFlashSaleModal()" class="btn-native-action px-4 py-2.5 rounded-2xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button onclick="window.openFlashSaleModal()" class="btn-native-action neo-btn px-4 py-2.5 rounded-xl text-white text-xs font-bold cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-plus text-sm"></i>
                     <span>Buat Sesi Flash Sale</span>
                 </button>
@@ -527,7 +527,7 @@ export const renderFlashSaleDraftItems = () => {
             <p class="text-xs text-slate-400 max-w-sm mx-auto mb-4 leading-relaxed">
                 Pilih produk katalog untuk diskon kilat berbatas waktu dan alokasikan kuota promo.
             </p>
-            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action h-10 px-4 rounded-xl text-white text-xs font-bold active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2 shadow-sm" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 3px 10px rgba(var(--color-primary-rgb), 0.35);">
+            <button type="button" onclick="window.addFlashSaleItemRow()" class="btn-native-action neo-btn h-10 px-4 rounded-xl text-white text-xs font-bold cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary);">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Tambah Produk Pertama</span>
             </button>

@@ -80,7 +80,7 @@ export const rDyn = () => {
 
     const welcomeHeroSlide = showHeroSlide ? `
         <div id="banner-slide-0" class="banner-slide-item neo-card w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
-             style="background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-light) 100%); box-shadow: 0 14px 35px -8px rgba(var(--color-primary-rgb), 0.45);">
+             style="background: var(--color-primary);">
             <!-- Industrial Precision Hazard Caution Stripe Accent -->
             <div class="neo-hazard-stripe-subtle h-1 w-full absolute top-0 inset-x-0 z-30 opacity-70"></div>
             <!-- Sleek Decorative Geometric Rings & Precision Grid Accents (100% Solid & Crisp) -->
@@ -306,7 +306,7 @@ export const rDyn = () => {
             <div class="mb-3 flex items-center justify-between border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-2.5 dark:border-slate-700/50">
                 <div class="flex items-center gap-2.5">
                     <div class="flex h-7 w-7 items-center justify-center rounded-lg text-white shadow-2xs"
-                         style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
+                         style="background: var(--color-primary);">
                         <i class="fa-solid fa-ticket-simple text-xs -rotate-45"></i>
                     </div>
                     <h3 class="text-xs font-extrabold uppercase tracking-tight text-slate-800 dark:text-white sm:text-sm">VOUCHER DISKON TOKO</h3>
@@ -324,7 +324,7 @@ export const rDyn = () => {
                     return `
                     <div class="w-[225px] sm:w-[250px] shrink-0 snap-start md:shrink md:flex-1 md:min-w-[280px] md:max-w-[420px] relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
                         <div class="w-full h-[82px] sm:h-[86px] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden text-white"
-                             style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35);">
+                             style="background: var(--color-primary);">
                             <!-- Left/Right Ticket Punch Holes (Biting into the sides using bento canvas color) -->
                             <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-b border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
                             <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-t border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>

@@ -113,7 +113,7 @@ export const ensureExpenseModals = () => {
                 <!-- Compact Sticky Header Modal -->
                 <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
+                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: var(--color-primary);">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
@@ -247,7 +247,7 @@ export const ensureExpenseModals = () => {
                         <button type="button" onclick="closeExpenseModal()" class="h-9 sm:h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" id="btn-save-expense" class="h-9 sm:h-10 px-5 rounded-xl text-white text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 2px 10px rgba(var(--color-primary-rgb), 0.35);">
+                        <button type="submit" id="btn-save-expense" class="neo-btn h-9 sm:h-10 px-5 rounded-xl text-white text-xs font-black cursor-pointer flex items-center gap-1.5 hover:opacity-95" style="background: var(--color-primary);">
                             <i class="fa-solid fa-floppy-disk text-xs"></i>
                             <span>Simpan Pengeluaran</span>
                         </button>
@@ -266,7 +266,7 @@ export const ensureExpenseModals = () => {
         p.onclick = (e) => { if (e.target === p) window.closeExpenseReceiptPreview?.(); };
         p.innerHTML = `
             <div id="modal-expense-receipt-preview-box" class="relative max-w-3xl max-h-[90vh] bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl flex flex-col items-center justify-center transform scale-95 transition-all duration-300" onclick="event.stopPropagation()">
-                <button type="button" onclick="closeExpenseReceiptPreview()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full text-white flex items-center justify-center shadow-lg cursor-pointer z-10 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);">
+                <button type="button" onclick="closeExpenseReceiptPreview()" class="neo-btn absolute -top-3 -right-3 w-9 h-9 rounded-xl text-white flex items-center justify-center cursor-pointer z-10 hover:opacity-95" style="background: var(--color-primary);">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <img id="img-full-receipt" src="" alt="Bukti Nota" class="max-h-[82vh] w-auto max-w-full rounded-xl object-contain">
@@ -393,7 +393,7 @@ export const renderExpenseLedgerHtml = (filteredList, metrics) => {
                 </div>
                 <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200">Belum Ada Catatan Biaya Operasional</h4>
                 <p class="text-xs text-slate-400 max-w-sm mt-1">Belum ada transaksi pengeluaran operasional yang dicatat untuk filter periode ini.</p>
-                <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="openExpenseModal()" class="neo-btn mt-4 px-5 py-2.5 rounded-xl text-white text-xs font-bold cursor-pointer flex items-center gap-2 hover:opacity-95" style="background: var(--color-primary);">
                     <i class="fa-solid fa-plus"></i>
                     <span>Catat Pengeluaran Pertama</span>
                 </button>
@@ -554,7 +554,7 @@ export const renderExpensesAdminView = () => {
             <!-- 1. TOP APP BAR & QUICK ACTION -->
             <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-xl shrink-0" style="background-color: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <div class="w-12 h-12 rounded-xl text-white flex items-center justify-center text-xl shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background-color: var(--color-primary);">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                     </div>
                     <div>
@@ -574,7 +574,7 @@ export const renderExpensesAdminView = () => {
                         <i class="fa-solid fa-file-excel text-emerald-600"></i>
                         <span>Ekspor Excel</span>
                     </button>
-                    <button type="button" onclick="openExpenseModal()" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-white text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <button type="button" onclick="openExpenseModal()" class="neo-btn flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-white text-xs font-black cursor-pointer flex items-center justify-center gap-2 hover:opacity-95" style="background: var(--color-primary);">
                         <i class="fa-solid fa-plus"></i>
                         <span>Catat Pengeluaran</span>
                     </button>

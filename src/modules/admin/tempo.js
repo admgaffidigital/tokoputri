@@ -385,7 +385,7 @@ const renderTempoDetailModalContent = (o) => {
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}');" class="flex-1 sm:flex-initial h-11 px-4 rounded-2xl text-white font-bold text-xs shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}');" class="neo-btn flex-1 sm:flex-initial h-11 px-4 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center justify-center gap-1.5" style="background: var(--color-primary);">
                     <i class="fa-solid fa-money-bill-wave"></i>
                     <span>+ Catat Cicilan</span>
                 </button>
@@ -914,7 +914,7 @@ export const openTempoPaymentModal = (orderId, prefillAmount = null) => {
                 <button type="button" onclick="window.closeTempoPaymentModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
                     Batal
                 </button>
-                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="submit" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-check"></i>
                     <span>Simpan Pembayaran</span>
                 </button>
@@ -1241,7 +1241,7 @@ export const openTempoPenaltyModal = (orderId) => {
                 <button type="button" onclick="window.closeTempoPenaltyModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
                     Batal
                 </button>
-                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="submit" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-check"></i>
                     <span>Simpan Tarif Denda</span>
                 </button>
@@ -1382,7 +1382,7 @@ const renderTempoConfirmationsContent = () => {
                     <button type="button" onclick="window.rejectTempoPaymentConfirmation('${esc(c.id)}')" class="h-11 px-4 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5">
                         <i class="fa-solid fa-xmark"></i> Tolak
                     </button>
-                    <button type="button" onclick="window.approveTempoPaymentConfirmation('${esc(c.id)}')" class="h-11 px-5 rounded-xl text-xs font-bold text-white transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-sm" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                    <button type="button" onclick="window.approveTempoPaymentConfirmation('${esc(c.id)}')" class="neo-btn h-11 px-5 rounded-xl text-xs font-bold text-white cursor-pointer flex items-center gap-1.5" style="background: var(--color-primary);">
                         <i class="fa-solid fa-check"></i> Setujui Pembayaran
                     </button>
                 </div>
@@ -1396,7 +1396,7 @@ const renderTempoConfirmationsContent = () => {
 
         <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-xs font-black shadow-xs" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                <div class="w-10 h-10 rounded-xl text-white flex items-center justify-center text-xs font-black border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                     <i class="fa-solid fa-receipt text-sm"></i>
                 </div>
                 <div>
@@ -2188,7 +2188,7 @@ const renderTempoCardItem = (o) => {
                 <button type="button" onclick="window.openTempoPaymentModal('${o.orderId}')" class="btn-native-action h-10 sm:h-9 bg-white dark:bg-slate-700 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl flex items-center justify-center gap-1.5 text-xs font-bold transition-all active:scale-95 shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-money-bill-wave text-xs"></i> Cicil
                 </button>
-                <button type="button" onclick="window.markTempoPaid('${o.orderId}')" class="btn-native-action h-10 sm:h-9 text-white rounded-xl flex items-center justify-center gap-1.5 text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <button type="button" onclick="window.markTempoPaid('${o.orderId}')" class="btn-native-action neo-btn h-10 sm:h-9 text-white rounded-xl flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer" style="background: var(--color-primary);">
                     <i class="fa-solid fa-check-double text-xs"></i> Lunas
                 </button>
                 <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_customer_ledger', '${custKey}');" class="btn-native-action h-10 sm:h-9 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-xl flex items-center justify-center gap-1.5 text-xs font-bold transition-all active:scale-95 shadow-2xs cursor-pointer" title="Cetak Kartu Piutang Pelanggan">
@@ -2758,7 +2758,7 @@ const renderTempoContent = () => {
                     class="px-3.5 py-2 rounded-xl border transition-all shrink-0 cursor-pointer active:scale-95 ${activeTempoFilter === 'all' 
                         ? 'text-white border-transparent shadow-xs' 
                         : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'}"
-                    style="${activeTempoFilter === 'all' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}">
+                    style="${activeTempoFilter === 'all' ? 'background: var(--color-primary);' : ''}">
                     Semua (${cachedPiutangOrders.length})
                 </button>
                 <button onclick="window.setTempoFilter('late')" 

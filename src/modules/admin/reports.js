@@ -1784,7 +1784,7 @@ export const renderStockValuationTab = () => {
                             <button type="button" onclick="openStockValuationDocPreview()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs shrink-0" title="Cetak Lembar Resmi Valuasi Stok A4">
                                 <i class="fa-solid fa-print text-xs"></i> <span>Cetak A4</span>
                             </button>
-                            <button type="button" onclick="openAdminTab('stock_opname')" class="px-3 py-1.5 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);" title="Audit fisik stok rak & rekonsiliasi selisih">
+                            <button type="button" onclick="openAdminTab('stock_opname')" class="neo-btn px-3 py-1.5 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shrink-0" style="background: var(--color-primary);" title="Audit fisik stok rak & rekonsiliasi selisih">
                                 <i class="fa-solid fa-clipboard-check text-xs"></i> <span>Stock Opname</span>
                             </button>
                             <!-- Input Pencarian dengan Clear Button (Zero-Flicker) -->
@@ -2004,7 +2004,7 @@ export const renderDebtsReceivablesTab = () => {
     setH('report-hub-content', `
         <div class="space-y-4 sm:space-y-6">
             <!-- KARTU POSISI BERSIH LIKUIDITAS TOKO -->
-            <div class="rounded-2xl border p-4 sm:p-5 ${!isSurplus ? 'border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20' : ''}" style="${isSurplus ? 'border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.02));' : ''}">
+            <div class="rounded-2xl border p-4 sm:p-5 ${!isSurplus ? 'border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20' : ''}" style="${isSurplus ? 'border: 2px solid #0f172a; box-shadow: 2.5px 2.5px 0px #0f172a; background: rgba(var(--color-primary-rgb), 0.08);' : ''}">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <span class="text-[9px] font-black uppercase tracking-widest ${!isSurplus ? 'text-rose-700 dark:text-rose-400' : ''}" style="${isSurplus ? 'color: var(--color-primary);' : ''}">
@@ -2365,7 +2365,7 @@ export const renderExpensesTab = () => {
                         <i class="fa-solid fa-book" style="color: var(--color-primary)"></i>
                         <span>Buku Kas &amp; Riwayat</span>
                     </button>
-                    <button type="button" onclick="openExpenseModalFromReports()" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-white text-xs font-black shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.3);">
+                    <button type="button" onclick="openExpenseModalFromReports()" class="neo-btn flex-1 sm:flex-initial px-4 py-2 rounded-xl text-white text-xs font-black cursor-pointer flex items-center justify-center gap-1.5 hover:opacity-95" style="background: var(--color-primary);">
                         <i class="fa-solid fa-plus"></i>
                         <span>Catat Pengeluaran</span>
                     </button>
@@ -3223,7 +3223,7 @@ export const renderReportA4DocumentShell = ({
     if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
         logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-14 h-14 object-contain rounded-xl border border-slate-200">`;
     } else {
-        logoHTML = `<div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-md shrink-0" style="background: linear-gradient(135deg, var(--color-primary, #b8860b), var(--color-primary-dark, #8b6508));"><i class="fa-solid fa-store"></i></div>`;
+        logoHTML = `<div class="w-14 h-14 rounded-xl flex items-center justify-center text-white text-2xl font-black shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]" style="background: var(--color-primary);"><i class="fa-solid fa-store"></i></div>`;
     }
 
     const kopHtml = `

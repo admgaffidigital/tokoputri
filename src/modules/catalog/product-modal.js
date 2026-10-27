@@ -684,7 +684,7 @@ export const rProdMod = () => {
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            const fsTag = (fsItem && !fsItem.isSoldOut) ? `<span class="text-white px-2 py-0.5 rounded-full ml-1.5 text-[9px] font-black no-underline tracking-widest shadow-2xs inline-flex items-center gap-1" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i> FLASH SALE</span>` : '';
+            const fsTag = (fsItem && !fsItem.isSoldOut) ? `<span class="text-white px-2 py-0.5 rounded-full ml-1.5 text-[9px] font-black no-underline tracking-widest shadow-2xs inline-flex items-center gap-1" style="background: var(--color-primary);"><i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i> FLASH SALE</span>` : '';
             pHtml = `<div class="flex flex-col"><span class="text-[11px] text-slate-400 dark:text-slate-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="px-1.5 py-0.5 rounded-full ml-1 text-[9px] font-bold no-underline tracking-widest" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">-${pct}%</span>${fsTag}</span><span class="font-black text-xl" style="color: var(--color-primary);">${fCur(actPrice)}</span></div>`;
         } else {
             pHtml = `<span class="font-black text-xl" style="color: var(--color-primary);">${fCur(actPrice)}</span>`;
@@ -1009,7 +1009,7 @@ export const rProdMod = () => {
 
                     let priceBadge = '';
                     if (isVarInFs) {
-                        priceBadge = `<span class="inline-flex items-center gap-1 text-[9.5px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-300"></i> ${fCur(varFs.flashSalePrice)} <span class="text-[8px] opacity-90">(-${varFs.discountPercent}%)</span></span>`;
+                        priceBadge = `<span class="inline-flex items-center gap-1 text-[9.5px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background: var(--color-primary);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-300"></i> ${fCur(varFs.flashSalePrice)} <span class="text-[8px] opacity-90">(-${varFs.discountPercent}%)</span></span>`;
                     } else if (r.price && parseFloat(r.price) !== parseFloat(p.price)) {
                         priceBadge = `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`;
                     }

@@ -452,9 +452,9 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                     <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
                 </div>
 
-                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200/90 dark:border-slate-800 flex justify-between items-center shrink-0" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b-2 border-slate-900 dark:border-slate-700 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                             <i class="fa-solid fa-receipt text-base"></i>
                         </div>
                         <div>
@@ -616,7 +616,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
 
                     <div class="pt-3 flex flex-col sm:flex-row gap-3">
                         ${(parseFloat(d.payment?.tempoBalance) > 0 && d.status !== 'Batal' && d.payment?.paymentStatus !== 'lunas') ? `
-                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else if(typeof window.showToast==='function') window.showToast('Memuat modul pembayaran...');" class="flex-1 h-12 py-3 px-4 rounded-2xl text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else if(typeof window.showToast==='function') window.showToast('Memuat modul pembayaran...');" class="neo-btn flex-1 h-12 py-3 px-4 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer" style="background: var(--color-primary);">
                             <i class="fa-solid fa-qrcode text-white"></i> Bayar Angsuran / Cicilan
                         </button>
                         ` : ''}

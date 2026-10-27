@@ -207,7 +207,7 @@ export const renderSuppliersView = () => {
                             <i class="fa-solid fa-cart-flatbed" style="color:var(--color-primary)"></i>
                             <span>Order Kulakan</span>
                         </button>
-                        <button onclick="window.openSupplierFormModal()" class="px-5 py-3 rounded-xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openSupplierFormModal()" class="neo-btn px-5 py-3 rounded-xl text-xs font-black text-white flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Tambah Supplier</span>
                         </button>
@@ -252,7 +252,7 @@ export const renderSuppliersView = () => {
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
-                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background-color: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: var(--color-primary);">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                         </div>
@@ -279,7 +279,7 @@ export const renderSuppliersView = () => {
                     <button 
                         onclick="window.toggleSupplierFilter()" 
                         class="px-4 py-3 rounded-2xl border text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${activeSupplierTab === 'has_debt' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}"
-                        style="${activeSupplierTab === 'has_debt' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
+                        style="${activeSupplierTab === 'has_debt' ? 'background: var(--color-primary);' : ''}"
                         title="Tampilkan hanya supplier yang ada sisa hutang tempo"
                     >
                         <i class="fa-solid fa-filter text-xs"></i>
@@ -297,7 +297,7 @@ export const renderSuppliersView = () => {
                         </div>
                         <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Data Supplier</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-sm">Daftarkan supplier / distributor rekanan untuk melacak asal-usul barang, mengelola kulakan produk, dan memantau hutang tempo usaha.</p>
-                        <button onclick="window.openSupplierFormModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button onclick="window.openSupplierFormModal()" class="neo-btn mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs cursor-pointer" style="background: var(--color-primary);">
                             <i class="fa-solid fa-plus mr-1.5"></i> Tambah Supplier Pertama
                         </button>
                     </div>
@@ -395,7 +395,7 @@ const renderSupplierCardHtml = (s) => {
                         type="button"
                         onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${s.id}')" 
                         class="flex-1 sm:flex-initial h-11 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer" 
-                        style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
+                        style="background: var(--color-primary);"
                         title="Buat Order Kulakan Produk ke Supplier Ini"
                     >
                         <i class="fa-solid fa-cart-flatbed text-xs"></i>
@@ -637,7 +637,7 @@ window.openSupplierFormModal = (supplierId = null) => {
                 <button type="button" onclick="window.closeSupplierFormModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="submit" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Simpan Data Supplier</span>
                 </button>
@@ -961,7 +961,7 @@ const renderSupplierDetailModalContent = (s) => {
             <button type="button" onclick="window.closeSupplierDetailModal()" class="h-12 px-5 sm:px-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                 Tutup
             </button>
-            <button type="button" onclick="window.quickCreatePOForSupplier('${s.id}')" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <button type="button" onclick="window.quickCreatePOForSupplier('${s.id}')" class="neo-btn h-12 px-6 rounded-xl text-white font-bold text-xs cursor-pointer flex items-center gap-2" style="background: var(--color-primary);">
                 <i class="fa-solid fa-cart-flatbed"></i>
                 <span>Buat Order Kulakan (PO)</span>
             </button>
@@ -993,7 +993,7 @@ const renderSuppliedProductsTab = (products, s) => {
         <div class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${products.length}</b> macam produk toko dari supplier ini:</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="h-10 px-4 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-95 transition-all self-stretch sm:self-auto shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="neo-btn h-10 px-4 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer self-stretch sm:self-auto shrink-0" style="background: var(--color-primary);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
                     <span>Kulakan Produk Ini</span>
                 </button>
@@ -1068,7 +1068,7 @@ const renderSupplierOrdersTab = (purchases, s) => {
                 </div>
                 <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Riwayat Order PO</p>
                 <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Mulai buat surat pesanan kulakan (Purchase Order) untuk mencatat barang masuk, harga modal, dan termin pembayaran.</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="mt-4 px-5 py-2.5 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="neo-btn mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary);">
                     <i class="fa-solid fa-cart-flatbed text-xs"></i>
                     <span>Buat Order PO Pertama</span>
                 </button>
@@ -1180,7 +1180,7 @@ const renderSupplierDebtTab = (tempoPurchases, totalDebt, s) => {
                                 </div>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${po.id}'); }, 200);" class="h-11 px-5 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${po.id}'); }, 200);" class="neo-btn h-11 px-5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shrink-0" style="background: var(--color-primary);">
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
                                 <span>Bayar / Cicil</span>
                             </button>

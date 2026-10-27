@@ -830,7 +830,7 @@ export const renderRewardCatalog = () => {
         <div class="mb-3.5 flex items-center justify-between gap-2 border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-3 dark:border-slate-700/50">
             <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
                 <div class="shrink-0 flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-2xs"
-                     style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
+                     style="background: var(--color-primary);">
                     <i class="fa-solid fa-gift text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
@@ -1066,9 +1066,9 @@ export const openMemberModal = () => {
             </div>
 
             <!-- Header Modal -->
-            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);">
+            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b-2 border-slate-900 dark:border-slate-700 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
                         <i class="fa-solid fa-id-card text-base"></i>
                     </div>
                     <div>
@@ -1510,7 +1510,7 @@ export const rMemberModalBody = () => {
         setH('member-modal-body', `
             <div class="max-w-[360px] mx-auto py-2 flex flex-col items-center text-center select-none">
                 <!-- Icon Badge -->
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg shadow-md mb-3" style="background: var(--color-primary); box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.35);">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg mb-3 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);">
                     <i class="fa-solid ${icon}"></i>
                 </div>
 
@@ -1770,7 +1770,7 @@ export const rMemberModalBody = () => {
                                     ` : '')}
                                 </div>
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${nominalBulanIni}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${nominalBulanIni});" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${nominalBulanIni}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${nominalBulanIni});" class="neo-btn flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 cursor-pointer" style="background: var(--color-primary);">
                                         <i class="fa-solid fa-credit-card text-xs"></i> Bayar ${hasMultiMonth ? 'Bulan Ini' : 'Tagihan'}
                                     </button>
                                     <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Tim Keuangan Toko Putri, saya ingin konfirmasi pembayaran tagihan Putri PayLater sebesar ${fCur(nominalBulanIni)} untuk nomor akun: ${currentMember.phone||''}. Berikut saya lampirkan bukti transfer pembayarannya. Terima kasih.`)}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">

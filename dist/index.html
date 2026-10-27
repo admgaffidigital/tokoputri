@@ -189,12 +189,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-C1n-dIQN.js"></script>
+    <script type="module" crossorigin src="./assets/index-D1cRdfho.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="./assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="./assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-D-yXpFl9.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-BTkaeZPz.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1094,7 +1094,7 @@
               <i class="fa-solid fa-receipt absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
               <input type="text" id="sales-return-order-search" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="Contoh: POS-20261008-001 atau ORD-123..." class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors" onkeydown="if(event.key==='Enter') searchOrderForReturn(this.value)">
             </div>
-            <button type="button" onclick="searchOrderForReturn(document.getElementById('sales-return-order-search').value)" class="btn-native-action text-white shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1.5" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+            <button type="button" onclick="searchOrderForReturn(document.getElementById('sales-return-order-search').value)" class="btn-native-action neo-btn text-white cursor-pointer transition-all flex items-center gap-1.5" style="background: var(--color-primary);">
               <i class="fa-solid fa-magnifying-glass"></i> Cari Nota
             </button>
           </div>
@@ -1113,7 +1113,7 @@
           <button onclick="closeSalesReturnModal()" class="btn-native-action border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 shadow-2xs">
             Batal
           </button>
-          <button type="button" onclick="submitSalesReturn()" class="btn-native-action text-white uppercase tracking-wider shadow-sm active:scale-95 cursor-pointer hover:opacity-95 flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+          <button type="button" onclick="submitSalesReturn()" class="btn-native-action neo-btn text-white uppercase tracking-wider cursor-pointer hover:opacity-95 flex items-center gap-2" style="background: var(--color-primary);">
             <i class="fa-solid fa-check"></i> Proses Retur
           </button>
         </div>
@@ -1122,18 +1122,18 @@
 
     <!-- Vendor Purchase Return Modal (Retur Pembelian ke Supplier) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-vendor-return" onclick="if (event.target === this) closeVendorReturnModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-vendor-return-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 dark:border-slate-700 bg-white shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-vendor-return-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base sm:text-lg shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
               <i class="fa-solid fa-truck-ramp-box"></i>
             </div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
                 Retur Pembelian ke Supplier
-                <span class="text-[9px] font-black px-2.5 py-0.5 rounded-full text-white shadow-2xs uppercase tracking-wider" style="background: var(--color-primary);">RMA SUPPLIER</span>
+                <span class="neo-badge text-[9px] font-black px-2.5 py-0.5 rounded-lg text-white uppercase tracking-wider border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">RMA SUPPLIER</span>
               </h3>
               <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
                 Pengembalian barang cacat ke pemasok, penyesuaian hutang PO, dan pemotongan stok
@@ -1153,7 +1153,7 @@
           <button onclick="closeVendorReturnModal()" class="btn-native-action border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 shadow-2xs">
             Batal
           </button>
-          <button type="button" onclick="submitVendorReturn()" class="btn-native-action text-white uppercase tracking-wider shadow-sm active:scale-95 cursor-pointer hover:opacity-95 flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+          <button type="button" onclick="submitVendorReturn()" class="btn-native-action neo-btn text-white uppercase tracking-wider cursor-pointer hover:opacity-95 flex items-center gap-2" style="background: var(--color-primary);">
             <i class="fa-solid fa-paper-plane"></i> Simpan Retur Supplier
           </button>
         </div>
@@ -1200,7 +1200,7 @@
               <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i> WA Mandor
             </button>
           </div>
-          <button type="button" onclick="saveDeliveryDetails(window._activeDeliveryOrderId)" class="btn-native-action w-full sm:w-auto flex-1 h-11 px-5 rounded-2xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+          <button type="button" onclick="saveDeliveryDetails(window._activeDeliveryOrderId)" class="btn-native-action neo-btn w-full sm:w-auto flex-1 h-11 px-5 rounded-xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all" style="background: var(--color-primary);">
             <i class="fa-solid fa-floppy-disk"></i> Simpan Data Pengiriman
           </button>
         </div>
@@ -1209,18 +1209,18 @@
 
     <!-- Digital Signature Pad Modal (Tanda Tangan Serah Terima Mandor) -->
     <div class="fixed inset-0 z-[125] flex hidden items-end justify-center bg-slate-950/85 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-4" id="modal-delivery-signature" onclick="if (event.target === this) closeDeliverySignatureModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-lg md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-delivery-signature-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-lg md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 dark:border-slate-700 bg-white shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-delivery-signature-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base shadow-2xs shrink-0 bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base shrink-0 bg-emerald-50 text-emerald-600 border-2 border-slate-900 dark:border-slate-700 dark:bg-emerald-950/50 dark:text-emerald-400 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
               <i class="fa-solid fa-signature"></i>
             </div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
                 Verifikasi Serah Terima
-                <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white uppercase tracking-wider">MANDOR TTD</span>
+                <span class="neo-badge text-[9px] font-black px-2 py-0.5 rounded-lg bg-emerald-600 text-white uppercase tracking-wider border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">MANDOR TTD</span>
               </h3>
               <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
                 Goreskan tanda tangan mandor di layar sentuh perangkat
@@ -1239,7 +1239,7 @@
           <button type="button" onclick="closeDeliverySignatureModal()" class="btn-native-action border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 shadow-2xs">
             Batal
           </button>
-          <button type="button" onclick="saveDeliverySignature()" class="btn-native-action flex-1 text-white uppercase tracking-wider font-black text-xs sm:text-sm shadow-sm active:scale-95 cursor-pointer hover:opacity-95 flex items-center justify-center gap-2 h-11 rounded-2xl" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+          <button type="button" onclick="saveDeliverySignature()" class="btn-native-action neo-btn flex-1 text-white uppercase tracking-wider font-black text-xs sm:text-sm cursor-pointer hover:opacity-95 flex items-center justify-center gap-2 h-11 rounded-xl" style="background: var(--color-primary);">
             <i class="fa-solid fa-circle-check"></i> Selesaikan Serah Terima
           </button>
         </div>
@@ -1248,7 +1248,7 @@
 
     <!-- Factory Reset & Clean Sweep Modal (Pusat Reset ke Setelan Awal & Pembersihan Data Toko) -->
     <div class="fixed inset-0 z-[200] flex hidden items-end justify-center bg-slate-950/85 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-4" id="modal-factory-reset" onclick="if (event.target === this) closeFactoryResetModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-rose-300/80 bg-white shadow-2xl transition-transform duration-300 dark:border-rose-900/60 dark:bg-[#0b1121] sm:translate-y-10" id="modal-factory-reset-box">
+      <div class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 dark:border-slate-700 bg-white shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-factory-reset-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <div id="modal-factory-reset-content" class="flex-1 flex flex-col overflow-hidden min-h-0">
           <!-- Diisi dinamis oleh renderFactoryResetModalView() -->

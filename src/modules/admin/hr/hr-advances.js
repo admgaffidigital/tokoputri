@@ -193,7 +193,7 @@ export const renderSalaryAdvancesView = async (container) => {
 
             <button onclick="window.openSalaryAdvanceFormModal()"
                 class="px-4 py-2.5 rounded-2xl text-white text-xs font-black shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 shrink-0 self-start sm:self-auto hover:opacity-95"
-                style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                style="background: var(--color-primary);">
                 <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                 <span>+ Ajukan Kasbon Baru</span>
             </button>
