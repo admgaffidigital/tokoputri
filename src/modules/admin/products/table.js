@@ -410,8 +410,8 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Kosong / Nonaktif</span>
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: #d97706;">
+                            <i class="fa-solid fa-triangle-exclamation text-white"></i>
                         </div>
                     </div>
                     <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${st.inactiveProd + st.inactiveVar}</p>
@@ -421,15 +421,15 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Valuasi Stok</span>
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
-                            <i class="fa-solid fa-warehouse"></i>
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: #059669;">
+                            <i class="fa-solid fa-warehouse text-white"></i>
                         </div>
                     </div>
                     <div>
                         <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Modal: <b class="text-slate-800 dark:text-slate-200">${fCur(st.assetHpp)}</b></p>
                         <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">Jual: <b class="text-slate-800 dark:text-slate-200">${fCur(st.assetJual)}</b></p>
                     </div>
-                    <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('stock'), 100);}" class="mt-2 inline-flex items-center gap-1.5 text-[10px] font-black text-[var(--color-primary)] dark:text-rose-400 hover:underline cursor-pointer transition-colors">
+                    <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('stock'), 100);}" class="mt-2 inline-flex items-center gap-1.5 text-[10px] font-black text-[var(--color-primary)] dark:text-rose-400 hover:underline cursor-pointer transition-colors whitespace-nowrap">
                         <i class="fa-solid fa-chart-pie text-[10px]"></i>
                         <span>Laporan Stok Lengkap &rarr;</span>
                     </button>

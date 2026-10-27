@@ -5610,16 +5610,22 @@ html.dark [class*="bg-gradient-"][class*="from-\[rgba\(var\(--color-primary-rgb\
     color: #ffffff !important;
 }
 
-[class*="bg-gradient-"][class*="from-emerald-50"],
-[class*="bg-gradient-"][class*="from-teal-50"],
-[class*="bg-gradient-"][class*="from-green-50"] {
+[class*="bg-gradient-"][class*="from-emerald-50 "],
+[class*="bg-gradient-"][class*="from-emerald-50/"],
+[class*="bg-gradient-"][class*="from-teal-50 "],
+[class*="bg-gradient-"][class*="from-teal-50/"],
+[class*="bg-gradient-"][class*="from-green-50 "],
+[class*="bg-gradient-"][class*="from-green-50/"] {
     background-color: #ecfdf5 !important;
     background-image: none !important;
 }
 
-html.dark [class*="bg-gradient-"][class*="from-emerald-50"],
-html.dark [class*="bg-gradient-"][class*="from-teal-50"],
-html.dark [class*="bg-gradient-"][class*="from-green-50"],
+html.dark [class*="bg-gradient-"][class*="from-emerald-50 "],
+html.dark [class*="bg-gradient-"][class*="from-emerald-50/"],
+html.dark [class*="bg-gradient-"][class*="from-teal-50 "],
+html.dark [class*="bg-gradient-"][class*="from-teal-50/"],
+html.dark [class*="bg-gradient-"][class*="from-green-50 "],
+html.dark [class*="bg-gradient-"][class*="from-green-50/"],
 html.dark [class*="bg-gradient-"][class*="from-emerald-950"],
 html.dark [class*="bg-gradient-"][class*="from-teal-950"] {
     background-color: rgba(6, 78, 59, 0.3) !important;
@@ -5635,17 +5641,20 @@ html.dark [class*="bg-gradient-"][class*="from-teal-950"] {
     color: #ffffff !important;
 }
 
-[class*="bg-gradient-"][class*="from-amber-50"],
-[class*="bg-gradient-"][class*="from-orange-50"],
-[class*="bg-gradient-"][class*="from-yellow-50"] {
+[class*="bg-gradient-"][class*="from-amber-50 "],
+[class*="bg-gradient-"][class*="from-amber-50/"],
+[class*="bg-gradient-"][class*="from-orange-50 "],
+[class*="bg-gradient-"][class*="from-orange-50/"],
+[class*="bg-gradient-"][class*="from-yellow-50 "],
+[class*="bg-gradient-"][class*="from-yellow-50/"] {
     background-color: #fffbeb !important;
     background-image: none !important;
     color: inherit !important;
 }
 
-html.dark [class*="bg-gradient-"][class*="from-amber-50"],
-html.dark [class*="bg-gradient-"][class*="from-orange-50"],
-html.dark [class*="bg-gradient-"][class*="from-yellow-50"],
+html.dark [class*="bg-gradient-"][class*="from-amber-50 "],
+html.dark [class*="bg-gradient-"][class*="from-orange-50 "],
+html.dark [class*="bg-gradient-"][class*="from-yellow-50 "],
 html.dark [class*="bg-gradient-"][class*="from-amber-950"] {
     background-color: rgba(120, 53, 15, 0.3) !important;
     background-image: none !important;
@@ -8604,8 +8613,8 @@ html.dark #toast {
    ========================================================================== */
 
 /* 11a. Netralisasi Universal Segala Soft Shadows & Penegakan Hard Shadow */
-button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
-[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle),
+button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn),
+[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *),
 .neo-btn,
 .btn-primary,
 .btn-secondary,
@@ -8614,8 +8623,8 @@ button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *)
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     transition: transform 0.06s ease, box-shadow 0.06s ease !important;
 }
-html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
-html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle),
+html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn),
+html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *),
 html.dark .neo-btn,
 html.dark .btn-primary,
 html.dark .btn-secondary,
@@ -8625,51 +8634,51 @@ html.dark .btn-native-action {
 }
 
 /* 11b. Tombol Aksi Kompak / Ikon (h-8 s.d. h-10) Hard Shadow 1.5px */
-button.h-8, button.h-9, button.h-10,
-button[class*="px-3"][class*="py-1"],
-button[class*="px-2"][class*="py-1"] {
+button.h-8:not(#bottom-nav-bar *), button.h-9:not(#bottom-nav-bar *), button.h-10:not(#bottom-nav-bar *),
+button[class*="px-3"][class*="py-1"]:not(#bottom-nav-bar *),
+button[class*="px-2"][class*="py-1"]:not(#bottom-nav-bar *) {
     border: 1.5px solid #0f172a !important;
     box-shadow: 1.5px 1.5px 0px #0f172a !important;
 }
-html.dark button.h-8, html.dark button.h-9, html.dark button.h-10,
-html.dark button[class*="px-3"][class*="py-1"],
-html.dark button[class*="px-2"][class*="py-1"] {
+html.dark button.h-8:not(#bottom-nav-bar *), html.dark button.h-9:not(#bottom-nav-bar *), html.dark button.h-10:not(#bottom-nav-bar *),
+html.dark button[class*="px-3"][class*="py-1"]:not(#bottom-nav-bar *),
+html.dark button[class*="px-2"][class*="py-1"]:not(#bottom-nav-bar *) {
     border-color: #475569 !important;
     box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
 
 /* 11c. Efek Tekan Saklar Mekanikal Aktif Universal */
-button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
-[role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(button[class*="hover:underline"]),
+[role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
     transform: translate(1.5px, 1.5px) !important;
     box-shadow: 0.5px 0.5px 0px #0f172a !important;
 }
-html.dark button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle),
-html.dark [role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+html.dark button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(button[class*="hover:underline"]),
+html.dark [role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
     box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 /* 11d. Standarisasi Universal Wadah Ikon (Icon Pods) Neo-Brutalisme */
-div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-11"][class*="h-11"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-11"][class*="h-11"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
     border: 1.5px solid #0f172a !important;
     box-shadow: 1.5px 1.5px 0px #0f172a !important;
     box-sizing: border-box !important;
 }
-html.dark div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-11"][class*="h-11"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle),
-html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle) {
+html.dark div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-11"][class*="h-11"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
     border-color: #475569 !important;
     box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
@@ -8685,6 +8694,53 @@ html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-pre
 #modal-active-controls button {
     border: none !important;
     box-shadow: none !important;
+}
+
+/* Bottom Navigation Bar Items: Clean Native App Dock, Zero Individual Tab Outlines */
+#bottom-nav-bar button,
+#bottom-nav-bar .bnav-item,
+#bottom-nav-bar button.bnav-item,
+#bottom-nav-bar .bnav-item:hover,
+#bottom-nav-bar .bnav-item:active,
+#bottom-nav-bar button.bnav-item:active {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    transform: none !important;
+}
+#bnav-home .bnav-hero-button {
+    border: 2.5px solid #0f172a !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+}
+html.dark #bnav-home .bnav-hero-button {
+    border-color: #334155 !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+}
+
+/* Cashflow Widget & KPI Inline Navigation Links: Clean Unboxed Text Links */
+#admin-dashboard-cashflow-slot .bento-island-card button,
+#admin-dashboard-cashflow-slot .bento-island-card button:hover,
+#admin-dashboard-cashflow-slot .bento-island-card button:active,
+#admin-product-stats button,
+#admin-product-stats button:hover,
+#admin-product-stats button:active,
+button[class*="hover:underline"] {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    transform: none !important;
+}
+
+/* Sub-footer Micro-Badges */
+.footer-sub-btn {
+    border: 1px solid #0f172a !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+    border-radius: 0.5rem !important;
+    transform: none !important;
+}
+html.dark .footer-sub-btn {
+    border-color: #475569 !important;
+    box-shadow: 1px 1px 0px #000000 !important;
 }
 
 /* 10. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak Guarantee) */

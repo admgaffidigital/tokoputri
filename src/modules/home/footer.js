@@ -355,29 +355,25 @@ export const renderFooter = () => {
                 &#169; ${currentYear} <span class="font-extrabold text-slate-800 dark:text-white">${esc(storeName)}</span>. ${esc(footerCredit)}
               </p>
 
-              <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold">
+              <div class="flex flex-wrap items-center justify-center gap-2 text-[10px] font-bold">
                 <!-- Security modal trigger -->
-                <button type="button" onclick="openSecurityModal()" class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-full hover:bg-emerald-100 transition-all cursor-pointer">
+                <button type="button" onclick="openSecurityModal()" class="footer-sub-btn inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/40 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] px-2.5 py-1 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer">
                   <i class="fa-solid fa-shield-halved text-[9px]"></i> Keamanan &amp; SSL
                 </button>
 
                 <!-- Shopping Guide trigger -->
-                <button type="button" onclick="openShoppingGuideModal()" class="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] transition-colors cursor-pointer py-1">
+                <button type="button" onclick="openShoppingGuideModal()" class="footer-sub-btn inline-flex items-center gap-1.5 text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] px-2.5 py-1 rounded-lg hover:text-[var(--color-primary)] transition-all cursor-pointer">
                   <i class="fa-solid fa-circle-question text-[10px]"></i> Panduan
                 </button>
 
-                <span class="text-slate-300 dark:text-slate-700">•</span>
-
                 <!-- Changelog Pill -->
-                <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 hover:text-[var(--color-primary)] transition-all active:scale-95 cursor-pointer shadow-2xs">
+                <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="footer-sub-btn inline-flex items-center gap-1.5 rounded-lg border border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-200 hover:text-[var(--color-primary)] shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] transition-all active:scale-95 cursor-pointer">
                   <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
                   <span>Versi ${esc(rawVer)}</span>
                 </button>
 
-                <span class="text-slate-300 dark:text-slate-700">•</span>
-
                 <!-- Admin Portal Link -->
-                <button type="button" onclick="changeView('view-admin-login')" class="inline-flex items-center gap-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer" title="Akses Admin Toko">
+                <button type="button" onclick="changeView('view-admin-login')" class="footer-sub-btn inline-flex items-center gap-1.5 text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] px-2.5 py-1 rounded-lg hover:text-[var(--color-primary)] transition-all cursor-pointer" title="Akses Admin Toko">
                   <i class="fa-solid fa-lock text-[9px]"></i>
                   <span>Admin</span>
                 </button>

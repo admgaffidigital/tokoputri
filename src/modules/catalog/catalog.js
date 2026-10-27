@@ -409,8 +409,8 @@ export const rCat = () => {
                             <div class="h-3.5 flex items-center">
                                 ${hasVariants ? variantBadgeLabelHtml : priceNormalHtml}
                             </div>
-                            <div class="flex items-baseline gap-0.5">
-                                <p class="text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">
+                            <div class="flex items-baseline flex-wrap gap-0.5">
+                                <p class="text-[var(--color-primary)] font-black text-[11px] sm:text-[13px] lg:text-[14.5px] leading-tight tracking-tight break-words">
                                     ${displayPriceHtml}
                                 </p>
                                 ${unt}
@@ -448,8 +448,8 @@ export const rCat = () => {
                     ${chipsHtml ? `<div class="product-chips-wrap">${chipsHtml}</div>` : ''}
                     <!-- Line 4: Harga & Action -->
                     <div class="flex items-center justify-between pt-0.5 gap-2">
-                        <div class="flex items-baseline gap-1.5 min-w-0 flex-1">
-                            <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">
+                        <div class="flex items-baseline flex-wrap gap-1.5 min-w-0 flex-1">
+                            <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-tight tracking-tight break-words">
                                 ${displayPriceHtml}
                             </p>
                             ${unt}
