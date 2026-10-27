@@ -298,12 +298,12 @@ export const renderReportsShell = () => {
     const tabsHTML = tabs.map(tab => {
         const isActive = reportActiveTab === tab.k;
         return `
-            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start ${
+            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start border-2 border-slate-900 dark:border-slate-700 ${
                 isActive 
-                ? 'bg-[var(--color-primary)] text-white shadow-2xs font-black' 
-                : 'bg-slate-50 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700 hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.06)]'
+                ? 'bg-[var(--color-primary)] text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] font-black' 
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-100 dark:hover:bg-slate-700/60'
             }">
-                <div class="w-5 h-5 rounded-lg flex items-center justify-center shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]'} transition-colors">
+                <div class="w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} transition-colors">
                     <i class="fa-solid ${tab.i} text-[10px]"></i>
                 </div>
                 <span>${tab.l}</span>
@@ -313,57 +313,57 @@ export const renderReportsShell = () => {
 
     setH('admin-content', `
         <div class="space-y-4 sm:space-y-6">
-            <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU (NATIVE APP BAR) -->
-            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-3.5 sm:p-5 shadow-2xs space-y-3.5">
+            <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU (INDUSTRIAL NEO-BRUTALISM) -->
+            <div class="neo-card rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-3.5 sm:p-5 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] space-y-3.5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400 shadow-2xs">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 border-2 border-slate-900 dark:border-slate-700 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
                             <i class="fa-solid fa-chart-pie text-lg sm:text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2">
-                                <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan</h1>
-                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap border border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300">Live</span>
+                                <h1 class="font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan</h1>
+                                <span class="neo-badge px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 whitespace-nowrap border border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300">Live</span>
                             </div>
-                            <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium truncate">
+                            <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold truncate">
                                 Laba Rugi, Penjualan, Valuasi Stok, Utang Piutang &amp; Pajak
                             </p>
                         </div>
                     </div>
 
                     <!-- Global Filter & Actions Bar -->
-                    <div class="flex items-center flex-wrap gap-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80">
-                        <!-- Filter Bulan -->
-                        <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 min-h-[36px]">
+                    <div class="flex items-center flex-wrap gap-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-slate-800">
+                        <!-- Filter Bulan (Zero Double-Boxing) -->
+                        <div class="report-select-wrapper flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 h-9 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] text-slate-800 dark:text-slate-200">
                             <i class="fa-solid fa-calendar-day text-[11px] text-slate-400"></i>
-                            <select onchange="changeReportMonth(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-2 pl-0.5 focus:outline-hidden cursor-pointer">
+                            <select onchange="changeReportMonth(this.value)" class="report-period-select-raw bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-1 pl-0.5 focus:outline-none cursor-pointer">
                                 <option value="0" ${reportMonth === 0 ? 'selected' : ''}>Setahun Penuh</option>
                                 ${MONTH_NAMES.map((m, idx) => `<option value="${idx + 1}" ${reportMonth === (idx + 1) ? 'selected' : ''}>${m}</option>`).join('')}
                             </select>
                         </div>
 
-                        <!-- Filter Tahun -->
-                        <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 min-h-[36px]">
+                        <!-- Filter Tahun (Zero Double-Boxing) -->
+                        <div class="report-select-wrapper flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 h-9 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] text-slate-800 dark:text-slate-200">
                             <i class="fa-solid fa-calendar text-[11px] text-slate-400"></i>
-                            <select onchange="changeReportYear(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-2 pl-0.5 focus:outline-hidden cursor-pointer">
+                            <select onchange="changeReportYear(this.value)" class="report-period-select-raw bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-1 pl-0.5 focus:outline-none cursor-pointer">
                                 ${yearOptions.map(y => `<option value="${y}" ${y === reportYear ? 'selected' : ''}>${y}</option>`).join('')}
                             </select>
                         </div>
 
                         <!-- Tombol Refresh Data -->
-                        <button type="button" onclick="refreshReportData()" class="h-9 w-9 sm:w-auto sm:px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5" title="Muat Ulang Data Terbaru">
+                        <button type="button" onclick="refreshReportData()" class="neo-btn h-9 w-9 sm:w-auto sm:px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:text-[var(--color-primary)] transition-all cursor-pointer flex items-center justify-center gap-1.5" title="Muat Ulang Data Terbaru">
                             <i class="fa-solid fa-arrows-rotate text-xs"></i>
                             <span class="hidden sm:inline">Segarkan</span>
                         </button>
 
                         <!-- Tombol Ekspor Spreadsheet Excel / CSV -->
                         <div class="relative inline-block text-left" id="report-export-dropdown-container">
-                            <button type="button" onclick="toggleReportExportMenu()" class="h-9 px-3 rounded-xl border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 shadow-2xs" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
+                            <button type="button" onclick="toggleReportExportMenu()" class="neo-btn h-9 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
                                 <i class="fa-solid fa-file-excel text-xs text-emerald-600 dark:text-emerald-400"></i>
                                 <span class="hidden sm:inline">Ekspor Excel</span>
                                 <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5"></i>
                             </button>
-                            <div id="report-export-dropdown-menu" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                            <div id="report-export-dropdown-menu" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000] p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                                 <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pilih Format Ekspor (.csv / Excel)</p>
                                 </div>
@@ -393,7 +393,7 @@ export const renderReportsShell = () => {
                         </div>
 
                         <!-- Tombol Cetak Dokumen A4 -->
-                        <button type="button" onclick="openReportCurrentDocPreview()" class="h-9 px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2 border border-black/10 shadow-2xs" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
+                        <button type="button" onclick="openReportCurrentDocPreview()" class="neo-btn h-9 px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
                             <i class="fa-solid fa-print text-xs"></i>
                             <span>Cetak A4</span>
                         </button>
@@ -401,7 +401,7 @@ export const renderReportsShell = () => {
                 </div>
 
                 <!-- Tab Segmented Pill Navigation -->
-                <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar pb-1 snap-x snap-mandatory">
+                <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar pb-1 snap-x snap-mandatory">
                     ${tabsHTML}
                 </div>
             </div>
@@ -1746,14 +1746,21 @@ export const renderStockValuationTab = () => {
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Kritis Stok</span>
                             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i></span>
                         </div>
-                        <div class="flex items-center gap-1.5 mt-1">
-                            <button type="button" onclick="filterStockReportStatus('empty')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 active:scale-95 cursor-pointer" title="Klik filter habis">${outOfStockCount} Habis</button>
-                            <button type="button" onclick="filterStockReportStatus('low')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 active:scale-95 cursor-pointer" title="Klik filter menipis">${lowStockCount} Menipis</button>
+                        <p class="text-base sm:text-xl font-black ${outOfStockCount + lowStockCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'} truncate">
+                            ${outOfStockCount + lowStockCount > 0 ? `${outOfStockCount + lowStockCount} SKU` : '0 SKU Kritis'}
+                        </p>
+                        <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                            <button type="button" onclick="filterStockReportStatus('empty')" class="px-2 py-0.5 rounded-lg text-xs font-black ${reportStockFilter === 'empty' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60'} active:scale-95 cursor-pointer" title="Klik filter habis">${outOfStockCount} Habis</button>
+                            <button type="button" onclick="filterStockReportStatus('low')" class="px-2 py-0.5 rounded-lg text-xs font-black ${reportStockFilter === 'low' ? 'bg-amber-600 text-white shadow-2xs' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60'} active:scale-95 cursor-pointer" title="Klik filter menipis">${lowStockCount} Menipis</button>
+                            <button type="button" onclick="filterStockReportStatus('safe')" class="px-2 py-0.5 rounded-lg text-xs font-black ${reportStockFilter === 'safe' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60'} active:scale-95 cursor-pointer" title="Klik filter aman">${safeStockCount} Aman</button>
                         </div>
                     </div>
-                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px]">
-                        <span class="text-slate-500 font-medium">Aman: <b>${safeStockCount}</b></span>
-                        <button type="button" onclick="filterStockReportStatus('all')" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">Lihat Semua</button>
+                    <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px]">
+                        <span class="text-slate-500 font-medium">Filter: <b class="uppercase text-slate-700 dark:text-slate-200">${reportStockFilter === 'all' ? 'Semua' : (reportStockFilter === 'empty' ? 'Habis' : (reportStockFilter === 'low' ? 'Menipis' : 'Aman'))}</b></span>
+                        <button type="button" onclick="filterStockReportStatus('all')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold text-[10px] ${reportStockFilter === 'all' ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-default' : 'bg-[var(--color-primary)] text-white shadow-2xs hover:opacity-90 cursor-pointer'} transition-all active:scale-95" title="Tampilkan semua barang inventori">
+                            <i class="fa-solid fa-list-check text-[9px]"></i>
+                            <span>Lihat Semua</span>
+                        </button>
                     </div>
                 </div>
             </div>

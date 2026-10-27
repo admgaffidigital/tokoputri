@@ -7531,8 +7531,8 @@ span[id$="-badge"][class*="min-w-"] {
 }
 
 .admin-input,
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input),
-select,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(#quick-variant-qty-input):not(.cart-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input),
+select:not(.report-period-select-raw),
 textarea,
 .header-search-capsule {
     border: 2px solid #0f172a !important;
@@ -7543,8 +7543,8 @@ textarea,
     transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 .admin-input:focus,
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
-select:focus,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(#quick-variant-qty-input):not(.cart-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
+select:not(.report-period-select-raw):focus,
 textarea:focus,
 .header-search-capsule:focus-within {
     border-color: var(--color-primary) !important;
@@ -7553,8 +7553,8 @@ textarea:focus,
 }
 html.dark .neo-input,
 html.dark .admin-input,
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input),
-html.dark select,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(#quick-variant-qty-input):not(.cart-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input),
+html.dark select:not(.report-period-select-raw),
 html.dark textarea,
 html.dark .header-search-capsule {
     border-color: #475569 !important;
@@ -7562,8 +7562,8 @@ html.dark .header-search-capsule {
 }
 html.dark .neo-input:focus,
 html.dark .admin-input:focus,
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
-html.dark select:focus,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(#quick-variant-qty-input):not(.cart-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
+html.dark select:not(.report-period-select-raw):focus,
 html.dark textarea:focus,
 html.dark .header-search-capsule:focus-within {
     border-color: var(--color-primary) !important;
@@ -7640,7 +7640,8 @@ html.dark #search-input {
     overflow: hidden !important;
 }
 html.dark #modal-active-controls .overflow-hidden.rounded-xl,
-html.dark .product-stepper-control {
+html.dark .product-stepper-control,
+html.dark .cart-stepper-control {
     border-color: #475569 !important;
     box-shadow: 2px 2px 0px #000000 !important;
     background: #1e293b !important;
@@ -7668,6 +7669,10 @@ html.dark #modal-qty-input {
 
 .stepper-input,
 #pos-variant-qty-input,
+#quick-variant-qty-input,
+.cart-qty-input,
+.cart-stepper-control input,
+#cart-items-container input[type="number"],
 .pos-stepper-control input,
 .pos-cart-items-target input[type="number"] {
     border: none !important;
@@ -7685,11 +7690,32 @@ html.dark #modal-qty-input {
 }
 html.dark .stepper-input,
 html.dark #pos-variant-qty-input,
+html.dark #quick-variant-qty-input,
+html.dark .cart-qty-input,
+html.dark .cart-stepper-control input,
+html.dark #cart-items-container input[type="number"],
 html.dark .pos-stepper-control input,
 html.dark .pos-cart-items-target input[type="number"] {
     border: none !important;
     box-shadow: none !important;
     color: #ffffff !important;
+    background: transparent !important;
+}
+
+/* Zero Double-Boxing: Wrapper Dropdown Filter Laporan & Kasir */
+.report-select-wrapper select,
+select.report-period-select-raw {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    min-height: unset !important;
+    height: 100% !important;
+    background: transparent !important;
+}
+html.dark .report-select-wrapper select,
+html.dark select.report-period-select-raw {
+    border: none !important;
+    box-shadow: none !important;
     background: transparent !important;
 }
 
@@ -8075,6 +8101,7 @@ html.dark #admin-content > div > .mb-5 span[class*="rounded-xl"] {
 #admin-content .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 > div,
 #admin-content .grid-cols-2.sm\:grid-cols-2.md\:grid-cols-4 > div,
 #admin-content .grid-cols-2.md\:grid-cols-4 > div,
+#admin-content .grid-cols-1.sm\:grid-cols-3 > div,
 #admin-content .grid.grid-cols-2 > div.flex.flex-col.justify-between,
 #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
     border: 2px solid #0f172a !important;
@@ -8089,6 +8116,7 @@ html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div,
 html.dark #admin-content .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 > div,
 html.dark #admin-content .grid-cols-2.sm\:grid-cols-2.md\:grid-cols-4 > div,
 html.dark #admin-content .grid-cols-2.md\:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-1.sm\:grid-cols-3 > div,
 html.dark #admin-content .grid.grid-cols-2 > div.flex.flex-col.justify-between,
 html.dark #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
     border-color: #334155 !important;
@@ -8099,7 +8127,8 @@ html.dark #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
 #admin-product-stats .grid > div .w-9.h-9,
 #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-9.h-9,
 #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-8.h-8,
-#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7 {
+#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7,
+#admin-content .grid-cols-1.sm\:grid-cols-3 > div .w-12.h-12 {
     border: 1.5px solid #0f172a !important;
     box-shadow: 1.5px 1.5px 0px #0f172a !important;
     box-sizing: border-box !important;
@@ -8107,7 +8136,8 @@ html.dark #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
 html.dark #admin-product-stats .grid > div .w-9.h-9,
 html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-9.h-9,
 html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-8.h-8,
-html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7 {
+html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7,
+html.dark #admin-content .grid-cols-1.sm\:grid-cols-3 > div .w-12.h-12 {
     border-color: #475569 !important;
     box-shadow: 1.5px 1.5px 0px #000000 !important;
 }
