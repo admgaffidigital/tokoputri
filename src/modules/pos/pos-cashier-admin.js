@@ -145,28 +145,28 @@ export const renderCashierAccounts = async () => {
             ${authBannerHtml}
 
             <!-- 1. HERO BANNER: MASTER MANAJEMEN STAF & HAK AKSES (THEME HARMONIZED) -->
-            <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-white dark:bg-slate-900 shadow-xs">
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1.5">
+            <div class="relative overflow-hidden p-4 sm:p-5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-white dark:bg-slate-900 shadow-xs">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+                    <div class="space-y-1">
                         <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-2xs whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border shadow-2xs whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-users-gear"></i> Tim Toko &amp; Keamanan Akses
                             </span>
                         </div>
-                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2.5">
+                        <h2 class="text-base sm:text-lg font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
                             Manajemen Staf &amp; Hak Akses
                         </h2>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
+                        <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
                             Daftarkan akun kasir POS, admin operasional, dan staf gudang. Atur wewenang akses modul toko secara granular serta sinkronisasi penggajian dan kompensasi HR.
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="window.openOwnerHrModal()" class="px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                    <div class="flex items-center gap-2 shrink-0 pt-1 md:pt-0">
+                        <button onclick="window.openOwnerHrModal()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
                             <i class="fa-solid fa-crown text-amber-500"></i>
                             <span>Profil Owner</span>
                         </button>
-                        <button onclick="window.openAddStaffModal()" class="neo-btn px-5 py-3 rounded-xl text-xs font-black text-white flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
+                        <button onclick="window.openAddStaffModal()" class="flex-1 sm:flex-none neo-btn px-4 py-2 rounded-xl text-xs font-black text-white flex items-center justify-center gap-1.5 cursor-pointer hover:opacity-95" style="background: var(--color-primary);">
                             <i class="fa-solid fa-user-plus text-xs"></i>
                             <span>Tambah Staf</span>
                         </button>
@@ -175,16 +175,16 @@ export const renderCashierAccounts = async () => {
 
                 <!-- 2. METRIK STATISTIK TIM (4-CARD BENTO STAT HUB) -->
                 <div id="staff-metrics-container" class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700/60">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
-                        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Tim &amp; Staf</span>
-                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+                        <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Tim &amp; Staf</span>
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                                     <i class="fa-solid fa-users"></i>
                                 </div>
                             </div>
-                            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">-</p>
-                            <p class="text-[10px] font-bold text-slate-400 mt-0.5">Memuat data...</p>
+                            <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">-</p>
+                            <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-0.5">Memuat data...</p>
                         </div>
                     </div>
                 </div>
@@ -244,15 +244,15 @@ export const renderCashierAccounts = async () => {
  */
 const getOwnerCardHtml = (ownerProfile, authStatusBadge) => {
     return `
-    <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-white/95 dark:bg-slate-800/90 shadow-2xs hover:border-[var(--color-primary)] transition-all">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
-                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-xl shrink-0 text-white border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background-color: var(--color-primary);">
+    <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-white/95 dark:bg-slate-800/90 shadow-2xs hover:border-[var(--color-primary)] transition-all">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+            <div class="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg shrink-0 text-white border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-crown text-amber-300"></i>
                 </div>
                 <div class="min-w-0 flex-1 space-y-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <h3 class="text-base font-black text-slate-900 dark:text-white truncate">
+                        <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
                             ${esc(ownerProfile.name || 'Akun Pemilik Utama (Owner)')}
                         </h3>
                         <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
@@ -463,53 +463,53 @@ const renderStaffMetrics = () => {
     const totalBaseSalary = _cachedStaffList.reduce((acc, s) => acc + (parseFloat(s.baseSalary) || 0), 0) + (parseFloat(ownerProfile?.baseSalary) || 10000000);
 
     container.innerHTML = `
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
         <!-- 1. Total Tim & Staf -->
-        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Tim &amp; Staf</span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Tim &amp; Staf</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-users"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${activeStaff + 1} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">/ ${totalStaff + 1} Akun</span></p>
-            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${inactiveCount > 0 ? `${inactiveCount} Akun Dinonaktifkan` : 'Seluruh Tim Aktif'}</p>
+            <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${activeStaff + 1} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">/ ${totalStaff + 1} Akun</span></p>
+            <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${inactiveCount > 0 ? `${inactiveCount} Akun Dinonaktifkan` : 'Seluruh Tim Aktif'}</p>
         </div>
 
         <!-- 2. Kasir POS Aktif -->
-        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kasir POS Aktif</span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kasir POS Aktif</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${cashierCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
-            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Penjualan Kasir Fisik Toko</p>
+            <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${cashierCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Penjualan Kasir Fisik Toko</p>
         </div>
 
         <!-- 3. Admin & Logistik -->
-        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Admin &amp; Logistik</span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Admin &amp; Logistik</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${adminCount + staffGudangCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
-            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${adminCount} Admin • ${staffGudangCount} Staf Gudang</p>
+            <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${adminCount + staffGudangCount} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500">Personel</span></p>
+            <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">${adminCount} Admin • ${staffGudangCount} Staf Gudang</p>
         </div>
 
         <!-- 4. Beban Gaji Bulanan -->
-        <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Beban Gaji Pokok</span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Beban Gaji Pokok</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-money-bill-wave"></i>
                 </div>
             </div>
-            <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${fCur(totalBaseSalary)}</p>
-            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Total Gaji Tim &amp; Direksi /bln</p>
+            <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white tracking-tight">${fCur(totalBaseSalary)}</p>
+            <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Total Gaji Tim &amp; Direksi /bln</p>
         </div>
     </div>`;
 };
@@ -678,9 +678,9 @@ const renderStaffListHtml = () => {
         }
 
         return `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-white/95 dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all">
-            <div class="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border" style="${avatarStyle}">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3.5 sm:p-4 bg-white/95 dark:bg-slate-800/95 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[rgba(var(--color-primary-rgb),0.3)] transition-all">
+            <div class="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-2xs border" style="${avatarStyle}">
                     ${initials}
                 </div>
                 <div class="min-w-0 flex-1 space-y-1">
