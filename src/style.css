@@ -6712,7 +6712,6 @@ html.dark .neo-box {
 #admin-dashboard-cashflow-slot .bento-island-card,
 #admin-dashboard-view > .bento-island-card,
 .table-container,
-.overflow-x-auto.rounded-2xl,
 .admin-table-card,
 .stat-card-neo,
 .kpi-card,
@@ -6796,7 +6795,6 @@ html.dark #admin-dashboard-view .grid button,
 html.dark #admin-dashboard-cashflow-slot .bento-island-card,
 html.dark #admin-dashboard-view > .bento-island-card,
 html.dark .table-container,
-html.dark .overflow-x-auto.rounded-2xl,
 html.dark .admin-table-card,
 html.dark .stat-card-neo,
 html.dark .kpi-card,
@@ -8491,17 +8489,15 @@ html.dark #pos-held-modal-box [class*="border-t"]:last-child {
 
 /* 6. Universal Industrial Neo-Brutalist Data Tables */
 .admin-table-container,
-.table-container,
-.overflow-x-auto.rounded-2xl {
+.table-container {
     border: 2px solid #0f172a !important;
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     border-radius: 0.875rem !important;
-    overflow: hidden !important;
+    overflow-x: auto !important;
     box-sizing: border-box !important;
 }
 html.dark .admin-table-container,
-html.dark .table-container,
-html.dark .overflow-x-auto.rounded-2xl {
+html.dark .table-container {
     border-color: #334155 !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
 }
@@ -8786,6 +8782,30 @@ html.dark .printer-type-card.printer-card-active {
     border-color: var(--color-primary) !important;
     box-shadow: 2.5px 2.5px 0px #000000 !important;
     background-color: rgba(var(--color-primary-rgb), 0.15) !important;
+}
+
+/* 11g. Standarisasi Segmented Tabs Bar Horisontal (Staf & Akses, Kasir, Laporan) */
+.segmented-tabs-bar,
+#cashier-admin-tabs-bar {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+}
+html.dark .segmented-tabs-bar,
+html.dark #cashier-admin-tabs-bar {
+    border-color: #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}
+.segmented-tabs-bar::-webkit-scrollbar,
+#cashier-admin-tabs-bar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 /* 10. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak Guarantee) */

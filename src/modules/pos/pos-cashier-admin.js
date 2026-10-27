@@ -108,32 +108,32 @@ export const renderCashierAccounts = async () => {
 
     setH('admin-content', `
     <div class="space-y-4 max-w-5xl mx-auto pb-24">
-        <!-- Native App Sticky Segmented Control Bar -->
+        <!-- Native App Sticky Segmented Control Bar (Horizontal Smooth Slide & Desktop Drag) -->
         <div class="sticky top-0 z-20 py-2 sm:py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-none border-b border-slate-200/80 dark:border-slate-800/80 mb-2">
-            <div class="p-1.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-2xl w-full mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar border border-slate-200/90 dark:border-slate-700/80 shadow-xs sm:grid sm:grid-cols-5">
+            <div id="cashier-admin-tabs-bar" class="segmented-tabs-bar p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl w-full mx-auto flex items-center gap-2 overflow-x-auto hide-scrollbar sm:grid sm:grid-cols-5 select-none" style="overflow-x: auto !important; -webkit-overflow-scrolling: touch; touch-action: pan-x; cursor: grab;">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
                     style="background: var(--color-primary);">
                     <i class="fa-solid fa-users-gear text-white"></i>
                     <span class="truncate">Staf &amp; Akses</span>
                 </button>
                 <button id="tab-btn-cashier-attendance" onclick="window.switchCashierTab('attendance')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-clipboard-user"></i>
                     <span class="truncate">Absensi Tim</span>
                 </button>
                 <button id="tab-btn-cashier-advances" onclick="window.switchCashierTab('advances')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-hand-holding-dollar"></i>
                     <span class="truncate">Buku Kasbon</span>
                 </button>
                 <button id="tab-btn-cashier-payroll" onclick="window.switchCashierTab('payroll')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-money-check-dollar"></i>
                     <span class="truncate">Gaji &amp; Slip</span>
                 </button>
                 <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span class="truncate">Shift Kasir</span>
                 </button>
@@ -235,6 +235,7 @@ export const renderCashierAccounts = async () => {
         <div id="cashier-panel-shifts" class="hidden pt-1"></div>
     </div>`);
 
+    initCashierAdminTabsSlider();
     await loadStaffList();
 };
 
@@ -300,6 +301,59 @@ const getOwnerCardHtml = (ownerProfile, authStatusBadge) => {
 };
 
 /**
+ * Inisialisasi Slider Interaktif Drag & Geser Horizontal Tab Staf
+ */
+export const initCashierAdminTabsSlider = () => {
+    const slider = el('cashier-admin-tabs-bar');
+    if (!slider || slider.__dragScrollAttached) return;
+    slider.__dragScrollAttached = true;
+
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasMoved = false;
+
+    // Mouse drag scrolling untuk perangkat Desktop/Laptop
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        hasMoved = false;
+        slider.style.cursor = 'grabbing';
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+
+    const stopDrag = () => {
+        if (!isDown) return;
+        isDown = false;
+        slider.style.cursor = 'grab';
+    };
+
+    slider.addEventListener('mouseleave', stopDrag);
+    slider.addEventListener('mouseup', stopDrag);
+
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        if (Math.abs(walk) > 4) {
+            hasMoved = true;
+        }
+        slider.scrollLeft = scrollLeft - walk;
+    });
+
+    // Cegah pemicuan klik tombol yang tidak disengaja saat user melakukan drag/geser
+    slider.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (hasMoved) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            }
+        }, true);
+    });
+};
+
+/**
  * Switch Tab Navigasi Staf (Accounts, Attendance, Advances, Payroll, Shifts)
  */
 export const switchCashierTab = (tab) => {
@@ -320,17 +374,17 @@ export const switchCashierTab = (tab) => {
 
     const applyActive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
+        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
         btn.style.background = 'var(--color-primary)';
-        btn.style.boxShadow = '0 4px 14px rgba(var(--color-primary-rgb), 0.35)';
+        btn.style.boxShadow = '';
         btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
     };
 
     const applyInactive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
-        btn.style.background = 'transparent';
-        btn.style.boxShadow = 'none';
+        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
+        btn.style.background = '';
+        btn.style.boxShadow = '';
         btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
     };
 
@@ -348,33 +402,47 @@ export const switchCashierTab = (tab) => {
     if (panelPayroll) panelPayroll.classList.add('hidden');
     if (panelShifts) panelShifts.classList.add('hidden');
 
+    let activeBtn = tabAccounts;
+
     if (tab === 'attendance') {
         applyActive(tabAttendance, '<i class="fa-solid fa-clipboard-user text-white"></i>', 'Absensi Tim');
+        activeBtn = tabAttendance;
         if (panelAttendance) {
             panelAttendance.classList.remove('hidden');
             renderAttendanceView(panelAttendance);
         }
     } else if (tab === 'advances') {
         applyActive(tabAdvances, '<i class="fa-solid fa-hand-holding-dollar text-white"></i>', 'Buku Kasbon');
+        activeBtn = tabAdvances;
         if (panelAdvances) {
             panelAdvances.classList.remove('hidden');
             renderSalaryAdvancesView(panelAdvances);
         }
     } else if (tab === 'payroll') {
         applyActive(tabPayroll, '<i class="fa-solid fa-money-check-dollar text-white"></i>', 'Gaji &amp; Slip');
+        activeBtn = tabPayroll;
         if (panelPayroll) {
             panelPayroll.classList.remove('hidden');
             renderPayrollView(panelPayroll);
         }
     } else if (tab === 'shifts') {
         applyActive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar text-white"></i>', 'Shift Kasir');
+        activeBtn = tabShifts;
         if (panelShifts) {
             panelShifts.classList.remove('hidden');
             renderAdminShiftReportView(panelShifts);
         }
     } else {
         applyActive(tabAccounts, '<i class="fa-solid fa-users-gear text-white"></i>', 'Staf &amp; Akses');
+        activeBtn = tabAccounts;
         if (panelAccounts) panelAccounts.classList.remove('hidden');
+    }
+
+    // Scroll tombol tab aktif ke tengah secara mulus (auto-centering)
+    if (activeBtn) {
+        try {
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } catch (_) {}
     }
 };
 
@@ -1914,6 +1982,7 @@ export const toggleCashierPassVisibility = toggleStaffPassVisibility;
 if (typeof window !== 'undefined') {
     window.renderCashierAccounts        = renderCashierAccounts;
     window.switchCashierTab             = switchCashierTab;
+    window.initCashierAdminTabsSlider   = initCashierAdminTabsSlider;
     window.filterStaffRole              = filterStaffRole;
     window.handleStaffSearch            = handleStaffSearch;
     window.clearStaffSearch             = clearStaffSearch;
