@@ -5512,7 +5512,6 @@ html.dark .bg-white\/80:not([class*="dark:bg-"]):not([class*="text-"]):not(input
 html:not(.dark) .modal-bottom-sheet,
 html:not(.dark) #admin-modal-box,
 html:not(.dark) #admin-order-modal-box,
-html:not(.dark) #printer-settings-modal-box,
 html:not(.dark) #modal-ask-question-box,
 html:not(.dark) #modal-admin-faq-box,
 html:not(.dark) #member-modal-box,
@@ -5537,7 +5536,6 @@ html:not(.dark) #modal-supplier-form-box {
 html.dark .modal-bottom-sheet,
 html.dark #admin-modal-box,
 html.dark #admin-order-modal-box,
-html.dark #printer-settings-modal-box,
 html.dark #modal-ask-question-box,
 html.dark #modal-admin-faq-box,
 html.dark #member-modal-box,
@@ -5557,7 +5555,6 @@ html.dark #modal-supplier-form-box,
 .dark .modal-bottom-sheet,
 .dark #admin-modal-box,
 .dark #admin-order-modal-box,
-.dark #printer-settings-modal-box,
 .dark #modal-ask-question-box,
 .dark #modal-admin-faq-box,
 .dark #member-modal-box,
@@ -8741,6 +8738,54 @@ button[class*="hover:underline"] {
 html.dark .footer-sub-btn {
     border-color: #475569 !important;
     box-shadow: 1px 1px 0px #000000 !important;
+}
+
+/* 11f. Standarisasi Modal Pengaturan Printer POS (#printer-settings-modal-box) & Driver Cards */
+#printer-settings-modal-box {
+    border: 2px solid #0f172a !important;
+    box-shadow: 4.5px 4.5px 0px #0f172a !important;
+}
+html.dark #printer-settings-modal-box {
+    border-color: #334155 !important;
+    box-shadow: 4.5px 4.5px 0px #000000 !important;
+}
+
+.printer-type-card {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 1rem !important;
+    background-color: #ffffff;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    box-sizing: border-box !important;
+}
+html.dark .printer-type-card {
+    border-color: #475569 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background-color: #1e293b;
+}
+.printer-type-card:hover {
+    transform: translate(-1px, -1px) !important;
+    box-shadow: 3px 3px 0px #0f172a !important;
+}
+html.dark .printer-type-card:hover {
+    box-shadow: 3px 3px 0px #000000 !important;
+}
+.printer-type-card:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark .printer-type-card:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+.printer-type-card.printer-card-active {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    background-color: rgba(var(--color-primary-rgb), 0.07) !important;
+}
+html.dark .printer-type-card.printer-card-active {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
 }
 
 /* 10. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak Guarantee) */

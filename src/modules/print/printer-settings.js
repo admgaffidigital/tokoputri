@@ -148,15 +148,12 @@ export const selectPrinterDeviceTypeUI = (type) => {
     window._selectedPrinterType = type;
     document.querySelectorAll('.printer-type-card').forEach(c => {
         const cardType = c.getAttribute('data-type');
+        const check = c.querySelector('.printer-check-badge');
         if (cardType === type) {
-            c.classList.add('border-[var(--color-primary)]', 'bg-[rgba(var(--color-primary-rgb),0.06)]', 'ring-2', 'ring-[var(--color-primary)]/20');
-            c.classList.remove('border-slate-200', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-800');
-            const check = c.querySelector('.printer-check-badge');
+            c.classList.add('printer-card-active');
             if (check) check.classList.remove('hidden');
         } else {
-            c.classList.remove('border-[var(--color-primary)]', 'bg-[rgba(var(--color-primary-rgb),0.06)]', 'ring-2', 'ring-[var(--color-primary)]/20');
-            c.classList.add('border-slate-200', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-800');
-            const check = c.querySelector('.printer-check-badge');
+            c.classList.remove('printer-card-active');
             if (check) check.classList.add('hidden');
         }
     });
