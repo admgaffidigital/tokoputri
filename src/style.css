@@ -8629,8 +8629,8 @@ html.dark #toast {
    ========================================================================== */
 
 /* 11a. Netralisasi Universal Segala Soft Shadows & Penegakan Hard Shadow */
-button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(.relative > button.absolute):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
-[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon):not(.relative > button.absolute),
+button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
+[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon),
 .neo-btn,
 .btn-primary,
 .btn-secondary,
@@ -8639,8 +8639,8 @@ button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *)
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     transition: transform 0.06s ease, box-shadow 0.06s ease !important;
 }
-html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(.relative > button.absolute):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
-html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon):not(.relative > button.absolute),
+html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
+html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon),
 html.dark .neo-btn,
 html.dark .btn-primary,
 html.dark .btn-secondary,
@@ -8752,35 +8752,32 @@ button[class*="hover:underline"] {
 }
 
 /* Password Eye Toggle Buttons & Form Input Internal Action Buttons: Clean Unboxed Transparent & Centered */
-.relative > button.absolute,
 button.btn-input-icon,
 .btn-input-icon,
+.relative > button.btn-input-icon,
 button[onclick*="toggleStaffPassVisibility"],
+button[onclick*="toggleCashierPassVisibility"],
 button[onclick*="login-password"],
-button[onclick*="pos-login-password"],
-button:has(> i[id$="-eye"]),
-button:has(> i[class*="fa-eye-slash"]),
-button:has(> i.fa-eye) {
+button[onclick*="pos-login-password"] {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
     min-height: unset !important;
     min-width: unset !important;
     height: auto !important;
+    width: auto !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     outline: none !important;
 }
 
-.relative > button.absolute:hover,
 button.btn-input-icon:hover,
 .btn-input-icon:hover,
+.relative > button.btn-input-icon:hover,
 button[onclick*="toggleStaffPassVisibility"]:hover,
+button[onclick*="toggleCashierPassVisibility"]:hover,
 button[onclick*="login-password"]:hover,
-button[onclick*="pos-login-password"]:hover,
-button:has(> i[id$="-eye"]):hover,
-button:has(> i[class*="fa-eye-slash"]):hover,
-button:has(> i.fa-eye):hover {
+button[onclick*="pos-login-password"]:hover {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
@@ -8788,15 +8785,13 @@ button:has(> i.fa-eye):hover {
     transform: translateY(-50%) !important;
 }
 
-.relative > button.absolute:active,
 button.btn-input-icon:active,
 .btn-input-icon:active,
+.relative > button.btn-input-icon:active,
 button[onclick*="toggleStaffPassVisibility"]:active,
+button[onclick*="toggleCashierPassVisibility"]:active,
 button[onclick*="login-password"]:active,
-button[onclick*="pos-login-password"]:active,
-button:has(> i[id$="-eye"]):active,
-button:has(> i[class*="fa-eye-slash"]):active,
-button:has(> i.fa-eye):active {
+button[onclick*="pos-login-password"]:active {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
