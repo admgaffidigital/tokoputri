@@ -9,11 +9,11 @@
 import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward, myOrders, gOrds } from '../../core/state.js';
 import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded, parseOrderDate } from '../../core/utils.js';
 import { db, auth } from '../../config/firebase.js';
-import { 
-    openClientPaymentModal, 
-    renderClientInstallmentSchedule, 
-    getMemberActiveTempoOrders, 
-    loadPendingConfirmations 
+import {
+    openClientPaymentModal,
+    renderClientInstallmentSchedule,
+    getMemberActiveTempoOrders,
+    loadPendingConfirmations
 } from './client-pay.js';
 import { generateCode128Svg } from '../../core/barcode-code128.js';
 
@@ -28,7 +28,7 @@ export let isMemberPrivacyHidden = true;
 try {
     const savedPriv = typeof localStorage !== 'undefined' ? localStorage.getItem('freshmart_member_privacy') : null;
     if (savedPriv !== null) isMemberPrivacyHidden = savedPriv === 'true';
-} catch(e) {}
+} catch (e) { }
 
 export const getIsMemberPrivacyHidden = () => isMemberPrivacyHidden;
 export let pendingAuthMember = null;
@@ -104,7 +104,7 @@ export const toggleMemberPrivacyMode = () => {
         if (typeof localStorage !== 'undefined') {
             localStorage.setItem('freshmart_member_privacy', String(isMemberPrivacyHidden));
         }
-    } catch(e) {}
+    } catch (e) { }
     if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
         window.showToast(isMemberPrivacyHidden ? 'Mode Privasi Aktif: Angka Tagihan & Saldo Disensor (Rp ••••••)' : 'Mode Privasi Nonaktif: Angka Ditampilkan');
@@ -132,7 +132,7 @@ export const lockMemberSession = () => {
             localStorage.removeItem('freshmart_current_member');
             localStorage.removeItem('freshmart_member_wa');
         }
-    } catch(e) {}
+    } catch (e) { }
     if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     if (typeof window !== 'undefined' && typeof window.showToast === 'function') window.showToast('Sesi Member Telah Dikunci.');
     rMemberModalBody();
@@ -154,7 +154,7 @@ export const handleMemberPinDigit = (digit) => {
     pinErrorMessage = '';
     if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     if (typeof window !== 'undefined' && typeof window.playNativeSound === 'function') window.playNativeSound('tick');
-    
+
     // Perbarui indikator titik PIN langsung
     const dotsContainer = typeof document !== 'undefined' ? document.getElementById('member-pin-dots-container') : null;
     if (dotsContainer) {
@@ -185,7 +185,7 @@ export const handleMemberPinBackspace = () => {
     pinBuffer = pinBuffer.slice(0, -1);
     pinErrorMessage = '';
     if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    
+
     const dotsContainer = typeof document !== 'undefined' ? document.getElementById('member-pin-dots-container') : null;
     if (dotsContainer) {
         const dots = dotsContainer.children;
@@ -222,28 +222,28 @@ export const processMemberPinSubmission = async () => {
         if (enteredHash === pendingAuthMember.pin) {
             const memberToSet = { ...pendingAuthMember };
             setCurrentMember(memberToSet);
-            
+
             if (rememberDeviceOption) {
                 try {
                     localStorage.setItem('freshmart_current_member', JSON.stringify(memberToSet));
                     localStorage.setItem('freshmart_member_wa', memberToSet.phone || memberToSet.id);
-                } catch(e) {}
+                } catch (e) { }
             } else {
                 try {
                     localStorage.removeItem('freshmart_current_member');
                     localStorage.removeItem('freshmart_member_wa');
-                } catch(e) {}
+                } catch (e) { }
             }
-            
+
             memberAuthStep = 'idle';
             pinBuffer = '';
             pinErrorMessage = '';
             pendingAuthMember = null;
-            
+
             if (typeof window !== 'undefined' && typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
             if (typeof window !== 'undefined' && typeof window.playNativeSound === 'function') window.playNativeSound('success');
             if (typeof window !== 'undefined' && typeof window.showToast === 'function') window.showToast('PIN Terverifikasi! Akses panel member dibuka.');
-            
+
             rMemberModalBody();
         } else {
             pinErrorMessage = 'PIN Keamanan salah! Silakan coba kembali.';
@@ -266,7 +266,7 @@ export const processMemberPinSubmission = async () => {
                 let cleanPhone = (pendingAuthMember.phone || pendingAuthMember.id || '').toString().replace(/\D/g, '');
                 if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1);
                 else if (!cleanPhone.startsWith('62')) cleanPhone = '62' + cleanPhone;
-                
+
                 await db.collection("freshmart").doc("cms_data").collection("customers").doc(cleanPhone).set({
                     pin: newHash,
                     pinSetAt: new Date().toISOString()
@@ -280,7 +280,7 @@ export const processMemberPinSubmission = async () => {
                     try {
                         localStorage.setItem('freshmart_current_member', JSON.stringify(memberToSet));
                         localStorage.setItem('freshmart_member_wa', cleanPhone);
-                    } catch(e) {}
+                    } catch (e) { }
                 }
 
                 memberAuthStep = 'idle';
@@ -294,7 +294,7 @@ export const processMemberPinSubmission = async () => {
                 if (typeof window !== 'undefined' && typeof window.showToast === 'function') window.showToast('PIN Keamanan 6-Digit Berhasil Diaktifkan!');
 
                 rMemberModalBody();
-            } catch(e) {
+            } catch (e) {
                 console.error("Gagal simpan PIN ke Firestore:", e);
                 pinErrorMessage = 'Gagal menyimpan PIN. Periksa koneksi internet.';
                 pinBuffer = '';
@@ -348,7 +348,7 @@ export const reconcilePointsFromOrders = async (phone, custName = '') => {
         try {
             const rawOrders = localStorage.getItem('freshmart_my_orders');
             if (rawOrders) orders = JSON.parse(rawOrders) || [];
-        } catch(e) {}
+        } catch (e) { }
 
         if (!orders.length) return null;
 
@@ -371,7 +371,7 @@ export const reconcilePointsFromOrders = async (phone, custName = '') => {
         }
 
         const nameToUse = custName || (currentMember && currentMember.name) || existingDoc.data().name || 'Pelanggan Setia';
-        
+
         const updateData = {
             id: clean,
             phone: clean,
@@ -386,19 +386,19 @@ export const reconcilePointsFromOrders = async (phone, custName = '') => {
         } catch (e) {
             console.warn('[reconcilePointsFromOrders] Firestore set error:', e);
         }
-        
+
         setCurrentMember(updateData);
         try {
             localStorage.setItem('freshmart_current_member', JSON.stringify(updateData));
             localStorage.setItem('freshmart_member_wa', clean);
-        } catch(e) {}
+        } catch (e) { }
         memberCache.set(clean, { data: updateData, timestamp: Date.now() });
 
         const mBody = document.getElementById('member-modal-body');
         if (mBody) rMemberModalBody();
 
         return updateData;
-    } catch(err) {
+    } catch (err) {
         console.warn('[reconcilePointsFromOrders] Error:', err);
         return null;
     }
@@ -509,10 +509,10 @@ export const formatMemberCardNumber = (phone, hide = false) => {
     let clean = (phone || '').toString().replace(/\D/g, '');
     if (clean.startsWith('62')) clean = clean.substring(2);
     else if (clean.startsWith('0')) clean = clean.substring(1);
-    
+
     // Pastikan panjang minimal 8 digit
     while (clean.length < 8) clean += '0';
-    
+
     // Pecah ke kelompok 4 digit
     const parts = [];
     for (let i = 0; i < clean.length && parts.length < 3; i += 4) {
@@ -545,16 +545,16 @@ export const generateBarcodeSVG = (code) => {
                 className: 'w-full h-11 bg-white rounded-lg px-2 py-1 shadow-inner border border-slate-200'
             });
         }
-    } catch (e) {}
+    } catch (e) { }
 
     let bars = '';
     let x = 8;
-    
+
     // Start guard
     bars += `<rect x="${x}" y="3" width="2.5" height="34" fill="#0f172a"/>`; x += 4;
     bars += `<rect x="${x}" y="3" width="1.5" height="34" fill="#0f172a"/>`; x += 3.5;
     bars += `<rect x="${x}" y="3" width="3" height="34" fill="#0f172a"/>`; x += 5;
-    
+
     // Encode digits into varying bar pattern
     for (let i = 0; i < clean.length; i++) {
         const d = parseInt(clean[i], 10) || 0;
@@ -566,12 +566,12 @@ export const generateBarcodeSVG = (code) => {
         bars += `<rect x="${x}" y="3" width="${w2}" height="34" fill="#0f172a"/>`;
         x += w2 + 2;
     }
-    
+
     // Stop guard
     bars += `<rect x="${x}" y="3" width="3" height="34" fill="#0f172a"/>`; x += 5;
     bars += `<rect x="${x}" y="3" width="1.5" height="34" fill="#0f172a"/>`; x += 3.5;
     bars += `<rect x="${x}" y="3" width="2.5" height="34" fill="#0f172a"/>`; x += 4;
-    
+
     return `
     <svg class="w-full h-11 bg-white rounded-lg px-2 py-1 shadow-inner border border-slate-200" viewBox="0 0 ${Math.max(x + 10, 240)} 40" xmlns="http://www.w3.org/2000/svg">
         ${bars}
@@ -654,9 +654,9 @@ export const renderDigitalMemberCard = (mData) => {
                             <span class="text-base sm:text-xl font-black tracking-tight text-white">${pts}</span>
                             <span class="text-[9px] font-bold text-white/80">PTS</span>
                         </div>
-                        ${(currentMember && (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') && (parseFloat(currentMember.paylaterLimit)||0) > 0) ? `
+                        ${(currentMember && (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') && (parseFloat(currentMember.paylaterLimit) || 0) > 0) ? `
                         <div class="mt-1 flex items-center justify-end gap-1 text-[8px] font-black text-emerald-300 uppercase tracking-wider">
-                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${formatMaskedCurrency(Math.max(0, (parseFloat(currentMember.paylaterLimit)||0) - Math.max(0, parseFloat(currentMember.paylaterUsed)||0)), isMemberPrivacyHidden)}
+                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${formatMaskedCurrency(Math.max(0, (parseFloat(currentMember.paylaterLimit) || 0) - Math.max(0, parseFloat(currentMember.paylaterUsed) || 0)), isMemberPrivacyHidden)}
                         </div>` : ''}
                     </div>
                 </div>
@@ -808,22 +808,22 @@ export const downloadMemberCard = async () => {
 export const renderRewardCatalog = () => {
     const rcC = el('reward-catalog-container');
     if (!rcC) return;
-    
+
     const isShow = appData.store.showRewardCatalog !== false && appData.store.showRewardCatalog !== 'false';
-    
+
     // Pastikan listener hadiah realtime selalu terpasang jika katalog diaktifkan admin
     if (isShow && typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
         window.attachRewardsRealtime();
     }
 
     const activeRewards = (appData.rewards || []).filter(r => r.isActive !== 'false' && r.isActive !== false);
-    
+
     if (!isShow || activeRewards.length === 0) {
         rcC.classList.add('hidden');
         rcC.innerHTML = '';
         return;
     }
-    
+
     rcC.classList.remove('hidden');
     let rHTML = `
     <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
@@ -845,8 +845,8 @@ export const renderRewardCatalog = () => {
         </div>
         <div class="grid grid-cols-1 ${activeRewards.length > 1 ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-3 pt-1">
             ${activeRewards.map((r) => {
-                const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
-                return `
+        const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
+        return `
                 <div class="group relative flex w-full items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer select-none" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                     
                     <!-- Thumbnail Kompak & Proporsional (Ukuran 68px x 68px) -->
@@ -889,7 +889,7 @@ export const renderRewardCatalog = () => {
                         </button>
                     </div>
                 </div>`;
-            }).join('')}
+    }).join('')}
         </div>
     </div>`;
     rcC.innerHTML = rHTML;
@@ -906,18 +906,18 @@ export const checkMemberStatus = () => {
         const waNum = normalizeWA(getV('cust-wa'));
         const banner = el('member-status-banner');
         if (!banner) return;
-        
-        if (!waNum || waNum.length < 10) { 
-            hide(banner); 
-            hide('payment-option-tempo'); hide('payment-option-paylater'); 
-            setCurrentMember(null); 
-            setSelectedReward(null); 
+
+        if (!waNum || waNum.length < 10) {
+            hide(banner);
+            hide('payment-option-tempo'); hide('payment-option-paylater');
+            setCurrentMember(null);
+            setSelectedReward(null);
             const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
             if (tempoRadio && tempoRadio.checked) {
                 const fallbackRadio = document.querySelector('input[name="payment"][value="transfer"]') || document.querySelector('input[name="payment"][value="cashier"]');
                 if (fallbackRadio) { fallbackRadio.checked = true; if (typeof window.togglePaymentDetails === 'function') window.togglePaymentDetails(); }
             }
-            return; 
+            return;
         }
 
         const renderCheckoutMiniCard = (mData) => {
@@ -943,7 +943,7 @@ export const checkMemberStatus = () => {
                 <button type="button" onclick="openMemberModal()" class="relative z-10 w-full sm:w-auto shrink-0 primary-bg hover:opacity-90 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-wallet"></i> Buka Kartu Member
                 </button>`;
-            show(banner); 
+            show(banner);
             show('payment-option-tempo'); if (mData.paylaterActive === true || mData.paylaterActive === 'true') show('payment-option-paylater'); else hide('payment-option-paylater');
         };
 
@@ -954,9 +954,9 @@ export const checkMemberStatus = () => {
                 setCurrentMember(cached.data);
                 renderCheckoutMiniCard(cached.data);
             } else {
-                setCurrentMember(null); 
-                setSelectedReward(null); 
-                hide(banner); 
+                setCurrentMember(null);
+                setSelectedReward(null);
+                hide(banner);
                 hide('payment-option-tempo'); hide('payment-option-paylater');
                 const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
                 if (tempoRadio && tempoRadio.checked) {
@@ -966,7 +966,7 @@ export const checkMemberStatus = () => {
             }
             return;
         }
-        
+
         try {
             const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(waNum).get();
             if (doc.exists) {
@@ -977,9 +977,9 @@ export const checkMemberStatus = () => {
             } else {
                 // Pelanggan Umum: belum tersimpan di database pelanggan oleh Admin
                 memberCache.set(waNum, { data: null, timestamp: Date.now() });
-                setCurrentMember(null); 
-                setSelectedReward(null); 
-                hide(banner); 
+                setCurrentMember(null);
+                setSelectedReward(null);
+                hide(banner);
                 hide('payment-option-tempo'); hide('payment-option-paylater');
                 const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
                 if (tempoRadio && tempoRadio.checked) {
@@ -987,7 +987,7 @@ export const checkMemberStatus = () => {
                     if (fallbackRadio) { fallbackRadio.checked = true; if (typeof window.togglePaymentDetails === 'function') window.togglePaymentDetails(); }
                 }
             }
-        } catch(e) {
+        } catch (e) {
             // Diamkan jika gagal query member (non-blocking)
         }
     }, 500);
@@ -1007,7 +1007,7 @@ export const openMemberModal = () => {
                     setCurrentMember(parsed);
                 }
             }
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // 2. Refresh poin terbaru secara live dari Firestore & lakukan rekonsiliasi jika perlu
@@ -1032,7 +1032,7 @@ export const openMemberModal = () => {
                 try {
                     localStorage.setItem('freshmart_current_member', JSON.stringify(mData));
                     localStorage.setItem('freshmart_member_wa', clean);
-                } catch(e) {}
+                } catch (e) { }
                 const mBody = document.getElementById('member-modal-body');
                 if (mBody) rMemberModalBody();
             } else {
@@ -1042,11 +1042,11 @@ export const openMemberModal = () => {
                 try {
                     localStorage.removeItem('freshmart_current_member');
                     localStorage.removeItem('freshmart_member_wa');
-                } catch(e) {}
+                } catch (e) { }
                 const mBody = document.getElementById('member-modal-body');
                 if (mBody) rMemberModalBody();
             }
-        }).catch(() => {});
+        }).catch(() => { });
     }
 
     if (typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
@@ -1062,7 +1062,7 @@ export const openMemberModal = () => {
     }
     const isAlreadyOpen = m.style.display !== 'none' && m.style.opacity === '1';
     m.innerHTML = `
-        <div class="modal-bottom-sheet bg-white dark:bg-slate-900 w-full max-w-lg sm:max-w-2xl lg:max-w-3xl rounded-t-[2rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden" id="member-modal-box">
+        <div class="modal-bottom-sheet bg-white dark:bg-slate-900 w-full max-w-lg mx-auto rounded-t-[2rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col border-2 border-slate-900 dark:border-slate-700 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#000000] overflow-hidden" id="member-modal-box">
             <!-- DRAG PULL INDICATOR MOBILE -->
             <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
                 <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
@@ -1071,28 +1071,28 @@ export const openMemberModal = () => {
             <!-- Header Modal -->
             <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b-2 border-slate-900 dark:border-slate-700 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);">
                         <i class="fa-solid fa-id-card text-base"></i>
                     </div>
                     <div>
-                        <h3 class="font-black text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Kartu Member Digital</h3>
-                        <p class="text-[10px] font-semibold text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
+                        <h3 class="font-black text-slate-900 dark:text-white text-sm sm:text-base leading-tight uppercase tracking-wide">Kartu Member Digital</h3>
+                        <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
                     <!-- Privacy Eye Shield Toggle -->
-                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
-                        <i class="fa-solid ${isMemberPrivacyHidden ? 'fa-eye-slash text-amber-500' : 'fa-eye text-slate-500'} text-xs"></i>
+                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
+                        <i class="fa-solid ${isMemberPrivacyHidden ? 'fa-eye-slash text-amber-500' : 'fa-eye text-slate-600'} text-xs"></i>
                     </button>
 
                     <!-- Quick Session Lock -->
-                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Kunci Sesi Member (Logout Cepat)">
+                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-rose-100 hover:text-rose-600 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Kunci Sesi Member (Logout Cepat)">
                         <i class="fa-solid fa-lock text-xs"></i>
                     </button>
 
                     <!-- Close Button -->
-                    <button type="button" onclick="closeMemberModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                    <button type="button" onclick="closeMemberModal()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-rose-100 hover:text-rose-600 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Tutup">
+                        <i class="fa-solid fa-xmark text-sm font-black"></i>
                     </button>
                 </div>
             </div>
@@ -1100,11 +1100,11 @@ export const openMemberModal = () => {
             <div class="p-5 sm:p-6 pb-20 sm:pb-24 overflow-y-auto flex-1 space-y-6 custom-scrollbar" id="member-modal-body"></div>
         </div>`;
     rMemberModalBody();
-    m.style.opacity = '0'; 
+    m.style.opacity = '0';
     m.style.display = 'flex';
-    requestAnimationFrame(() => { 
-        m.style.transition = 'opacity 0.25s ease'; 
-        m.style.opacity = '1'; 
+    requestAnimationFrame(() => {
+        m.style.transition = 'opacity 0.25s ease';
+        m.style.opacity = '1';
     });
     if (!isAlreadyOpen && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('member');
@@ -1140,7 +1140,7 @@ export const getMemberPointsHistory = async (phone, force = false) => {
         try {
             const raw = localStorage.getItem('freshmart_my_orders');
             if (raw) localOrders = JSON.parse(raw) || [];
-        } catch (e) {}
+        } catch (e) { }
 
         // 2. Ambil pesanan dari Firestore (freshmart_orders)
         // Aturan keamanan Firestore: query daftar (list) HANYA untuk staf yang login,
@@ -1248,7 +1248,7 @@ export const getMemberPointsHistory = async (phone, force = false) => {
                 const ptsCost = parseFloat(o.claimedReward.pointsCost) || 0;
                 const rStatus = o.claimedReward.status === 'ready' ? 'Tersedia / Diterima'
                     : o.claimedReward.status === 'waiting_stock' ? 'Menunggu Stok Toko'
-                    : 'Sedang Diproses Toko';
+                        : 'Sedang Diproses Toko';
                 events.push({
                     id: `${o.id}-reward`,
                     orderId: o.id,
@@ -1303,22 +1303,21 @@ export const loadMemberPointsHistory = async (phone, force = false) => {
 
     if (!events || !events.length) {
         container.innerHTML = `
-            <div class="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 text-center space-y-2 bg-slate-50/70 dark:bg-slate-900/40">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center mx-auto text-sm border border-amber-200/80 dark:border-amber-900/40 shadow-2xs">
+            <div class="p-5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 text-center space-y-2 bg-slate-50 dark:bg-slate-800/80 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center mx-auto text-base border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">
                     <i class="fa-solid fa-coins"></i>
                 </div>
-                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum Ada Mutasi Poin</p>
-                <p class="text-[11px] text-slate-400 max-w-xs mx-auto">
+                <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Belum Ada Mutasi Poin</p>
+                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
                     Kumpulkan poin di setiap belanja kasir POS atau pesanan online Toko Putri untuk menikmati diskon tunai &amp; hadiah eksklusif.
                 </p>
-            </div>
-        `;
+            </div>`;
         return;
     }
 
     container.innerHTML = events.map(ev => `
-        <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 shadow-2xs hover:border-[var(--color-primary)]/40 transition-all">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 border ${ev.bgClass}">
+        <div class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] ${ev.bgClass}">
                 <i class="fa-solid ${ev.icon}"></i>
             </div>
             <div class="min-w-0 flex-1">
@@ -1357,7 +1356,7 @@ export const getMemberPaylaterBillingSummary = (member) => {
             const parsed = JSON.parse(rawO);
             if (Array.isArray(parsed)) candidates.push(...parsed);
         }
-    } catch(e) {}
+    } catch (e) { }
 
     // Deduplikasi berdasarkan orderId
     const seenIds = new Set();
@@ -1482,10 +1481,10 @@ export const rMemberModalBody = () => {
         const isEnter = memberAuthStep === 'enter_pin';
         const isCreate = memberAuthStep === 'create_pin';
         const isConfirm = memberAuthStep === 'confirm_pin';
-        
-        const title = isEnter ? 'Masukkan PIN Keamanan Member' 
-                    : (isCreate ? 'Buat 6-Digit PIN Pengaman' : 'Konfirmasi PIN 6-Digit');
-        const desc = isEnter 
+
+        const title = isEnter ? 'Masukkan PIN Keamanan Member'
+            : (isCreate ? 'Buat 6-Digit PIN Pengaman' : 'Konfirmasi PIN 6-Digit');
+        const desc = isEnter
             ? `Akun member <b>${maskPhoneNumber(pendingAuthMember.phone, true)}</b> (${esc(pendingAuthMember.name || 'Member')})`
             : (isCreate ? 'Lindungi akun kartu VIP, nomor HP, dan limit PayLater Anda.' : 'Ketikkan kembali 6 digit PIN yang baru saja Anda buat.');
         const icon = isEnter ? 'fa-key' : (isCreate ? 'fa-shield-halved' : 'fa-lock-open');
@@ -1494,11 +1493,10 @@ export const rMemberModalBody = () => {
         const dotsHtml = Array.from({ length: 6 }).map((_, idx) => {
             const isFilled = pinBuffer.length > idx;
             return `
-            <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
-                isFilled 
-                    ? 'primary-bg border-[var(--color-primary)] scale-110 shadow-xs shadow-[rgba(var(--color-primary-rgb),0.4)]' 
+            <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${isFilled
+                    ? 'primary-bg border-[var(--color-primary)] scale-110 shadow-xs shadow-[rgba(var(--color-primary-rgb),0.4)]'
                     : 'border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800'
-            }">
+                }">
                 ${isFilled ? '<div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white"></div>' : ''}
             </div>`;
         }).join('');
@@ -1535,23 +1533,23 @@ export const rMemberModalBody = () => {
                 <!-- Bento Keypad Grid -->
                 <div class="grid grid-cols-3 gap-2 sm:gap-2.5 w-full max-w-[280px]">
                     ${keypadNumbers.map(row => row.map(btn => {
-                        if (btn === 'cancel') {
-                            return `
-                            <button type="button" onclick="cancelMemberPinAuth()" class="h-12 sm:h-13 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 font-bold text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer shadow-2xs" title="Batal">
+            if (btn === 'cancel') {
+                return `
+                            <button type="button" onclick="cancelMemberPinAuth()" class="neo-btn h-11 sm:h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" title="Batal">
                                 <i class="fa-solid fa-arrow-left text-sm"></i>
                             </button>`;
-                        }
-                        if (btn === 'backspace') {
-                            return `
-                            <button type="button" onclick="handleMemberPinBackspace()" class="h-12 sm:h-13 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 font-bold text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer shadow-2xs" title="Hapus">
+            }
+            if (btn === 'backspace') {
+                return `
+                            <button type="button" onclick="handleMemberPinBackspace()" class="neo-btn h-11 sm:h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" title="Hapus">
                                 <i class="fa-solid fa-delete-left text-base"></i>
                             </button>`;
-                        }
-                        return `
-                        <button type="button" onclick="handleMemberPinDigit('${btn}')" class="h-12 sm:h-13 rounded-2xl bg-white hover:bg-slate-50 dark:bg-slate-800/90 dark:hover:bg-slate-700/80 border border-slate-200/90 dark:border-slate-700 text-slate-800 dark:text-white font-black text-lg sm:text-xl flex items-center justify-center active:scale-90 transition-all cursor-pointer shadow-2xs hover:border-[var(--color-primary)]/40">
+            }
+            return `
+                        <button type="button" onclick="handleMemberPinDigit('${btn}')" class="neo-btn h-11 sm:h-12 rounded-xl bg-white hover:bg-amber-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
                             ${btn}
                         </button>`;
-                    }).join('')).join('')}
+        }).join('')).join('')}
                 </div>
 
                 <!-- Public Device Auto-Lock Warning / Remember Device -->
@@ -1569,7 +1567,7 @@ export const rMemberModalBody = () => {
 
                     <!-- Lupa PIN Support Link -->
                     <div class="mt-3">
-                        <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Admin Toko Putri, saya lupa PIN keamanan akun member untuk nomor +${pendingAuthMember.phone||''}. Mohon bantuannya untuk reset PIN member saya. Terima kasih.`)}" target="_blank" class="text-[10.5px] font-bold text-[var(--color-primary)] hover:underline flex items-center justify-center gap-1 cursor-pointer">
+                        <a href="https://wa.me/${((appData.store?.wa) || '').replace(/\D/g, '')}?text=${encodeURIComponent(`Halo Admin Toko Putri, saya lupa PIN keamanan akun member untuk nomor +${pendingAuthMember.phone || ''}. Mohon bantuannya untuk reset PIN member saya. Terima kasih.`)}" target="_blank" class="text-[10.5px] font-bold text-[var(--color-primary)] hover:underline flex items-center justify-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-circle-question text-[10px]"></i> Lupa PIN? Hubungi Admin Toko
                         </a>
                     </div>
@@ -1582,24 +1580,29 @@ export const rMemberModalBody = () => {
     const activeRewards = (appData.rewards || []).filter(r => r.isActive !== 'false' && r.isActive !== false);
     const pts = currentMember ? (parseFloat(currentMember.points) || 0) : 0;
     const tier = getMemberTier(pts);
-    
+
     const rewardsHtml = activeRewards.length ? activeRewards.map(r => {
         const stockOk = (parseFloat(r.stock) || 0) > 0;
         const canClaim = currentMember && pts >= (parseFloat(r.pointsCost) || 0) && stockOk;
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
-        <div class="flex items-center gap-3 p-3.5 rounded-2xl border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] shadow-xs' : 'border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900'} transition-all">
-            ${r.img ? `<div class="w-14 h-14 rounded-xl overflow-hidden bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 shrink-0 flex items-center justify-center"><img src="${esc(r.img)}" class="w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy"></div>` : `<div class="w-14 h-14 rounded-xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 flex items-center justify-center text-slate-300 dark:text-slate-600 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
+        <div class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${isSelected ? 'bg-amber-50 dark:bg-amber-950/40 shadow-[2.5px_2.5px_0px_#0f172a]' : 'bg-white dark:bg-slate-900 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]'} transition-all">
+            <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 border-2 border-slate-900 dark:border-slate-700 shrink-0 flex items-center justify-center shadow-[1px_1px_0px_#0f172a]">
+                ${r.img ? `<img src="${esc(r.img)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" loading="lazy">` : ''}
+                <div class="w-full h-full flex items-center justify-center text-slate-400 font-black text-sm select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
+                    🎁
+                </div>
+            </div>
             <div class="min-w-0 flex-1">
-                <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
-                <p class="text-[11px] font-black text-[var(--color-primary)] mt-0.5 flex items-center gap-1">
+                <p class="text-xs font-black text-slate-900 dark:text-white truncate uppercase">${esc(r.name)}</p>
+                <p class="text-[11px] font-black text-amber-600 dark:text-amber-400 mt-0.5 flex items-center gap-1">
                     <i class="fa-solid fa-star text-[10px]"></i> ${parseFloat(r.pointsCost) || 0} Poin
                 </p>
-                ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah habis</p>` : ''}
+                ${!stockOk ? `<p class="text-[10px] font-black text-rose-500 mt-0.5">Stok hadiah habis</p>` : ''}
             </div>
             ${currentMember ? (isSelected
-                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2 rounded-xl active:scale-95 transition-all whitespace-nowrap shadow-xs cursor-pointer">Batal</button>`
-                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward('${esc(String(r.id))}')" class="shrink-0 ${canClaim ? 'primary-bg hover:opacity-90 text-white active:scale-95 shadow-xs cursor-pointer' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2 rounded-xl transition-all whitespace-nowrap">Pilih Hadiah</button>`) : `<span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
+                ? `<button type="button" onclick="deselectReward()" class="neo-btn shrink-0 bg-rose-600 text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-xl border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all whitespace-nowrap cursor-pointer">Batal</button>`
+                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward('${esc(String(r.id))}')" class="neo-btn shrink-0 ${canClaim ? 'text-white border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 border border-slate-300 dark:border-slate-600 cursor-not-allowed'} text-[10px] font-black uppercase px-3 py-1.5 rounded-xl transition-all whitespace-nowrap" ${canClaim ? 'style="background:var(--color-primary);"' : ''}>Pilih Hadiah</button>`) : `<span class="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase bg-slate-100 dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] px-2.5 py-1 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
         </div>`;
     }).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-3">Belum ada program hadiah yang tersedia.</p>`;
 
@@ -1611,13 +1614,13 @@ export const rMemberModalBody = () => {
                 
                 <!-- Action Controls: Balik Kartu, Unduh Kartu & Tutup -->
                 <div class="flex items-center justify-between gap-2 mt-3 max-w-[390px] mx-auto">
-                    <button type="button" onclick="flipMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-2xs cursor-pointer">
-                        <i class="fa-solid fa-repeat text-[11px] text-[var(--color-primary)]"></i> Balik Kartu
+                    <button type="button" onclick="flipMemberCard()" class="neo-btn flex-1 py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
+                        <i class="fa-solid fa-repeat text-[11px] text-amber-600"></i> Balik Kartu
                     </button>
-                    <button type="button" onclick="downloadMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl primary-bg hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)] cursor-pointer">
-                        <i class="fa-solid fa-download text-[11px]"></i> Simpan ke Galeri
+                    <button type="button" onclick="downloadMemberCard()" class="neo-btn flex-1 py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-white text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" style="background: var(--color-primary, #800020);">
+                        <i class="fa-solid fa-download text-[11px]"></i> Simpan Kartu
                     </button>
-                    <button type="button" onclick="closeMemberModal()" class="py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer" title="Tutup">
+                    <button type="button" onclick="closeMemberModal()" class="neo-btn py-2 px-3.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 hover:text-rose-600 dark:hover:text-white text-xs font-black flex items-center justify-center gap-1 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" title="Tutup">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -1629,7 +1632,7 @@ export const rMemberModalBody = () => {
             </div>
 
             <!-- TIER STATUS & PROGRESS LEVEL -->
-            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-3">
+            <div class="p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] space-y-3">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Level Keanggotaan</p>
@@ -1685,7 +1688,7 @@ export const rMemberModalBody = () => {
 
                 if (!isActive || limit <= 0) {
                     return `
-                    <div class="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-slate-100/60 dark:from-slate-900/60 dark:to-slate-800/40 relative overflow-hidden">
+                    <div class="p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] relative overflow-hidden">
                         <div class="flex items-center justify-between gap-2">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0">
@@ -1701,7 +1704,7 @@ export const rMemberModalBody = () => {
                         </div>
                         <div class="mt-2.5 pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
                             <span class="text-[10px] text-slate-400 font-semibold">Plafon limit hingga Rp 5.000.000</span>
-                            <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Admin Toko Putri, saya bermaksud mengajukan aktivasi fasilitas limit kredit Putri PayLater untuk nomor member: ${currentMember.phone||''}. Mohon informasi dan verifikasi persyaratannya. Terima kasih.`)}" target="_blank" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">Ajukan Aktivasi <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
+                            <a href="https://wa.me/${((appData.store?.wa) || '').replace(/\D/g, '')}?text=${encodeURIComponent(`Halo Admin Toko Putri, saya bermaksud mengajukan aktivasi fasilitas limit kredit Putri PayLater untuk nomor member: ${currentMember.phone || ''}. Mohon informasi dan verifikasi persyaratannya. Terima kasih.`)}" target="_blank" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">Ajukan Aktivasi <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
                         </div>
                     </div>`;
                 }
@@ -1776,7 +1779,7 @@ export const rMemberModalBody = () => {
                                     <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${nominalBulanIni}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${nominalBulanIni});" class="neo-btn flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 cursor-pointer" style="background: var(--color-primary);">
                                         <i class="fa-solid fa-credit-card text-xs"></i> Bayar ${hasMultiMonth ? 'Bulan Ini' : 'Tagihan'}
                                     </button>
-                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Tim Keuangan Toko Putri, saya ingin konfirmasi pembayaran tagihan Putri PayLater sebesar ${fCur(nominalBulanIni)} untuk nomor akun: ${currentMember.phone||''}. Berikut saya lampirkan bukti transfer pembayarannya. Terima kasih.`)}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
+                                    <a href="https://wa.me/${((appData.store?.wa) || '').replace(/\D/g, '')}?text=${encodeURIComponent(`Halo Tim Keuangan Toko Putri, saya ingin konfirmasi pembayaran tagihan Putri PayLater sebesar ${fCur(nominalBulanIni)} untuk nomor akun: ${currentMember.phone || ''}. Berikut saya lampirkan bukti transfer pembayarannya. Terima kasih.`)}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
                                         <i class="fa-brands fa-whatsapp text-sm text-[var(--color-primary)]"></i>
                                     </a>
                                 </div>
@@ -1788,18 +1791,18 @@ export const rMemberModalBody = () => {
 
             <!-- TABEL RINCIAN JADWAL ANGSURAN & TAGIHAN BERJALAN PELANGGAN -->
             ${(() => {
-                const activeOrders = (typeof getMemberActiveTempoOrders === 'function') 
-                    ? getMemberActiveTempoOrders() 
+                const activeOrders = (typeof getMemberActiveTempoOrders === 'function')
+                    ? getMemberActiveTempoOrders()
                     : ((typeof window.getMemberActiveTempoOrders === 'function') ? window.getMemberActiveTempoOrders() : []);
                 if (!activeOrders || activeOrders.length === 0) return '';
                 let pendingList = [];
                 try {
                     const rawP = localStorage.getItem('freshmart_pending_confirmations');
                     if (rawP) pendingList = JSON.parse(rawP) || [];
-                } catch(e) {}
+                } catch (e) { }
 
-                const renderFn = (typeof renderClientInstallmentSchedule === 'function') 
-                    ? renderClientInstallmentSchedule 
+                const renderFn = (typeof renderClientInstallmentSchedule === 'function')
+                    ? renderClientInstallmentSchedule
                     : window.renderClientInstallmentSchedule;
 
                 if (typeof renderFn !== 'function') return '';
@@ -1866,29 +1869,29 @@ export const rMemberModalBody = () => {
             <!-- PREVIEW KARTU CONTOH (MEMIKAT PELANGGAN) -->
             <div class="opacity-95">
                 ${renderDigitalMemberCard({
-                    name: 'CONTOH: PELANGGAN VIP',
-                    phone: '81234567890',
-                    points: 500
-                })}
+            name: 'CONTOH: PELANGGAN VIP',
+            phone: '81234567890',
+            points: 500
+        })}
             </div>
 
             <!-- FORM PENCARIAN / CEK KARTU MEMBER -->
-            <div class="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-3">
-                <div class="flex items-center gap-2 text-slate-800 dark:text-white font-bold text-xs sm:text-sm">
-                    <div class="w-7 h-7 rounded-xl primary-bg text-white flex items-center justify-center text-xs shrink-0 shadow-2xs">
+            <div class="p-4 sm:p-5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] space-y-3">
+                <div class="flex items-center gap-2 text-slate-900 dark:text-white font-black text-xs sm:text-sm uppercase tracking-wide">
+                    <div class="w-7 h-7 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 shadow-[1px_1px_0px_#0f172a]" style="background: var(--color-primary, #800020);">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <span>Cek Kartu Member &amp; Saldo Poin Anda</span>
+                    <span>Cek Kartu Member &amp; Saldo Poin</span>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                <p class="text-xs text-slate-600 dark:text-slate-300 font-semibold leading-relaxed">
                     Masukkan nomor WhatsApp yang pernah Anda gunakan saat berbelanja di Toko Putri:
                 </p>
                 <div class="flex gap-2">
                     <div class="relative flex-1">
-                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+62</span>
-                        <input type="tel" id="member-lookup-input" class="w-full form-input-bento rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-3 text-sm sm:text-xs font-bold text-slate-800 outline-none focus:border-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="81234567890" inputmode="numeric" autocomplete="off" />
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-700 dark:text-slate-300">+62</span>
+                        <input type="tel" id="member-lookup-input" class="w-full rounded-xl border-2 border-slate-900 bg-white py-2.5 pl-12 pr-3 text-sm sm:text-xs font-black text-slate-900 outline-none focus:bg-amber-50/50 dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-[1.5px_1.5px_0px_#0f172a]" placeholder="81234567890" inputmode="numeric" autocomplete="off" />
                     </div>
-                    <button type="button" onclick="lookupMemberPoints()" class="primary-bg text-white px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shrink-0 transition-all active:scale-95 shadow-sm cursor-pointer">
+                    <button type="button" onclick="lookupMemberPoints()" class="neo-btn text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider shrink-0 transition-all border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer" style="background: var(--color-primary, #800020);">
                         Cek Kartu
                     </button>
                 </div>
@@ -1896,11 +1899,11 @@ export const rMemberModalBody = () => {
             </div>
 
             <!-- KEUNTUNGAN MENJADI MEMBER -->
-            <div class="p-4 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.1)] text-xs space-y-2">
-                <h4 class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <i class="fa-solid fa-sparkles text-[var(--color-primary)]"></i> Keuntungan Menjadi Member Toko Putri:
+            <div class="p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-amber-50 dark:bg-amber-950/30 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] text-xs space-y-2">
+                <h4 class="font-black text-slate-900 dark:text-white flex items-center gap-1.5 uppercase text-xs tracking-wide">
+                    <i class="fa-solid fa-sparkles text-amber-500"></i> Keuntungan Menjadi Member Toko Putri:
                 </h4>
-                <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
+                <ul class="text-[11px] text-slate-700 dark:text-slate-300 font-semibold space-y-1 list-disc pl-4">
                     <li>Otomatis terdaftar menjadi member pada pesanan pertama Anda.</li>
                     <li>Kumpulkan poin di setiap transaksi belanja untuk ditukar hadiah gratis.</li>
                     <li>Mendapatkan kartu digital eksklusif yang bisa disimpan di galeri ponsel.</li>
@@ -1956,7 +1959,7 @@ export const lookupMemberPoints = async () => {
             pinBuffer = '';
             pinConfirmBuffer = '';
             pinErrorMessage = '';
-            
+
             if (mData.pin) {
                 memberAuthStep = 'enter_pin';
             } else {
@@ -1985,7 +1988,7 @@ export const lookupMemberPoints = async () => {
                 </div>` : ''}
             `;
         }
-    } catch(err) {
+    } catch (err) {
         resultDiv.className = 'text-xs font-bold text-rose-500 p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-xl';
         resultDiv.textContent = 'Gagal mengecek data. Silakan periksa koneksi internet Anda.';
     }
@@ -2010,15 +2013,15 @@ export const selectReward = (rewardId) => {
     }
 };
 
-export const deselectReward = () => { 
-    setSelectedReward(null); 
-    rMemberModalBody(); 
+export const deselectReward = () => {
+    setSelectedReward(null);
+    rMemberModalBody();
 };
 
 export const closeMemberModal = (fH = false) => {
     const m = document.getElementById('member-modal');
     if (!m || m.style.display === 'none') return;
-    
+
     // Auto-Lock Sesi jika pengguna tidak memilih opsi ingat di perangkat ini
     if (!rememberDeviceOption) {
         setCurrentMember(null);
@@ -2027,7 +2030,7 @@ export const closeMemberModal = (fH = false) => {
                 localStorage.removeItem('freshmart_current_member');
                 localStorage.removeItem('freshmart_member_wa');
             }
-        } catch(e) {}
+        } catch (e) { }
     }
 
     pendingAuthMember = null;
@@ -2037,12 +2040,12 @@ export const closeMemberModal = (fH = false) => {
     pinErrorMessage = '';
 
     const doClose = () => {
-        m.style.opacity = '0'; 
+        m.style.opacity = '0';
         m.style.transition = 'opacity 0.25s ease';
-        setTimeout(() => { 
-            m.style.display = 'none'; 
-            m.style.opacity = ''; 
-            m.style.transition = ''; 
+        setTimeout(() => {
+            m.style.display = 'none';
+            m.style.opacity = '';
+            m.style.transition = '';
         }, 250);
     };
 
