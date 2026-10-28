@@ -3585,32 +3585,20 @@ html.dark .skeleton-shimmer {
     position: relative;
     overflow: hidden;
     background: #ffffff;
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    border-radius: 1.5rem;
+    border: 2px solid #0f172a !important;
+    border-radius: 1rem !important;
     padding: 2.5rem 1.5rem;
     text-align: center;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
+    box-shadow: 3.5px 3.5px 0px #0f172a !important;
+    transition: all 0.2s ease;
 }
 html.dark .bento-empty-state-card {
-    background: rgba(15, 23, 42, 0.85);
-    border-color: rgba(30, 41, 59, 0.8);
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+    background: #0f172a;
+    border-color: #334155 !important;
+    box-shadow: 3.5px 3.5px 0px #000000 !important;
 }
 .bento-empty-state-card .empty-glow {
-    position: absolute;
-    top: -4rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14rem;
-    height: 14rem;
-    border-radius: 9999px;
-    background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-    opacity: 0.15;
-    pointer-events: none;
-}
-html.dark .bento-empty-state-card .empty-glow {
-    opacity: 0.22;
+    display: none !important;
 }
 
 /* Progressive Image Fade-In */
@@ -9038,3 +9026,20 @@ html.dark #cashier-admin-tabs-bar {
     }
 }
 
+
+/* POS Quick Discount Neo-Brutalist Chips */
+.pos-discount-chip {
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    font-weight: 700 !important;
+    transition: all 0.15s ease;
+}
+.pos-discount-chip:active {
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+.pos-discount-chip.active {
+    background-color: var(--color-primary, #800020) !important;
+    color: #ffffff !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+}

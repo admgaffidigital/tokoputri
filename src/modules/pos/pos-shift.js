@@ -455,7 +455,7 @@ export const openPOSOpenShiftModal = async () => {
                             <i class="fa-solid fa-money-bill-wave text-emerald-600"></i>
                             <span>Modal Awal Laci (Uang Kembalian)</span>
                         </span>
-                        <span class="text-[10px] font-bold text-slate-500 font-mono">Cash Float</span>
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-900 dark:border-slate-700 font-mono shadow-[1px_1px_0px_#0f172a]">CASH FLOAT</span>
                     </label>
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-600 dark:text-slate-300 pointer-events-none">Rp</span>
@@ -465,12 +465,12 @@ export const openPOSOpenShiftModal = async () => {
                             value="100000" oninput="window.posUpdateStartCashChips()">
                     </div>
                     <!-- Quick Amount Chips (Industrial Chiclets) -->
-                    <div id="pos-shift-preset-chips" class="flex items-center gap-1.5 flex-wrap pt-1">
-                        <button type="button" data-amount="0" onclick="window.posSetStartCashPreset(0)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">Rp 0</button>
-                        <button type="button" data-amount="50000" onclick="window.posSetStartCashPreset(50000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">50.000</button>
-                        <button type="button" data-amount="100000" onclick="window.posSetStartCashPreset(100000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-black border-2 border-slate-900 dark:border-slate-700 text-white bg-[var(--color-primary)] shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">100.000</button>
-                        <button type="button" data-amount="200000" onclick="window.posSetStartCashPreset(200000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">200.000</button>
-                        <button type="button" data-amount="500000" onclick="window.posSetStartCashPreset(500000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">500.000</button>
+                    <div id="pos-shift-preset-chips" class="grid grid-cols-5 gap-1.5 pt-1">
+                        <button type="button" data-amount="0" onclick="window.posSetStartCashPreset(0)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">Rp 0</button>
+                        <button type="button" data-amount="50000" onclick="window.posSetStartCashPreset(50000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">50.000</button>
+                        <button type="button" data-amount="100000" onclick="window.posSetStartCashPreset(100000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-black border-2 border-slate-900 dark:border-slate-700 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" style="background:var(--color-primary, #800020); color:#ffffff;">100.000</button>
+                        <button type="button" data-amount="200000" onclick="window.posSetStartCashPreset(200000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">200.000</button>
+                        <button type="button" data-amount="500000" onclick="window.posSetStartCashPreset(500000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">500.000</button>
                     </div>
                 </div>
 
@@ -547,9 +547,13 @@ export const posUpdateStartCashChips = () => {
     document.querySelectorAll('.pos-preset-chip').forEach(chip => {
         const amt = parseFloat(chip.dataset.amount);
         if (amt === val) {
-            chip.className = 'pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-black border-2 border-slate-900 dark:border-slate-700 text-white bg-[var(--color-primary)] shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]';
+            chip.className = 'pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-black border-2 border-slate-900 dark:border-slate-700 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]';
+            chip.style.backgroundColor = 'var(--color-primary, #800020)';
+            chip.style.color = '#ffffff';
         } else {
-            chip.className = 'pos-preset-chip px-3 py-1.5 rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]';
+            chip.className = 'pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]';
+            chip.style.backgroundColor = '';
+            chip.style.color = '';
         }
     });
 };
