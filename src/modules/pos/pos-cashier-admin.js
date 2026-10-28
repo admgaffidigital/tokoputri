@@ -918,7 +918,7 @@ export const openAddStaffModal = () => {
                             autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl pl-4 pr-12 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs transition-all">
                         <button type="button" onclick="window.toggleStaffPassVisibility('new-staff-pass')"
-                            class="btn-input-icon absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1">
+                            class="btn-input-icon absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1.5" title="Lihat Password">
                             <i id="new-staff-pass-eye" class="fa-solid fa-eye text-sm"></i>
                         </button>
                     </div>
