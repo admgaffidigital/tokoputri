@@ -827,58 +827,58 @@ export const renderRewardCatalog = () => {
     rcC.classList.remove('hidden');
     let rHTML = `
     <div class="bento-island-card rounded-[1.25rem] sm:rounded-[1.5rem] p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:shadow-sm">
-        <div class="mb-3.5 flex items-center justify-between gap-2 border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-3 dark:border-slate-700/50">
+        <div class="mb-3 flex items-center justify-between gap-2 border-b border-[rgba(var(--color-primary-rgb),0.12)] pb-2.5 dark:border-slate-700/50">
             <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
-                <div class="shrink-0 flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-2xs"
+                <div class="shrink-0 flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-xl text-white shadow-2xs"
                      style="background: var(--color-primary);">
-                    <i class="fa-solid fa-gift text-sm"></i>
+                    <i class="fa-solid fa-gift text-xs sm:text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                         <h3 class="text-xs sm:text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white leading-tight truncate">KATALOG REWARD POIN</h3>
-                        <span class="inline-flex items-center gap-1 text-[8.5px] font-black text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
-                            <i class="fa-solid fa-arrows-left-right text-[8px]"></i> Geser
+                        <span class="inline-flex items-center gap-1 text-[8px] sm:text-[8.5px] font-black text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
+                            <i class="fa-solid fa-arrows-left-right text-[7.5px]"></i> Geser
                         </span>
                     </div>
-                    <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 truncate hidden xs:block sm:block">Tukar poin transaksi Anda dengan hadiah fisik gratis</p>
+                    <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 truncate hidden xs:block sm:block">Tukar poin transaksi Anda dengan hadiah fisik gratis</p>
                 </div>
             </div>
             <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" 
-                    class="shrink-0 whitespace-nowrap min-h-[30px] rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                    class="shrink-0 whitespace-nowrap min-h-[30px] rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.08)] px-2.5 sm:px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)] shadow-2xs transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 flex items-center gap-1.5 cursor-pointer">
                 <span>Lihat Kartu VIP</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
             </button>
         </div>
-        <!-- Sliding Horizontal Reel / Carousel Hadiah (Hemat Ruang Vertikal) -->
-        <div class="flex items-center gap-3 overflow-x-auto pb-3 pt-1 hide-scrollbar snap-x scroll-smooth -mx-1 px-1 sm:mx-0 sm:px-0 select-none" style="overflow-x: auto !important; -webkit-overflow-scrolling: touch; touch-action: pan-x;">
+        <!-- Sliding Horizontal Reel / Carousel Hadiah (Hemat Ruang Vertikal & Proporsional Sempurna) -->
+        <div class="flex items-center gap-2.5 sm:gap-3 overflow-x-auto pb-2.5 pt-1 hide-scrollbar snap-x scroll-smooth -mx-1 px-1 sm:mx-0 sm:px-0 select-none" style="overflow-x: auto !important; -webkit-overflow-scrolling: touch; touch-action: pan-x; scroll-snap-type: x mandatory;">
             ${activeRewards.map((r) => {
         const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
         return `
                 <div class="reward-slide-item shrink-0 snap-start">
-                    <div class="reward-card group relative flex w-[295px] sm:w-[325px] items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                    <div class="reward-card group relative flex w-[248px] sm:w-[276px] items-center gap-2.5 p-2.5 sm:p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                         
-                        <!-- Thumbnail Kompak (56px x 56px) -->
-                        <div class="reward-thumb relative w-14 h-14 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1px_1px_0px_#0f172a]">
+                        <!-- Thumbnail Kompak & Presisi (48px x 48px) -->
+                        <div class="reward-thumb relative w-12 h-12 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1px_1px_0px_#0f172a]">
                             ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
                             <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
-                                <span class="text-xl">🎁</span>
+                                <span class="text-lg">🎁</span>
                             </div>
                         </div>
 
                         <!-- Detail Hadiah (Tengah, Terlindungi Bebas Border Bocor) -->
                         <div class="reward-info flex-1 min-w-0 pr-0.5">
                             <div class="flex items-center gap-1.5 mb-0.5">
-                                <span class="text-[8px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD</span>
-                                <span class="text-[8px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight">100% Free</span>
+                                <span class="text-[7.5px] sm:text-[8px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD</span>
+                                <span class="text-[7.5px] sm:text-[8px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-600/40 uppercase tracking-tight">100% Free</span>
                             </div>
-                            <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase leading-tight" title="${esc(r.name)}">
+                            <h4 class="text-[11.5px] sm:text-xs font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase leading-tight" title="${esc(r.name)}">
                                 ${esc(r.name)}
                             </h4>
                             <div class="mt-1 flex items-center gap-1.5">
-                                <span class="text-[9px] font-bold text-slate-400">Biaya:</span>
-                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
-                                    <i class="fa-solid fa-coins text-amber-600 text-[8.5px]"></i>
-                                    <span class="text-xs font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
-                                    <span class="text-[8px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
+                                <span class="text-[8.5px] font-bold text-slate-400">Biaya:</span>
+                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600/50 dark:border-amber-500/50 shadow-[1px_1px_0px_#0f172a]">
+                                    <i class="fa-solid fa-coins text-amber-600 text-[8px]"></i>
+                                    <span class="text-[11px] font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
+                                    <span class="text-[7.5px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
                                 </div>
                             </div>
                         </div>
@@ -887,11 +887,11 @@ export const renderRewardCatalog = () => {
                         <div class="reward-action shrink-0">
                             <button type="button" 
                                     onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
-                                    class="neo-btn py-1.5 px-3 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1 border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
+                                    class="neo-btn py-1 px-2.5 sm:px-3 rounded-xl text-white font-black text-[10.5px] sm:text-[11px] uppercase tracking-wider flex items-center justify-center gap-1 border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
                                     style="background: var(--color-primary);"
                                     title="Tukar Hadiah ${esc(r.name)}" 
                                     aria-label="Tukar Hadiah ${esc(r.name)}">
-                                <i class="fa-solid fa-hand-holding-dollar text-[10px] text-amber-300"></i>
+                                <i class="fa-solid fa-gift text-[9.5px] text-amber-300"></i>
                                 <span>Tukar</span>
                             </button>
                         </div>
