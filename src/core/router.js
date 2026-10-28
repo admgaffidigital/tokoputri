@@ -14,21 +14,50 @@ export let viewScrollPos = {};
 export let curViewName = 'view-catalog';
 export let isProgrammaticModalClose = false;
 let programmaticCloseTimer = null;
+let pendingHistoryBackTimer = null;
 export let viewHistoryStack = ['view-catalog'];
 
 /**
  * Mendaftarkan modal yang dibuka ke riwayat browser
  */
 export const pushModalHistory = (name) => {
+    // Jika penutupan modal sebelumnya baru saja menjadwalkan history.back() pada tick yang sama
+    // (misal transisi langsung dari modal detail ke modal preview dokumen), batalkan history.back()
+    // dan ganti state secara langsung agar tidak terjadi tabrakan popstate asinkron!
+    if (pendingHistoryBackTimer) {
+        clearTimeout(pendingHistoryBackTimer);
+        pendingHistoryBackTimer = null;
+        isProgrammaticModalClose = false;
+        if (programmaticCloseTimer) {
+            clearTimeout(programmaticCloseTimer);
+            programmaticCloseTimer = null;
+        }
+        const existingIdx = oMods.indexOf(name);
+        if (existingIdx > -1) oMods.splice(existingIdx, 1);
+        oMods.push(name);
+        if (typeof history !== 'undefined' && typeof window !== 'undefined') {
+            try {
+                history.replaceState({ modal: name }, '', window.location.href);
+            } catch (e) {}
+        }
+        return;
+    }
+
     if (oMods.length > 0 && oMods[oMods.length - 1] === name) {
         return; // Sudah terdaftar sebagai modal aktif teratas
     }
+    const prevIdx = oMods.indexOf(name);
+    if (prevIdx > -1) {
+        oMods.splice(prevIdx, 1);
+    }
     if (typeof history !== 'undefined' && typeof window !== 'undefined') {
         if (history.state && history.state.modal === name) {
-            if (!oMods.includes(name)) oMods.push(name);
+            oMods.push(name);
             return;
         }
-        history.pushState({ modal: name }, '', window.location.href);
+        try {
+            history.pushState({ modal: name }, '', window.location.href);
+        } catch (e) {}
     }
     oMods.push(name);
 };
@@ -37,6 +66,10 @@ export const pushModalHistory = (name) => {
  * Mengganti modal aktif di stack dan riwayat tanpa memicu race-condition history.back()
  */
 export const replaceModalHistory = (oldName, newName) => {
+    if (pendingHistoryBackTimer) {
+        clearTimeout(pendingHistoryBackTimer);
+        pendingHistoryBackTimer = null;
+    }
     const idx = oMods.lastIndexOf(oldName);
     if (idx > -1) {
         oMods[idx] = newName;
@@ -51,26 +84,45 @@ export const replaceModalHistory = (oldName, newName) => {
 };
 
 /**
- * Menutup modal dengan aman sesuai navigasi History API
+ * Menutup modal dengan aman sesuai navigasi History API.
+ * Callback doClose() dieksekusi seketika dengan proteksi try-catch agar UI modal
+ * DIJAMIN 100% selalu tertutup meskipun riwayat browser dipicu berulang kali.
  */
 export const requestCloseModal = (name, fH, doClose) => {
     const idx = oMods.lastIndexOf(name);
-    if (idx > -1) {
+    const wasInStack = idx > -1;
+    if (wasInStack) {
         oMods.splice(idx, 1);
     }
-    if (!fH) {
-        isProgrammaticModalClose = true;
-        if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
-        programmaticCloseTimer = setTimeout(() => {
-            isProgrammaticModalClose = false;
-        }, 300);
-        try { 
-            if (typeof history !== 'undefined') history.back(); 
-        } catch(e) {
-            isProgrammaticModalClose = false;
+
+    if (typeof doClose === 'function') {
+        try {
+            doClose();
+        } catch (err) {
+            console.error('[Router] Error executing modal doClose:', name, err);
         }
     }
-    if (typeof doClose === 'function') doClose();
+
+    const hasModalHistoryState = typeof history !== 'undefined' && history.state && Boolean(history.state.modal);
+    if (!fH && (wasInStack || hasModalHistoryState)) {
+        if (pendingHistoryBackTimer) clearTimeout(pendingHistoryBackTimer);
+        pendingHistoryBackTimer = setTimeout(() => {
+            pendingHistoryBackTimer = null;
+            // Hanya mundurkan history browser jika state saat ini memang benar-benar entri modal
+            if (typeof history !== 'undefined' && history.state && history.state.modal) {
+                isProgrammaticModalClose = true;
+                if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
+                programmaticCloseTimer = setTimeout(() => {
+                    isProgrammaticModalClose = false;
+                }, 350);
+                try {
+                    history.back();
+                } catch (e) {
+                    isProgrammaticModalClose = false;
+                }
+            }
+        }, 12);
+    }
 };
 
 /**
@@ -899,7 +951,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         },
         {
             id: 'receipt-preview-modal',
-            isOpen: (el) => !el.classList.contains('hidden'),
+            isOpen: (el) => !el.classList.contains('hidden') && !el.classList.contains('pointer-events-none'),
             close: () => {
                 if (typeof window.closeReceiptPreviewModal === 'function') window.closeReceiptPreviewModal(true);
                 else document.getElementById('receipt-preview-modal')?.classList.add('hidden');
@@ -907,7 +959,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         },
         {
             id: 'doc-preview-modal',
-            isOpen: (el) => !el.classList.contains('hidden'),
+            isOpen: (el) => !el.classList.contains('hidden') && !el.classList.contains('pointer-events-none'),
             close: () => {
                 if (typeof window.closeDocPreviewModal === 'function') window.closeDocPreviewModal(true);
                 else document.getElementById('doc-preview-modal')?.classList.add('hidden');
@@ -915,7 +967,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         },
         {
             id: 'modal-expense-receipt-preview',
-            isOpen: (el) => !el.classList.contains('hidden'),
+            isOpen: (el) => !el.classList.contains('hidden') && !el.classList.contains('pointer-events-none'),
             close: () => {
                 if (typeof window.closeExpenseReceiptPreview === 'function') window.closeExpenseReceiptPreview(true);
                 else document.getElementById('modal-expense-receipt-preview')?.classList.add('hidden');
@@ -1191,6 +1243,18 @@ export const setupHistoryRouter = () => {
             history.replaceState({ view: 'view-catalog' }, '', window.location.href);
         }
     } catch(e) {}
+
+    // Dukungan tombol Escape universal untuk menutup modal / preview dokumen paling atas
+    if (!window.__hasGlobalEscModalHandler) {
+        window.__hasGlobalEscModalHandler = true;
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !e.defaultPrevented) {
+                if (closeTopmostOpenModal(false)) {
+                    e.preventDefault();
+                }
+            }
+        });
+    }
 
     window.addEventListener('popstate', e => {
         // Jika penutupan modal dipicu secara terprogram (klik tombol X/backdrop), lewati event popstate

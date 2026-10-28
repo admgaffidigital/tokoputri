@@ -1779,12 +1779,11 @@ window.previewTempoReceipt = async (orderId) => {
         
         setH('receipt-paper-content', h);
         const mRec = el('receipt-preview-modal');
-        if (mRec && mRec.classList.contains('hidden')) pushModalHistory('receipt');
-        show('receipt-preview-modal');
-        setTimeout(() => { 
-            if (el('receipt-preview-modal')) el('receipt-preview-modal').classList.remove('opacity-0'); 
-            if (el('receipt-preview-modal-box')) el('receipt-preview-modal-box').classList.remove('scale-95'); 
-        }, 10);
+        const bRec = el('receipt-preview-modal-box');
+        if (mRec && (mRec.classList.contains('hidden') || mRec.classList.contains('opacity-0'))) {
+            pushModalHistory('receipt');
+        }
+        openModalAnim(mRec, bRec);
     } catch (e) {
         hLoad(); showToast('Gagal memuat struk: ' + e.message);
     }

@@ -335,10 +335,17 @@ export const closeThermalPrintPreview = (fH = false) => {
 export const confirmThermalPrint = () => {
     const job = _thermalJob;
     if (!job) return;
-    _thermalJob = null;
-    document.getElementById(THERMAL_MODAL_ID)?.remove();
-    unbindKeys();
-    unlockBody();
+    const doConfirmClose = () => {
+        _thermalJob = null;
+        document.getElementById(THERMAL_MODAL_ID)?.remove();
+        unbindKeys();
+        unlockBody();
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('thermalPreview', false, doConfirmClose);
+    } else {
+        doConfirmClose();
+    }
     if (typeof job.onConfirm === 'function') {
         try { job.onConfirm(); } catch (e) { console.warn('[PrintPreview] onConfirm error:', e); }
     }
@@ -418,6 +425,14 @@ export const openHtmlPrintPreview = (opts = {}) => {
         doc.open();
         doc.write(opts.html);
         doc.close();
+        try {
+            frame.contentWindow.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeHtmlPrintPreview();
+                }
+            });
+        } catch (e) {}
     }
     lockBody();
     bindKeys(() => confirmHtmlPrint(), () => closeHtmlPrintPreview());

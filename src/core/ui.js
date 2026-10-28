@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { el, show, hide, setIn } from './utils.js';
+import { el, show, hide, setIn, openModalAnim, closeModalAnim } from './utils.js';
 import { pushModalHistory, requestCloseModal } from './router.js';
 
 export let toastT = null;
@@ -209,12 +209,9 @@ export const showConfirm = (t, m, cb, btnText = null, isDanger = null) => {
         }
     }
     const m2 = el('custom-confirm-modal');
-    if (m2 && m2.classList.contains('hidden')) pushModalHistory('confirm');
-    show('custom-confirm-modal');
-    setTimeout(() => {
-        el('custom-confirm-modal').classList.remove('opacity-0');
-        el('custom-confirm-box').classList.remove('scale-95');
-    }, 10);
+    const b2 = el('custom-confirm-box');
+    if (m2 && (m2.classList.contains('hidden') || m2.classList.contains('opacity-0'))) pushModalHistory('confirm');
+    openModalAnim(m2, b2);
 
     return promiseResult;
 };
@@ -226,9 +223,7 @@ export const closeConfirm = (fH = false) => {
         resolve(false);
     }
     requestCloseModal('confirm', fH, () => {
-        el('custom-confirm-modal').classList.add('opacity-0');
-        el('custom-confirm-box').classList.add('scale-95');
-        setTimeout(() => hide('custom-confirm-modal'), 300);
+        closeModalAnim(el('custom-confirm-modal'), el('custom-confirm-box'));
     });
 };
 

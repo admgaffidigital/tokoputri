@@ -679,6 +679,7 @@ export const closePayrollItemModal = (fH = false) => {
     const doClose = () => {
         const modal = el('modal-payroll-item-form');
         if (modal) {
+            modal.classList.add('pointer-events-none', 'opacity-0');
             modal.style.opacity = '0';
             setTimeout(() => modal.remove(), 200);
         }
@@ -1073,6 +1074,7 @@ export const closePayslipPreviewModal = (fH = false) => {
     const doClose = () => {
         const modal = el('modal-payslip-preview');
         if (modal) {
+            modal.classList.add('pointer-events-none', 'opacity-0');
             modal.style.opacity = '0';
             setTimeout(() => modal.remove(), 200);
         }

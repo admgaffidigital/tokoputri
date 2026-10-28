@@ -12,7 +12,7 @@ import { appData, isSaving, setIsSaving } from '../../core/state.js';
 
 import { 
     el, show, setIn, setH, getV, esc, fCur, fAccounting,
-    showToast, sLoad, hLoad, toggleCls 
+    showToast, sLoad, hLoad, toggleCls, openModalAnim 
 } from '../../core/utils.js';
 import { computeInventoryStats } from './auth.js';
 
@@ -890,16 +890,21 @@ export const openTaxDocPreview = (reportType) => {
     setH('doc-paper-content', fullPageHtml);
     const badge = el('doc-page-count-badge');
     if (badge) badge.textContent = '1 Halaman A4';
-    const mDoc = el('doc-preview-modal');
-    if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
-        window.pushModalHistory('docPreview');
+
+    if (typeof window.showDocModalWithAnim === 'function') {
+        window.showDocModalWithAnim(1);
+    } else {
+        const mDoc = el('doc-preview-modal');
+        const bDoc = el('doc-preview-modal-box');
+        if (mDoc && (mDoc.classList.contains('hidden') || mDoc.classList.contains('opacity-0')) && typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('docPreview');
+        }
+        openModalAnim(mDoc, bDoc);
+        if (typeof window.fitDocPreview === 'function') {
+            window.fitDocPreview();
+            setTimeout(() => window.fitDocPreview(), 60);
+        }
     }
-    show('doc-preview-modal');
-    setTimeout(() => {
-        if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
-        if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
-        if (typeof window.fitDocPreview === 'function') window.fitDocPreview();
-    }, 10);
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────

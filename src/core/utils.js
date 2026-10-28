@@ -8,8 +8,25 @@
 
 // ─── DOM Shortcuts ──────────────────────────────────────────
 export const el        = id => (typeof id === 'string' ? document.getElementById(id) : id);
-export const show      = id => { const e = el(id); if(e) e.classList.remove('hidden'); };
-export const hide      = id => { const e = el(id); if(e) e.classList.add('hidden'); };
+export const show      = id => {
+    const e = el(id);
+    if (!e) return;
+    if (e.__closeAnimTimer) {
+        clearTimeout(e.__closeAnimTimer);
+        e.__closeAnimTimer = null;
+    }
+    e.classList.remove('hidden', 'pointer-events-none');
+    e.style.display = '';
+    e.style.pointerEvents = '';
+};
+export const hide      = id => {
+    const e = el(id);
+    if (!e) return;
+    if (e.__openRaf1) { cancelAnimationFrame(e.__openRaf1); e.__openRaf1 = null; }
+    if (e.__openRaf2) { cancelAnimationFrame(e.__openRaf2); e.__openRaf2 = null; }
+    if (e.__closeAnimTimer) { clearTimeout(e.__closeAnimTimer); e.__closeAnimTimer = null; }
+    e.classList.add('hidden');
+};
 export const toggleCls = (id, c, f) => { const e = el(id); if(e) e.classList.toggle(c, f); };
 export const setIn     = (id, t) => { const e = el(id); if(e) e.innerText = t; };
 export const setH      = (id, h) => { const e = el(id); if(e) e.innerHTML = h; };
@@ -20,17 +37,43 @@ export const getV      = id => { const e = el(id); return e ? e.value : ''; };
  * Membuka modal/bottom-sheet dengan animasi mulus tanpa kedip (anti-flicker).
  * Menggunakan Double requestAnimationFrame (rAF) agar browser mendaftarkan display
  * frame pertama secara murni di GPU tanpa memicu synchronous layout thrashing (void m.offsetWidth).
+ * Dilengkapi pembatalan timer close sebelumnya (anti race-condition saat buka-tutup cepat).
  */
 export const openModalAnim = (modalEl, contentEl) => {
     const m = typeof modalEl === 'string' ? el(modalEl) : modalEl;
     const c = typeof contentEl === 'string' ? el(contentEl) : contentEl;
     if (!m) return;
-    
+
+    // Batalkan animasi close atau rAF sebelumnya yang masih menggantung
+    if (m.__closeAnimTimer) {
+        clearTimeout(m.__closeAnimTimer);
+        m.__closeAnimTimer = null;
+    }
+    if (m.__openRaf1) {
+        cancelAnimationFrame(m.__openRaf1);
+        m.__openRaf1 = null;
+    }
+    if (m.__openRaf2) {
+        cancelAnimationFrame(m.__openRaf2);
+        m.__openRaf2 = null;
+    }
+
+    // Bersihkan inline style residu (misal dari swipe-to-dismiss atau close paksa)
+    m.style.display = '';
+    m.style.opacity = '';
+    m.style.pointerEvents = '';
     m.classList.remove('hidden', 'pointer-events-none');
-    if (c) c.classList.add('pointer-events-auto');
-    
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+
+    if (c) {
+        c.style.transform = '';
+        c.style.transition = '';
+        c.classList.add('pointer-events-auto');
+    }
+
+    m.__openRaf1 = requestAnimationFrame(() => {
+        m.__openRaf1 = null;
+        m.__openRaf2 = requestAnimationFrame(() => {
+            m.__openRaf2 = null;
             m.classList.remove('opacity-0', 'pointer-events-none');
             if (c) {
                 c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'translate-y-6', 'sm:translate-y-6', 'scale-95');
@@ -41,7 +84,10 @@ export const openModalAnim = (modalEl, contentEl) => {
 };
 
 /**
- * Menutup modal/bottom-sheet dengan animasi mulus tanpa glitch
+ * Menutup modal/bottom-sheet dengan animasi mulus tanpa glitch.
+ * Setelah elemen disembunyikan (.hidden), seluruh class pointer-events-none & translate
+ * dibersihkan kembali agar pemanggil legacy (show() / classList.remove('hidden'))
+ * tidak pernah terjebak dalam kondisi dead-click (macet tidak bisa di-close).
  */
 export const closeModalAnim = (modalEl, contentEl, onClosed) => {
     const m = typeof modalEl === 'string' ? el(modalEl) : modalEl;
@@ -50,15 +96,40 @@ export const closeModalAnim = (modalEl, contentEl, onClosed) => {
         if (typeof onClosed === 'function') onClosed();
         return;
     }
-    
+
+    // Batalkan antrean open rAF jika modal langsung ditutup sebelum sempat terbuka penuh
+    if (m.__openRaf1) {
+        cancelAnimationFrame(m.__openRaf1);
+        m.__openRaf1 = null;
+    }
+    if (m.__openRaf2) {
+        cancelAnimationFrame(m.__openRaf2);
+        m.__openRaf2 = null;
+    }
+    if (m.__closeAnimTimer) {
+        clearTimeout(m.__closeAnimTimer);
+        m.__closeAnimTimer = null;
+    }
+
     m.classList.add('opacity-0', 'pointer-events-none');
     if (c) {
         c.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
         c.classList.remove('pointer-events-auto');
     }
-    
-    setTimeout(() => {
+
+    m.__closeAnimTimer = setTimeout(() => {
+        m.__closeAnimTimer = null;
         m.classList.add('hidden');
+        // Bersihkan class lock setelah hidden aktif agar modal selalu siap dibuka ulang dengan cara apa pun
+        m.classList.remove('pointer-events-none');
+        m.style.opacity = '';
+        m.style.pointerEvents = '';
+        if (c) {
+            c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8');
+            c.classList.add('pointer-events-auto');
+            c.style.transform = '';
+            c.style.transition = '';
+        }
         if (typeof onClosed === 'function') onClosed();
     }, 280);
 };

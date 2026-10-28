@@ -333,14 +333,10 @@ export const previewVariant = (idx) => {
     }
 
     c.innerHTML = html;
-    if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+    if ((m.classList.contains('hidden') || m.classList.contains('opacity-0')) && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('variantPreview');
     }
-    show('variant-preview-modal');
-    setTimeout(() => {
-        m.classList.remove('opacity-0');
-        c.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(m, c);
 };
 
 export const previewProductImage = () => {
@@ -371,14 +367,10 @@ export const previewProductImage = () => {
     `;
 
     c.innerHTML = html;
-    if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+    if ((m.classList.contains('hidden') || m.classList.contains('opacity-0')) && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('variantPreview');
     }
-    show('variant-preview-modal');
-    setTimeout(() => {
-        m.classList.remove('opacity-0');
-        c.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(m, c);
 };
 
 export const closeVariantPreviewModal = (fH = false) => {
@@ -386,12 +378,9 @@ export const closeVariantPreviewModal = (fH = false) => {
     const c = el('variant-preview-content');
     if (m && c) {
         const doClose = () => {
-            m.classList.add('opacity-0');
-            c.classList.add('scale-95');
-            setTimeout(() => {
-                hide('variant-preview-modal');
+            closeModalAnim(m, c, () => {
                 c.innerHTML = '';
-            }, 300);
+            });
         };
         if (typeof window.requestCloseModal === 'function') {
             window.requestCloseModal('variantPreview', fH, doClose);

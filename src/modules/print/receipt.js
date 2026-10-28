@@ -222,7 +222,7 @@ export const openReceiptPreview = async (orderId = null) => {
 
     const mRec = el('receipt-preview-modal');
     const bRec = el('receipt-preview-modal-box');
-    if (mRec && mRec.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+    if (mRec && (mRec.classList.contains('hidden') || mRec.classList.contains('opacity-0')) && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('receipt');
     }
     openModalAnim(mRec, bRec);

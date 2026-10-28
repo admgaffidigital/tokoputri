@@ -2803,22 +2803,33 @@ const renderPagesToContainer = (pages) => {
     showDocModalWithAnim(totalPages);
 };
 
-const showDocModalWithAnim = (pageCount = 1) => {
+let fitDocTimer1 = null;
+let fitDocTimer2 = null;
+
+export const showDocModalWithAnim = (pageCount = 1) => {
     const mDoc = el('doc-preview-modal');
     const bDoc = el('doc-preview-modal-box');
     if (!mDoc) return;
 
-    if (mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+    if ((mDoc.classList.contains('hidden') || mDoc.classList.contains('opacity-0')) && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('docPreview');
     }
     openModalAnim(mDoc, bDoc);
-    mDoc.classList.remove('hidden');
+    mDoc.classList.remove('hidden', 'pointer-events-none');
+
+    const area = el('doc-paper-scroll-area');
+    if (area) area.scrollTop = 0;
+
+    if (fitDocTimer1) clearTimeout(fitDocTimer1);
+    if (fitDocTimer2) clearTimeout(fitDocTimer2);
 
     fitDocPreview();
-    setTimeout(() => {
+    fitDocTimer1 = setTimeout(() => {
+        fitDocTimer1 = null;
         fitDocPreview();
     }, 60);
-    setTimeout(() => {
+    fitDocTimer2 = setTimeout(() => {
+        fitDocTimer2 = null;
         fitDocPreview();
     }, 200);
 };
@@ -2831,7 +2842,7 @@ export const fitDocPreview = () => {
 
     const PAPER_W = 794;
     const safeGap = (window.innerWidth < 640) ? 12 : 32;
-    const availW = area.clientWidth - safeGap;
+    const availW = Math.max(160, area.clientWidth - safeGap);
     const scale = Math.min(1, Math.max(0.2, availW / PAPER_W));
 
     content.style.transform = `translateX(-50%) scale(${scale})`;
@@ -2848,6 +2859,11 @@ export const closeDocPreviewModal = (fH = false) => {
     const m = el('doc-preview-modal');
     const b = el('doc-preview-modal-box');
     if (!m) return;
+
+    if (fitDocTimer1) { clearTimeout(fitDocTimer1); fitDocTimer1 = null; }
+    if (fitDocTimer2) { clearTimeout(fitDocTimer2); fitDocTimer2 = null; }
+    setIsSaving(false);
+
     if (typeof window.requestCloseModal === 'function') {
         window.requestCloseModal('docPreview', fH, () => {
             closeModalAnim(m, b);
@@ -3180,6 +3196,7 @@ export const exportDocFile = async (mode) => {
 export const openTempoRecapDocPreview = () => openDocPreview('tempo_recap');
 
 window.openDocPreview = openDocPreview;
+window.showDocModalWithAnim = showDocModalWithAnim;
 window.openCartSPHPreview = openCartSPHPreview;
 window.openTempoRecapDocPreview = openTempoRecapDocPreview;
 window.fitDocPreview = fitDocPreview;

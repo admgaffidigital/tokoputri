@@ -884,8 +884,8 @@ export const closeExpenseModal = (fH = false) => {
 
     document.body.classList.remove('overflow-hidden');
 
-    if (!fH && typeof window.requestCloseModal === 'function') {
-        window.requestCloseModal('expenseForm', false, () => {
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('expenseForm', fH, () => {
             closeModalAnim(modal, box, () => {
                 editingExpenseId = null;
             });
@@ -1075,8 +1075,8 @@ export const closeExpenseReceiptPreview = (fH = false) => {
     const box = el('modal-expense-receipt-preview-box');
     if (!modal) return;
 
-    if (!fH && typeof window.requestCloseModal === 'function') {
-        window.requestCloseModal('expenseReceipt', false, () => {
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('expenseReceipt', fH, () => {
             closeModalAnim(modal, box);
         });
     } else {

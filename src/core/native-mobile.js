@@ -193,6 +193,54 @@ export const closeModalById = (id) => {
         case 'modal-attendance-rekap':
             if (typeof window.closeMonthlyAttendanceRecapModal === 'function') window.closeMonthlyAttendanceRecapModal();
             break;
+        case 'doc-preview-modal':
+            if (typeof window.closeDocPreviewModal === 'function') window.closeDocPreviewModal();
+            break;
+        case 'receipt-preview-modal':
+            if (typeof window.closeReceiptModal === 'function') window.closeReceiptModal();
+            break;
+        case 'utp-thermal-modal':
+            if (typeof window.closeThermalPreview === 'function') window.closeThermalPreview();
+            break;
+        case 'utp-html-modal':
+            if (typeof window.closeHtmlPreviewModal === 'function') window.closeHtmlPreviewModal();
+            break;
+        case 'modal-expense-receipt-preview':
+            if (typeof window.closeExpenseReceiptPreview === 'function') window.closeExpenseReceiptPreview();
+            break;
+        case 'modal-expense-form':
+            if (typeof window.closeExpenseModal === 'function') window.closeExpenseModal();
+            break;
+        case 'modal-delivery-order':
+            if (typeof window.closeDeliveryOrderModal === 'function') window.closeDeliveryOrderModal();
+            break;
+        case 'modal-delivery-signature':
+            if (typeof window.closeDeliverySignatureModal === 'function') window.closeDeliverySignatureModal();
+            break;
+        case 'modal-sales-return':
+            if (typeof window.closeSalesReturnModal === 'function') window.closeSalesReturnModal();
+            break;
+        case 'modal-vendor-return':
+            if (typeof window.closeVendorReturnModal === 'function') window.closeVendorReturnModal();
+            break;
+        case 'modal-so-finalize':
+            if (typeof window.closeSoFinalizeModal === 'function') window.closeSoFinalizeModal();
+            break;
+        case 'modal-so-history-detail':
+            if (typeof window.closeSoHistoryDetailModal === 'function') window.closeSoHistoryDetailModal();
+            break;
+        case 'modal-product-fifo':
+            if (typeof window.closeProductFifoModal === 'function') window.closeProductFifoModal();
+            break;
+        case 'modal-product-barcode-label':
+            if (typeof window.closeProductBarcodeModal === 'function') window.closeProductBarcodeModal();
+            break;
+        case 'loyalty-reward-modal':
+            if (typeof window.closeLoyaltyRewardModal === 'function') window.closeLoyaltyRewardModal();
+            break;
+        case 'loyalty-adjust-modal':
+            if (typeof window.closeLoyaltyAdjustModal === 'function') window.closeLoyaltyAdjustModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {
@@ -266,6 +314,9 @@ export const initNativeSheetGestures = () => {
 
         activeDragSheet = sheetBox;
         activeDragModal = modalContainer;
+        if (modalContainer.__origBg === undefined) {
+            modalContainer.__origBg = modalContainer.style.backgroundColor || '';
+        }
         startY = touch.clientY;
         startX = touch.clientX;
         currentY = startY;
@@ -326,32 +377,25 @@ export const initNativeSheetGestures = () => {
         if (isDraggingSheet && (deltaY > 80 || (velocity > 0.45 && deltaY > 30))) {
             // ── Tutup Sheet (Swipe Down Terpenuhi) ──
             triggerHaptic('light');
-            sheet.style.transition = 'transform 0.25s cubic-bezier(0.32, 0.72, 0, 1)';
-            sheet.style.transform = 'translateY(100%)';
+            sheet.style.transition = '';
+            sheet.style.transform = '';
             if (modal) {
-                modal.style.transition = 'opacity 0.25s ease';
-                modal.style.opacity = '0';
+                modal.style.backgroundColor = modal.__origBg || '';
+                modal.style.opacity = '';
+                modal.style.transition = '';
             }
-
-            setTimeout(() => {
-                sheet.style.transform = '';
-                sheet.style.transition = '';
-                if (modal) {
-                    modal.style.backgroundColor = '';
-                    modal.style.opacity = '';
-                }
-                closeModalById(modal ? modal.id : '');
-            }, 250);
+            closeModalById(modal ? modal.id : '');
         } else if (isDraggingSheet) {
             // ── Batal / Balik ke Posisi Awal (Spring Snap Back) ──
             sheet.style.transition = 'transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             sheet.style.transform = '';
             if (modal) {
                 modal.style.transition = 'background-color 0.28s ease';
-                modal.style.backgroundColor = '';
+                modal.style.backgroundColor = modal.__origBg || '';
             }
             setTimeout(() => {
                 sheet.style.transition = '';
+                if (modal) modal.style.transition = '';
             }, 300);
         }
         isDraggingSheet = false;
