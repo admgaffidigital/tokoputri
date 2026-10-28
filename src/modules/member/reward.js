@@ -846,13 +846,16 @@ export const renderRewardCatalog = () => {
         <div class="flex gap-3 overflow-x-auto hide-scrollbar snap-x pb-2 pt-1 ${activeRewards.length === 1 ? 'sm:grid sm:grid-cols-2 md:grid-cols-3' : 'sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'}">
             ${activeRewards.map((r) => {
                 const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
-                const svgFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23f8fafc'/><rect x='8' y='8' width='284' height='284' fill='none' stroke='%230f172a' stroke-width='2' stroke-dasharray='6 6'/><circle cx='150' cy='140' r='50' fill='%23800020'/><text x='150' y='154' font-family='sans-serif' font-weight='900' font-size='32' fill='%23ffffff' text-anchor='middle'>🎁</text><text x='150' y='225' font-family='sans-serif' font-weight='900' font-size='13' fill='%230f172a' text-anchor='middle' letter-spacing='2'>HADIAH REWARD</text></svg>";
                 return `
                 <div class="group relative flex ${activeRewards.length === 1 ? 'w-[200px] sm:w-full' : 'w-[165px] sm:w-full'} shrink-0 flex-col overflow-hidden rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#0f172a] snap-start cursor-pointer select-none text-left" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                     
                     <!-- Canvas Gambar Produk 1:1 Presisi Full Frame Bersih Murni -->
                     <div class="relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-b-2 border-slate-900 dark:border-slate-700 shrink-0">
-                        <img loading="lazy" src="${esc(r.img || '')}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='${svgFallback}'">
+                        ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+                        <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
+                            <span class="text-3xl mb-1">🎁</span>
+                            <span class="text-[9px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">HADIAH REWARD</span>
+                        </div>
                     </div>
 
                     <!-- Detail & Aksi dengan Proporsi Selaras Tema Katalog Toko -->
