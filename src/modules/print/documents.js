@@ -543,8 +543,8 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
         const logoHTML = getStoreLogoHtml('w-16 h-16');
         const poDate = formatDate(po.date || po.createdAt);
         const poNumber = po.poNumber || po.id;
-        const termLabel = po.paymentType === 'tempo' 
-            ? `Tempo ${po.tempoDays || 14} Hari (Jatuh Tempo: ${formatDate(po.tempoDueDate)})` 
+        const termLabel = po.paymentType === 'tempo'
+            ? `Tempo ${po.tempoDays || 14} Hari (Jatuh Tempo: ${formatDate(po.tempoDueDate)})`
             : (po.paymentType === 'konsinyasi' ? 'Konsinyasi' : 'Cash / Tunai');
 
         const kopHtml = `
@@ -1270,7 +1270,7 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
     if (type === 'tempo_customer_ledger') {
         const custKey = String(targetId || '').trim();
         const piutangList = window.cachedPiutangOrders || [];
-        
+
         const customerOrders = piutangList.filter(o => {
             const phone = String(o.customer?.phone || o.customer?.wa || '').replace(/\D/g, '');
             const name = String(o.customer?.name || '').toLowerCase().trim();
@@ -1460,8 +1460,8 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
     // 5b. REKAP BUKU BESAR PIUTANG TOKO (ACCOUNTS RECEIVABLE MASTER LEDGER)
     // ────────────────────────────────────────────────────────────
     if (type === 'tempo_recap') {
-        const piutangList = window.cachedPiutangOrders && window.cachedPiutangOrders.length > 0 
-            ? window.cachedPiutangOrders 
+        const piutangList = window.cachedPiutangOrders && window.cachedPiutangOrders.length > 0
+            ? window.cachedPiutangOrders
             : (window.gOrds || []).filter(o => o.payment?.method === 'tempo' && (parseFloat(o.payment?.tempoBalance) > 0 || (o.payment?.status !== 'paid' && o.payment?.status !== 'completed')));
 
         if (!piutangList || piutangList.length === 0) {
@@ -1708,9 +1708,9 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
         setIn('doc-modal-title', 'Preview Nota Retur Penjualan (A4)');
         const logoHTML = getStoreLogoHtml('w-16 h-16');
         const retDate = formatDate(ret.createdAt, true);
-        const methodLabel = ret.refundMethod === 'cash' ? 'Pengembalian Tunai (Cash Refund)' 
-            : (ret.refundMethod === 'credit' ? 'Saldo Kredit Toko (Store Credit)' 
-            : (ret.refundMethod === 'exchange' ? 'Tukar Barang (Exchange)' : 'Lainnya'));
+        const methodLabel = ret.refundMethod === 'cash' ? 'Pengembalian Tunai (Cash Refund)'
+            : (ret.refundMethod === 'credit' ? 'Saldo Kredit Toko (Store Credit)'
+                : (ret.refundMethod === 'exchange' ? 'Tukar Barang (Exchange)' : 'Lainnya'));
 
         const kopHtml = `
         <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
@@ -1772,9 +1772,9 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
                 ${it.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(it.sku)}</span>` : ''}
             </td>
             <td class="py-2 px-3 text-center text-[10.5px]">
-                ${it.condition === 'good' 
-                    ? `<span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 block text-[9.5px]">Baik (Restok Rak)</span>` 
-                    : `<span class="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 block text-[9.5px]">Rusak (Karantina)</span>`}
+                ${it.condition === 'good'
+                ? `<span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 block text-[9.5px]">Baik (Restok Rak)</span>`
+                : `<span class="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 block text-[9.5px]">Rusak (Karantina)</span>`}
             </td>
             <td class="py-2 px-3 text-center font-mono font-bold text-slate-900">${formatQty(it.qty)}</td>
             <td class="py-2 px-3 text-right font-mono text-slate-600">${fCur(it.soldPrice || 0)}</td>
@@ -1857,8 +1857,8 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
         setIn('doc-modal-title', 'Preview Surat Pengembalian Barang ke Supplier (A4)');
         const logoHTML = getStoreLogoHtml('w-16 h-16');
         const retDate = formatDate(ret.createdAt, true);
-        const methodLabel = ret.settlementMethod === 'ap_deduction' 
-            ? 'Potong Hutang PO (AP Deduction)' 
+        const methodLabel = ret.settlementMethod === 'ap_deduction'
+            ? 'Potong Hutang PO (AP Deduction)'
             : (ret.settlementMethod === 'cash_refund' ? 'Pengembalian Dana Kas / Transfer' : 'Lainnya');
 
         const kopHtml = `
@@ -2313,26 +2313,26 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
                             </thead>
                             <tbody class="divide-y divide-emerald-200 font-mono">
                                 ${o.payment.paylaterSchedule.map((sc, idx) => {
-                                    const mIdx = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (idx + 1);
-                                    const pPokok = parseFloat(sc.pokok || sc.principal) || 0;
-                                    const pFee = parseFloat((sc.adminFee || 0) + (sc.serviceFee || 0)) || 0;
-                                    const mTotal = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || (pPokok + pFee);
-                                    
-                                    runningTgt += mTotal;
-                                    const dueTime = sc.dueDate || 0;
-                                    const dueStr = sc.dueDateFormatted || sc.dueDateStr || (dueTime ? formatDate(dueTime) : '-');
+                        const mIdx = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (idx + 1);
+                        const pPokok = parseFloat(sc.pokok || sc.principal) || 0;
+                        const pFee = parseFloat((sc.adminFee || 0) + (sc.serviceFee || 0)) || 0;
+                        const mTotal = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || (pPokok + pFee);
 
-                                    let badge = '';
-                                    if (paidAll >= runningTgt) {
-                                        badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">LUNAS</span>`;
-                                    } else if (!foundUnpaid) {
-                                        foundUnpaid = true;
-                                        badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">BULAN INI</span>`;
-                                    } else {
-                                        badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-medium uppercase bg-slate-100 text-slate-500">MENDATANG</span>`;
-                                    }
+                        runningTgt += mTotal;
+                        const dueTime = sc.dueDate || 0;
+                        const dueStr = sc.dueDateFormatted || sc.dueDateStr || (dueTime ? formatDate(dueTime) : '-');
 
-                                    return `
+                        let badge = '';
+                        if (paidAll >= runningTgt) {
+                            badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">LUNAS</span>`;
+                        } else if (!foundUnpaid) {
+                            foundUnpaid = true;
+                            badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">BULAN INI</span>`;
+                        } else {
+                            badge = `<span class="px-1.5 py-0.5 rounded text-[8px] font-medium uppercase bg-slate-100 text-slate-500">MENDATANG</span>`;
+                        }
+
+                        return `
                                     <tr>
                                         <td class="py-1 px-2 font-bold text-slate-800 text-center font-sans">Bulan Ke-${mIdx}</td>
                                         <td class="py-1 px-2 text-slate-600 text-center">${dueStr}</td>
@@ -2341,7 +2341,7 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
                                         <td class="py-1 px-2 font-black text-right text-emerald-800">${fCur(mTotal)}</td>
                                         <td class="py-1 px-2 text-center font-sans">${badge}</td>
                                     </tr>`;
-                                }).join('')}
+                    }).join('')}
                             </tbody>
                         </table>
                     </div>`;
@@ -2465,7 +2465,7 @@ export const openDocPreview = (type, targetId = null, extraOptions = {}) => {
     // ────────────────────────────────────────────────────────────
     const del = o.delivery || {};
     const doNumber = del.doNumber || ('DO-' + String(new Date().getFullYear()).slice(-2) + String(new Date().getMonth() + 1).padStart(2, '0') + '-' + String(o.orderId).replace(/[^a-zA-Z0-9]/g, '').slice(-5).toUpperCase());
-    
+
     const doBarcodeSvg = typeof generateCode128Svg === 'function' ? generateCode128Svg(doNumber, {
         height: 34,
         showText: true,
@@ -2642,7 +2642,7 @@ export const openCartSPHPreview = () => {
     }
 
     currentDocType = 'sph';
-    const sphNum = 'SPH-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(1000 + Math.random() * 9000);
+    const sphNum = 'SPH-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.floor(1000 + Math.random() * 9000);
     const issueDate = formatDate(new Date());
     const validUntil = formatDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
 
@@ -2792,7 +2792,7 @@ const renderPagesToContainer = (pages) => {
     const container = el('doc-paper-content');
     if (!container) return;
     container.innerHTML = pages.join('');
-    
+
     // Perbarui badge jumlah halaman di header modal
     const totalPages = pages.length;
     const badge = el('doc-page-count-badge');
