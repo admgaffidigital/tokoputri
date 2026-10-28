@@ -834,7 +834,12 @@ export const renderRewardCatalog = () => {
                     <i class="fa-solid fa-gift text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-tight text-slate-800 dark:text-white leading-tight truncate">KATALOG REWARD POIN</h3>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="text-xs sm:text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white leading-tight truncate">KATALOG REWARD POIN</h3>
+                        <span class="inline-flex items-center gap-1 text-[8.5px] font-black text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
+                            <i class="fa-solid fa-arrows-left-right text-[8px]"></i> Geser
+                        </span>
+                    </div>
                     <p class="text-[9.5px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 truncate hidden xs:block sm:block">Tukar poin transaksi Anda dengan hadiah fisik gratis</p>
                 </div>
             </div>
@@ -843,33 +848,34 @@ export const renderRewardCatalog = () => {
                 <span>Lihat Kartu VIP</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
             </button>
         </div>
-        <div class="grid grid-cols-1 ${activeRewards.length > 1 ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-3 pt-1">
+        <!-- Sliding Horizontal Reel / Carousel Hadiah (Hemat Ruang Vertikal) -->
+        <div class="flex items-center gap-3 overflow-x-auto pb-3 pt-1 hide-scrollbar snap-x scroll-smooth -mx-1 px-1 sm:mx-0 sm:px-0 select-none" style="overflow-x: auto !important; -webkit-overflow-scrolling: touch; touch-action: pan-x;">
             ${activeRewards.map((r) => {
         const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
         return `
-                <div class="group relative flex w-full items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer select-none" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                <div class="group relative flex w-[280px] sm:w-[320px] shrink-0 snap-start items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                     
-                    <!-- Thumbnail Kompak & Proporsional (Ukuran 68px x 68px) -->
-                    <div class="relative w-16 h-16 sm:w-20 sm:h-20 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1.5px_1.5px_0px_#0f172a]">
+                    <!-- Thumbnail Kompak & Proporsional (Ukuran 60px x 60px) -->
+                    <div class="relative w-15 h-15 sm:w-16 sm:h-16 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1px_1px_0px_#0f172a]">
                         ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
                         <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
-                            <span class="text-2xl">🎁</span>
+                            <span class="text-xl">🎁</span>
                         </div>
                     </div>
 
                     <!-- Detail Hadiah (Tengah) -->
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1.5 mb-1">
-                            <span class="text-[8.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD POIN</span>
-                            <span class="text-[8.5px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded-md border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight">100% Free</span>
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <span class="text-[8px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD</span>
+                            <span class="text-[8px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1 py-0.2 rounded border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight">100% Free</span>
                         </div>
                         <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase" title="${esc(r.name)}">
                             ${esc(r.name)}
                         </h4>
-                        <div class="mt-1 flex items-center gap-2">
-                            <span class="text-[9.5px] font-bold text-slate-400">Biaya:</span>
-                            <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
-                                <i class="fa-solid fa-coins text-amber-600 text-[9px]"></i>
+                        <div class="mt-1 flex items-center gap-1.5">
+                            <span class="text-[9px] font-bold text-slate-400">Biaya:</span>
+                            <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
+                                <i class="fa-solid fa-coins text-amber-600 text-[8.5px]"></i>
                                 <span class="text-xs font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
                                 <span class="text-[8px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
                             </div>
@@ -877,14 +883,14 @@ export const renderRewardCatalog = () => {
                     </div>
 
                     <!-- Tombol Aksi Tukar (Kanan) -->
-                    <div class="shrink-0 pl-1">
+                    <div class="shrink-0">
                         <button type="button" 
                                 onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
-                                class="neo-btn py-2 px-3 sm:px-4 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
+                                class="neo-btn py-1.5 px-3 rounded-xl text-white font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-1 border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
                                 style="background: var(--color-primary);"
                                 title="Tukar Hadiah ${esc(r.name)}" 
                                 aria-label="Tukar Hadiah ${esc(r.name)}">
-                            <i class="fa-solid fa-hand-holding-dollar text-[11px] text-amber-300"></i>
+                            <i class="fa-solid fa-hand-holding-dollar text-[10px] text-amber-300"></i>
                             <span>Tukar</span>
                         </button>
                     </div>
@@ -1090,9 +1096,12 @@ export const openMemberModal = () => {
                         <i class="fa-solid fa-lock text-xs"></i>
                     </button>
 
-                    <!-- Close Button -->
-                    <button type="button" onclick="closeMemberModal()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-rose-100 hover:text-rose-600 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Tutup">
-                        <i class="fa-solid fa-xmark text-sm font-black"></i>
+                    <!-- Close Button (SVG Cross 100% Anti Hilang) -->
+                    <button type="button" id="member-modal-close-btn" onclick="closeMemberModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:text-rose-600 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Tutup" aria-label="Tutup">
+                        <svg class="w-4 h-4 text-slate-900 dark:text-white stroke-[2.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                 </div>
             </div>
