@@ -358,12 +358,12 @@ export const renderReportsShell = () => {
 
                         <!-- Tombol Ekspor Spreadsheet Excel / CSV -->
                         <div class="relative inline-block text-left" id="report-export-dropdown-container">
-                            <button type="button" onclick="toggleReportExportMenu()" class="neo-btn h-9 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
+                            <button type="button" onclick="toggleReportExportMenu()" class="neo-btn h-9 w-9 sm:w-auto px-2.5 sm:px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
                                 <i class="fa-solid fa-file-excel text-xs text-emerald-600 dark:text-emerald-400"></i>
                                 <span class="hidden sm:inline">Ekspor Excel</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5"></i>
+                                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5 hidden sm:inline"></i>
                             </button>
-                            <div id="report-export-dropdown-menu" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000] p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                            <div id="report-export-dropdown-menu" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000] p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                                 <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pilih Format Ekspor (.csv / Excel)</p>
                                 </div>
@@ -393,9 +393,9 @@ export const renderReportsShell = () => {
                         </div>
 
                         <!-- Tombol Cetak Dokumen A4 -->
-                        <button type="button" onclick="openReportCurrentDocPreview()" class="neo-btn h-9 px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
+                        <button type="button" onclick="openReportCurrentDocPreview()" class="neo-btn h-9 w-9 sm:w-auto px-2.5 sm:px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
                             <i class="fa-solid fa-print text-xs"></i>
-                            <span>Cetak A4</span>
+                            <span class="hidden sm:inline">Cetak A4</span>
                         </button>
                     </div>
                 </div>
@@ -2833,16 +2833,16 @@ export const toggleReportExportMenu = () => {
     if (!menu) return;
     const isHidden = menu.classList.contains('hidden');
     if (isHidden) {
-        // Auto-clamp posisi agar tidak terpotong tepi layar (kiri maupun kanan)
+        // Auto-clamp posisi agar selalu berada di dalam viewport layar
         const container = el('report-export-dropdown-container');
         if (container) {
             const rect = container.getBoundingClientRect();
-            if (rect.left < 260) {
-                menu.classList.remove('sm:right-0');
-                menu.classList.add('left-0');
-            } else if (window.innerWidth - rect.right < 260) {
+            if (rect.right > 260) {
                 menu.classList.remove('left-0');
                 menu.classList.add('right-0');
+            } else {
+                menu.classList.remove('right-0');
+                menu.classList.add('left-0');
             }
         }
         menu.classList.remove('hidden');
