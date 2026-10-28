@@ -853,46 +853,48 @@ export const renderRewardCatalog = () => {
             ${activeRewards.map((r) => {
         const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
         return `
-                <div class="group relative flex w-[280px] sm:w-[320px] shrink-0 snap-start items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
-                    
-                    <!-- Thumbnail Kompak & Proporsional (Ukuran 60px x 60px) -->
-                    <div class="relative w-15 h-15 sm:w-16 sm:h-16 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1px_1px_0px_#0f172a]">
-                        ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
-                        <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
-                            <span class="text-xl">🎁</span>
-                        </div>
-                    </div>
-
-                    <!-- Detail Hadiah (Tengah) -->
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1.5 mb-0.5">
-                            <span class="text-[8px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD</span>
-                            <span class="text-[8px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1 py-0.2 rounded border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight">100% Free</span>
-                        </div>
-                        <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase" title="${esc(r.name)}">
-                            ${esc(r.name)}
-                        </h4>
-                        <div class="mt-1 flex items-center gap-1.5">
-                            <span class="text-[9px] font-bold text-slate-400">Biaya:</span>
-                            <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
-                                <i class="fa-solid fa-coins text-amber-600 text-[8.5px]"></i>
-                                <span class="text-xs font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
-                                <span class="text-[8px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
+                <div class="reward-slide-item shrink-0 snap-start">
+                    <div class="reward-card group relative flex w-[295px] sm:w-[325px] items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                        
+                        <!-- Thumbnail Kompak (56px x 56px) -->
+                        <div class="reward-thumb relative w-14 h-14 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1px_1px_0px_#0f172a]">
+                            ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+                            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
+                                <span class="text-xl">🎁</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Tombol Aksi Tukar (Kanan) -->
-                    <div class="shrink-0">
-                        <button type="button" 
-                                onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
-                                class="neo-btn py-1.5 px-3 rounded-xl text-white font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-1 border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
-                                style="background: var(--color-primary);"
-                                title="Tukar Hadiah ${esc(r.name)}" 
-                                aria-label="Tukar Hadiah ${esc(r.name)}">
-                            <i class="fa-solid fa-hand-holding-dollar text-[10px] text-amber-300"></i>
-                            <span>Tukar</span>
-                        </button>
+                        <!-- Detail Hadiah (Tengah, Terlindungi Bebas Border Bocor) -->
+                        <div class="reward-info flex-1 min-w-0 pr-0.5">
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <span class="text-[8px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD</span>
+                                <span class="text-[8px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight">100% Free</span>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase leading-tight" title="${esc(r.name)}">
+                                ${esc(r.name)}
+                            </h4>
+                            <div class="mt-1 flex items-center gap-1.5">
+                                <span class="text-[9px] font-bold text-slate-400">Biaya:</span>
+                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
+                                    <i class="fa-solid fa-coins text-amber-600 text-[8.5px]"></i>
+                                    <span class="text-xs font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
+                                    <span class="text-[8px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tombol Aksi Tukar (Kanan) -->
+                        <div class="reward-action shrink-0">
+                            <button type="button" 
+                                    onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
+                                    class="neo-btn py-1.5 px-3 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1 border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
+                                    style="background: var(--color-primary);"
+                                    title="Tukar Hadiah ${esc(r.name)}" 
+                                    aria-label="Tukar Hadiah ${esc(r.name)}">
+                                <i class="fa-solid fa-hand-holding-dollar text-[10px] text-amber-300"></i>
+                                <span>Tukar</span>
+                            </button>
+                        </div>
                     </div>
                 </div>`;
     }).join('')}

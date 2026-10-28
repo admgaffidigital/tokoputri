@@ -9043,3 +9043,11 @@ html.dark #cashier-admin-tabs-bar {
     color: #ffffff !important;
     box-shadow: 2px 2px 0px #000000 !important;
 }
+
+/* Isolasi Khusus Child Reward Card: Cegah Pembocoran Border & Shadow ke Detail Teks */
+#reward-catalog-container .reward-card > div:not(.reward-thumb),
+#reward-catalog-container .snap-start > div > div:not(.reward-thumb) {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
