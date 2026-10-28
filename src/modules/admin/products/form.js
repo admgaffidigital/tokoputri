@@ -179,9 +179,9 @@ window.oAEd = (t, id) => {
                 </div>
             </div>`;
         } else {
-            const isStoreStock = k.key === 'storeStock';
-            const isWarehouseStock = k.key === 'warehouseStock';
-            const isTotalStock = k.key === 'stock';
+            const isStoreStock = (t === 'products' && k.key === 'storeStock');
+            const isWarehouseStock = (t === 'products' && k.key === 'warehouseStock');
+            const isTotalStock = (t === 'products' && k.key === 'stock');
             const onInputAttr = (isStoreStock || isWarehouseStock) ? 'oninput="window.calcTotalStockForm?.()"' : '';
             const readOnlyAttr = isTotalStock ? 'readonly tabindex="-1"' : '';
             const bgClass = isTotalStock ? 'bg-slate-100 dark:bg-slate-800/80 font-bold cursor-not-allowed text-slate-700 dark:text-slate-200' : 'bg-slate-50 dark:bg-slate-900';
@@ -190,9 +190,14 @@ window.oAEd = (t, id) => {
     ${k.key==='priceNormal'?'min="0" step="1" placeholder="0 (kosong = tidak ada coretan)"':''}
     ${k.key==='hpp'?'min="0" step="1" placeholder="0"':''}
     ${(isStoreStock || isWarehouseStock || isTotalStock)?'min="0" step="0.01" placeholder="0"':''}
+    ${(!isTotalStock && k.key==='stock')?'min="0" step="1" placeholder="0"':''}
+    ${k.key==='pointsCost'?'min="0" step="1" placeholder="0"':''}
     ${onInputAttr}
     ${readOnlyAttr}
 >`;
+            if (isTotalStock) {
+                h += `<p class="text-[9.5px] font-semibold text-slate-400 mt-1 flex items-center gap-1"><i class="fa-solid fa-lock text-[8px]"></i> Otomatis dihitung dari penjumlahan Stok Toko + Stok Gudang</p>`;
+            }
         }
         h += `</div>`;
     });
