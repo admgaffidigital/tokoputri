@@ -110,12 +110,15 @@ export const renderFooter = () => {
           <!-- Micro Sub-Footer Legal & Admin Link -->
           <div class="pt-2.5 border-t border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between text-[9.5px] font-semibold text-slate-400 dark:text-slate-500">
             <span class="truncate">&#169; ${currentYear} ${esc(storeName)}</span>
-            <div class="flex items-center gap-2 shrink-0">
-              <button type="button" onclick="openShoppingGuideModal()" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">Panduan</button>
-              <span>•</span>
-              <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">${esc(displayVer)}</button>
-              <span>•</span>
-              <button type="button" onclick="changeView('view-admin-login')" class="hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer font-bold" title="Akses Admin Toko">
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" onclick="openShoppingGuideModal()" class="footer-sub-btn inline-flex items-center gap-1 text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] px-2 py-0.5 rounded-lg hover:text-[var(--color-primary)] transition-all cursor-pointer">
+                <i class="fa-solid fa-circle-question text-[8px]"></i> Panduan
+              </button>
+              <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="footer-sub-btn inline-flex items-center gap-1 rounded-lg border border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-200 hover:text-[var(--color-primary)] shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] transition-all active:scale-95 cursor-pointer">
+                <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
+                <span>${esc(displayVer)}</span>
+              </button>
+              <button type="button" onclick="changeView('view-admin-login')" class="footer-sub-btn inline-flex items-center gap-1 text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] px-2 py-0.5 rounded-lg hover:text-[var(--color-primary)] transition-all cursor-pointer" title="Akses Admin Toko">
                 <i class="fa-solid fa-lock text-[8px]"></i>
                 <span>Admin</span>
               </button>

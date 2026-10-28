@@ -27,7 +27,7 @@ export const DEFAULT_CHANGELOG = [
             "Harmonisasi Menyeluruh Keranjang Belanja & Checkout (Step 2 & 3): Seluruh kartu opsi pengiriman dan metode bayar (.option-select-card) ber-outline 2px solid charcoal (#0f172a), hard shadow 2.5px, serta highlight seleksi 3.5px solid var(--color-primary); dilengkapi penyelarasan kotak GPS Maps, drop-point proyek mandor, detail rekening transfer, QRIS, Tempo VIP, dan Putri PayLater.",
             "Harmonisasi Riwayat Pesanan Pelanggan (#view-orders): Seluruh kartu transaksi pesanan (#orders-items-container > div), badge status, input pelacakan ID pesanan, dan tombol aksi Detail/Status mengadopsi standar neo-brutalism 2px border dan respon tekan taktil.",
             "Harmonisasi Panggung Promo Kilat (Flash Sale), Katalog Reward Poin & Voucher: Seluruh kartu penawaran khusus storefront terintegrasi penuh dalam grid neo-card ber-border 2px solid dan hard shadow 2.5px.",
-            "Harmonisasi Wishlist Favorit, FAQ Storefront & Modul Keuangan CMS: Seluruh kartu favorit pelanggan, accordion FAQ, serta kartu buku kas pengeluaran toko (#expense-ledger-container) ber-standar industrial neo-brutalist.",
+            "Harmonisasi Detail Antarmuka (UI/UX) v1.20.1: Eliminasi over-boxing tombol mata password (.btn-input-icon) pada form login & tambah staf, standarisasi kartu sumber dana kas toko/bank/owner (.expense-source-card), kartu role staf (.staff-role-card) ber-border 2px charcoal & hard shadow, serta perapian mikro-tautan sub-footer mobile (.footer-sub-btn) tanpa bullet dots yang bertabrakan.",
             "Multi-Channel Distribution v1.20.1 (Android versionCode 12001 & Windows x64)."
         ]
     },

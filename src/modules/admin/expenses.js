@@ -188,10 +188,10 @@ export const ensureExpenseModals = () => {
                             </label>
                             <div class="grid grid-cols-3 gap-1.5" id="exp-source-selector">
                                 ${EXPENSE_SOURCES.map(s => `
-                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="relative flex flex-col items-center justify-center p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group active:scale-95 shadow-2xs">
+                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="expense-source-card relative flex flex-col items-center justify-center p-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer text-center transition-all select-none group active:scale-95 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] ${s.key === 'cash' ? 'is-source-active' : ''}">
                                         <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
-                                        <i class="fa-solid ${s.icon} text-sm mb-1 text-slate-500 transition-colors"></i>
-                                        <span class="text-[10px] font-black text-slate-800 dark:text-slate-200 leading-tight transition-colors">${s.shortLabel}</span>
+                                        <i class="fa-solid ${s.icon} text-sm mb-1 ${s.key === 'cash' ? '' : 'text-slate-500'} transition-colors" ${s.key === 'cash' ? 'style="color: var(--color-primary);"' : ''}></i>
+                                        <span class="text-[10px] font-black leading-tight transition-colors" ${s.key === 'cash' ? 'style="color: var(--color-primary);"' : 'class="text-slate-800 dark:text-slate-200"'}>${s.shortLabel}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -229,7 +229,7 @@ export const ensureExpenseModals = () => {
                                 <div class="flex-1 space-y-1 min-w-0">
                                     <input type="hidden" id="exp-input-receipt-url" value="">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <label class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold cursor-pointer transition-colors flex items-center gap-1 active:scale-95 shrink-0">
+                                        <label class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] text-slate-800 dark:text-slate-200 text-[11px] font-bold cursor-pointer transition-all flex items-center gap-1 active:scale-95 shrink-0">
                                             <i class="fa-solid fa-camera text-[10px]" style="color: var(--color-primary)"></i>
                                             <span>Foto / File</span>
                                             <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
@@ -780,7 +780,7 @@ export const selectExpenseSource = (key) => {
             card.classList.add('is-source-active');
             card.style.borderColor = 'var(--color-primary)';
             card.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.12)';
-            card.style.boxShadow = '0 0 0 1.5px var(--color-primary), 0 2px 10px rgba(var(--color-primary-rgb), 0.25)';
+            card.style.boxShadow = '2px 2px 0px #0f172a';
             if (icon) {
                 icon.style.color = 'var(--color-primary)';
                 icon.classList.remove('text-slate-500');

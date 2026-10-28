@@ -918,7 +918,7 @@ export const openAddStaffModal = () => {
                             autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
                             class="w-full min-h-[44px] text-[16px] sm:text-sm border border-slate-200 dark:border-slate-700 rounded-2xl pl-4 pr-12 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[rgba(var(--color-primary-rgb),0.2)] shadow-2xs transition-all">
                         <button type="button" onclick="window.toggleStaffPassVisibility('new-staff-pass')"
-                            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1">
+                            class="btn-input-icon absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1">
                             <i id="new-staff-pass-eye" class="fa-solid fa-eye text-sm"></i>
                         </button>
                     </div>
@@ -927,28 +927,28 @@ export const openAddStaffModal = () => {
                 <!-- Pilihan Role Pokok (4 Kolom Responsif) -->
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Role Pokok Sistem <span class="text-rose-500">*</span></label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 cursor-pointer hover:border-emerald-500 transition-all text-center">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="new-staff-roles-container">
+                        <label class="staff-role-card is-role-active flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.CASHIER}" checked onchange="window.applyNewStaffPreset('${ROLES.CASHIER}')" class="sr-only">
-                            <i class="fa-solid fa-cash-register text-lg mb-1 text-emerald-600"></i>
+                            <i class="fa-solid fa-cash-register text-lg mb-1" style="color: var(--color-primary)"></i>
                             <span class="text-xs font-black">Kasir POS</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Penjualan Fisik</span>
                         </label>
-                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-blue-500 transition-all text-center">
+                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.ADMIN}" onchange="window.applyNewStaffPreset('${ROLES.ADMIN}')" class="sr-only">
                             <i class="fa-solid fa-shield-halved text-lg mb-1 text-blue-500"></i>
                             <span class="text-xs font-black">Admin Toko</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Operasional CMS</span>
                         </label>
-                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-amber-500 transition-all text-center">
+                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.STAFF}" onchange="window.applyNewStaffPreset('${ROLES.STAFF}')" class="sr-only">
                             <i class="fa-solid fa-user-gear text-lg mb-1 text-amber-500"></i>
                             <span class="text-xs font-black">Staf Gudang</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Logistik &amp; Rak</span>
                         </label>
-                        <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-[var(--color-primary)] transition-all text-center">
+                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
                             <input type="radio" name="new_staff_role" value="manager" onchange="window.applyNewStaffPreset('manager')" class="sr-only">
-                            <i class="fa-solid fa-user-tie text-lg mb-1" style="color: var(--color-primary)"></i>
+                            <i class="fa-solid fa-user-tie text-lg mb-1 text-purple-500"></i>
                             <span class="text-xs font-black">Manajer</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Wewenang Luas</span>
                         </label>
@@ -965,7 +965,7 @@ export const openAddStaffModal = () => {
                             </h4>
                             <p class="text-[10px] text-slate-400">ID karyawan resmi, jabatan terstandarisasi, gaji pokok &amp; rekening pencairan</p>
                         </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800/60">
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800/60 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] whitespace-nowrap shrink-0">
                             Master HR
                         </span>
                     </div>
@@ -1115,9 +1115,9 @@ export const applyNewStaffPreset = (presetKey) => {
         const label = rb.closest('label');
         if (label) {
             if (rb.value === presetKey) {
-                label.className = 'flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-xs transition-all text-center';
+                label.className = 'staff-role-card is-role-active flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all text-center';
             } else {
-                label.className = 'flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer hover:border-slate-300 transition-all text-center';
+                label.className = 'staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center';
             }
         }
     });

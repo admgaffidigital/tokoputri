@@ -8629,8 +8629,8 @@ html.dark #toast {
    ========================================================================== */
 
 /* 11a. Netralisasi Universal Segala Soft Shadows & Penegakan Hard Shadow */
-button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn),
-[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *),
+button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(.relative > button.absolute):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
+[role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon):not(.relative > button.absolute),
 .neo-btn,
 .btn-primary,
 .btn-secondary,
@@ -8639,8 +8639,8 @@ button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *)
     box-shadow: 2.5px 2.5px 0px #0f172a !important;
     transition: transform 0.06s ease, box-shadow 0.06s ease !important;
 }
-html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn),
-html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *),
+html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(.relative > button.absolute):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
+html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon):not(.relative > button.absolute),
 html.dark .neo-btn,
 html.dark .btn-primary,
 html.dark .btn-secondary,
@@ -8747,16 +8747,100 @@ button[class*="hover:underline"] {
     transform: none !important;
 }
 
+/* Password Eye Toggle Buttons & Form Input Internal Action Buttons: Clean Unboxed Transparent */
+.relative > button.absolute,
+button.btn-input-icon,
+.btn-input-icon,
+button[onclick*="toggleStaffPassVisibility"],
+button[onclick*="login-password"],
+button[onclick*="pos-login-password"],
+button:has(> i[id$="-eye"]),
+button:has(> i[class*="fa-eye-slash"]),
+button:has(> i.fa-eye) {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    transform: none !important;
+    min-height: unset !important;
+    min-width: unset !important;
+    height: auto !important;
+}
+
 /* Sub-footer Micro-Badges */
 .footer-sub-btn {
     border: 1px solid #0f172a !important;
     box-shadow: 1px 1px 0px #0f172a !important;
     border-radius: 0.5rem !important;
     transform: none !important;
+    min-height: unset !important;
 }
 html.dark .footer-sub-btn {
     border-color: #475569 !important;
     box-shadow: 1px 1px 0px #000000 !important;
+}
+
+/* Expense Source Selector Cards (Kas Toko, Transfer Bank, Dana Owner) */
+.expense-source-card {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 0.75rem !important;
+    background-color: #ffffff;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    box-sizing: border-box !important;
+}
+html.dark .expense-source-card {
+    border-color: #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background-color: #1e293b;
+}
+.expense-source-card:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark .expense-source-card:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+.expense-source-card.is-source-active {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+}
+html.dark .expense-source-card.is-source-active {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: rgba(var(--color-primary-rgb), 0.2) !important;
+}
+
+/* Staff Role Selection Cards in Add Staff Modal */
+.staff-role-card {
+    border: 2px solid #0f172a !important;
+    box-shadow: 2px 2px 0px #0f172a !important;
+    border-radius: 1rem !important;
+    background-color: #ffffff;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    box-sizing: border-box !important;
+}
+html.dark .staff-role-card {
+    border-color: #334155 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background-color: #1e293b;
+}
+.staff-role-card:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+}
+html.dark .staff-role-card:active {
+    box-shadow: 0.5px 0.5px 0px #000000 !important;
+}
+.staff-role-card.is-role-active {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+}
+html.dark .staff-role-card.is-role-active {
+    border-color: var(--color-primary) !important;
+    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    background-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
 /* 11f. Standarisasi Modal Pengaturan Printer POS (#printer-settings-modal-box) & Driver Cards */
