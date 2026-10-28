@@ -312,7 +312,7 @@ export const rDyn = () => {
                     <h3 class="text-xs font-extrabold uppercase tracking-tight text-slate-800 dark:text-white sm:text-sm">VOUCHER DISKON TOKO</h3>
                 </div>
             </div>
-            <div class="flex gap-2.5 sm:gap-3.5 overflow-x-auto hide-scrollbar snap-x pb-1 pt-1 md:flex-wrap md:overflow-visible">
+            <div class="flex gap-2.5 sm:gap-3.5 overflow-x-auto hide-scrollbar snap-x pb-1 pt-1 scroll-smooth select-none" style="overflow-x: auto !important; -webkit-overflow-scrolling: touch; touch-action: pan-x;">
                 ${activeVouchers.map((v) => {
                     let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${esc(String(parseFloat(v.value)||0))}%` : `Diskon ${fCur(v.value)}`);
                     let terms = [];
@@ -322,7 +322,7 @@ export const rDyn = () => {
                     let termsStr = terms.length > 0 ? esc(terms.join(' • ')) : 'Tanpa min. belanja';
                     
                     return `
-                    <div class="w-[225px] sm:w-[250px] shrink-0 snap-start md:shrink md:flex-1 md:min-w-[280px] md:max-w-[420px] relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
+                    <div class="w-[235px] sm:w-[260px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
                         <div class="w-full h-[82px] sm:h-[86px] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden text-white"
                              style="background: var(--color-primary);">
                             <!-- Left/Right Ticket Punch Holes (Biting into the sides using bento canvas color) -->
