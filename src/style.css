@@ -9051,3 +9051,26 @@ html.dark #cashier-admin-tabs-bar {
     box-shadow: none !important;
     background: transparent !important;
 }
+
+/* Tombol Tukar Hadiah Kompak & Presisi di Baris Aksi */
+#reward-catalog-container .reward-tukar-btn {
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 0 8px !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.03em !important;
+    line-height: 1 !important;
+    border-radius: 0.5rem !important;
+    border: 1.5px solid #0f172a !important;
+    box-shadow: 1px 1px 0px #0f172a !important;
+    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
+}
+html.dark #reward-catalog-container .reward-tukar-btn {
+    border-color: #334155 !important;
+    box-shadow: 1px 1px 0px #000000 !important;
+}
+#reward-catalog-container .reward-tukar-btn:active {
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0px 0px 0px #0f172a !important;
+}
