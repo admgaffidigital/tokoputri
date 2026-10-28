@@ -843,52 +843,50 @@ export const renderRewardCatalog = () => {
                 <span>Lihat Kartu VIP</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
             </button>
         </div>
-        <div class="flex gap-3 overflow-x-auto hide-scrollbar snap-x pb-2 pt-1 ${activeRewards.length === 1 ? 'sm:grid sm:grid-cols-2 md:grid-cols-3' : 'sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'}">
+        <div class="grid grid-cols-1 ${activeRewards.length > 1 ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-3 pt-1">
             ${activeRewards.map((r) => {
                 const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
                 return `
-                <div class="group relative flex ${activeRewards.length === 1 ? 'w-[200px] sm:w-full' : 'w-[165px] sm:w-full'} shrink-0 flex-col overflow-hidden rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#0f172a] snap-start cursor-pointer select-none text-left" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                <div class="group relative flex w-full items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer select-none" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
                     
-                    <!-- Canvas Gambar Produk 1:1 Presisi Full Frame Bersih Murni -->
-                    <div class="relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-b-2 border-slate-900 dark:border-slate-700 shrink-0">
+                    <!-- Thumbnail Kompak & Proporsional (Ukuran 68px x 68px) -->
+                    <div class="relative w-16 h-16 sm:w-20 sm:h-20 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1.5px_1.5px_0px_#0f172a]">
                         ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
                         <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
-                            <span class="text-3xl mb-1">🎁</span>
-                            <span class="text-[9px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">HADIAH REWARD</span>
+                            <span class="text-2xl">🎁</span>
                         </div>
                     </div>
 
-                    <!-- Detail & Aksi dengan Proporsi Selaras Tema Katalog Toko -->
-                    <div class="flex-1 flex flex-col p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
-                        <div class="flex items-center justify-between gap-1 mb-1.5">
-                            <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD POIN</span>
-                            <span class="text-[9px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight shadow-[1px_1px_0px_#0f172a]">100% Free</span>
+                    <!-- Detail Hadiah (Tengah) -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <span class="text-[8.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">REWARD POIN</span>
+                            <span class="text-[8.5px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded-md border border-emerald-600 dark:border-emerald-500 uppercase tracking-tight">100% Free</span>
                         </div>
-                        <h4 class="line-clamp-2 text-xs sm:text-[13px] font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2.2rem] uppercase break-words mb-1.5" title="${esc(r.name)}">
+                        <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase" title="${esc(r.name)}">
                             ${esc(r.name)}
                         </h4>
-
-                        <!-- Area Biaya Poin & Tombol Aksi Tukar Hadiah -->
-                        <div class="mt-auto pt-2 border-t-2 border-dashed border-slate-200 dark:border-slate-700">
-                            <div class="flex items-center justify-between gap-1 mb-2">
-                                <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Biaya Poin</span>
-                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
-                                    <i class="fa-solid fa-coins text-amber-600 text-[10px]"></i>
-                                    <span class="text-xs sm:text-[13px] font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
-                                    <span class="text-[8.5px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
-                                </div>
+                        <div class="mt-1 flex items-center gap-2">
+                            <span class="text-[9.5px] font-bold text-slate-400">Biaya:</span>
+                            <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
+                                <i class="fa-solid fa-coins text-amber-600 text-[9px]"></i>
+                                <span class="text-xs font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
+                                <span class="text-[8px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
                             </div>
-
-                            <button type="button" 
-                                    onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
-                                    class="neo-btn w-full py-2 px-2 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" 
-                                    style="background: var(--color-primary);"
-                                    title="Tukar Hadiah ${esc(r.name)}" 
-                                    aria-label="Tukar Hadiah ${esc(r.name)}">
-                                <i class="fa-solid fa-hand-holding-dollar text-[11px] text-amber-300"></i>
-                                <span>Tukar Hadiah</span>
-                            </button>
                         </div>
+                    </div>
+
+                    <!-- Tombol Aksi Tukar (Kanan) -->
+                    <div class="shrink-0 pl-1">
+                        <button type="button" 
+                                onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
+                                class="neo-btn py-2 px-3 sm:px-4 rounded-xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap" 
+                                style="background: var(--color-primary);"
+                                title="Tukar Hadiah ${esc(r.name)}" 
+                                aria-label="Tukar Hadiah ${esc(r.name)}">
+                            <i class="fa-solid fa-hand-holding-dollar text-[11px] text-amber-300"></i>
+                            <span>Tukar</span>
+                        </button>
                     </div>
                 </div>`;
             }).join('')}
