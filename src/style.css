@@ -7950,13 +7950,13 @@ html.dark #modal-supplier-detail button[onclick*="openAdminTab('products')"] {
 }
 
 #modal-supplier-detail [class*="rounded-3xl"].bg-white,
-#modal-supplier-detail [class*="rounded-3xl"].dark:bg-slate-800/90 {
+#modal-supplier-detail [class*="rounded-3xl"][class*="dark:bg-slate-800"] {
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 1rem !important;
 }
 html.dark #modal-supplier-detail [class*="rounded-3xl"].bg-white,
-html.dark #modal-supplier-detail [class*="rounded-3xl"].dark:bg-slate-800/90 {
+html.dark #modal-supplier-detail [class*="rounded-3xl"][class*="dark:bg-slate-800"] {
     border-color: #334155 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
