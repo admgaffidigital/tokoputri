@@ -104,7 +104,7 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
     const offerPrice = (p.variants && p.variants.length > 0) 
         ? Math.min(...p.variants.map(v => parseFloat(v.price) || p.price))
         : p.price;
-    const isAvail = totalAvail > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+    const isAvail = (isPreorder || !sInfo || !sInfo.isOutOfStock) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
     
     const prodJSON = {
         "@context": "https://schema.org",
