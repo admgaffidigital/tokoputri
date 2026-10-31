@@ -4254,26 +4254,6 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     transform: scale(0.95) !important;
     box-shadow: 0 1px 3px rgba(var(--color-primary-rgb), 0.2) !important;
 }
-    padding: 0 0.5rem !important;
-    border-radius: 0.75rem !important; /* 12px modern squircle */
-    font-size: 11px !important;
-    font-weight: 800 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.025em !important;
-    white-space: nowrap !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 0.375rem !important;
-    color: #ffffff !important;
-    background: var(--color-primary) !important;
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    cursor: pointer !important;
-    user-select: none !important;
-    transition: transform 0.08s ease, box-shadow 0.08s ease !important;
-    box-sizing: border-box !important;
-}
 
 @media (min-width: 640px) {
     .btn-reward-redeem,
