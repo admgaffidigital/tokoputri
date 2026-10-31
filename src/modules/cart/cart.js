@@ -13,13 +13,13 @@ import { el, show, hide, setIn, setH, esc, fCur, ssL, renderProductCoverHtml, is
  * Membersihkan keranjang dari produk atau varian yang sudah dihapus/dinonaktifkan Admin
  */
 export const sanitizeCart = () => {
-    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     const cleanCart = cart.filter(c => {
         const p = appData.products.find(x => x && x.id != null && String(x.id) === String(c.id));
         if (!p || p.isActive === 'false' || p.isActive === false) return false;
         const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
         if (isPreorder) return true;
-        
+
         if (c.variantName) {
             const v = (p.variants || []).find(vv => vv.name === c.variantName);
             if (!v || v.isActive === false || v.isActive === 'false') return false;
@@ -38,7 +38,7 @@ export const sanitizeCart = () => {
         return true;
     });
     setCart(cleanCart);
-    ssL('freshmart_cart', JSON.stringify(cart));
+    ssL('freshmart_cart', JSON.stringify(cleanCart));
 };
 
 let prevCartQty = null;
@@ -51,7 +51,7 @@ export const updCart = () => {
     const getEffP = typeof window.getEffP === 'function' ? window.getEffP : (i => i.price || 0);
     const q = parseFloat(cart.reduce((s, i) => s + (parseFloat(i.qty) || 0), 0).toFixed(2));
     const a = cart.reduce((s, i) => s + getEffP(i) * (parseFloat(i.qty) || 0), 0);
-    
+
     setIn('cart-badge', q.toString());
     setIn('cart-total-preview', fCur(a));
     const b = el('cart-badge');
@@ -85,7 +85,7 @@ export const updCart = () => {
         });
     }
     prevCartQty = q;
-    
+
     // Tampilkan / sembunyikan floating FAB secara dinamis
     const fc = el('floating-cart-container');
     if (fc) {
@@ -125,13 +125,13 @@ export const renderCart = () => {
     const fsEl = el('cart-free-shipping-bar');
     const lpEl = el('cart-loyalty-points-bar');
 
-    if (!cart.length) { 
-        show('cart-empty-state'); 
-        hide('cart-bottom-bar'); 
-        hide('btn-clear-cart'); 
+    if (!cart.length) {
+        show('cart-empty-state');
+        hide('cart-bottom-bar');
+        hide('btn-clear-cart');
         hide('cart-sph-card');
-        show('spacer-cart'); 
-        setH('cart-items-container', ''); 
+        show('spacer-cart');
+        setH('cart-items-container', '');
         if (fsEl) {
             fsEl.classList.add('hidden');
             fsEl.innerHTML = '';
@@ -140,27 +140,27 @@ export const renderCart = () => {
             lpEl.classList.add('hidden');
             lpEl.innerHTML = '';
         }
-        return; 
+        return;
     }
-    
-    hide('cart-empty-state'); 
-    show('cart-bottom-bar'); 
-    show('btn-clear-cart'); 
+
+    hide('cart-empty-state');
+    show('cart-bottom-bar');
+    show('btn-clear-cart');
     show('cart-sph-card');
     hide('spacer-cart');
-    
+
     const getEffP = typeof window.getEffP === 'function' ? window.getEffP : (i => i.price || 0);
     let s = 0;
-    
+
     setH('cart-items-container', cart.map((i, x) => {
         let q = parseFloat(i.qty) || 0;
         let e = getEffP(i), w = e < i.price;
         const fsItem = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(i.id, i.variantName, 'web') : null;
         const isFs = Boolean(fsItem && !fsItem.isSoldOut && fsItem.flashSalePrice > 0);
         s += e * q;
-        
-        let colorIndicator = i.colorCode 
-            ? `<span class="w-3.5 h-3.5 rounded-full shadow-inner border border-slate-300 dark:border-slate-600 shrink-0" style="background-color: ${esc(i.colorCode)};"></span>` 
+
+        let colorIndicator = i.colorCode
+            ? `<span class="w-3.5 h-3.5 rounded-full shadow-inner border border-slate-300 dark:border-slate-600 shrink-0" style="background-color: ${esc(i.colorCode)};"></span>`
             : '';
 
         const hasCartImg = Boolean(i.img && typeof i.img === 'string' && i.img.trim() && !isPlaceholderImg(i.img));
@@ -170,9 +170,9 @@ export const renderCart = () => {
         <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800/80 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-300">
             
             <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/90 dark:border-slate-800/80 flex items-center justify-center overflow-hidden">
-                ${hasCartImg 
-                    ? `<img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
-                    : coverThumb}
+                ${hasCartImg
+                ? `<img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
+                : coverThumb}
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
@@ -205,7 +205,7 @@ export const renderCart = () => {
             </div>
         </div>`;
     }).join(''));
-    
+
     setIn('cart-subtotal', fCur(s));
 
     // Render Promo Gratis Ongkir Progress Bar
@@ -220,9 +220,9 @@ export const renderCart = () => {
             const isQualified = s >= fsMinSpend;
 
             fsEl.innerHTML = `
-            <div class="p-4 rounded-2xl border transition-all duration-300 ${isQualified 
-                ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]/40 shadow-md shadow-[rgba(var(--color-primary-rgb),0.2)]' 
-                : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800/80 shadow-sm text-slate-800 dark:text-slate-100'}">
+            <div class="p-4 rounded-2xl border transition-all duration-300 ${isQualified
+                    ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]/40 shadow-md shadow-[rgba(var(--color-primary-rgb),0.2)]'
+                    : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800/80 shadow-sm text-slate-800 dark:text-slate-100'}">
                 <div class="flex items-center justify-between gap-3 mb-2.5">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 ${isQualified ? 'bg-white/20 text-white' : 'bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)]'}">
@@ -230,9 +230,9 @@ export const renderCart = () => {
                         </span>
                         <div class="min-w-0">
                             <p class="text-xs font-bold leading-tight ${isQualified ? 'text-white' : 'text-slate-800 dark:text-slate-100'}">
-                                ${isQualified 
-                                    ? 'Hore! Anda berhak mendapatkan <span class="underline decoration-wavy decoration-white/60 font-extrabold">Gratis Ongkir Otomatis</span>' 
-                                    : `Belanja <span class="text-[var(--color-primary)] font-extrabold">${fCur(remaining)}</span> lagi untuk <b>Gratis Ongkir</b>!`}
+                                ${isQualified
+                    ? 'Hore! Anda berhak mendapatkan <span class="underline decoration-wavy decoration-white/60 font-extrabold">Gratis Ongkir Otomatis</span>'
+                    : `Belanja <span class="text-[var(--color-primary)] font-extrabold">${fCur(remaining)}</span> lagi untuk <b>Gratis Ongkir</b>!`}
                             </p>
                             <p class="text-[10px] ${isQualified ? 'text-white/85' : 'text-slate-400 dark:text-slate-500'} mt-0.5">
                                 ${isQualified ? 'Ongkos kirim otomatis dipotong Rp 0 saat checkout.' : `Min. belanja ${fCur(fsMinSpend)} untuk pengiriman ke alamat.`}
@@ -255,8 +255,8 @@ export const renderCart = () => {
 
     // Render Program Poin Belanja & Loyalitas Member Bar
     if (lpEl) {
-        const calcPoints = typeof window.calculateCartPoints === 'function' 
-            ? window.calculateCartPoints(cart, appData.store) 
+        const calcPoints = typeof window.calculateCartPoints === 'function'
+            ? window.calculateCartPoints(cart, appData.store)
             : { totalPoints: 0, directPoints: 0, spendPoints: 0, nonPointSpend: 0, threshold: 100000, pointsPerThreshold: 1, isSpendPointsActive: false, remainingToNextPoint: 0, progressPercent: 0 };
 
         const { totalPoints, directPoints, spendPoints, nonPointSpend, threshold, pointsPerThreshold, isSpendPointsActive, remainingToNextPoint, progressPercent } = calcPoints;
@@ -285,9 +285,9 @@ export const renderCart = () => {
             }
 
             lpEl.innerHTML = `
-            <div class="p-4 rounded-2xl border transition-all duration-300 ${totalPoints > 0 
-                ? 'bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 border-amber-200/90 dark:border-amber-700/60 dark:bg-amber-950/20' 
-                : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800/80 shadow-sm'}">
+            <div class="p-4 rounded-2xl border transition-all duration-300 ${totalPoints > 0
+                    ? 'bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 border-amber-200/90 dark:border-amber-700/60 dark:bg-amber-950/20'
+                    : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800/80 shadow-sm'}">
                 <div class="flex items-center justify-between gap-3 mb-2">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 bg-amber-500 text-white shadow-sm shadow-amber-500/20">
@@ -324,10 +324,9 @@ export const renderCart = () => {
  */
 export const setCQty = (i, v) => {
     let nv = parseFloat(v);
-    if (isNaN(nv) || nv <= 0) { 
-        cart.splice(i, 1); 
+    if (isNaN(nv) || nv <= 0) {
+        cart.splice(i, 1);
     } else {
-        const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
         const ci = cart[i];
         const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
         if (p) {
@@ -345,6 +344,7 @@ export const setCQty = (i, v) => {
                     hasStockVal = rawP != null && !isNaN(parseFloat(rawP));
                     avail = hasStockVal ? parseFloat(rawP) : 0;
                 }
+                const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
                 const isManaged = storeUseStock || hasStockVal;
                 if (isManaged) {
                     const multiplier = parseFloat(ci.unitMultiplier) || 1;
@@ -366,7 +366,7 @@ export const setCQty = (i, v) => {
         }
     }
     updCart();
-    renderCart(); 
+    renderCart();
 };
 
 /**
@@ -374,10 +374,9 @@ export const setCQty = (i, v) => {
  */
 export const updCQty = (i, c) => {
     let nv = parseFloat((parseFloat(cart[i].qty) + c).toFixed(2));
-    if (nv <= 0) { 
-        cart.splice(i, 1); 
+    if (nv <= 0) {
+        cart.splice(i, 1);
     } else {
-        const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
         if (c > 0) {
             const ci = cart[i];
             const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
@@ -396,6 +395,7 @@ export const updCQty = (i, c) => {
                         hasStockVal = rawP != null && !isNaN(parseFloat(rawP));
                         avail = hasStockVal ? parseFloat(rawP) : 0;
                     }
+                    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
                     const isManaged = storeUseStock || hasStockVal;
                     if (isManaged) {
                         const multiplier = parseFloat(ci.unitMultiplier) || 1;
@@ -418,17 +418,17 @@ export const updCQty = (i, c) => {
         }
     }
     updCart();
-    renderCart(); 
+    renderCart();
 };
 
 /**
  * Hapus satu item dari keranjang
  */
-export const rmCart = i => { 
+export const rmCart = i => {
     if (i >= 0 && i < cart.length) {
-        cart.splice(i, 1); 
-        updCart(); 
-        renderCart(); 
+        cart.splice(i, 1);
+        updCart();
+        renderCart();
         if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     }
 };
@@ -436,13 +436,13 @@ export const rmCart = i => {
 /**
  * Hapus seluruh isi keranjang dengan konfirmasi dialog
  */
-export const clearCart = () => { 
+export const clearCart = () => {
     if (typeof window.showConfirm === 'function') {
-        window.showConfirm("Kosongkan Keranjang Belanja", "Apakah Anda yakin ingin menghapus seluruh produk dari keranjang belanja?", () => { 
-            setCart([]); 
-            updCart(); 
-            renderCart(); 
-            if (typeof window.showToast === 'function') window.showToast("Keranjang belanja berhasil dikosongkan."); 
+        window.showConfirm("Kosongkan Keranjang Belanja", "Apakah Anda yakin ingin menghapus seluruh produk dari keranjang belanja?", () => {
+            setCart([]);
+            updCart();
+            renderCart();
+            if (typeof window.showToast === 'function') window.showToast("Keranjang belanja berhasil dikosongkan.");
         });
     } else {
         setCart([]);

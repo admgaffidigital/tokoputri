@@ -786,7 +786,7 @@ export const addToCart = (productId) => {
 
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
-    if (sInfo.isManaged && !sInfo.isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+    if (!sInfo.isPreorder && sInfo.isOutOfStock) {
         showToast(`Persediaan "${p.name}" sedang kosong atau habis.`, 'warning');
         return false;
     }
@@ -844,7 +844,7 @@ export const posAddToCartQty = (productId, qty) => {
 
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
-    if (sInfo.isManaged && !sInfo.isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+    if (!sInfo.isPreorder && sInfo.isOutOfStock) {
         showToast(`Persediaan "${p.name}" sedang kosong atau habis.`, 'warning');
         return false;
     }
@@ -3715,8 +3715,9 @@ export const processPOSTx = async () => {
         // Rekam transaksi ke shift kasir aktif
         recordTransactionToShift(orderData);
 
-        // ── 5. Potong Stok Otomatis Jika Fitur Stok Aktif (Identik Storefront) ─────
-        if (useStk) {
+        // ── 5. Potong Stok Otomatis (POS Kasir) ─────
+        const shouldDeductStock = true; // Selalu potong stok produk fisik pada transaksi kasir POS
+        if (shouldDeductStock) {
             const qtyMap = {}; 
             posCart.forEach(ci => {
                 const pId = ci.id != null ? ci.id.toString() : null;

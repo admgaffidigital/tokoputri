@@ -58,7 +58,7 @@ export const openPOSVariantSheet = (productId) => {
     // 2. Validasi Stok Total Produk (Identik Storefront)
     const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
     const sInfo = typeof window.computeTotalProductStock === 'function' ? window.computeTotalProductStock(p) : null;
-    if (sInfo && sInfo.isManaged && !isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+    if (sInfo && !isPreorder && sInfo.isOutOfStock) {
         showToast('Maaf, stok produk ini sedang kosong atau habis', 'warning');
         return;
     }

@@ -7,18 +7,18 @@
  * ============================================================
  */
 
-import { 
-    appData, cart, wishlist, 
-    cProd, setCProd, 
-    cQty, setCQty, 
-    cVar, setCVar, 
-    oMods 
+import {
+    appData, cart, wishlist,
+    cProd, setCProd,
+    cQty, setCQty,
+    cVar, setCVar,
+    oMods
 } from '../../core/state.js';
 
 
-import { 
-    el, show, hide, setIn, setH, setV, 
-    esc, fCur, getOptImg, showToast, 
+import {
+    el, show, hide, setIn, setH, setV,
+    esc, fCur, getOptImg, showToast,
     getYouTubeId, ssL, openModalAnim, closeModalAnim,
     renderProductCoverHtml, isPlaceholderImg
 } from '../../core/utils.js';
@@ -37,7 +37,7 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
     window.cSlideIdx = 0;
     const p = appData.products.find(x => x && x.id != null && String(x.id) === String(i));
     if (!p) return;
-    
+
     // Validasi produk aktif dan stok tersedia
     const pActive = p.isActive !== 'false' && p.isActive !== false;
     const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
@@ -46,7 +46,7 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
         showToast('Produk ini saat ini belum tersedia untuk pemesanan.');
         return;
     }
-    if (sInfo && sInfo.isManaged && !isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+    if (sInfo && !isPreorder && sInfo.isOutOfStock) {
         showToast('Persediaan produk ini sedang habis. Silakan hubungi admin untuk pemesanan / inden.');
         return;
     }
@@ -64,10 +64,10 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
             oMods.push('product');
         }
     }
-    
+
     setCProd(p);
     setCQty(1);
-    
+
     // Jika punya varian, otomatis pilih varian target (jika diarahkan dari Flash Sale) atau varian aktif pertama yang memiliki stok
     if (p.variants && p.variants.length > 0) {
         let found = -1;
@@ -89,7 +89,7 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
     } else {
         setCVar(0);
     }
-    
+
     setV('modal-qty-input', 1);
     rProdMod();
 
@@ -101,11 +101,11 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
     }
 
     // Inject Product JSON-LD
-    const offerPrice = (p.variants && p.variants.length > 0) 
+    const offerPrice = (p.variants && p.variants.length > 0)
         ? Math.min(...p.variants.map(v => parseFloat(v.price) || p.price))
         : p.price;
     const isAvail = (isPreorder || !sInfo || !sInfo.isOutOfStock) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
-    
+
     const prodJSON = {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -130,7 +130,7 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
             "priceValidUntil": "2030-12-31"
         }
     };
-    
+
     if (p.variants && p.variants.length > 0) {
         prodJSON.offers = p.variants.map(v => ({
             "@type": "Offer",
@@ -141,11 +141,11 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
             "availability": (parseFloat(v.stock) || 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
         }));
     }
-    
+
     if (typeof window.injectJSONLD === 'function') {
         window.injectJSONLD('seo-product', prodJSON);
     }
-    
+
     // Iklan in-article di dalam modal produk
     try {
         const adBox = el('product-modal-ad-container');
@@ -160,31 +160,31 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
                 adBox.innerHTML = '';
             }
         }
-    } catch(e) { console.error('Gagal render iklan in-article:', e); }
-    
+    } catch (e) { console.error('Gagal render iklan in-article:', e); }
+
     // Muat ulasan pelanggan untuk produk ini
     if (typeof window.loadProductReviews === 'function') {
         window.loadProductReviews(p.id);
     }
-    
+
     // Render produk sejenis / alternatif pilihan
     renderRelatedProducts(p);
-    
+
     if (m && c) {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('p') !== String(p.id)) {
             urlParams.set('p', p.id);
             if (!isFromNavStack && !isModalCurrentlyVisible) {
-                window.history.pushState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
+                window.history.pushState({ modal: 'product' }, p.name, window.location.pathname + '?' + urlParams.toString());
                 if (m.classList.contains('hidden')) {
                     oMods.push('product');
                 }
             } else {
-                window.history.replaceState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
+                window.history.replaceState({ modal: 'product' }, p.name, window.location.pathname + '?' + urlParams.toString());
             }
         }
         if (m.classList.contains('hidden')) {
-            c.scrollTo(0,0);
+            c.scrollTo(0, 0);
             openModalAnim(m, c);
         } else {
             c.scrollTo({ top: 0, behavior: 'smooth' });
@@ -236,7 +236,7 @@ export const closeProductModal = (fH = false) => {
         urlParams.delete('p');
         let newUrl = window.location.pathname;
         if (urlParams.toString()) newUrl += '?' + urlParams.toString();
-        
+
         // Hanya sinkronkan URL via replaceState jika ada query param ?p= atau saat popstate (fH=true)
         // Menghindari race-condition di Chromium yang membatalkan history.back() saat replaceState dipanggil bersamaan
         if (fH || hasPParam) {
@@ -245,18 +245,18 @@ export const closeProductModal = (fH = false) => {
             if (!curState.view) curState.view = curViewName || 'view-catalog';
             try {
                 window.history.replaceState(curState, "Toko Putri", newUrl);
-            } catch(e) {}
+            } catch (e) { }
         }
-        
+
         if (typeof window.updateSEO === 'function') {
             window.updateSEO(
-                "Toko Putri", 
+                "Toko Putri",
                 "Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik.",
                 getOptImg(appData.store.logo, 'w300-rw'),
                 window.location.origin + newUrl
             );
         }
-        
+
         const pScript = document.getElementById('seo-product');
         if (pScript) pScript.remove();
     };
@@ -314,9 +314,9 @@ export const previewVariant = (idx) => {
         const prodImg = (cProd.img && !isPlaceholderImg(cProd.img)) ? cProd.img : '';
         html = `
             <div class="relative w-full aspect-square bg-white dark:bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-slate-200/90 dark:border-slate-800 flex items-center justify-center">
-                ${prodImg 
-                    ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(prodImg, 'w800-rw')}" alt="${esc(cProd.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
-                    : coverLg}
+                ${prodImg
+                ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(prodImg, 'w800-rw')}" alt="${esc(cProd.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
+                : coverLg}
             </div>
             <div class="mt-5 text-center px-4 w-full">
                 <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
@@ -348,9 +348,9 @@ export const previewProductImage = () => {
 
     let html = `
         <div class="relative w-full aspect-square bg-white dark:bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-slate-200/90 dark:border-slate-800 flex items-center justify-center">
-            ${imgSrc 
-                ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(imgSrc, 'w800-rw')}" alt="${titleStr}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
-                : coverLg}
+            ${imgSrc
+            ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(imgSrc, 'w800-rw')}" alt="${titleStr}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
+            : coverLg}
             ${v?.colorCode ? `<div class="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: ${esc(v.colorCode)};"></div>` : ''}
         </div>
         <div class="mt-5 text-center px-4 w-full">
@@ -421,11 +421,11 @@ export const isDarkColor = (hex) => {
 export const parsePaintColorInfo = (v) => {
     const rawName = (v?.name || '').trim();
     const hex = (v?.colorCode && typeof v.colorCode === 'string' && v.colorCode.trim()) ? v.colorCode.trim() : '';
-    
+
     // Deteksi kode warna di depan nama (misal "035 Champagne", "BW Broken White", "9102 Black")
     let codeStamp = (v?.code || '').trim();
     let displayName = rawName;
-    
+
     if (!codeStamp) {
         const match = rawName.match(/^([A-Za-z0-9\-\/]{1,6})\s+[-–]?\s*(.+)$/);
         if (match && match[1] && match[2]) {
@@ -435,7 +435,7 @@ export const parsePaintColorInfo = (v) => {
             codeStamp = hex.replace('#', '').toUpperCase();
         }
     }
-    
+
     return {
         codeStamp: codeStamp || 'CAT',
         displayName: displayName || rawName,
@@ -513,7 +513,7 @@ export const rProdMod = () => {
     let p = cProd;
     let a = p.isActive !== 'false' && p.isActive !== false;
     let hV = p.variants?.length > 0;
-    
+
     // Check if interior/exterior wall paint product to show return warning
     const nameLower = (p.name || '').toLowerCase();
     const catLower = (p.category || '').toLowerCase();
@@ -536,10 +536,10 @@ export const rProdMod = () => {
             nameLower.includes('exterior')
         )
     ) || (
-        catLower.includes('cat') || catLower.includes('paint')
-    ) || (
-        tagLower.includes('cat') || tagLower.includes('paint')
-    );
+            catLower.includes('cat') || catLower.includes('paint')
+        ) || (
+            tagLower.includes('cat') || tagLower.includes('paint')
+        );
 
     const isPaintByVariant = hV && p.variants.some(v => {
         const vName = (v.name || '').toLowerCase();
@@ -556,10 +556,10 @@ export const rProdMod = () => {
             warnEl.classList.add('hidden');
         }
     }
-    
+
     let v = (hV && cVar !== null) ? p.variants[cVar] : null;
     let unt = v?.unit || p.unit || 'Pcs';
-    
+
     const i = el('product-modal-img');
     const vc = el('product-modal-video-container');
     const yId = getYouTubeId(p.video);
@@ -641,9 +641,9 @@ export const rProdMod = () => {
         const zoomInd = el('zoom-indicator');
         if (zoomInd) zoomInd.classList.remove('hidden');
     }
-    
+
     setIn('product-modal-title', p.name);
-    
+
     const ppnEl = el('product-modal-ppn-badge');
     if (hV && cVar === null) {
         setH('product-modal-price', '<span class="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Pilih Warna/Varian</span>');
@@ -661,9 +661,9 @@ export const rProdMod = () => {
             actPrice = fsItem.flashSalePrice;
             actNormal = fsItem.normalPrice || actNormal || p.price;
         }
-        
+
         const isIncPpn = (appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true') && appData.store.ppnType === 'inclusive';
-        
+
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
@@ -691,24 +691,24 @@ export const rProdMod = () => {
             setH('product-modal-price', pHtml);
         }
     }
-    
+
     const descEl = el('product-modal-desc');
     if (descEl) {
         descEl.className = 'text-[13px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_b]:font-bold [&_strong]:font-bold [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-2 [&_div]:my-1';
         const rawDesc = p.desc || '-';
         descEl.innerHTML = (typeof DOMPurify !== 'undefined')
             ? DOMPurify.sanitize(rawDesc, {
-                ALLOWED_TAGS: ['p','br','b','strong','i','em','u','s','span','div',
-                    'h1','h2','h3','h4','ul','ol','li','a','img','table',
-                    'thead','tbody','tr','th','td','blockquote','code','pre','hr'],
-                ALLOWED_ATTR: ['href','src','alt','title','class','style','target',
-                    'rel','width','height','loading'],
-                FORBID_TAGS: ['script','iframe','object','embed','form','input'],
-                FORBID_ATTR: ['onclick','oninput','onload','onmouseover','onsubmit','onerror']
-              })
+                ALLOWED_TAGS: ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'span', 'div',
+                    'h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'a', 'img', 'table',
+                    'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'code', 'pre', 'hr'],
+                ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'style', 'target',
+                    'rel', 'width', 'height', 'loading'],
+                FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
+                FORBID_ATTR: ['onclick', 'oninput', 'onload', 'onmouseover', 'onsubmit', 'onerror']
+            })
             : rawDesc;
     }
-    
+
     // Spesifikasi Produk
     const specTableEl = el('product-modal-spec-table');
     if (specTableEl) {
@@ -732,9 +732,9 @@ export const rProdMod = () => {
             specHtml += `</tbody></table></div></div>`;
             specTableEl.innerHTML = (typeof DOMPurify !== 'undefined')
                 ? DOMPurify.sanitize(specHtml, {
-                    ALLOWED_TAGS: ['div','p','i','table','tbody','tr','td','th','thead','br','span'],
-                    ALLOWED_ATTR: ['class','style']
-                  })
+                    ALLOWED_TAGS: ['div', 'p', 'i', 'table', 'tbody', 'tr', 'td', 'th', 'thead', 'br', 'span'],
+                    ALLOWED_ATTR: ['class', 'style']
+                })
                 : specHtml;
             specTableEl.style.display = '';
         } else {
@@ -743,7 +743,7 @@ export const rProdMod = () => {
         }
     }
     setIn('modal-unit-label', unt);
-    
+
     // Header Badge
     let bH = ``;
     const fsItemBadge = typeof window.getFlashSaleItem === 'function' ? window.getFlashSaleItem(p.id, v?.name, 'web') : null;
@@ -753,11 +753,11 @@ export const rProdMod = () => {
     const activeSku = (hV && cVar !== null && v && v.sku) ? v.sku : (p.sku || '');
     if (activeSku) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(activeSku)}</span>`;
     if (p.tag) bH += `<span class="accent-badge px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
-    
+
     bH += `<span class="accent-badge px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
-    
+
     if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
-    
+
     if (p.poTime) bH += `<span class="bg-amber-500 text-white px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
 
     const activeStockVal = hV && cVar !== null
@@ -790,7 +790,7 @@ export const rProdMod = () => {
     }
 
     setH('product-modal-badges', bH);
-    
+
     // Wholesale & Multi-Units Section
     let wholesaleAndUnitsHtml = '';
     if (p.multiUnits && p.multiUnits.length > 0) {
@@ -798,9 +798,9 @@ export const rProdMod = () => {
         <div class="mb-4 rounded-2xl p-4 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.05); border: 1px solid rgba(var(--color-primary-rgb), 0.2);">
             <p class="text-[10px] font-bold mb-2.5 uppercase tracking-widest flex items-center gap-1.5" style="color: var(--color-primary);"><i class="fa-solid fa-boxes-stacked"></i> Pilihan Satuan Kemasan</p>
             <div class="space-y-2">${p.multiUnits.map(mu => {
-                const uMultiplier = parseFloat(mu.multiplier != null ? mu.multiplier : mu.conversionRatio) || 1;
-                const uPrice = parseFloat(mu.price) || 0;
-                return `
+            const uMultiplier = parseFloat(mu.multiplier != null ? mu.multiplier : mu.conversionRatio) || 1;
+            const uPrice = parseFloat(mu.price) || 0;
+            return `
                 <div class="flex justify-between items-center text-xs font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-2xs">
                     <div class="flex items-center gap-2">
                         <span class="w-5 h-5 rounded-md flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-box"></i></span>
@@ -808,7 +808,7 @@ export const rProdMod = () => {
                     </div>
                     <span class="font-extrabold" style="color: var(--color-primary);">${fCur(uPrice)}</span>
                 </div>`;
-            }).join('')}
+        }).join('')}
             </div>
         </div>`;
     }
@@ -825,7 +825,7 @@ export const rProdMod = () => {
         </div>`;
     }
     setH('product-modal-wholesale-container', wholesaleAndUnitsHtml);
-    
+
     // Info Seller (HPP & Stok khusus admin)
     const adminInfoEl = el('product-modal-admin-info');
     if (adminInfoEl) {
@@ -836,7 +836,7 @@ export const rProdMod = () => {
             const currStock = v ? (v.stock !== undefined ? v.stock : '—') : (p.stock !== undefined ? p.stock : '—');
             const currPrice = v ? (v.price || p.price || 0) : (p.price || 0);
             const margin = currHpp > 0 ? Math.round(((currPrice - currHpp) / currPrice) * 100) : null;
-            
+
             let stockRows = '';
             if (useStk) {
                 if (hV2) {
@@ -852,7 +852,7 @@ export const rProdMod = () => {
                     stockRows = `<div class="flex flex-col gap-1"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sisa Stok</p><p class="font-bold text-xl ${s === 0 ? 'text-rose-500' : s <= 5 ? 'text-amber-500' : 'text-blue-500'}">${s} <span class="text-sm font-bold">${esc(p.unit || 'pcs')}</span></p></div>`;
                 }
             }
-            
+
             adminInfoEl.innerHTML = `
             <div class="mb-6 bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-2xl p-4 border border-[var(--color-primary)]/20">
                 <p class="text-[10px] font-bold text-[var(--color-primary)] mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Seller</p>
@@ -875,32 +875,67 @@ export const rProdMod = () => {
             adminInfoEl.innerHTML = '';
         }
     }
-    
-    // Variants Section
+
+    // Variants Section & Kontrol Stok Habis (Produk Habis Tidak Boleh Transaksi)
     if (a) {
-        if (hV && cVar === null) {
-            hide('modal-active-controls'); 
-            hide('modal-inactive-controls');
+        const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+        let curStock = 0;
+        let hasCurStock = false;
+        if (hV && cVar !== null && v) {
+            const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
+            hasCurStock = rawV != null && !isNaN(parseFloat(rawV));
+            curStock = hasCurStock ? parseFloat(rawV) : 0;
         } else {
-            let vActive = hV ? (v.isActive !== false && v.isActive !== 'false') : true;
-            if (vActive) {
-                show('modal-active-controls'); 
-                hide('modal-inactive-controls');
+            const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
+            hasCurStock = rawP != null && !isNaN(parseFloat(rawP));
+            curStock = hasCurStock ? parseFloat(rawP) : 0;
+        }
+        const isCurManaged = storeUseStock || hasCurStock;
+        const isCurOutOfStock = !isPreorder && isCurManaged && curStock <= 0;
+        let vActive = hV ? (v && v.isActive !== false && v.isActive !== 'false') : true;
+
+        if (hV && cVar === null) {
+            hide('modal-active-controls');
+            hide('modal-inactive-controls');
+        } else if (!vActive || isCurOutOfStock) {
+            hide('modal-active-controls');
+            show('modal-inactive-controls');
+            const inactEl = el('modal-inactive-controls');
+            if (inactEl) {
+                inactEl.innerHTML = `<i class="fa-solid fa-box-open mr-2"></i> ${!vActive ? 'Varian Sedang Dinonaktifkan' : 'Stok Sedang Kosong'}`;
+            }
+        } else {
+            show('modal-active-controls');
+            hide('modal-inactive-controls');
+        }
+
+        // Kontrol Tombol Sticky Footer (+ Keranjang & Beli Sekarang)
+        const btnCart = document.querySelector('#product-modal-sticky-bar button[onclick*="confirmAddProductToCart"]') || el('btn-modal-add-cart');
+        const btnBuy = document.querySelector('#product-modal-sticky-bar button[onclick*="buyNowProduct"]') || el('btn-modal-buy-now');
+        if (btnCart && btnBuy) {
+            if (!vActive || isCurOutOfStock || (hV && cVar === null)) {
+                btnCart.disabled = true;
+                btnBuy.disabled = true;
+                btnCart.classList.add('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+                btnBuy.classList.add('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
             } else {
-                hide('modal-active-controls'); 
-                show('modal-inactive-controls');
+                btnCart.disabled = false;
+                btnBuy.disabled = false;
+                btnCart.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+                btnBuy.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
             }
         }
 
         if (hV) {
             show('product-modal-options-container');
-            
+
             const isColorCatalog = p.variants.some(v => v.colorCode && typeof v.colorCode === 'string' && v.colorCode.trim() !== '');
 
             const titleEl = el('product-modal-options-title');
             if (titleEl) {
-                titleEl.innerHTML = isColorCatalog 
-                    ? '<i class="fa-solid fa-palette text-[var(--color-primary)] mr-1"></i> Pilih Warna Cat' 
+                titleEl.innerHTML = isColorCatalog
+                    ? '<i class="fa-solid fa-palette text-[var(--color-primary)] mr-1"></i> Pilih Warna Cat'
                     : '<i class="fa-solid fa-sliders text-[var(--color-primary)] mr-1"></i> Pilih Varian';
             }
 
@@ -910,7 +945,7 @@ export const rProdMod = () => {
                 optHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full">`;
                 optHTML += p.variants.map((r, x) => {
                     const isVarActive = r.isActive !== false && r.isActive !== 'false';
-                    const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
+                    const useStkV = appData.store?.useStock === true || appData.store?.useStock === 'true';
                     const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
                     const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
                     const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
@@ -923,8 +958,8 @@ export const rProdMod = () => {
                     const hex = info.hex;
                     const isDark = info.isDark;
 
-                    const zoomBtn = isVarSelectable 
-                        ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="paint-swatch-zoom ${isDark ? 'is-dark-bg' : 'is-light-bg'}" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></span>` 
+                    const zoomBtn = isVarSelectable
+                        ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="paint-swatch-zoom ${isDark ? 'is-dark-bg' : 'is-light-bg'}" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></span>`
                         : '';
 
                     const selectedBadge = isSelected
@@ -936,7 +971,7 @@ export const rProdMod = () => {
                     const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
                     const metaRight = isSwatchVarInFs
                         ? `<span class="paint-swatch-stock font-black inline-flex items-center gap-0.5" style="color: var(--color-primary);"><i class="fa-solid fa-bolt text-[7.5px] text-amber-400"></i>${fCur(swatchVarFs.flashSalePrice)}</span>`
-                        : (hasDiffPrice 
+                        : (hasDiffPrice
                             ? `<span class="paint-swatch-stock font-bold ${isSelected ? 'text-[var(--color-primary)]' : ''}">${fCur(r.price)}</span>`
                             : (hasVStock && !isVarOutOfStock ? `<span class="paint-swatch-stock ${varStock <= 5 ? 'is-low' : ''}">Stok ${varStock}</span>` : `<span class="paint-swatch-stock">${esc(r.unit || p.unit || '')}</span>`));
 
@@ -967,7 +1002,7 @@ export const rProdMod = () => {
                 optHTML = `<div class="flex flex-wrap gap-2 sm:gap-2.5 w-full">`;
                 optHTML += p.variants.map((r, x) => {
                     let isVarActive = r.isActive !== false && r.isActive !== 'false';
-                    const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
+                    const useStkV = appData.store?.useStock === true || appData.store?.useStock === 'true';
                     const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
                     const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
                     const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
@@ -975,7 +1010,7 @@ export const rProdMod = () => {
                     const isVarOutOfStock = !isPreorder && isVManaged && varStock <= 0;
                     let isVarSelectable = isVarActive && !isVarOutOfStock;
                     const isSelected = x === cVar;
-                    
+
                     let chipClass = "";
                     if (!isVarSelectable) {
                         chipClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
@@ -1013,15 +1048,15 @@ export const rProdMod = () => {
                 }).join('');
                 optHTML += `</div>`;
             }
-            
+
             setH('product-modal-options', optHTML);
-            
-        } else { 
-            hide('product-modal-options-container'); 
+
+        } else {
+            hide('product-modal-options-container');
         }
     } else {
-        hide('modal-active-controls'); 
-        show('modal-inactive-controls'); 
+        hide('modal-active-controls');
+        show('modal-inactive-controls');
         hide('product-modal-options-container');
     }
     uMPP();
@@ -1032,14 +1067,14 @@ export const rProdMod = () => {
  */
 export const uMPP = () => {
     if (!cProd) return;
-    
+
     if (cProd.variants?.length > 0 && cVar === null) {
         setIn('btn-modal-price-preview', 'Rp 0');
         const stickyEl = el('sticky-modal-price');
         if (stickyEl) stickyEl.innerText = 'Pilih Varian';
         return;
     }
-    
+
     let v = (cProd.variants || [])[cVar];
     let p = v?.price ?? cProd.price;
     let e = p;
@@ -1068,7 +1103,7 @@ export const uMPP = () => {
     setIn('btn-modal-price-preview', finalSubtotal);
     const stickyEl = el('sticky-modal-price');
     if (stickyEl) stickyEl.innerText = finalSubtotal;
-    
+
     // Perbarui kalkulator simulasi Putri PayLater secara real-time
     renderProductPaylaterWidget(e, cQty);
 };
@@ -1120,8 +1155,8 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
         }
     }
 
-    const cleanUnit = (typeof unitP === 'number') 
-        ? (isNaN(unitP) ? 0 : Math.max(0, unitP)) 
+    const cleanUnit = (typeof unitP === 'number')
+        ? (isNaN(unitP) ? 0 : Math.max(0, unitP))
         : Math.max(0, parseFloat(String(unitP || '').replace(/[^0-9.-]/g, '')) || 0);
     const cleanQty = Math.max(1, parseFloat(currentQty) || 1);
     const totalAmount = cleanUnit * cleanQty;
@@ -1168,11 +1203,11 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
         const t = tenors[k];
         if (!t || !t.enabled) return '';
         const isSelected = k === activeKey;
-        const btnCls = isSelected 
-            ? 'font-black shadow-xs' 
+        const btnCls = isSelected
+            ? 'font-black shadow-xs'
             : 'border border-slate-200/90 dark:border-slate-700/80 bg-white/95 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 font-bold hover:border-[var(--color-primary)]/40 active:scale-95';
-        const inlineStyle = isSelected 
-            ? 'border: 2px solid var(--color-primary); background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary); box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb),0.15);' 
+        const inlineStyle = isSelected
+            ? 'border: 2px solid var(--color-primary); background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary); box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb),0.15);'
             : '';
         return `
             <button type="button" onclick="window.selectProductPaylaterTenor('${k}')" 
@@ -1186,12 +1221,12 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
 
     // Kotak Rincian Biaya Transparan (Zero Hidden Fees)
     const isOpen = window.isPaylaterBreakdownOpen;
-    const adminFeeText = activeBreakdown.adminFeePerMonth === 0 
-        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Rp 0 (Gratis)</span>' 
+    const adminFeeText = activeBreakdown.adminFeePerMonth === 0
+        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Rp 0 (Gratis)</span>'
         : `<span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.adminFeePerMonth)} / bln</span>`;
 
-    const serviceFeeText = activeBreakdown.serviceFeePerMonth === 0 
-        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Rp 0 (Gratis)</span>' 
+    const serviceFeeText = activeBreakdown.serviceFeePerMonth === 0
+        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Rp 0 (Gratis)</span>'
         : `<span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.serviceFeePerMonth)} / bln</span>`;
 
     const breakdownContentHtml = `
@@ -1263,42 +1298,40 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
 window.renderProductPaylaterWidget = renderProductPaylaterWidget;
 
 export const updateModalQty = c => {
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
     const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
     const v2 = cProd?.variants?.[cVar];
     const vN2 = v2?.name || null;
     const rawStk = vN2 ? (v2?.stock != null && v2?.stock !== '' ? v2.stock : (v2?.stok != null && v2?.stok !== '' ? v2.stok : null)) : (cProd?.stock != null && cProd?.stock !== '' ? cProd.stock : (cProd?.stok != null && cProd?.stok !== '' ? cProd.stok : null));
     const parsedStk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
-    const maxStk = (useStk && !isPreorder) ? parsedStk : Infinity;
+    const maxStk = !isPreorder ? parsedStk : Infinity;
     const newQty = parseFloat(Math.min(maxStk, Math.max(0.01, cQty + c)).toFixed(2));
     setCQty(newQty);
-    setV('modal-qty-input', cQty); 
+    setV('modal-qty-input', cQty);
     uMPP();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    if (useStk && !isPreorder && maxStk !== Infinity && cQty >= maxStk) showToast(`Batas pembelian telah mencapai stok maksimal (${maxStk} unit)`);
+    if (!isPreorder && maxStk !== Infinity && cQty >= maxStk) showToast(`Batas pembelian telah mencapai stok maksimal (${maxStk} unit)`);
 };
 
 export const handleModalQtyChange = v => {
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
     const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
     const v2 = cProd?.variants?.[cVar];
     const vN2 = v2?.name || null;
     const rawStk = vN2 ? (v2?.stock != null && v2?.stock !== '' ? v2.stock : (v2?.stok != null && v2?.stok !== '' ? v2.stok : null)) : (cProd?.stock != null && cProd?.stock !== '' ? cProd.stock : (cProd?.stok != null && cProd?.stok !== '' ? cProd.stok : null));
     const parsedStk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
-    const maxStk = (useStk && !isPreorder) ? parsedStk : Infinity;
-    let nv = parseFloat(v); 
+    const maxStk = !isPreorder ? parsedStk : Infinity;
+    let nv = parseFloat(v);
     if (isNaN(nv) || nv <= 0) nv = 0.01;
     nv = Math.min(maxStk, nv);
     const newQty = parseFloat(nv.toFixed(2));
     setCQty(newQty);
-    setV('modal-qty-input', cQty); 
+    setV('modal-qty-input', cQty);
     uMPP();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
-export const selectVariant = i => { 
-    setCVar(i); 
-    rProdMod(); 
+export const selectVariant = i => {
+    setCVar(i);
+    rProdMod();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
@@ -1307,8 +1340,8 @@ export const selectVariant = i => {
  */
 export const confirmAddProductToCart = (sourceEl = null) => {
     if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
-    
-    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
     const v2 = cProd.variants?.[cVar];
     const vN2 = v2?.name || null;
@@ -1327,30 +1360,30 @@ export const confirmAddProductToCart = (sourceEl = null) => {
             return showToast(`Jumlah melebihi sisa persediaan (tersisa ${avail} unit).`);
         }
     }
-    
+
     const v = cProd.variants?.[cVar], vN = v?.name || null, e = cart.find(i => i.id === cProd.id && i.variantName === vN), unt = v?.unit || cProd.unit || 'pcs';
     const prodImg = v?.img || cProd.img;
     if (e) {
-        e.qty = parseFloat((e.qty + cQty).toFixed(2)); 
+        e.qty = parseFloat((e.qty + cQty).toFixed(2));
         e.unit = unt;
     } else {
         const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(cProd.poin) || 0);
         cart.push({
-            id: cProd.id, 
-            name: cProd.name, 
-            variantName: vN, 
-            price: v?.price ?? cProd.price, 
-            img: prodImg, 
-            qty: cQty, 
-            unit: unt, 
-            poTime: cProd.poTime || '', 
-            colorCode: v?.colorCode || '', 
+            id: cProd.id,
+            name: cProd.name,
+            variantName: vN,
+            price: v?.price ?? cProd.price,
+            img: prodImg,
+            qty: cQty,
+            unit: unt,
+            poTime: cProd.poTime || '',
+            colorCode: v?.colorCode || '',
             poin: itemPoin
         });
     }
     updCart();
     if (typeof analytics !== 'undefined') analytics.logEvent('add_to_cart', { item_id: cProd.id, item_name: cProd.name, quantity: cQty });
-    
+
     // Trigger Animasi Terbang & Haptic
     const startElem = (sourceEl instanceof HTMLElement) ? sourceEl : (el('product-modal-img') || sourceEl);
     if (typeof window.flyToCartAnimation === 'function') {
@@ -1359,7 +1392,7 @@ export const confirmAddProductToCart = (sourceEl = null) => {
         window.triggerHaptic('medium');
     }
 
-    closeProductModal(); 
+    closeProductModal();
     showToast("Produk berhasil ditambahkan ke keranjang belanja", "success");
 };
 
@@ -1369,7 +1402,7 @@ export const confirmAddProductToCart = (sourceEl = null) => {
 export const buyNowProduct = () => {
     if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
 
-    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
     const v2 = cProd.variants?.[cVar];
     const vN2 = v2?.name || null;
@@ -1392,20 +1425,20 @@ export const buyNowProduct = () => {
     const v = cProd.variants?.[cVar], vN = v?.name || null, e = cart.find(i => i.id === cProd.id && i.variantName === vN), unt = v?.unit || cProd.unit || 'pcs';
     const prodImg = v?.img || cProd.img;
     if (e) {
-        e.qty = parseFloat((e.qty + cQty).toFixed(2)); 
+        e.qty = parseFloat((e.qty + cQty).toFixed(2));
         e.unit = unt;
     } else {
         const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(cProd.poin) || 0);
         cart.push({
-            id: cProd.id, 
-            name: cProd.name, 
-            variantName: vN, 
-            price: v?.price ?? cProd.price, 
-            img: prodImg, 
-            qty: cQty, 
-            unit: unt, 
-            poTime: cProd.poTime || '', 
-            colorCode: v?.colorCode || '', 
+            id: cProd.id,
+            name: cProd.name,
+            variantName: vN,
+            price: v?.price ?? cProd.price,
+            img: prodImg,
+            qty: cQty,
+            unit: unt,
+            poTime: cProd.poTime || '',
+            colorCode: v?.colorCode || '',
             poin: itemPoin
         });
     }
@@ -1428,7 +1461,7 @@ export const chatWAAboutProduct = () => {
     if (!cProd) return;
     const phone = (appData.store.wa || '').replace(/\D/g, '');
     if (!phone) return showToast('Nomor WhatsApp layanan toko belum dikonfigurasi.');
-    
+
     let targetWa = phone;
     if (targetWa.startsWith('0')) targetWa = '62' + targetWa.slice(1);
     else if (!targetWa.startsWith('62')) targetWa = '62' + targetWa;
@@ -1437,7 +1470,7 @@ export const chatWAAboutProduct = () => {
     const vN = v?.name ? ` (Varian: ${v.name})` : '';
     const price = v?.price ?? cProd.price;
     const msg = `Halo Tim *${appData.store.name || 'Toko Putri'}*,\n\nSaya ingin berkonsultasi mengenai produk berikut:\n📦 *${cProd.name}*${vN}\n💰 Harga: *${fCur(price)}*\n\nApakah stok barang ini tersedia dan bisa langsung dipesan / dikirim ke lokasi proyek saya? Terima kasih.`;
-    
+
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     if (typeof window.openWhatsApp === 'function') {
         window.openWhatsApp(targetWa, msg);
@@ -1455,16 +1488,16 @@ export const confirmAddToWishlist = () => {
     const v = cProd.variants?.[cVar], vN = v?.name || null;
     if (wishlist.find(i => i.id === cProd.id && i.variantName === vN)) return showToast("Produk ini sudah tersimpan dalam daftar favorit Anda.");
     wishlist.push({
-        id: cProd.id, 
-        name: cProd.name, 
-        variantName: vN, 
-        price: v?.price ?? cProd.price, 
-        img: v?.img || cProd.img, 
+        id: cProd.id,
+        name: cProd.name,
+        variantName: vN,
+        price: v?.price ?? cProd.price,
+        img: v?.img || cProd.img,
         colorCode: v?.colorCode || ''
     });
     ssL('freshmart_wishlist', JSON.stringify(wishlist));
-    if (typeof window.updWish === 'function') window.updWish(); 
-    closeProductModal(); 
+    if (typeof window.updWish === 'function') window.updWish();
+    closeProductModal();
     showToast("Produk berhasil disimpan ke daftar favorit.");
 };
 
@@ -1473,7 +1506,7 @@ export const confirmAddToWishlist = () => {
  */
 export const shareProduct = () => {
     if (!cProd) return;
-    
+
     const productUrl = window.location.origin + window.location.pathname + '?p=' + cProd.id;
     const shareTitle = cProd.name;
     const shareText = `Temukan produk material berkualitas ${cProd.name} di ${appData.store.name || 'Toko Putri'}!`;
@@ -1571,9 +1604,9 @@ export const renderRelatedProducts = p => {
             <!-- Kotak Gambar Presisi Full Frame -->
             <div class="relative aspect-square w-full rounded-xl bg-white dark:bg-slate-950 overflow-hidden mb-2 border border-slate-100 dark:border-slate-800/80 flex items-center justify-center">
                 ${hasItemImg
-                    ? `<img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
+                ? `<img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
                        <div class="w-full h-full" style="display:none">${coverItemHtml}</div>`
-                    : coverItemHtml}
+                : coverItemHtml}
             </div>
             ${badgeText ? `<p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${esc(badgeText)}</p>` : ''}
             <h5 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-tight mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(item.name)}</h5>
@@ -1632,7 +1665,7 @@ export const openQuickVariantSheet = (productId) => {
 
     const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
     const sInfo = typeof window.computeTotalProductStock === 'function' ? window.computeTotalProductStock(p) : null;
-    if (sInfo && sInfo.isManaged && !isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+    if (sInfo && !isPreorder && sInfo.isOutOfStock) {
         showToast(`Stok "${p.name}" sedang kosong atau habis`);
         return;
     }
@@ -1643,9 +1676,9 @@ export const openQuickVariantSheet = (productId) => {
     qvFamily = 'all';
 
     // Smart Auto-Select: Pilih varian aktif pertama yang memiliki stok
-    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     let defaultIdx = 0;
     if (p.variants && p.variants.length > 0) {
+        const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
         const found = p.variants.findIndex(v => {
             const isActive = v.isActive !== false && v.isActive !== 'false';
             const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
@@ -1703,7 +1736,7 @@ export const updateQuickVariantQty = (delta) => {
     qvQty = newQty;
     const input = el('quick-variant-qty-input');
     if (input) input.value = qvQty;
-    
+
     // Update live subtotal
     const priceVal = v?.price ?? qvProd.price;
     setIn('quick-variant-subtotal', fCur(priceVal * qvQty));
@@ -1825,8 +1858,8 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
 
         const titleSectionEl = el('quick-variant-section-title');
         if (titleSectionEl) {
-            titleSectionEl.innerHTML = isColorCatalog 
-                ? `<i class="fa-solid fa-palette text-[var(--color-primary)]"></i> Pilih Warna Cat` 
+            titleSectionEl.innerHTML = isColorCatalog
+                ? `<i class="fa-solid fa-palette text-[var(--color-primary)]"></i> Pilih Warna Cat`
                 : `<i class="fa-solid fa-sliders text-[var(--color-primary)]"></i> Pilih Varian`;
         }
 
@@ -1909,13 +1942,13 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                         const tabsHtml = `
                             <div class="paint-family-nav hide-scrollbar">
                                 ${availableFamilies.map(f => {
-                                    const isActive = qvFamily === f.id;
-                                    const cnt = familyCounts[f.id] || 0;
-                                    const iconHtml = f.icon 
-                                        ? `<i class="fa-solid ${f.icon} text-[9px]"></i>` 
-                                        : `<span class="w-2.5 h-2.5 rounded-full inline-block shrink-0 border border-black/10" style="background:${f.dot}"></span>`;
-                                    return `<button type="button" onclick="window.filterQuickPaintFamily('${f.id}')" data-family="${f.id}" class="paint-family-tab ${isActive ? 'is-active' : ''}">${iconHtml}<span>${f.label} (${cnt})</span></button>`;
-                                }).join('')}
+                            const isActive = qvFamily === f.id;
+                            const cnt = familyCounts[f.id] || 0;
+                            const iconHtml = f.icon
+                                ? `<i class="fa-solid ${f.icon} text-[9px]"></i>`
+                                : `<span class="w-2.5 h-2.5 rounded-full inline-block shrink-0 border border-black/10" style="background:${f.dot}"></span>`;
+                            return `<button type="button" onclick="window.filterQuickPaintFamily('${f.id}')" data-family="${f.id}" class="paint-family-tab ${isActive ? 'is-active' : ''}">${iconHtml}<span>${f.label} (${cnt})</span></button>`;
+                        }).join('')}
                             </div>
                         `;
 
@@ -1974,8 +2007,8 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                     const hex = info.hex;
                     const isDark = info.isDark;
 
-                    const zoomBtn = isSelectable 
-                        ? `<span onclick="event.stopPropagation(); previewVariant(${idx})" class="paint-swatch-zoom ${isDark ? 'is-dark-bg' : 'is-light-bg'}" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></span>` 
+                    const zoomBtn = isSelectable
+                        ? `<span onclick="event.stopPropagation(); previewVariant(${idx})" class="paint-swatch-zoom ${isDark ? 'is-dark-bg' : 'is-light-bg'}" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></span>`
                         : '';
 
                     const selectedBadge = isSelected
@@ -1983,7 +2016,7 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                         : '';
 
                     const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
-                    const metaRight = hasDiffPrice 
+                    const metaRight = hasDiffPrice
                         ? `<span class="paint-swatch-stock font-bold ${isSelected ? 'text-[var(--color-primary)]' : ''}">${fCur(r.price)}</span>`
                         : (hasS && !isOOS ? `<span class="paint-swatch-stock ${s <= 5 ? 'is-low' : ''}">Stok ${s}</span>` : `<span class="paint-swatch-stock">${esc(r.unit || p.unit || '')}</span>`);
 
@@ -2034,7 +2067,7 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                     : '';
 
                 const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
-                const priceBadge = hasDiffPrice 
+                const priceBadge = hasDiffPrice
                     ? `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`
                     : '';
 
@@ -2083,7 +2116,7 @@ export const quickVariantAddToCart = (btn = null) => {
     const v = p.variants?.[qvVar];
     if (!v) return showToast('Pilih varian terlebih dahulu');
 
-    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
     const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
     const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
@@ -2144,7 +2177,7 @@ export const quickVariantBuyNow = () => {
     const v = p.variants?.[qvVar];
     if (!v) return showToast('Pilih varian terlebih dahulu');
 
-    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
     const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
     const hasVStock = rawV != null && !isNaN(parseFloat(rawV));

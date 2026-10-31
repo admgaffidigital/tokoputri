@@ -1500,11 +1500,11 @@
             <button onclick="confirmAddToWishlist()" class="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-400 hover:text-rose-500 flex items-center justify-center text-lg transition-all active:scale-90 shrink-0 cursor-pointer shadow-2xs" title="Tambah ke Favorit">
               <i class="fa-regular fa-heart"></i>
             </button>
-            <button onclick="confirmAddProductToCart(this)" class="flex-1 h-12 rounded-2xl border-2 border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] text-xs sm:text-sm font-extrabold tracking-wide transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-xs">
+            <button id="btn-modal-add-cart" onclick="confirmAddProductToCart(this)" class="flex-1 h-12 rounded-2xl border-2 border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] text-xs sm:text-sm font-extrabold tracking-wide transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-xs">
               <i class="fa-solid fa-cart-plus text-base"></i>
               <span>+ Keranjang</span>
             </button>
-            <button onclick="buyNowProduct()" class="flex-1 h-12 rounded-2xl bg-[var(--color-primary)] text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-xs hover:brightness-105">
+            <button id="btn-modal-buy-now" onclick="buyNowProduct()" class="flex-1 h-12 rounded-2xl bg-[var(--color-primary)] text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-xs hover:brightness-105">
               <span>Beli Sekarang</span>
               <i class="fa-solid fa-bolt-lightning text-white/90 text-xs"></i>
             </button>

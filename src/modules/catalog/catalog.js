@@ -19,7 +19,7 @@ let searchTmr = null;
  */
 export const rCat = () => {
     const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '' || aSubCat !== 'Semua Jenis');
-    
+
     toggleCls('dynamic-banners-container', 'hidden', isFiltered);
     toggleCls('dynamic-flashsale-container', 'hidden', isFiltered);
     if (!isFiltered && typeof window.renderStorefrontFlashSale === 'function') {
@@ -40,39 +40,39 @@ export const rCat = () => {
     let backBtnContainer = el('dynamic-active-filter');
     if (!backBtnContainer) {
         let pContainer = el('product-container');
-        if (pContainer) { 
-            pContainer.insertAdjacentHTML('beforebegin', '<div id="dynamic-active-filter" class="transition-all w-full"></div>'); 
-            backBtnContainer = el('dynamic-active-filter'); 
+        if (pContainer) {
+            pContainer.insertAdjacentHTML('beforebegin', '<div id="dynamic-active-filter" class="transition-all w-full"></div>');
+            backBtnContainer = el('dynamic-active-filter');
         }
     }
-    
+
     if (backBtnContainer) {
         if (isFiltered) {
-            let filterLabel = "Menampilkan"; 
-            let filterValue = ""; 
-            let filterIcon = "fa-filter"; 
+            let filterLabel = "Menampilkan";
+            let filterValue = "";
+            let filterIcon = "fa-filter";
             let iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]";
-            
-            if (sQ !== '') { 
-                filterLabel = "Hasil Pencarian"; 
-                filterValue = `"${sQ}"`; 
-                filterIcon = "fa-magnifying-glass"; 
-                iconColor = "text-rose-500 bg-rose-50 dark:bg-rose-900/30"; 
-            } else if (aCat !== 'Semua Produk') { 
-                filterLabel = "Kategori Pilihan"; 
-                filterValue = aCat + (aSubCat !== 'Semua Jenis' ? ` • ${aSubCat}` : ''); 
-                filterIcon = "fa-layer-group"; 
-                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]"; 
-            } else if (aBrand !== 'Semua Merek') { 
-                filterLabel = "Merek Pilihan"; 
-                filterValue = aBrand; 
-                filterIcon = "fa-tag"; 
-                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]"; 
+
+            if (sQ !== '') {
+                filterLabel = "Hasil Pencarian";
+                filterValue = `"${sQ}"`;
+                filterIcon = "fa-magnifying-glass";
+                iconColor = "text-rose-500 bg-rose-50 dark:bg-rose-900/30";
+            } else if (aCat !== 'Semua Produk') {
+                filterLabel = "Kategori Pilihan";
+                filterValue = aCat + (aSubCat !== 'Semua Jenis' ? ` • ${aSubCat}` : '');
+                filterIcon = "fa-layer-group";
+                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]";
+            } else if (aBrand !== 'Semua Merek') {
+                filterLabel = "Merek Pilihan";
+                filterValue = aBrand;
+                filterIcon = "fa-tag";
+                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]";
             } else if (aSubCat !== 'Semua Jenis') {
-                filterLabel = "Sub-Kategori"; 
-                filterValue = aSubCat; 
-                filterIcon = "fa-shapes"; 
-                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]"; 
+                filterLabel = "Sub-Kategori";
+                filterValue = aSubCat;
+                filterIcon = "fa-shapes";
+                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]";
             }
 
             // Ekstrak sub-kategori unik jika kategori sedang dipilih
@@ -96,7 +96,7 @@ export const rCat = () => {
                     }
                 });
                 const subCats = Object.keys(subCatMap).sort().map(name => ({ name, count: subCatMap[name] }));
-                
+
                 if (subCats.length > 0) {
                     subCategoriesHtml = `
                     <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
@@ -134,9 +134,9 @@ export const rCat = () => {
                 ${subCategoriesHtml}
             </div>`;
             backBtnContainer.classList.remove('hidden');
-        } else { 
-            backBtnContainer.innerHTML = ''; 
-            backBtnContainer.classList.add('hidden'); 
+        } else {
+            backBtnContainer.innerHTML = '';
+            backBtnContainer.classList.add('hidden');
         }
     }
 
@@ -216,12 +216,12 @@ export const rCat = () => {
             if (hasB) return 1;
         }
         return (b.id || 0) - (a.id || 0);
-    });    const c = el('product-container');
+    }); const c = el('product-container');
     if (!c) return;
-    c.className = cView === 'grid' 
-        ? 'grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]' 
+    c.className = cView === 'grid'
+        ? 'grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]'
         : 'flex flex-col gap-2.5 sm:gap-3';
-    
+
     if (!f.length) {
         if (!window.__isProductsLoaded && !sQ && (!aCat || aCat === 'Semua Produk') && (!aBrand || aBrand === 'Semua Merek')) {
             renderCatalogSkeleton();
@@ -261,10 +261,10 @@ export const rCat = () => {
                 </div>
             </div>
         </div>`;
-        hide('load-more-container'); 
+        hide('load-more-container');
         return;
     }
-    
+
     const v = f.slice(0, cPage * iPP);
     c.innerHTML = v.map(p => {
         const stockInfo = computeTotalProductStock(p);
@@ -279,7 +279,7 @@ export const rCat = () => {
         } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
             stockChip = `<span class="neo-badge bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[9.5px] sm:text-[10px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider leading-tight"><i class="fa-solid fa-box text-[8px] sm:text-[8.5px]"></i> Stok ${stockInfo.totalStock}</span>`;
         }
-        
+
         const canOpen = !stockInfo.isOutOfStock || stockInfo.isPreorder;
         const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/45' : 'cursor-not-allowed';
         const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/45' : 'cursor-not-allowed';
@@ -357,9 +357,9 @@ export const rCat = () => {
         // Di mode List: Menampilkan seluruh badge karena kanvas horizontal sangat lapang.
         const displayedChips = (cView === 'grid') ? allProductChips.slice(0, 3) : allProductChips;
         const chipsHtml = displayedChips.join('');
-        
+
         let unt = `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
-        
+
         const hasVariants = Boolean(p.variants && p.variants.length > 0);
         let displayPriceHtml = '';
         let variantBadgeLabelHtml = '';
@@ -391,10 +391,10 @@ export const rCat = () => {
                 ${nH}
                 <!-- Kotak Gambar Rasio 1:1 Presisi Full Frame (Tanpa Frame Ganda, Monolitik Dark Mode) -->
                 <div class="relative aspect-square w-full bg-white dark:bg-slate-950 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-800/80 overflow-hidden">
-                      ${hasImg 
-                          ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                      ${hasImg
+                    ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                              <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
-                          : coverMdHtml}
+                    : coverMdHtml}
                 </div>
                 <div class="flex-1 flex flex-col p-2.5 sm:p-3.5 min-w-0 bg-white dark:bg-slate-900 relative z-10">
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
@@ -416,7 +416,11 @@ export const rCat = () => {
                                 ${unt}
                             </div>
                         </div>
-                        ${hasVariants ? `
+                        ${stockInfo.isOutOfStock && !stockInfo.isPreorder ? `
+                            <button type="button" class="btn-catalog-action z-20 opacity-40 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-400" disabled title="Stok ${esc(p.name)} Habis" aria-label="Stok ${esc(p.name)} Habis">
+                                <i class="fa-solid fa-ban text-[12px] font-bold"></i>
+                            </button>
+                        ` : hasVariants ? `
                             <button type="button" class="btn-catalog-action btn-catalog-variant z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Pilih Varian ${esc(p.name)}" aria-label="Pilih varian ${esc(p.name)}">
                                 <i class="fa-solid fa-layer-group text-[12.5px] font-bold leading-none drop-shadow-2xs"></i>
                             </button>
@@ -435,9 +439,9 @@ export const rCat = () => {
                 <!-- Thumbnail Kiri Presisi Full Frame -->
                 <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-800/80 overflow-hidden">
                     ${hasImg
-                        ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                    ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
-                        : coverSmHtml}
+                    : coverSmHtml}
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5 gap-1 relative z-10 pr-0.5">
                     <!-- Line 1: Eyebrow Kategori & Brand Terdedikasi (100% lebar kartu, anti-terpotong) -->
@@ -454,10 +458,14 @@ export const rCat = () => {
                             </p>
                             ${unt}
                             ${hasVariants
-                                ? variantBadgeLabelHtml
-                                : ((!p.priceNormal || p.priceNormal <= p.price) ? '' : `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`)}
+                    ? variantBadgeLabelHtml
+                    : ((!p.priceNormal || p.priceNormal <= p.price) ? '' : `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`)}
                         </div>
-                        ${hasVariants ? `
+                        ${stockInfo.isOutOfStock && !stockInfo.isPreorder ? `
+                            <button type="button" class="btn-catalog-action mr-0.5 z-20 opacity-40 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-400" disabled title="Stok ${esc(p.name)} Habis" aria-label="Stok ${esc(p.name)} Habis">
+                                <i class="fa-solid fa-ban text-[12px] font-bold"></i>
+                            </button>
+                        ` : hasVariants ? `
                             <button type="button" class="btn-catalog-action btn-catalog-variant mr-0.5 z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Pilih Varian ${esc(p.name)}" aria-label="Pilih varian ${esc(p.name)}">
                                 <i class="fa-solid fa-layer-group text-[12.5px] font-bold leading-none drop-shadow-2xs"></i>
                             </button>
@@ -471,7 +479,7 @@ export const rCat = () => {
             </a>`;
         }
     }).join('');
-    
+
     v.length < f.length ? show('load-more-container') : hide('load-more-container');
 };
 
@@ -488,10 +496,10 @@ export const quickAddOrOpenProduct = (e, productId) => {
 
     // Validasi stok jika produk habis (Produk Habis Tidak Boleh Transaksi)
     const sInfo = computeTotalProductStock(p);
-    if (sInfo.isManaged && !sInfo.isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+    if (!sInfo.isPreorder && sInfo.isOutOfStock) {
         return showToast(`Stok "${p.name}" sedang kosong atau habis`);
     }
-    
+
     // Jika punya varian, buka Drawer Pilih Varian Cepat (Quick Variant Bottom Sheet)
     if (p.variants && p.variants.length > 0) {
         if (typeof openQuickVariantSheet === 'function') {
@@ -528,7 +536,7 @@ export const quickAddOrOpenProduct = (e, productId) => {
         });
     }
     updCart();
-    
+
     // Trigger Animasi Terbang & Haptic Feedback
     const btnEl = e?.currentTarget || e?.target;
     if (typeof window.flyToCartAnimation === 'function') {
@@ -559,18 +567,18 @@ export const renderCatalogSkeleton = (count = 6) => {
             </div>
         </div>`;
     }
-    c.className = cView === 'grid' 
-        ? 'grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]' 
+    c.className = cView === 'grid'
+        ? 'grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]'
         : 'flex flex-col gap-2.5 sm:gap-3';
     c.innerHTML = skeletonCards;
 };
 
 export const filterCategory = c => {
-    setACat((aCat === c && c !== 'Semua Produk') ? 'Semua Produk' : c); 
+    setACat((aCat === c && c !== 'Semua Produk') ? 'Semua Produk' : c);
     setASubCat('Semua Jenis');
-    setCPage(1); 
+    setCPage(1);
     if (typeof window.rDyn === 'function') window.rDyn();
-    const sc = document.querySelector('#view-catalog .scroll-content'); 
+    const sc = document.querySelector('#view-catalog .scroll-content');
     if (sc) setTimeout(() => sc.scrollTo({ top: 0, behavior: 'smooth' }), 10);
 };
 
@@ -583,20 +591,20 @@ export const filterSubCategory = sc => {
 };
 
 export const filterBrand = b => {
-    setABrand((aBrand === b && b !== 'Semua Merek') ? 'Semua Merek' : b); 
-    setCPage(1); 
+    setABrand((aBrand === b && b !== 'Semua Merek') ? 'Semua Merek' : b);
+    setCPage(1);
     if (typeof window.rDyn === 'function') window.rDyn();
-    const sc = document.querySelector('#view-catalog .scroll-content'); 
+    const sc = document.querySelector('#view-catalog .scroll-content');
     if (sc) setTimeout(() => sc.scrollTo({ top: 0, behavior: 'smooth' }), 10);
 };
 
-export const resetSemuaFilter = () => { 
-    setACat('Semua Produk'); 
+export const resetSemuaFilter = () => {
+    setACat('Semua Produk');
     setASubCat('Semua Jenis');
-    setABrand('Semua Merek'); 
-    setSQ(''); 
-    setCPage(1); 
-    if (typeof window.rDyn === 'function') window.rDyn(); 
+    setABrand('Semua Merek');
+    setSQ('');
+    setCPage(1);
+    if (typeof window.rDyn === 'function') window.rDyn();
 };
 
 // ─── PENCARIAN DINAMIS & ROLLING PLACEHOLDER TICKER ───────
@@ -629,22 +637,22 @@ const updateClearBtnState = (v) => {
 
 export const startSearchSuggestionTicker = () => {
     if (searchSuggestionInterval) clearInterval(searchSuggestionInterval);
-    
+
     const updateTicker = () => {
         searchSuggestionIndex = (searchSuggestionIndex + 1) % SEARCH_SUGGESTIONS.length;
         const text = SEARCH_SUGGESTIONS[searchSuggestionIndex];
-        
+
         const mobInput = el('mobile-header-search');
         if (mobInput && document.activeElement !== mobInput && !mobInput.value) {
             mobInput.setAttribute('placeholder', text);
         }
-        
+
         const deskInput = el('search-input');
         if (deskInput && document.activeElement !== deskInput && !deskInput.value) {
             deskInput.setAttribute('placeholder', text);
         }
     };
-    
+
     searchSuggestionInterval = setInterval(() => {
         const mobInput = el('mobile-header-search');
         const deskInput = el('search-input');
@@ -663,32 +671,32 @@ export const onMobileSearchBlur = () => {
     }
 };
 
-export const handleSearch = v => { 
-    clearTimeout(searchTmr); 
+export const handleSearch = v => {
+    clearTimeout(searchTmr);
     const mobInput = el('mobile-header-search');
     if (mobInput && mobInput.value !== v && document.activeElement !== mobInput) mobInput.value = v;
     updateClearBtnState(v);
 
-    searchTmr = setTimeout(() => { 
+    searchTmr = setTimeout(() => {
         const activeEl = (typeof document !== 'undefined') ? document.activeElement : null;
         const isSearchActive = activeEl && (activeEl.id === 'mobile-header-search' || activeEl.id === 'search-input');
         const selStart = isSearchActive ? activeEl.selectionStart : null;
         const selEnd = isSearchActive ? activeEl.selectionEnd : null;
 
-        setSQ(v); 
-        setCPage(1); 
-        rCat(); 
+        setSQ(v);
+        setCPage(1);
+        rCat();
 
         // Pulihkan fokus HANYA jika elemen input benar-benar kehilangan fokus selama render
         if (isSearchActive && activeEl && typeof document !== 'undefined') {
             if (document.activeElement !== activeEl) {
                 activeEl.focus({ preventScroll: true });
                 if (selStart !== null && selEnd !== null && typeof activeEl.setSelectionRange === 'function') {
-                    try { activeEl.setSelectionRange(selStart, selEnd); } catch (_) {}
+                    try { activeEl.setSelectionRange(selStart, selEnd); } catch (_) { }
                 }
             }
         }
-    }, 300); 
+    }, 300);
 };
 
 export const handleMobileHeaderSearch = v => {
@@ -714,31 +722,31 @@ export const onMobileSearchFocus = () => {
     if (searchSuggestionInterval) clearInterval(searchSuggestionInterval);
 };
 
-export const handleSort = v => { 
-    setCSort(v); 
-    setCPage(1); 
-    rCat(); 
+export const handleSort = v => {
+    setCSort(v);
+    setCPage(1);
+    rCat();
 };
 
 export const toggleView = v => {
-    setCView(v); 
+    setCView(v);
     setCPage(1);
     if (el('btn-view-grid')) {
-        el('btn-view-grid').className = v === 'grid' 
-            ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" 
+        el('btn-view-grid').className = v === 'grid'
+            ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all"
             : "w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
     }
     if (el('btn-view-list')) {
-        el('btn-view-list').className = v === 'list' 
-            ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" 
+        el('btn-view-list').className = v === 'list'
+            ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all"
             : "w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
     }
     rCat();
 };
 
-export const loadMoreProducts = () => { 
-    setCPage(cPage + 1); 
-    rCat(); 
+export const loadMoreProducts = () => {
+    setCPage(cPage + 1);
+    rCat();
 };
 
 // ─── Inisialisasi Otomatis Rolling Ticker ─────────────────

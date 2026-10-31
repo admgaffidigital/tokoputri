@@ -470,7 +470,9 @@ export const computeTotalProductStock = (p) => {
 
     // isManaged: aktif jika toko mengaktifkan kelola stok ATAU produk memiliki data stok yang terisi
     const isManaged = storeUseStock || hasStockData;
-    const isOutOfStock = !pActive || (isManaged && totalStock <= 0 && !isPreorder);
+    // isOutOfStock: blokir jika produk tidak aktif, ATAU jika produk dikelola stoknya (isManaged) dan totalStock <= 0
+    // Produk tanpa kelola stok (isManaged=false) tetap bisa dibeli
+    const isOutOfStock = !pActive || (!isPreorder && isManaged && totalStock <= 0);
     const isLowStock = isManaged && totalStock > 0 && totalStock <= 5;
 
     return {
