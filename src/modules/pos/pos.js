@@ -3732,12 +3732,18 @@ export const processPOSTx = async () => {
 
             if (updatedProductIds.length > 0) {
                 try {
+                    localStorage.setItem('freshmart_products', JSON.stringify(appData.products));
+                } catch(e) {}
+                try {
                     await db.collection("freshmart").doc("cms_data").update({
                         lastUpdate: firebase.firestore.FieldValue.increment(1),
                         updateType: 'stock_change',
                         updatedProductIds
                     });
                 } catch(e) {}
+                // Segarkan etalase Storefront seketika 0ms
+                if (typeof window.rCat === 'function') window.rCat();
+                if (typeof window.refreshProdUI === 'function') window.refreshProdUI();
             }
         }
 
@@ -3766,6 +3772,8 @@ export const processPOSTx = async () => {
         posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp';
         posPointsRedeemed = 0; posClaimedReward = null;
         renderCart(); renderCatalog();
+        if (typeof window.rCat === 'function') window.rCat();
+        if (typeof window.refreshProdUI === 'function') window.refreshProdUI();
         showPOSSuccess(lastTx);
         if (isSavedOffline) {
             showToast(`Mode Offline: Transaksi #${lastTx.txId.slice(-6)} tersimpan di antrean lokal. Otomatis sinkron saat online.`, 'warning');

@@ -687,7 +687,8 @@ window.rAdmItms = (t, skipStats = false) => {
                             if (sInfo.isOutOfStock) {
                                 return `<span class="inline-flex items-center gap-1 text-[9.5px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md border border-rose-200/80 dark:border-rose-900/60"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Habis (0)</span>`;
                             }
-                            const stockVal = sInfo.stock != null ? String(sInfo.stock).replace(/\.?0+$/, '') : '0';
+                            const rawStock = sInfo.stock != null ? sInfo.stock : (sInfo.totalStock != null ? sInfo.totalStock : 0);
+                            const stockVal = String(rawStock).replace(/\.?0+$/, '') || '0';
                             const colorCls = sInfo.isLowStock 
                                 ? 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' 
                                 : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800';

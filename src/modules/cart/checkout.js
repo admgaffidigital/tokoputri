@@ -912,6 +912,8 @@ export const processOrder = async () => {
             appData.lastUpdate = (parseInt(sL('freshmart_last_update')) || appData.lastUpdate || 0) + 1;
             ssL('freshmart_last_update', appData.lastUpdate.toString());
             ssL('freshmart_products', JSON.stringify(appData.products));
+            if (typeof window.rCat === 'function') window.rCat();
+            if (typeof window.refreshProdUI === 'function') window.refreshProdUI();
         } else if (memberRef) {
             await db.runTransaction(async (transaction) => {
                 const memberDoc = await transaction.get(memberRef);
@@ -1120,6 +1122,8 @@ export const processOrder = async () => {
             
             if (typeof window.updCart === 'function') window.updCart();
             if (typeof window.renderCart === 'function') window.renderCart();
+            if (typeof window.rCat === 'function') window.rCat();
+            if (typeof window.refreshProdUI === 'function') window.refreshProdUI();
             try {
                 window.history.replaceState({ view: 'view-catalog' }, '', window.location.pathname);
             } catch(e) {}

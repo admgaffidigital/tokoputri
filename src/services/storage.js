@@ -8,7 +8,7 @@
  */
 
 import { db, firebase, firebaseConfig } from '../config/firebase.js';
-import { appData, defApp, cart, wishlist, currentMember } from '../core/state.js';
+import { appData, defApp, cart, wishlist, currentMember, cProd, setCProd } from '../core/state.js';
 import { 
     sL, ssL, fixD, fixDriveVideo, setIn, showToast, 
     sLoad, hLoad, el, updateSEO, injectJSONLD, getOptImg 
@@ -570,12 +570,14 @@ const normalizeProd = (data) => {
 };
 
 // ─── Helper: Refresh UI setelah ada perubahan produk ───────────────────────────
-const refreshProdUI = () => {
+export const refreshProdUI = () => {
     setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
     sanitizeCart();
     updCart();
-    if (typeof rDyn === 'function') rDyn(); else if (typeof window.rDyn === 'function') window.rDyn();
-    if (typeof rCat === 'function') rCat(); else if (typeof window.rCat === 'function') window.rCat();
+    if (typeof window.rDyn === 'function') window.rDyn(); else if (typeof rDyn === 'function') rDyn();
+    if (typeof window.rCat === 'function') window.rCat(); else if (typeof rCat === 'function') rCat();
+    if (typeof window.renderStorefrontFlashSale === 'function') window.renderStorefrontFlashSale();
+    
     // Refresh tabel admin jika container tabel admin sedang aktif di layar (tanpa memandang status login)
     const adminListEl = document.getElementById('admin-list-container');
     if (adminListEl && typeof window.rAdmItms === 'function') {
@@ -584,11 +586,12 @@ const refreshProdUI = () => {
             window.rAdmItms(curTab);
         }
     }
-    const curProd = window.cProd;
+    const curProd = window.cProd || (typeof cProd !== 'undefined' ? cProd : null);
     if (curProd) {
-        const fresh = appData.products.find(p => p.id === curProd.id);
+        const fresh = appData.products.find(p => String(p.id) === String(curProd.id));
         if (fresh) {
             window.cProd = fresh;
+            if (typeof setCProd === 'function') setCProd(fresh);
             if (typeof window.rProdMod === 'function') {
                 const modalEl = document.getElementById('product-modal');
                 if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
@@ -601,7 +604,13 @@ const refreshProdUI = () => {
     if (typeof window.refreshPOSCatalog === 'function') {
         window.refreshPOSCatalog();
     }
+    if (typeof window.posRenderCatalog === 'function') {
+        window.posRenderCatalog();
+    }
 };
+if (typeof window !== 'undefined') {
+    window.refreshProdUI = refreshProdUI;
+}
 
 export const attachRealtimeStockSync = () => {
     if (window.unsubCmsRealtime) return;
@@ -678,12 +687,40 @@ export const attachRealtimeStockSync = () => {
             // mendeteksi penghapusan ini via change.type === 'removed'.
             if (updateType === 'product_delete' && updatedProductIds.length > 0) {
                 updatedProductIds.forEach(targetId => {
-                    const pIdx = appData.products.findIndex(p => (p.id != null ? p.id.toString() : '') === targetId);
+                    const pIdx = appData.products.findIndex(p => (p.id != null ? p.id.toString() : '') === targetId || String(p.id) === String(targetId));
                     if (pIdx > -1) appData.products.splice(pIdx, 1);
                 });
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 hasSessionSyncedProducts = true;
                 refreshProdUI();
+            } else if (updateType === 'stock_change' && updatedProductIds.length > 0) {
+                // Rekonsiliasi ganda (Dual-Defense Sync): Pastikan stok produk yang berubah seketika
+                // sinkron di semua tab/perangkat etalase pelanggan (<100ms) tanpa jeda.
+                try {
+                    const fetchTasks = updatedProductIds.map(pid => 
+                        db.collection("freshmart").doc("cms_data").collection("products").doc(pid).get()
+                    );
+                    const docSnaps = await Promise.all(fetchTasks);
+                    let anyUpdated = false;
+                    docSnaps.forEach(ds => {
+                        if (ds.exists) {
+                            const raw = ds.data();
+                            const docId = ds.id;
+                            const pData = normalizeProd({ ...raw, id: (raw && raw.id != null) ? raw.id : (isNaN(Number(docId)) ? docId : Number(docId)) });
+                            const pIdx = (appData.products || []).findIndex(p => String(p.id) === String(docId));
+                            if (pIdx > -1) {
+                                appData.products[pIdx] = pData;
+                                anyUpdated = true;
+                            }
+                        }
+                    });
+                    if (anyUpdated) {
+                        ssL('freshmart_products', JSON.stringify(appData.products));
+                        refreshProdUI();
+                    }
+                } catch(stkSyncErr) {
+                    console.warn('[Sync] Fallback stock sync non-blocking warning:', stkSyncErr);
+                }
             } else if (!hasSessionSyncedProducts && (!appData.products || appData.products.length === 0)) {
                 // Sesi pertama, belum ada produk sama sekali — fetch semua sebagai bootstrap
                 const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
@@ -797,13 +834,14 @@ export const attachRealtimeProductsSync = () => {
             let hasChange = false;
 
             snap.docChanges().forEach(change => {
-                const prod = normalizeProd(change.doc.data());
+                const docData = change.doc.data();
                 const docId = change.doc.id; // Firestore doc ID = produk ID (sebagai string)
+                const prod = normalizeProd({ ...docData, id: (docData && docData.id != null) ? docData.id : (isNaN(Number(docId)) ? docId : Number(docId)) });
 
                 if (change.type === 'added' || change.type === 'modified') {
                     // Produk baru/diperbarui: update atau upsert ke array lokal
                     const existingIdx = appData.products.findIndex(
-                        p => (p.id != null ? p.id.toString() : '') === docId
+                        p => (p.id != null ? p.id.toString() : '') === docId || String(p.id) === String(docId)
                     );
                     if (existingIdx > -1) {
                         appData.products[existingIdx] = prod;
@@ -815,7 +853,7 @@ export const attachRealtimeProductsSync = () => {
                 } else if (change.type === 'removed') {
                     // Produk dihapus
                     const pIdx = appData.products.findIndex(
-                        p => (p.id != null ? p.id.toString() : '') === docId
+                        p => (p.id != null ? p.id.toString() : '') === docId || String(p.id) === String(docId)
                     );
                     if (pIdx > -1) {
                         appData.products.splice(pIdx, 1);

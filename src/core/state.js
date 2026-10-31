@@ -202,7 +202,7 @@ export const setIPP           = v => { iPP = v; };
 export const setCTab          = v => { cTab = v; };
 export const setASq           = v => { aSq = v; };
 export const setEId           = v => { eId = v; };
-export const setCProd         = v => { cProd = v; };
+export const setCProd         = v => { cProd = v; if (typeof window !== 'undefined') window.cProd = v; };
 export const setCVar          = v => { cVar = v; };
 export const setTVars         = v => { tVars = v; };
 export const setTWhol         = v => { tWhol = v; };

@@ -130,7 +130,12 @@ export const requestCloseModal = (name, fH, doClose) => {
  */
 export const changeView = (v, fH = false) => {
     if (!v) return;
-    if (v === curViewName) return; // Hindari duplikasi ke view yang sama
+    if (v === curViewName) {
+        if (v === 'view-catalog' && typeof window.rCat === 'function') {
+            window.rCat();
+        }
+        return; // Hindari duplikasi ke view yang sama
+    }
     
     if (!fH) {
         if (typeof history !== 'undefined' && typeof window !== 'undefined') {
@@ -217,7 +222,10 @@ export const changeView = (v, fH = false) => {
     }
         
     if (t) {
-        if (v === 'view-cart' && typeof window.renderCart === 'function') window.renderCart();
+        if (v === 'view-catalog') {
+            if (typeof window.rCat === 'function') window.rCat();
+            if (typeof window.renderStorefrontFlashSale === 'function') window.renderStorefrontFlashSale();
+        } else if (v === 'view-cart' && typeof window.renderCart === 'function') window.renderCart();
         else if (v === 'view-checkout' && typeof window.rChck === 'function') window.rChck();
         else if (v === 'view-payment' && typeof window.rPay === 'function') window.rPay();
         else if (v === 'view-wishlist' && typeof window.renderWish === 'function') window.renderWish();

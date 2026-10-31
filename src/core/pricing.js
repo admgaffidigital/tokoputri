@@ -475,6 +475,7 @@ export const computeTotalProductStock = (p) => {
 
     return {
         totalStock: Math.max(0, totalStock),
+        stock: Math.max(0, totalStock),
         hasStockData,
         isManaged,
         isOutOfStock,
