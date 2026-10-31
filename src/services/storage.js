@@ -590,8 +590,8 @@ export const refreshProdUI = () => {
     if (curProd) {
         const fresh = appData.products.find(p => String(p.id) === String(curProd.id));
         if (fresh) {
-            window.cProd = fresh;
             if (typeof setCProd === 'function') setCProd(fresh);
+            else if (typeof window !== 'undefined') window.cProd = fresh;
             if (typeof window.rProdMod === 'function') {
                 const modalEl = document.getElementById('product-modal');
                 if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
