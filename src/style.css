@@ -261,18 +261,17 @@ html.dark #view-admin-login {
     }
 }
 
-/* Container kartu produk POS grid (Bento Native App 1:1 Harmonis dengan Storefront) */
-/* Container kartu produk POS grid (Bento Native App 1:1 Harmonis dengan Storefront & Industrial Neo-Brutalism) */
+/* Container kartu produk POS grid (Shopify Clean Minimalist - Harmonis dengan Storefront) */
 .pos-product-card {
     display: flex !important;
     flex-direction: column !important;
     background: #ffffff;
-    border-radius: 18px !important;
+    border-radius: 1rem !important; /* 16px modern squircle */
     padding: 0 !important; /* Flush cover header, identik Storefront */
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03) !important;
     cursor: pointer;
-    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, border-color 0.15s ease;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
     user-select: none;
     overflow: hidden !important;
     position: relative;
@@ -285,37 +284,37 @@ html.dark #view-admin-login {
 
 html.dark .pos-product-card {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35) !important;
     background: #0f172a !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
     .pos-product-card:hover {
         transform: translateY(-2px);
-        box-shadow: 3.5px 3.5px 0px #0f172a !important;
-        border-color: #0f172a !important;
+        box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04) !important;
+        border-color: #cbd5e1 !important;
     }
     html.dark .pos-product-card:hover {
-        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.5) !important;
         border-color: #475569 !important;
     }
 }
 
 .pos-product-card:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
+    transform: scale(0.98) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
 }
 html.dark .pos-product-card:active {
-    box-shadow: 1px 1px 0px #000000 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
 .pos-product-card.in-cart {
-    border-color: #0f172a !important;
-    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25), 0 4px 12px rgba(var(--color-primary-rgb), 0.15) !important;
 }
 html.dark .pos-product-card.in-cart {
-    border-color: #334155 !important;
-    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.35), 0 4px 12px rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
 /* Kotak gambar produk: rasio 1:1 flush cover atas & hard min-height */
@@ -329,10 +328,11 @@ html.dark .pos-product-card.in-cart {
     background: #f8fafc;
     flex-shrink: 0 !important;
     margin-bottom: 0 !important;
-    border-bottom: 2px solid #0f172a !important;
+    border-bottom: 1px solid #f1f5f9 !important;
 }
 html.dark .pos-img-box {
-    border-bottom-color: #334155 !important;
+    border-bottom-color: #1e293b !important;
+    background: #0b1120;
 }
 
 /* Gambar presisi di dalam kotak — absolute fill penuh */
@@ -998,30 +998,30 @@ html.dark .pos-img-box {
     transform: scale(0.92);
 }
 
-/* ── MODE LIST — Layout Sleek Native App 1:1 Harmonis dengan Storefront ── */
+/* ── MODE LIST — Layout Sleek Shopify Clean 1:1 Harmonis dengan Storefront ── */
 .pos-list-item {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
     padding: 12px !important;
     background: white;
-    border-radius: 18px !important;
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border-radius: 1rem !important; /* 16px modern squircle */
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
     cursor: pointer;
-    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, border-color 0.15s ease;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
     user-select: none;
     position: relative;
     overflow: hidden !important;
-    flex-shrink: 0 !important; /* HARD PROTECT: Anti-Gepeng di flex column container */
+    flex-shrink: 0 !important;
     width: 100% !important;
-    min-height: 96px !important; /* HARD FLOOR: Menjamin ruang selalu lega */
+    min-height: 96px !important;
     box-sizing: border-box !important;
 }
 
 html.dark .pos-list-item {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35) !important;
     background: #0f172a !important;
 }
 
@@ -1040,17 +1040,18 @@ html.dark .pos-list-item {
     height: 80px !important;
     min-width: 80px !important;
     min-height: 80px !important;
-    border-radius: 14px !important;
+    border-radius: 0.875rem !important;
     overflow: hidden !important;
     flex-shrink: 0 !important;
     background: #f8fafc;
-    border: 1.5px solid #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 }
 html.dark .pos-list-thumb {
     border-color: #334155 !important;
+    background: #0b1120;
 }
 
 @media (min-width: 640px) {
@@ -1059,34 +1060,34 @@ html.dark .pos-list-thumb {
         height: 96px !important;
         min-width: 96px !important;
         min-height: 96px !important;
-        border-radius: 16px !important;
+        border-radius: 1rem !important;
     }
 }
 
 @media (hover: hover) and (pointer: fine) {
     .pos-list-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 3.5px 3.5px 0px #0f172a !important;
-        border-color: #0f172a !important;
+        transform: translateY(-1.5px);
+        box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08) !important;
+        border-color: #cbd5e1 !important;
     }
     html.dark .pos-list-item:hover {
-        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.5) !important;
         border-color: #475569 !important;
     }
 }
 
 .pos-list-item:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
+    transform: scale(0.98) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
 }
 html.dark .pos-list-item:active {
-    box-shadow: 1px 1px 0px #000000 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
 .pos-list-item.in-cart {
-    border-color: #0f172a !important;
+    border-color: var(--color-primary) !important;
     background: rgba(var(--color-primary-rgb), 0.04);
-    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25), 0 4px 12px rgba(var(--color-primary-rgb), 0.12) !important;
 }
 html.dark .pos-list-item.in-cart {
     border-color: #334155 !important;
@@ -4169,48 +4170,50 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     transform: scale(0.90) !important;
 }
 
-/* Tombol Tambah (+) — Solid Flat Clean Theme, Industrial Neo-Brutalism */
+/* Tombol Tambah (+) — Shopify Clean Minimalist */
 .btn-catalog-add {
     background: var(--color-primary) !important;
     color: #ffffff !important;
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.28) !important;
+    border-radius: 0.875rem !important;
 }
 .dark .btn-catalog-add {
     background: var(--color-primary) !important;
-    border: 2px solid #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.38) !important;
 }
 .btn-catalog-add:hover {
     filter: brightness(1.08) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.38) !important;
 }
 .btn-catalog-add:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.92) !important;
+    box-shadow: 0 1px 4px rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
-/* Tombol Varian — Solid Flat Indigo Royale, Industrial Neo-Brutalism */
+/* Tombol Varian — Shopify Clean Indigo Royale */
 .btn-catalog-variant {
     background: #4f46e5 !important;
     color: #ffffff !important;
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28) !important;
+    border-radius: 0.875rem !important;
 }
 .dark .btn-catalog-variant {
     background: #6366f1 !important;
-    border: 2px solid #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.38) !important;
 }
 .btn-catalog-variant:hover {
     filter: brightness(1.08) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38) !important;
 }
 .btn-catalog-variant:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.92) !important;
+    box-shadow: 0 1px 4px rgba(79, 70, 229, 0.2) !important;
 }
 
 /* ============================================================
@@ -4222,6 +4225,35 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
     height: 32px !important;
     min-height: 32px !important;
     max-height: 32px !important;
+    padding: 0 0.65rem !important;
+    border-radius: 0.625rem !important; /* 10px modern squircle */
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.375rem !important;
+    color: #ffffff !important;
+    background: var(--color-primary) !important;
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.25) !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease !important;
+    box-sizing: border-box !important;
+}
+.btn-reward-redeem:hover,
+.btn-flash-buy:hover {
+    filter: brightness(1.08) !important;
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35) !important;
+}
+.btn-reward-redeem:active,
+.btn-flash-buy:active {
+    transform: scale(0.95) !important;
+    box-shadow: 0 1px 3px rgba(var(--color-primary-rgb), 0.2) !important;
+}
     padding: 0 0.5rem !important;
     border-radius: 0.75rem !important; /* 12px modern squircle */
     font-size: 11px !important;
@@ -6646,41 +6678,53 @@ html.dark #pos-paid-input::placeholder {
 }
 
 /* ============================================================
-   INDUSTRIAL NEO-BRUTALISM & FULL NATIVE APP ENGINE — v1.20.0
-   Penyelarasan estetika industrial perkakas teknik & bahan bangunan:
-   1. Heavy-duty 2px solid outlines & zero-blur hard offset shadows.
-   2. Mechanical switch tactile feedback (active: translate(1.5px, 1.5px)).
-   3. Industrial label badges (monospace uppercase, SKU plates).
-   4. High-contrast safety accents (warning yellow, hazard orange, safety green).
-   5. Thermal print isolation & zero shadow leak guarantee.
+   SHOPIFY POLARIS & CLEAN MINIMALIST DESIGN ENGINE — v1.21.0
+   Filosofi Desain Modern E-Commerce Kelas Dunia:
+   1. Crisp 1px Borders (Halus, Bernapas & Elegan)
+   2. Soft Diffused Ambient Shadows (Mengambang Ringan, Anti-Fatigue)
+   3. Smooth Tactile Spring Scaling (active: scale(0.97) - iOS/Shopify Feel)
+   4. Harmonized Pastel Status Pills & Clean Minimalist Badges
+   5. Luxurious Focus Rings (Shopify Polaris 3.5px Focus Halo)
+   6. 100% Thermal Print & A4 Isolation Guarantee
    ============================================================ */
 
 :root {
-    --neo-border-width: 2px;
-    --neo-border-color: #0f172a;
+    --clean-border-width: 1px;
+    --clean-border-color: #e2e8f0;
+    --clean-border-color-dark: #334155;
+    --clean-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --clean-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    --clean-shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+    --clean-shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.07), 0 6px 10px -3px rgba(15, 23, 42, 0.03);
+    --clean-shadow-xl: 0 20px 35px -6px rgba(15, 23, 42, 0.1), 0 8px 12px -4px rgba(15, 23, 42, 0.05);
+    --clean-shadow-hover: 0 12px 28px -5px rgba(15, 23, 42, 0.08), 0 6px 12px -4px rgba(15, 23, 42, 0.04);
+    
+    /* Backward compatibility token aliases (Menjamin integritas modul lama) */
+    --neo-border-width: 1px;
+    --neo-border-color: #e2e8f0;
     --neo-border-color-dark: #334155;
-    --neo-shadow-sm: 1.5px 1.5px 0px #0f172a;
-    --neo-shadow-md: 2.5px 2.5px 0px #0f172a;
-    --neo-shadow-lg: 3.5px 3.5px 0px #0f172a;
-    --neo-shadow-dark-sm: 1.5px 1.5px 0px #000000;
-    --neo-shadow-dark-md: 2.5px 2.5px 0px #000000;
-    --neo-shadow-dark-lg: 3.5px 3.5px 0px #000000;
-    --neo-hazard-yellow: #facc15;
+    --neo-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    --neo-shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.05);
+    --neo-shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.07);
+    --neo-shadow-dark-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.25);
+    --neo-shadow-dark-md: 0 4px 14px -2px rgba(0, 0, 0, 0.35);
+    --neo-shadow-dark-lg: 0 10px 25px -4px rgba(0, 0, 0, 0.45);
+    --neo-hazard-yellow: #f59e0b;
     --neo-hazard-orange: #f97316;
-    --neo-safety-green: #16a34a;
+    --neo-safety-green: #10b981;
 }
 
-/* 1. Universal Industrial Neo-Brutalist Box, Cards & Bento Surfaces */
+/* 1. Universal Clean Minimalist Box, Cards & Island Surfaces */
 .neo-box {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important; /* 14px modern squircle */
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 1rem !important; /* 16px modern squircle */
     background-color: #ffffff;
     box-sizing: border-box !important;
 }
 html.dark .neo-box {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35) !important;
     background-color: #1e293b;
 }
 
@@ -6747,14 +6791,16 @@ html.dark .neo-box {
 #pos-close-shift-box,
 #pos-held-modal-box,
 [id^="pos-item-"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
-    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.15s ease,
-                border-color 0.15s ease !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03) !important;
+    border-radius: 1rem !important;
+    background-color: #ffffff;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease !important;
     box-sizing: border-box !important;
 }
+
 /* Isolasi internal kartu Flash Sale & Reward agar gambar & detail tetap utuh dan seamless */
 #dynamic-flashsale-container .flash-sale-card > div,
 #dynamic-flashsale-container .flash-sale-card > div > div {
@@ -6762,11 +6808,12 @@ html.dark .neo-box {
     box-shadow: none !important;
 }
 #dynamic-flashsale-container .flash-sale-card .aspect-square {
-    border-bottom: 1.5px solid #0f172a !important;
+    border-bottom: 1px solid #f1f5f9 !important;
 }
 html.dark #dynamic-flashsale-container .flash-sale-card .aspect-square {
-    border-bottom: 1.5px solid #334155 !important;
+    border-bottom: 1px solid #1e293b !important;
 }
+
 html.dark .neo-card,
 html.dark .catalog-product-card,
 html.dark .bento-island-card,
@@ -6831,10 +6878,11 @@ html.dark #pos-close-shift-box,
 html.dark #pos-held-modal-box,
 html.dark [id^="pos-item-"] {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35) !important;
+    background-color: #1e293b;
 }
 
-/* Zero Double-Boxing: Kontainer Seksi Storefront Flat & Bersih, Chiclet di Dalamnya Menjadi Kartu Fokus */
+/* Zero Double-Boxing: Kontainer Seksi Storefront Flat & Bersih */
 #sec-categories > div,
 #sec-brands > div,
 #dynamic-banners-container,
@@ -6845,14 +6893,6 @@ html.dark [id^="pos-item-"] {
     box-sizing: border-box !important;
     padding-left: 0.25rem !important;
     padding-right: 0.25rem !important;
-}
-html.dark #sec-categories > div,
-html.dark #sec-brands > div,
-html.dark #dynamic-banners-container,
-html.dark #dynamic-banners-container > div {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -6875,8 +6915,8 @@ html.dark #dynamic-banners-container > div {
     #reward-catalog-container .snap-start > div:hover,
     #dynamic-vouchers-container .snap-start > div:hover {
         transform: translateY(-2px);
-        box-shadow: 3.5px 3.5px 0px #0f172a !important;
-        border-color: #0f172a !important;
+        box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.07), 0 6px 10px -3px rgba(15, 23, 42, 0.03) !important;
+        border-color: #cbd5e1 !important;
     }
     html.dark .neo-card:hover,
     html.dark .catalog-product-card:hover,
@@ -6896,7 +6936,7 @@ html.dark #dynamic-banners-container > div {
     html.dark #dynamic-flashsale-container .snap-start > div:hover,
     html.dark #reward-catalog-container .snap-start > div:hover,
     html.dark #dynamic-vouchers-container .snap-start > div:hover {
-        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.5) !important;
         border-color: #475569 !important;
     }
 }
@@ -6929,10 +6969,10 @@ html.dark #dynamic-banners-container > div {
 #pos-subcat-filter button,
 .pos-preset-chip,
 .pos-shortcut-chiclet {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease, border-color 0.15s ease !important;
     background-color: #ffffff;
     box-sizing: border-box !important;
 }
@@ -6942,8 +6982,8 @@ html.dark #dynamic-banners-container > div {
 #pos-subcat-filter button:active,
 .pos-preset-chip:active,
 .pos-shortcut-chiclet:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #dynamic-categories-container [onclick*="filterCategory"] > div,
 html.dark #dynamic-categories-container .snap-start > div,
@@ -6951,17 +6991,9 @@ html.dark #pos-cat-filter button,
 html.dark #pos-subcat-filter button,
 html.dark .pos-preset-chip,
 html.dark .pos-shortcut-chiclet {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
     background-color: #1e293b;
-}
-html.dark #dynamic-categories-container [onclick*="filterCategory"] > div:active,
-html.dark #dynamic-categories-container .snap-start > div:active,
-html.dark #pos-cat-filter button:active,
-html.dark #pos-subcat-filter button:active,
-html.dark .pos-preset-chip:active,
-html.dark .pos-shortcut-chiclet:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 #pos-cat-filter button.pos-cat-active,
@@ -6970,42 +7002,32 @@ html.dark .pos-shortcut-chiclet:active {
 #pos-subcat-filter button[class*="bg-[var(--color-primary)"] {
     background-color: var(--color-primary) !important;
     color: #ffffff !important;
-}
-html.dark #pos-cat-filter button.pos-cat-active,
-html.dark #pos-cat-filter button[class*="bg-[var(--color-primary)"],
-html.dark #pos-subcat-filter button.pos-subcat-active,
-html.dark #pos-subcat-filter button[class*="bg-[var(--color-primary)"] {
-    background-color: var(--color-primary) !important;
-    color: #ffffff !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25) !important;
 }
 
 #dynamic-brands-container [onclick*="filterBrand"] > div,
 #dynamic-brands-container .snap-start > div,
 #modal-brand-grid button {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease !important;
     background-color: #ffffff;
     box-sizing: border-box !important;
 }
 #dynamic-brands-container [onclick*="filterBrand"] > div:active,
 #dynamic-brands-container .snap-start > div:active,
 #modal-brand-grid button:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #dynamic-brands-container [onclick*="filterBrand"] > div,
 html.dark #dynamic-brands-container .snap-start > div,
 html.dark #modal-brand-grid button {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
     background-color: #1e293b;
-}
-html.dark #dynamic-brands-container [onclick*="filterBrand"] > div:active,
-html.dark #dynamic-brands-container .snap-start > div:active,
-html.dark #modal-brand-grid button:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 #dynamic-brands-container [onclick*="filterBrand"] > div > div,
@@ -7016,28 +7038,29 @@ html.dark #modal-brand-grid button:active {
 
 #sec-categories button[onclick*="openCategoryModal"],
 #sec-brands button[onclick*="openBrandModal"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.625rem !important;
-    font-weight: 800 !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    font-weight: 700 !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease !important;
+}
+#sec-categories button[onclick*="openCategoryModal"]:hover,
+#sec-brands button[onclick*="openBrandModal"]:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
 }
 #sec-categories button[onclick*="openCategoryModal"]:active,
 #sec-brands button[onclick*="openBrandModal"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #sec-categories button[onclick*="openCategoryModal"],
 html.dark #sec-brands button[onclick*="openBrandModal"] {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark #sec-categories button[onclick*="openCategoryModal"]:active,
-html.dark #sec-brands button[onclick*="openBrandModal"]:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
-/* 1c. Storefront Footer Bento Action Cards & Service Tiles */
+/* 1c. Storefront Footer Action Cards & Service Tiles */
 .footer-bento-hub a[onclick*="sendWhatsAppCustomerService"],
 .footer-bento-hub a[href="javascript:void(0)"],
 .footer-bento-hub div[onclick*="openAppDownloadModal"],
@@ -7046,31 +7069,25 @@ html.dark #sec-brands button[onclick*="openBrandModal"]:active {
 .footer-bento-hub button[onclick*="openVoucherModal"],
 .footer-bento-hub button[onclick*="openFaqModal"],
 .footer-bento-hub button[onclick*="openQualityGuaranteeModal"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
     box-sizing: border-box !important;
-    transition: transform 0.08s ease, box-shadow 0.08s ease !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 .footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]:active,
 .footer-bento-hub a[href="javascript:void(0)"]:active,
 .footer-bento-hub div[onclick*="openAppDownloadModal"]:active,
 .footer-bento-hub .grid button:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.97) !important;
+    box-shadow: none !important;
 }
 html.dark .footer-bento-hub a[onclick*="sendWhatsAppCustomerService"],
 html.dark .footer-bento-hub a[href="javascript:void(0)"],
 html.dark .footer-bento-hub div[onclick*="openAppDownloadModal"],
 html.dark .footer-bento-hub .grid button {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark .footer-bento-hub a[onclick*="sendWhatsAppCustomerService"]:active,
-html.dark .footer-bento-hub a[href="javascript:void(0)"]:active,
-html.dark .footer-bento-hub div[onclick*="openAppDownloadModal"]:active,
-html.dark .footer-bento-hub .grid button:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Storefront Footer Badges: Verification, Shipping, Operational */
@@ -7078,8 +7095,8 @@ html.dark .footer-bento-hub .grid button:active {
 .footer-bento-hub .flex-wrap > div,
 .footer-bento-hub span[class*="rounded-full"][class*="border"],
 #footer-container button {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.625rem !important;
     box-sizing: border-box !important;
 }
@@ -7087,8 +7104,8 @@ html.dark .footer-bento-hub [class*="rounded-xl"][class*="border"],
 html.dark .footer-bento-hub .flex-wrap > div,
 html.dark .footer-bento-hub span[class*="rounded-full"][class*="border"],
 html.dark #footer-container button {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* 1d. CMS & Header Action Buttons & Icon Pods */
@@ -7099,10 +7116,10 @@ html.dark #footer-container button {
 .banner-slide-item a,
 .banner-slide-item button,
 .banner-slide-item [role="button"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.75rem !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease !important;
 }
 #view-admin .glass-header button:active,
 #view-catalog .glass-header button:active,
@@ -7111,8 +7128,8 @@ html.dark #footer-container button {
 .banner-slide-item a:active,
 .banner-slide-item button:active,
 .banner-slide-item [role="button"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #view-admin .glass-header button,
 html.dark #view-catalog .glass-header button,
@@ -7121,17 +7138,8 @@ html.dark #admin-dashboard-cashflow-slot button[onclick*="openAdminTab('reports'
 html.dark .banner-slide-item a,
 html.dark .banner-slide-item button,
 html.dark .banner-slide-item [role="button"] {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark #view-admin .glass-header button:active,
-html.dark #view-catalog .glass-header button:active,
-html.dark #dashboard-cashflow-refresh-btn:active,
-html.dark #admin-dashboard-cashflow-slot button[onclick*="openAdminTab('reports')"]:active,
-html.dark .banner-slide-item a:active,
-html.dark .banner-slide-item button:active,
-html.dark .banner-slide-item [role="button"]:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Cashflow Cards: Lapang, Bebas Sempit, & Unbox Link Navigasi Cepat */
@@ -7148,240 +7156,9 @@ html.dark .banner-slide-item [role="button"]:active {
     box-shadow: none !important;
     background: transparent !important;
     min-height: unset !important;
-    height: auto !important;
-    padding: 0.2rem 0 !important;
-    font-weight: 700 !important;
-    font-size: 11px !important;
-    line-height: 1.2 !important;
-    letter-spacing: normal !important;
-    transition: color 0.15s ease, opacity 0.15s ease, transform 0.1s ease !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.25rem !important;
-}
-#admin-dashboard-cashflow-slot .bento-island-card button:hover {
-    opacity: 0.8 !important;
-    text-decoration: underline !important;
-    transform: translateX(2px) !important;
-}
-#admin-dashboard-cashflow-slot .bento-island-card button:active {
-    transform: scale(0.95) !important;
-    box-shadow: none !important;
-}
-#admin-dashboard-cashflow-slot .flex.items-center.gap-2 {
-    gap: 0.5rem !important;
 }
 
-/* Industrial Icon Pods & Serial Badges across CMS */
-#admin-dashboard-view .grid button .w-14,
-#admin-dashboard-view .grid button .w-16,
-#admin-dashboard-cashflow-slot .w-8.h-8,
-#admin-dashboard-view > .bento-island-card .h-14.w-14,
-#admin-dashboard-view > .bento-island-card .h-16.w-16,
-#admin-logo-box,
-#admin-dashboard-cashflow-slot .w-7.h-7 {
-    border: 2px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    box-sizing: border-box !important;
-}
-html.dark #admin-dashboard-view .grid button .w-14,
-html.dark #admin-dashboard-view .grid button .w-16,
-html.dark #admin-dashboard-view .grid button .w-11,
-html.dark #admin-dashboard-view .grid button .w-10,
-html.dark #admin-dashboard-cashflow-slot .w-8.h-8,
-html.dark #admin-dashboard-view > .bento-island-card .h-14.w-14,
-html.dark #admin-dashboard-view > .bento-island-card .h-12.w-12,
-html.dark #admin-dashboard-view > .bento-island-card .h-11.w-11,
-html.dark #admin-dashboard-view > .bento-island-card .h-16.w-16,
-html.dark #admin-logo-box,
-html.dark #admin-dashboard-cashflow-slot .w-7.h-7 {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
-}
-
-#admin-dashboard-welcome-tag {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-}
-html.dark #admin-dashboard-welcome-tag {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
-}
-
-/* 2. Universal Mechanical Tactile Button Switch Engine */
-.neo-btn {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.75rem !important; /* 12px squircle */
-    font-weight: 800 !important;
-    letter-spacing: 0.02em !important;
-    touch-action: manipulation;
-    min-height: 2.75rem !important; /* 44px golden touch target */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box !important;
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-    font-size: 0.8125rem !important; /* 13px sleek & balanced */
-    line-height: 1.25rem !important;
-    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
-}
-
-.neo-btn:active:not(:disabled) {
-    transform: translate(2px, 2px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-
-.btn-primary,
-.utp-btn-primary,
-.btn-solid,
-.btn-secondary,
-.btn-secondary-neutral,
-.btn-native-action,
-button.primary-bg,
-a.primary-bg[role="button"],
-button[type="submit"],
-#btn-checkout-next,
-#btn-floating-wa,
-#btn-floating-action,
-#btn-scroll-top,
-.modal-bottom-sheet button[type="submit"],
-.modal-bottom-sheet button.primary-bg,
-.modal-bottom-sheet button.btn-primary,
-#custom-confirm-box button,
-#exit-confirm-modal-box button,
-#pos-pay-modal button.pos-pay-btn-target,
-#orders-items-container button,
-#wishlist-items-container button,
-button[onclick*="trackOrderManual"],
-button[onclick*="applyVoucher"],
-#paylater-tenor-chips-grid button,
-#btn-location,
-#btn-dp-location,
-#btn-process-order,
-#btn-clear-orders,
-#btn-clear-wishlist {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.75rem !important; /* 12px squircle */
-    font-weight: 800 !important;
-    letter-spacing: 0.02em !important;
-    touch-action: manipulation;
-    min-height: 2.75rem !important; /* 44px golden touch target */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box !important;
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-    font-size: 0.8125rem !important; /* 13px sleek & balanced */
-    line-height: 1.25rem !important;
-    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
-}
-
-html.dark .neo-btn,
-html.dark .btn-primary,
-html.dark .utp-btn-primary,
-html.dark .btn-solid,
-html.dark .btn-secondary,
-html.dark .btn-secondary-neutral,
-html.dark .btn-native-action,
-html.dark button.primary-bg,
-html.dark a.primary-bg[role="button"],
-html.dark button[type="submit"],
-html.dark #btn-checkout-next,
-html.dark #btn-floating-wa,
-html.dark #btn-floating-action,
-html.dark #btn-scroll-top,
-html.dark .modal-bottom-sheet button[type="submit"],
-html.dark .modal-bottom-sheet button.primary-bg,
-html.dark .modal-bottom-sheet button.btn-primary,
-html.dark #custom-confirm-box button,
-html.dark #exit-confirm-modal-box button,
-html.dark #pos-pay-modal button.pos-pay-btn-target,
-html.dark #orders-items-container button,
-html.dark #wishlist-items-container button,
-html.dark button[onclick*="trackOrderManual"],
-html.dark button[onclick*="applyVoucher"],
-html.dark #paylater-tenor-chips-grid button,
-html.dark #btn-location,
-html.dark #btn-dp-location,
-html.dark #btn-process-order,
-html.dark #btn-clear-orders,
-html.dark #btn-clear-wishlist {
-    border-color: #475569 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
-}
-
-/* Mechanical Switch Tactile Press (Translate 2px, 2px) */
-.neo-btn:active:not(:disabled):not(.btn-disabled),
-.btn-primary:active:not(:disabled):not(.btn-disabled),
-.utp-btn-primary:active:not(:disabled):not(.btn-disabled),
-.btn-solid:active:not(:disabled):not(.btn-disabled),
-.btn-secondary:active:not(:disabled):not(.btn-disabled),
-.btn-secondary-neutral:active:not(:disabled):not(.btn-disabled),
-.btn-native-action:active:not(:disabled):not(.btn-disabled),
-button.primary-bg:active:not(:disabled):not(.btn-disabled),
-button[type="submit"]:active:not(:disabled):not(.btn-disabled),
-#btn-checkout-next:active:not(:disabled):not(.btn-disabled),
-#btn-floating-wa:active:not(:disabled):not(.btn-disabled),
-#btn-floating-action:active:not(:disabled):not(.btn-disabled),
-#btn-scroll-top:active:not(:disabled):not(.btn-disabled),
-.modal-bottom-sheet button[type="submit"]:active:not(:disabled):not(.btn-disabled),
-.modal-bottom-sheet button.primary-bg:active:not(:disabled):not(.btn-disabled),
-.modal-bottom-sheet button.btn-primary:active:not(:disabled):not(.btn-disabled),
-#custom-confirm-box button:active:not(:disabled):not(.btn-disabled),
-#exit-confirm-modal-box button:active:not(:disabled):not(.btn-disabled),
-#pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled),
-#orders-items-container button:active:not(:disabled):not(.btn-disabled),
-#wishlist-items-container button:active:not(:disabled):not(.btn-disabled),
-button[onclick*="trackOrderManual"]:active:not(:disabled):not(.btn-disabled),
-button[onclick*="applyVoucher"]:active:not(:disabled):not(.btn-disabled),
-#paylater-tenor-chips-grid button:active:not(:disabled):not(.btn-disabled),
-#btn-location:active:not(:disabled):not(.btn-disabled),
-#btn-dp-location:active:not(:disabled):not(.btn-disabled),
-#btn-process-order:active:not(:disabled):not(.btn-disabled),
-#btn-clear-orders:active:not(:disabled):not(.btn-disabled),
-#btn-clear-wishlist:active:not(:disabled):not(.btn-disabled) {
-    transform: translate(2px, 2px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-
-html.dark .neo-btn:active:not(:disabled),
-html.dark .neo-btn:active:not(:disabled):not(.btn-disabled),
-html.dark .btn-primary:active:not(:disabled):not(.btn-disabled),
-html.dark .utp-btn-primary:active:not(:disabled):not(.btn-disabled),
-html.dark .btn-solid:active:not(:disabled):not(.btn-disabled),
-html.dark .btn-secondary:active:not(:disabled):not(.btn-disabled),
-html.dark .btn-secondary-neutral:active:not(:disabled):not(.btn-disabled),
-html.dark .btn-native-action:active:not(:disabled):not(.btn-disabled),
-html.dark button.primary-bg:active:not(:disabled):not(.btn-disabled),
-html.dark button[type="submit"]:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-checkout-next:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-floating-wa:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-floating-action:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-scroll-top:active:not(:disabled):not(.btn-disabled),
-html.dark .modal-bottom-sheet button[type="submit"]:active:not(:disabled):not(.btn-disabled),
-html.dark .modal-bottom-sheet button.primary-bg:active:not(:disabled):not(.btn-disabled),
-html.dark .modal-bottom-sheet button.btn-primary:active:not(:disabled):not(.btn-disabled),
-html.dark #custom-confirm-box button:active:not(:disabled):not(.btn-disabled),
-html.dark #exit-confirm-modal-box button:active:not(:disabled):not(.btn-disabled),
-html.dark #pos-pay-modal button.pos-pay-btn-target:active:not(:disabled):not(.btn-disabled),
-html.dark #orders-items-container button:active:not(:disabled):not(.btn-disabled),
-html.dark #wishlist-items-container button:active:not(:disabled):not(.btn-disabled),
-html.dark button[onclick*="trackOrderManual"]:active:not(:disabled):not(.btn-disabled),
-html.dark button[onclick*="applyVoucher"]:active:not(:disabled):not(.btn-disabled),
-html.dark #paylater-tenor-chips-grid button:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-location:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-dp-location:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-process-order:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-clear-orders:active:not(:disabled):not(.btn-disabled),
-html.dark #btn-clear-wishlist:active:not(:disabled):not(.btn-disabled) {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
-}
-
-/* Compact Tool Buttons & Micro Actions (e.g. 32px close buttons, header icons, pagination, table actions, catalog product action) */
+/* Compact Tool Buttons & Micro Actions */
 button.h-8.w-8:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 button.h-9.w-9:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 button.h-10.w-10:not(.btn-primary):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
@@ -7392,11 +7169,11 @@ button.h-10.w-10:not(.btn-primary):not(.btn-input-icon):not([onclick*="toggleSta
 #btn-admin-theme-toggle,
 #btn-view-grid,
 #btn-view-list {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
     box-sizing: border-box !important;
     min-height: unset !important;
-    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out !important;
 }
 html.dark button.h-8.w-8:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 html.dark button.h-9.w-9:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
@@ -7408,8 +7185,8 @@ html.dark #btn-admin-refresh,
 html.dark #btn-admin-theme-toggle,
 html.dark #btn-view-grid,
 html.dark #btn-view-list {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
 }
 button.h-8.w-8:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]):active:not(:disabled),
 button.h-9.w-9:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]):active:not(:disabled),
@@ -7421,57 +7198,29 @@ button.h-10.w-10:not(.btn-primary):not(.btn-input-icon):not([onclick*="toggleSta
 #btn-admin-theme-toggle:active:not(:disabled),
 #btn-view-grid:active:not(:disabled),
 #btn-view-list:active:not(:disabled) {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-html.dark button.h-8.w-8:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]):active:not(:disabled),
-html.dark button.h-9.w-9:not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]):active:not(:disabled),
-html.dark button.h-10.w-10:not(.btn-primary):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]):active:not(:disabled),
-html.dark .btn-compact:active:not(:disabled),
-html.dark .btn-micro:active:not(:disabled),
-html.dark .btn-catalog-action:active:not(:disabled),
-html.dark #btn-admin-refresh:active:not(:disabled),
-html.dark #btn-admin-theme-toggle:active:not(:disabled),
-html.dark #btn-view-grid:active:not(:disabled),
-html.dark #btn-view-list:active:not(:disabled) {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    transform: scale(0.95) !important;
+    box-shadow: none !important;
 }
 
-/* 3. Universal Industrial Serial Plate Badges & SKU Stickers (Proporsional, Ramping & Lapang) */
-.neo-badge {
-    border: 1px solid #0f172a !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
-    border-radius: 0.375rem !important; /* 6px compact squircle */
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.02em !important;
-    white-space: nowrap !important;
-    word-break: keep-all !important;
-    line-height: 1.15 !important;
-    min-height: 18px !important;
-    max-height: 22px !important;
-    padding: 1px 5px !important;
-    box-sizing: border-box !important;
-}
-
+/* 3. Universal Clean Badges & Status Pills (Pastel, Ramping & Bersih) */
+.neo-badge,
 span.badge,
 .status-pill,
 [class*="status-badge"],
 span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
 span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
 span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge):not(.flash-variant-badge) {
-    border: 1px solid #0f172a !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
-    border-radius: 0.375rem !important; /* 6px compact squircle */
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+    border-radius: 9999px !important; /* Elegant pill */
+    font-weight: 600 !important;
     letter-spacing: 0.02em !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
-    line-height: 1.15 !important;
+    line-height: 1.25 !important;
     min-height: 18px !important;
-    max-height: 22px !important;
-    padding: 1px 5px !important;
+    max-height: 24px !important;
+    padding: 1px 8px !important;
     box-sizing: border-box !important;
 }
 html.dark .neo-badge,
@@ -7481,86 +7230,62 @@ html.dark [class*="status-badge"],
 html.dark span[class*="rounded-md"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
 html.dark span[class*="rounded-lg"][class*="uppercase"]:not([class*="cart-badge"]):not(.flash-variant-badge),
 html.dark span[class*="rounded-full"][class*="uppercase"]:not([class*="cart-badge"]):not(#bottom-nav-cart-badge):not(#wishlist-badge):not(.flash-variant-badge) {
-    border-color: #475569 !important;
-    box-shadow: 1px 1px 0px #000000 !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Flash Sale & Promo Card Badge Harmony (Sleek, Proportional & Lapang) */
+/* Flash Sale & Promo Card Badge Harmony */
 .flash-variant-badge,
 .flash-sale-card .neo-badge,
 .flash-sale-card .flash-variant-badge,
 .flash-sale-card span[class*="rounded"] {
     border-width: 1px !important;
-    border-color: rgba(15, 23, 42, 0.18) !important;
-    box-shadow: none !important;
+    border-color: rgba(15, 23, 42, 0.1) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
     min-height: 18px !important;
-    max-height: 20px !important;
-    padding: 1px 5px !important;
-    font-size: 8.5px !important;
-    border-radius: 0.375rem !important;
-}
-html.dark .flash-variant-badge,
-html.dark .flash-sale-card .neo-badge,
-html.dark .flash-sale-card .flash-variant-badge,
-html.dark .flash-sale-card span[class*="rounded"] {
-    border-color: rgba(148, 163, 184, 0.25) !important;
-    box-shadow: none !important;
+    max-height: 22px !important;
+    padding: 1px 6px !important;
+    font-size: 9px !important;
+    border-radius: 9999px !important;
 }
 
-/* Guard: Pastikan badge counter bulat (misal badge cart '0', wishlist '0') tetap bulat */
+/* Guard: Pastikan badge counter bulat tetap bulat */
 #bottom-nav-cart-badge,
 #wishlist-badge,
 span[id$="-badge"][class*="min-w-"] {
     border-radius: 9999px !important;
-    box-shadow: none !important;
-    border: 1.5px solid #0f172a !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid #ffffff !important;
     min-height: 18px !important;
-    padding: 0 4px !important;
+    padding: 0 5px !important;
 }
 
-/* 4. Universal Industrial High-Contrast Input Form Fields */
-.neo-input {
-    border: 2px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
-    min-height: 2.75rem !important;
-    box-sizing: border-box !important;
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-    font-size: 0.875rem !important;
-    line-height: 1.25rem !important;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
-}
-
-.neo-input:focus {
-    border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    outline: none !important;
-}
-
+/* 4. Universal Clean Input Form Fields (Shopify Polaris Focus Ring) */
+.neo-input,
 .admin-input,
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(#quick-variant-qty-input):not(.cart-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):not(textarea),
 select:not(.report-period-select-raw),
 textarea,
 .header-search-capsule {
-    border: 2px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+    border-radius: 0.75rem !important;
     min-height: 2.75rem !important;
     box-sizing: border-box !important;
     padding-top: 0.5rem !important;
     padding-bottom: 0.5rem !important;
     font-size: 0.875rem !important;
     line-height: 1.25rem !important;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease !important;
 }
+.neo-input:focus,
 .admin-input:focus,
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not(#modal-qty-input):not(#pos-variant-qty-input):not(#quick-variant-qty-input):not(.cart-qty-input):not(.stepper-input):not(.so-phys-store):not(.so-phys-warehouse):not(.input-compact):not(.search-clean-input):not(#mobile-header-search):not(#search-input):focus,
 select:not(.report-period-select-raw):focus,
 textarea:focus,
 .header-search-capsule:focus-within {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    box-shadow: 0 0 0 3.5px rgba(var(--color-primary-rgb), 0.15) !important;
     outline: none !important;
 }
 html.dark .neo-input,
@@ -7569,8 +7294,8 @@ html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):n
 html.dark select:not(.report-period-select-raw),
 html.dark textarea,
 html.dark .header-search-capsule {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
 }
 html.dark .neo-input:focus,
 html.dark .admin-input:focus,
@@ -7579,7 +7304,7 @@ html.dark select:not(.report-period-select-raw):focus,
 html.dark textarea:focus,
 html.dark .header-search-capsule:focus-within {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 0 0 3.5px rgba(var(--color-primary-rgb), 0.28) !important;
 }
 
 textarea.admin-input,
@@ -7591,7 +7316,7 @@ textarea {
     line-height: 1.4 !important;
 }
 
-/* 4a-bis. Search Capsule & Scanner Chiclet: Ergonomis, Lapang & Bebas Sempit */
+/* Search Capsule & Scanner Chiclet */
 .header-search-capsule {
     border-radius: 9999px !important;
     min-height: 2.75rem !important;
@@ -7602,8 +7327,8 @@ textarea {
     align-items: center !important;
 }
 .header-search-capsule button[onclick*="openCameraScanner"] {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
     border-radius: 9999px !important;
     height: 32px !important;
     min-height: 32px !important;
@@ -7615,10 +7340,10 @@ textarea {
     box-sizing: border-box !important;
 }
 html.dark .header-search-capsule button[onclick*="openCameraScanner"] {
-    border-color: #475569 !important;
+    border-color: #334155 !important;
 }
 
-/* Clean Search Inputs (Zero Internal Frame / Zero Double-Boxing Inside Search Bars) */
+/* Clean Search Inputs */
 .search-clean-input,
 .header-search-capsule input,
 #mobile-header-search,
@@ -7642,11 +7367,11 @@ html.dark #search-input {
     outline: none !important;
 }
 
-/* 4b. Stepper Kuantitas Terpadu (Industrial Mechanical Stepper Unit) */
+/* 4b. Stepper Kuantitas Terpadu */
 #modal-active-controls .overflow-hidden.rounded-xl,
 .product-stepper-control {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
     box-sizing: border-box !important;
     background: #ffffff !important;
@@ -7657,28 +7382,28 @@ html.dark #search-input {
 html.dark #modal-active-controls .overflow-hidden.rounded-xl,
 html.dark .product-stepper-control,
 html.dark .cart-stepper-control {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25) !important;
     background: #1e293b !important;
 }
 
 #modal-qty-input {
     border-top: none !important;
     border-bottom: none !important;
-    border-left: 2px solid #0f172a !important;
-    border-right: 2px solid #0f172a !important;
+    border-left: 1px solid #e2e8f0 !important;
+    border-right: 1px solid #e2e8f0 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     min-height: 2.75rem !important;
     height: 100% !important;
     background: transparent !important;
     text-align: center !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     box-sizing: border-box !important;
 }
 html.dark #modal-qty-input {
-    border-left-color: #475569 !important;
-    border-right-color: #475569 !important;
+    border-left-color: #334155 !important;
+    border-right-color: #334155 !important;
     color: #ffffff !important;
 }
 
@@ -7698,7 +7423,7 @@ html.dark #modal-qty-input {
     height: 100% !important;
     background: transparent !important;
     text-align: center !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     box-sizing: border-box !important;
     -webkit-appearance: none !important;
     -moz-appearance: textfield !important;
@@ -7717,72 +7442,51 @@ html.dark .pos-cart-items-target input[type="number"] {
     background: transparent !important;
 }
 
-/* Zero Double-Boxing: Wrapper Dropdown Filter Laporan & Kasir */
-.report-select-wrapper select,
-select.report-period-select-raw {
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    min-height: unset !important;
-    height: 100% !important;
-    background: transparent !important;
-}
-html.dark .report-select-wrapper select,
-html.dark select.report-period-select-raw {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-}
-
 #modal-active-controls button {
-    transition: background-color 0.1s ease, transform 0.05s ease !important;
+    transition: background-color 0.15s ease, transform 0.1s ease !important;
     min-width: 2.75rem !important;
 }
 #modal-active-controls button:active {
-    transform: scale(0.9) !important;
+    transform: scale(0.92) !important;
 }
 
-/* 4c. Modal Detail Produk: Varian, Deskripsi, Trust Badges & Action Bar */
+/* 4c. Modal Detail Produk: Varian, Deskripsi, Action Bar */
 #product-modal-options button,
 .paint-swatch-card {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
     box-sizing: border-box !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.15s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease !important;
 }
 #product-modal-options button[class*="border-[var(--color-primary)]"],
 #product-modal-options button[class*="ring-2"],
 .paint-swatch-card.is-selected {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25) !important;
 }
 #product-modal-options button:active:not(:disabled),
 .paint-swatch-card:active:not(:disabled) {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #product-modal-options button,
 html.dark .paint-swatch-card {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 html.dark #product-modal-options button[class*="border-[var(--color-primary)]"],
 html.dark #product-modal-options button[class*="ring-2"],
 html.dark .paint-swatch-card.is-selected {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
-}
-html.dark #product-modal-options button:active:not(:disabled),
-html.dark .paint-swatch-card:active:not(:disabled) {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.35) !important;
 }
 
 #product-modal-content .mb-6.rounded-2xl.border,
 #product-modal-paylater-container > div,
 #product-modal-paint-warning {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
     border-radius: 1rem !important;
     padding: 1.25rem 1.5rem !important;
     box-sizing: border-box !important;
@@ -7791,10 +7495,10 @@ html.dark #product-modal-content .mb-6.rounded-2xl.border,
 html.dark #product-modal-paylater-container > div,
 html.dark #product-modal-paint-warning {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Deskripsi Produk: Bersih, Terbuka, & Tipografi Bernapas Lapang Tanpa Terkurung Garis */
+/* Deskripsi Produk: Bersih, Terbuka, & Tipografi Bernapas Lapang */
 #product-modal-desc {
     font-size: 0.875rem !important;
     line-height: 1.75 !important;
@@ -7812,73 +7516,69 @@ html.dark #product-modal-paint-warning {
 }
 
 #product-modal-content button[onclick*="chatWAAboutProduct"] {
-    border: 2px solid #059669 !important;
-    box-shadow: 2px 2px 0px #059669 !important;
+    border: 1px solid #059669 !important;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
     border-radius: 0.75rem !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     min-height: 2.75rem !important;
     margin-top: 1.25rem !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 #product-modal-content button[onclick*="chatWAAboutProduct"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #059669 !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 
 #product-modal-spec-table .overflow-hidden.rounded-2xl.border {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
 }
 html.dark #product-modal-spec-table .overflow-hidden.rounded-2xl.border {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
 }
 
 #modal-active-controls .rounded-2xl.border {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.875rem !important;
     box-sizing: border-box !important;
 }
 html.dark #modal-active-controls .rounded-2xl.border {
     border-color: #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 #product-modal-sticky-bar button,
 #product-modal-content > .absolute.right-3.top-3 button {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
-    font-weight: 800 !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    font-weight: 700 !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 #product-modal-sticky-bar button[onclick*="confirmAddProductToCart"] {
-    border-color: var(--color-primary) !important;
-    box-shadow: 2px 2px 0px var(--color-primary) !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3) !important;
 }
 #product-modal-sticky-bar button:active,
 #product-modal-content > .absolute.right-3.top-3 button:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #product-modal-sticky-bar button,
 html.dark #product-modal-content > .absolute.right-3.top-3 button {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark #product-modal-sticky-bar button:active,
-html.dark #product-modal-content > .absolute.right-3.top-3 button:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* 4e. Shopping Guide & SOP Modal Harmonization */
 #shopping-guide-modal .p-4.rounded-2xl.border,
 #shopping-guide-modal .rounded-2xl.border,
 #shopping-guide-modal [id^="guide-section-"] > div {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
     box-sizing: border-box !important;
 }
@@ -7886,180 +7586,154 @@ html.dark #shopping-guide-modal .p-4.rounded-2xl.border,
 html.dark #shopping-guide-modal .rounded-2xl.border,
 html.dark #shopping-guide-modal [id^="guide-section-"] > div {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
 #shopping-guide-modal [id^="guide-tab-btn-"],
 #shopping-guide-modal button[onclick*="closeShoppingGuideModal"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     box-sizing: border-box !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 #shopping-guide-modal [id^="guide-tab-btn-"]:active,
 #shopping-guide-modal button[onclick*="closeShoppingGuideModal"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #shopping-guide-modal [id^="guide-tab-btn-"],
 html.dark #shopping-guide-modal button[onclick*="closeShoppingGuideModal"] {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark #shopping-guide-modal [id^="guide-tab-btn-"]:active,
-html.dark #shopping-guide-modal button[onclick*="closeShoppingGuideModal"]:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* 4f. Produk Sejenis & Alternatif Pilihan (Related Products Harmonization) */
+/* 4f. Produk Sejenis & Alternatif Pilihan */
 #product-modal-related-container [onclick*="openProductModal"],
 #product-modal-related-container .group {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
     box-sizing: border-box !important;
     background-color: #ffffff;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+}
+#product-modal-related-container [onclick*="openProductModal"]:hover,
+#product-modal-related-container .group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.07) !important;
+    border-color: #cbd5e1 !important;
 }
 #product-modal-related-container [onclick*="openProductModal"]:active,
 #product-modal-related-container .group:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.97) !important;
+    box-shadow: none !important;
 }
 html.dark #product-modal-related-container [onclick*="openProductModal"],
 html.dark #product-modal-related-container .group {
-    border-color: #475569 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
-    background-color: #0f172a;
-}
-html.dark #product-modal-related-container [onclick*="openProductModal"]:active,
-html.dark #product-modal-related-container .group:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    background-color: #1e293b;
 }
 
 #product-modal-related-container .relative.aspect-square {
-    border: 1.5px solid #0f172a !important;
+    border: 1px solid #f1f5f9 !important;
     border-radius: 0.75rem !important;
     overflow: hidden !important;
 }
 html.dark #product-modal-related-container .relative.aspect-square {
-    border-color: #475569 !important;
+    border-color: #334155 !important;
 }
 
-#product-modal-related-container span.rounded-full {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    border-radius: 0.5rem !important;
-    font-weight: 800 !important;
-}
-html.dark #product-modal-related-container span.rounded-full {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
-}
-
-/* 4g. Category & Brand Storefront Modals Harmonization */
+/* 4g. Category & Brand Storefront Modals */
 #modal-category-list button,
 #modal-brand-grid button {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.875rem !important;
     box-sizing: border-box !important;
     background-color: #ffffff;
-    transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.15s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease !important;
 }
 #modal-category-list button[class*="border-[var(--color-primary)]"],
 #modal-brand-grid button[class*="border-[var(--color-primary)]"] {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
-    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.05) !important;
 }
 #modal-category-list button:active,
 #modal-brand-grid button:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.97) !important;
+    box-shadow: none !important;
 }
 html.dark #modal-category-list button,
 html.dark #modal-brand-grid button {
-    border-color: #475569 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
     background-color: #1e293b;
-}
-html.dark #modal-category-list button[class*="border-[var(--color-primary)]"],
-html.dark #modal-brand-grid button[class*="border-[var(--color-primary)]"] {
-    border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px var(--color-primary) !important;
-    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
-}
-html.dark #modal-category-list button:active,
-html.dark #modal-brand-grid button:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 #modal-category-list button > div:first-child,
 #modal-brand-grid button > div:first-child {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
     box-sizing: border-box !important;
 }
 html.dark #modal-category-list button > div:first-child,
 html.dark #modal-brand-grid button > div:first-child {
-    border-color: #475569 !important;
-    box-shadow: 1px 1px 0px #000000 !important;
+    border-color: #334155 !important;
 }
 
 #category-modal button[onclick*="closeCategoryModal"],
 #brand-modal button[onclick*="closeBrandModal"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.875rem !important;
-    font-weight: 800 !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    font-weight: 700 !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 #category-modal button[onclick*="closeCategoryModal"]:active,
 #brand-modal button[onclick*="closeBrandModal"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #category-modal button[onclick*="closeCategoryModal"],
 html.dark #brand-modal button[onclick*="closeBrandModal"] {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-html.dark #category-modal button[onclick*="closeCategoryModal"]:active,
-html.dark #brand-modal button[onclick*="closeBrandModal"]:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* 4h. CMS Settings Bento Hub & Menu Cards (Pengaturan Toko) */
+/* 4h. CMS Settings Bento Hub & Menu Cards */
 #admin-content button[onclick*="openSettingForm"],
 #admin-content button[onclick*="openPrinterSettingsModal"],
 #admin-content button[onclick*="openAdminTab('backup_sync')"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
     background-color: #ffffff;
     box-sizing: border-box !important;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+}
+#admin-content button[onclick*="openSettingForm"]:hover,
+#admin-content button[onclick*="openPrinterSettingsModal"]:hover,
+#admin-content button[onclick*="openAdminTab('backup_sync')"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.07) !important;
+    border-color: #cbd5e1 !important;
 }
 #admin-content button[onclick*="openSettingForm"]:active,
 #admin-content button[onclick*="openPrinterSettingsModal"]:active,
 #admin-content button[onclick*="openAdminTab('backup_sync')"]:active {
-    transform: translate(2px, 2px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.97) !important;
+    box-shadow: none !important;
 }
 html.dark #admin-content button[onclick*="openSettingForm"],
 html.dark #admin-content button[onclick*="openPrinterSettingsModal"],
 html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"] {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
     background-color: #1e293b;
-}
-html.dark #admin-content button[onclick*="openSettingForm"]:active,
-html.dark #admin-content button[onclick*="openPrinterSettingsModal"]:active,
-html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"]:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
 }
 
 #admin-content button[onclick*="openSettingForm"] .h-14,
@@ -8068,8 +7742,8 @@ html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"]:active {
 #admin-content button[onclick*="openPrinterSettingsModal"] .h-16,
 #admin-content button[onclick*="openAdminTab('backup_sync')"] .h-14,
 #admin-content button[onclick*="openAdminTab('backup_sync')"] .h-16 {
-    border: 2px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
 }
 html.dark #admin-content button[onclick*="openSettingForm"] .h-14,
 html.dark #admin-content button[onclick*="openSettingForm"] .h-16,
@@ -8077,84 +7751,75 @@ html.dark #admin-content button[onclick*="openPrinterSettingsModal"] .h-14,
 html.dark #admin-content button[onclick*="openPrinterSettingsModal"] .h-16,
 html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"] .h-14,
 html.dark #admin-content button[onclick*="openAdminTab('backup_sync')"] .h-16 {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 #admin-content > div > .mb-5.flex.items-center.justify-between {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
     box-sizing: border-box !important;
 }
 html.dark #admin-content > div > .mb-5.flex.items-center.justify-between {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-#admin-content > div > .mb-5 .w-12.h-12 {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-}
-html.dark #admin-content > div > .mb-5 .w-12.h-12 {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
-}
-
-#admin-content > div > .mb-5 span[class*="rounded-xl"] {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
-}
-html.dark #admin-content > div > .mb-5 span[class*="rounded-xl"] {
-    border-color: #475569 !important;
-    box-shadow: 1px 1px 0px #000000 !important;
-}
-
-/* 4i. Universal CMS KPI Stat Cards Across All Modules */
+/* 4i. Universal CMS KPI Stat Cards */
 #admin-product-stats .grid > div,
-#admin-content .grid-cols-2.lg\:grid-cols-4 > div,
-#admin-content .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 > div,
-#admin-content .grid-cols-2.sm\:grid-cols-2.md\:grid-cols-4 > div,
-#admin-content .grid-cols-2.md\:grid-cols-4 > div,
-#admin-content .grid-cols-1.sm\:grid-cols-3 > div,
+#admin-content .grid-cols-2.lg:grid-cols-4 > div,
+#admin-content .grid-cols-1.sm:grid-cols-2.lg:grid-cols-4 > div,
+#admin-content .grid-cols-2.sm:grid-cols-2.md:grid-cols-4 > div,
+#admin-content .grid-cols-2.md:grid-cols-4 > div,
+#admin-content .grid-cols-1.sm:grid-cols-3 > div,
 #admin-content .grid.grid-cols-2 > div.flex.flex-col.justify-between,
 #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+    border-radius: 1rem !important;
     background-color: #ffffff;
     box-sizing: border-box !important;
-    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+#admin-product-stats .grid > div:hover,
+#admin-content .grid-cols-2.lg:grid-cols-4 > div:hover,
+#admin-content .grid-cols-1.sm:grid-cols-2.lg:grid-cols-4 > div:hover,
+#admin-content .grid-cols-2.sm:grid-cols-2.md:grid-cols-4 > div:hover,
+#admin-content .grid-cols-2.md:grid-cols-4 > div:hover,
+#admin-content .grid-cols-1.sm:grid-cols-3 > div:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.07) !important;
 }
 html.dark #admin-product-stats .grid > div,
-html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div,
-html.dark #admin-content .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 > div,
-html.dark #admin-content .grid-cols-2.sm\:grid-cols-2.md\:grid-cols-4 > div,
-html.dark #admin-content .grid-cols-2.md\:grid-cols-4 > div,
-html.dark #admin-content .grid-cols-1.sm\:grid-cols-3 > div,
+html.dark #admin-content .grid-cols-2.lg:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-1.sm:grid-cols-2.lg:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-2.sm:grid-cols-2.md:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-2.md:grid-cols-4 > div,
+html.dark #admin-content .grid-cols-1.sm:grid-cols-3 > div,
 html.dark #admin-content .grid.grid-cols-2 > div.flex.flex-col.justify-between,
 html.dark #admin-content .grid.grid-cols-4 > div.flex.flex-col.justify-between {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
     background-color: #1e293b;
 }
 
 #admin-product-stats .grid > div .w-9.h-9,
-#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-9.h-9,
-#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-8.h-8,
-#admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7,
-#admin-content .grid-cols-1.sm\:grid-cols-3 > div .w-12.h-12 {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+#admin-content .grid-cols-2.lg:grid-cols-4 > div .w-9.h-9,
+#admin-content .grid-cols-2.lg:grid-cols-4 > div .w-8.h-8,
+#admin-content .grid-cols-2.lg:grid-cols-4 > div .w-7.h-7,
+#admin-content .grid-cols-1.sm:grid-cols-3 > div .w-12.h-12 {
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     box-sizing: border-box !important;
 }
 html.dark #admin-product-stats .grid > div .w-9.h-9,
-html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-9.h-9,
-html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-8.h-8,
-html.dark #admin-content .grid-cols-2.lg\:grid-cols-4 > div .w-7.h-7,
-html.dark #admin-content .grid-cols-1.sm\:grid-cols-3 > div .w-12.h-12 {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+html.dark #admin-content .grid-cols-2.lg:grid-cols-4 > div .w-9.h-9,
+html.dark #admin-content .grid-cols-2.lg:grid-cols-4 > div .w-8.h-8,
+html.dark #admin-content .grid-cols-2.lg:grid-cols-4 > div .w-7.h-7,
+html.dark #admin-content .grid-cols-1.sm:grid-cols-3 > div .w-12.h-12 {
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Admin Module Top Hero Banners */
@@ -8164,9 +7829,9 @@ html.dark #admin-content .grid-cols-1.sm\:grid-cols-3 > div .w-12.h-12 {
 #admin-content > div > .mb-5.p-5[class*="rounded-"],
 #admin-content #subscription-bento-card,
 #admin-content #subscription-bento-card > div {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 1rem !important;
     box-sizing: border-box !important;
 }
 html.dark #admin-content > div > .relative.overflow-hidden.p-5,
@@ -8176,7 +7841,7 @@ html.dark #admin-content > div > .mb-5.p-5[class*="rounded-"],
 html.dark #admin-content #subscription-bento-card,
 html.dark #admin-content #subscription-bento-card > div {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* 4j. Admin Toolbar Action Buttons & Select Controls */
@@ -8191,11 +7856,11 @@ button[onclick*="openAdminTab('purchases')"],
 #admin-content button[onclick*="filter"],
 #admin-product-order-dropdown,
 #admin-product-order-dropdown button {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
     box-sizing: border-box !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 button[onclick*="openPriceListExportModal"]:active,
 button[onclick*="openAdminTab('stock_opname')"]:active,
@@ -8206,8 +7871,8 @@ button[onclick*="openSupplierFormModal"]:active,
 button[onclick*="openAdminTab('purchases')"]:active,
 #admin-content button[onclick*="hasDebt"]:active,
 #admin-content button[onclick*="filter"]:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark button[onclick*="openPriceListExportModal"],
 html.dark button[onclick*="openAdminTab('stock_opname')"],
@@ -8220,8 +7885,8 @@ html.dark #admin-content button[onclick*="hasDebt"],
 html.dark #admin-content button[onclick*="filter"],
 html.dark #admin-product-order-dropdown,
 html.dark #admin-product-order-dropdown button {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Product & Data Item Action Buttons (Row Actions) */
@@ -8236,11 +7901,11 @@ html.dark #admin-product-order-dropdown button {
 #admin-list-container button[onclick*="openMemberModal"],
 #admin-list-container button[onclick*="adminResetMemberPin"],
 #admin-list-container .btn-native-action {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
     box-sizing: border-box !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 #admin-list-container button[onclick*="toggleProductStatus"]:active,
 #admin-list-container button[onclick*="openRestockModal"]:active,
@@ -8253,8 +7918,8 @@ html.dark #admin-product-order-dropdown button {
 #admin-list-container button[onclick*="openMemberModal"]:active,
 #admin-list-container button[onclick*="adminResetMemberPin"]:active,
 #admin-list-container .btn-native-action:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.95) !important;
+    box-shadow: none !important;
 }
 html.dark #admin-list-container button[onclick*="toggleProductStatus"],
 html.dark #admin-list-container button[onclick*="openRestockModal"],
@@ -8267,8 +7932,8 @@ html.dark #admin-list-container button[onclick*="oADel"],
 html.dark #admin-list-container button[onclick*="openMemberModal"],
 html.dark #admin-list-container button[onclick*="adminResetMemberPin"],
 html.dark #admin-list-container .btn-native-action {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* 4k. Supplier Detail & Admin Entity Modals */
@@ -8278,9 +7943,9 @@ html.dark #admin-list-container .btn-native-action {
 #modal-po-detail-box,
 #modal-tempo-detail-box,
 #modal-attendance-rekap-box {
-    border: 2.5px solid #0f172a !important;
-    box-shadow: 4.5px 4.5px 0px #0f172a !important;
-    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+    border-radius: 1.5rem !important;
     box-sizing: border-box !important;
 }
 html.dark [id*="modal-"][id$="-box"],
@@ -8290,73 +7955,73 @@ html.dark #modal-po-detail-box,
 html.dark #modal-tempo-detail-box,
 html.dark #modal-attendance-rekap-box {
     border-color: #334155 !important;
-    box-shadow: 4.5px 4.5px 0px #000000 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
 }
 
 #modal-supplier-detail-box .w-13.h-13,
 #modal-supplier-detail-box .w-16.h-16,
 #modal-supplier-detail-box .w-14.h-14 {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     box-sizing: border-box !important;
 }
 html.dark #modal-supplier-detail-box .w-13.h-13,
 html.dark #modal-supplier-detail-box .w-16.h-16,
 html.dark #modal-supplier-detail-box .w-14.h-14 {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
 }
 
 #modal-supplier-detail button[onclick*="switchSupplierDetailTab"] {
-    border: 1.5px solid transparent !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease, border-color 0.1s ease !important;
+    border: 1px solid transparent !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease !important;
 }
 #modal-supplier-detail button[onclick*="switchSupplierDetailTab"].bg-white,
-#modal-supplier-detail button[onclick*="switchSupplierDetailTab"].dark\:bg-slate-700 {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+#modal-supplier-detail button[onclick*="switchSupplierDetailTab"].dark:bg-slate-700 {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
 html.dark #modal-supplier-detail button[onclick*="switchSupplierDetailTab"].bg-white,
-html.dark #modal-supplier-detail button[onclick*="switchSupplierDetailTab"].dark\:bg-slate-700 {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+html.dark #modal-supplier-detail button[onclick*="switchSupplierDetailTab"].dark:bg-slate-700 {
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
 }
 
 #modal-supplier-detail button[onclick*="closeSupplierDetailModal"],
 #modal-supplier-detail button[onclick*="quickCreatePOForSupplier"],
 #modal-supplier-detail button[onclick*="openAdminTab('products')"] {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.75rem !important;
-    font-weight: 800 !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    font-weight: 700 !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 #modal-supplier-detail button[onclick*="closeSupplierDetailModal"]:active,
 #modal-supplier-detail button[onclick*="quickCreatePOForSupplier"]:active,
 #modal-supplier-detail button[onclick*="openAdminTab('products')"]:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 html.dark #modal-supplier-detail button[onclick*="closeSupplierDetailModal"],
 html.dark #modal-supplier-detail button[onclick*="quickCreatePOForSupplier"],
 html.dark #modal-supplier-detail button[onclick*="openAdminTab('products')"] {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 #modal-supplier-detail [class*="rounded-3xl"].bg-white,
-#modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
-    border-radius: 0.875rem !important;
+#modal-supplier-detail [class*="rounded-3xl"].dark:bg-slate-800/90 {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 1rem !important;
 }
 html.dark #modal-supplier-detail [class*="rounded-3xl"].bg-white,
-html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
+html.dark #modal-supplier-detail [class*="rounded-3xl"].dark:bg-slate-800/90 {
     border-color: #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 5. Universal Industrial Neo-Brutalist Modals & Dialogs */
+/* 5. Universal Clean Modals & Dialogs */
 @media (min-width: 640px) {
     .modal-bottom-sheet,
     [id*="modal-"][id$="-box"],
@@ -8379,8 +8044,8 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     #pos-login-modal-box,
     #pos-variant-sheet-box,
     .swal2-popup {
-        border: 2.5px solid #0f172a !important;
-        box-shadow: 4.5px 4.5px 0px #0f172a !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
         border-radius: 1.5rem !important;
         box-sizing: border-box !important;
     }
@@ -8406,7 +8071,7 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     html.dark #pos-variant-sheet-box,
     html.dark .swal2-popup {
         border-color: #334155 !important;
-        box-shadow: 4.5px 4.5px 0px #000000 !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
     }
 }
 
@@ -8418,11 +8083,11 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     [id$="-modal-content"],
     #pos-login-modal-box,
     #pos-variant-sheet-box {
-        border-top: 2.5px solid #0f172a !important;
-        border-left: 2px solid #0f172a !important;
-        border-right: 2px solid #0f172a !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-left: 1px solid #e2e8f0 !important;
+        border-right: 1px solid #e2e8f0 !important;
         border-bottom: none !important;
-        box-shadow: 0 -4px 0px #0f172a !important;
+        box-shadow: 0 -10px 25px -5px rgba(15, 23, 42, 0.15) !important;
         box-sizing: border-box !important;
     }
     html.dark .modal-bottom-sheet,
@@ -8435,7 +8100,7 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
         border-top-color: #334155 !important;
         border-left-color: #334155 !important;
         border-right-color: #334155 !important;
-        box-shadow: 0 -4px 0px #000000 !important;
+        box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5) !important;
     }
 
     #custom-confirm-box,
@@ -8448,8 +8113,8 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     #pos-held-list-modal > div,
     #pos-recall-confirm-modal > div,
     [id^="pos-"][id$="-box"] {
-        border: 2.5px solid #0f172a !important;
-        box-shadow: 3.5px 3.5px 0px #0f172a !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 20px 35px -8px rgba(15, 23, 42, 0.2) !important;
         border-radius: 1.5rem !important;
     }
     html.dark #custom-confirm-box,
@@ -8463,7 +8128,7 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
     html.dark #pos-recall-confirm-modal > div,
     html.dark [id^="pos-"][id$="-box"] {
         border-color: #334155 !important;
-        box-shadow: 3.5px 3.5px 0px #000000 !important;
+        box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.5) !important;
     }
 }
 
@@ -8473,7 +8138,7 @@ html.dark #modal-supplier-detail [class*="rounded-3xl"].dark\:bg-slate-800\/90 {
 [id*="modal-content"] [class*="border-b"]:first-of-type,
 [id^="pos-"][id$="-box"] [class*="border-b"]:first-of-type,
 #pos-held-modal-box [class*="border-b"]:first-of-type {
-    border-bottom: 2px solid #0f172a !important;
+    border-bottom: 1px solid #e2e8f0 !important;
 }
 html.dark .modal-bottom-sheet > div:first-child [class*="border-b"],
 html.dark [id*="modal-box"] [class*="border-b"]:first-of-type,
@@ -8488,7 +8153,7 @@ html.dark #pos-held-modal-box [class*="border-b"]:first-of-type {
 [id*="modal-content"] [class*="border-t"]:last-child,
 [id^="pos-"][id$="-box"] [class*="border-t"]:last-child,
 #pos-held-modal-box [class*="border-t"]:last-child {
-    border-top: 2px solid #0f172a !important;
+    border-top: 1px solid #e2e8f0 !important;
 }
 html.dark .modal-bottom-sheet [class*="border-t"]:last-child,
 html.dark [id*="modal-box"] [class*="border-t"]:last-child,
@@ -8498,11 +8163,11 @@ html.dark #pos-held-modal-box [class*="border-t"]:last-child {
     border-top-color: #334155 !important;
 }
 
-/* 6. Universal Industrial Neo-Brutalist Data Tables */
+/* 6. Universal Clean Data Tables */
 .admin-table-container,
 .table-container {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.875rem !important;
     overflow-x: auto !important;
     box-sizing: border-box !important;
@@ -8510,122 +8175,104 @@ html.dark #pos-held-modal-box [class*="border-t"]:last-child {
 html.dark .admin-table-container,
 html.dark .table-container {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 table thead th {
-    border-bottom: 2px solid #0f172a !important;
-    font-weight: 800 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.04em !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    color: #475569;
 }
 html.dark table thead th {
     border-bottom-color: #334155 !important;
+    color: #94a3b8;
 }
 
 table tbody tr {
-    border-bottom: 1.5px solid #e2e8f0;
+    border-bottom: 1px solid #f1f5f9;
 }
 html.dark table tbody tr {
-    border-bottom-color: #334155;
+    border-bottom-color: #1e293b;
 }
 table tbody tr:last-child {
     border-bottom: none !important;
 }
 
-/* 7. Universal Industrial Neo-Brutalist Navigation & Floating Elements */
+/* 7. Universal Clean Navigation & Floating Elements */
 #bottom-nav-bar {
-    border-top: 2.5px solid #0f172a !important;
-    box-shadow: 0 -3px 0px #0f172a !important;
+    border-top: 1px solid #e2e8f0 !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03) !important;
 }
 html.dark #bottom-nav-bar {
     border-top-color: #334155 !important;
-    box-shadow: 0 -3px 0px #000000 !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35) !important;
 }
 
 #bnav-home .bnav-hero-button {
-    border: 2.5px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35) !important;
 }
 html.dark #bnav-home .bnav-hero-button {
-    border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    border-color: #1e293b !important;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.45) !important;
 }
 
 .glass-header {
-    border-bottom: 2px solid #0f172a !important;
-    box-shadow: 0 2.5px 0px #0f172a !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
 }
 html.dark .glass-header {
     border-bottom-color: #334155 !important;
-    box-shadow: 0 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
 }
 
 #btn-floating-wa,
 #btn-floating-action,
 #btn-scroll-top {
-    border: 2px solid #0f172a !important;
-    box-shadow: 3px 3px 0px #0f172a !important;
-}
-html.dark #btn-floating-wa,
-html.dark #btn-floating-action,
-html.dark #btn-scroll-top {
-    border-color: #475569 !important;
-    box-shadow: 3px 3px 0px #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* 8. Industrial Toast & Notifications */
+/* 8. Toast & Notifications */
 #toast {
-    border: 2px solid #0f172a !important;
-    box-shadow: 3.5px 3.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.12) !important;
     border-radius: 0.875rem !important;
 }
 html.dark #toast {
     border-color: #334155 !important;
-    box-shadow: 3.5px 3.5px 0px #000000 !important;
+    box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* 9. Industrial Hazard Caution Stripe (Garis Pita Proyek) */
+/* 9. Elegant Clean Subtle Accent Gradients */
 .neo-hazard-stripe {
-    background: repeating-linear-gradient(
-        -45deg,
-        #facc15,
-        #facc15 10px,
-        #0f172a 10px,
-        #0f172a 20px
-    ) !important;
+    background: linear-gradient(135deg, #f59e0b, #f97316) !important;
 }
 .neo-hazard-stripe-subtle {
-    background: repeating-linear-gradient(
-        -45deg,
-        rgba(250, 204, 21, 0.25),
-        rgba(250, 204, 21, 0.25) 8px,
-        rgba(15, 23, 42, 0.1) 8px,
-        rgba(15, 23, 42, 0.1) 16px
-    ) !important;
+    background: linear-gradient(90deg, rgba(var(--color-primary-rgb), 0.35), rgba(var(--color-primary-rgb), 0.08)) !important;
 }
 
 /* ==========================================================================
-   11. UNIVERSAL INDUSTRIAL NEO-BRUTALISM ZERO-HARDCODE PRECISION ENGINE
+   11. UNIVERSAL SHOPIFY POLARIS & CLEAN MINIMALIST INTERACTION ENGINE
    Standarisasi menyeluruh hingga detail terkecil di seluruh aplikasi:
-   - Eliminasi mutlak soft blur shadows (box-shadow: 0 Xpx ... dinetralkan menjadi hard offset shadow)
-   - Garis batas tebal industrial 2px solid charcoal (#0f172a / dark: #334155)
-   - Hard offset shadow tegas (2.5px 2.5px 0px / 1.5px 1.5px 0px) tanpa blur
-   - Universal tactile switch response active: translate(1.5px, 1.5px) / (2px, 2px)
-   - Universal badge squircle radius 0.5rem (8px) anti-oval / anti-bloat
+   - Eliminasi mutlak hard offset shadows menjadi soft diffuse elevation
+   - Garis batas halus 1px solid neutral (#e2e8f0 / dark: #334155)
+   - Spring scaling halus pada sentuhan/klik (scale(0.97) - anti-fatigue)
+   - Universal badge pill styling yang bersih & ramah di mata
    - Isolasi cetak thermal & preview dokumen A4 tetap 100% terlindungi
    ========================================================================== */
 
-/* 11a. Netralisasi Universal Segala Soft Shadows & Penegakan Hard Shadow */
+/* 11a. Netralisasi Universal Segala Tombol Aksi */
 button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
 [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon),
 .neo-btn,
 .btn-primary,
 .btn-secondary,
 .btn-native-action {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    transition: transform 0.06s ease, box-shadow 0.06s ease !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease !important;
 }
 html.dark button:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(#receipt-paper-content):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(#admin-dashboard-cashflow-slot .bento-island-card button):not(#admin-product-stats button):not(button[class*="hover:underline"]):not(.footer-sub-btn):not(.btn-input-icon):not(button[onclick*="toggleStaffPassVisibility"]):not(button[onclick*="login-password"]):not(button[onclick*="pos-login-password"]),
 html.dark [role="button"]:not(#thermal-receipt *):not(.receipt-content *):not(#doc-preview-modal *):not(.a4-sheet *):not(.swatch-circle):not(#bottom-nav-bar *):not(.btn-input-icon),
@@ -8634,39 +8281,51 @@ html.dark .btn-primary,
 html.dark .btn-secondary,
 html.dark .btn-native-action {
     border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 11b. Tombol Aksi Kompak / Ikon (h-8 s.d. h-10) Hard Shadow 1.5px */
+/* Tombol Utama (Primary) Berlatar Brand Toko */
+button.btn-primary,
+.btn-primary,
+button[style*="var(--color-primary)"],
+.neo-btn[style*="var(--color-primary)"] {
+    border: 1px solid transparent !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.28) !important;
+}
+button.btn-primary:hover,
+.btn-primary:hover,
+button[style*="var(--color-primary)"]:hover,
+.neo-btn[style*="var(--color-primary)"]:hover {
+    filter: brightness(1.06) !important;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.38) !important;
+}
+
+/* 11b. Tombol Aksi Kompak / Ikon */
 button.h-8:not(#bottom-nav-bar *):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 button.h-9:not(#bottom-nav-bar *):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 button.h-10:not(#bottom-nav-bar *):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 button[class*="px-3"][class*="py-1"]:not(#bottom-nav-bar *):not(.btn-input-icon),
 button[class*="px-2"][class*="py-1"]:not(#bottom-nav-bar *):not(.btn-input-icon) {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
 }
 html.dark button.h-8:not(#bottom-nav-bar *):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 html.dark button.h-9:not(#bottom-nav-bar *):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 html.dark button.h-10:not(#bottom-nav-bar *):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 html.dark button[class*="px-3"][class*="py-1"]:not(#bottom-nav-bar *):not(.btn-input-icon),
 html.dark button[class*="px-2"][class*="py-1"]:not(#bottom-nav-bar *):not(.btn-input-icon) {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* 11c. Efek Tekan Saklar Mekanikal Aktif Universal */
+/* 11c. Efek Tekan Lembut (Spring Scale Damping) */
 button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(button[class*="hover:underline"]):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
 [role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-html.dark button:active:not(:disabled):not(#thermal-receipt *):not(#doc-preview-modal *):not(.cart-stepper-control button):not(.pos-stepper-control button):not(#modal-active-controls button):not(.swatch-circle):not(#bottom-nav-bar *):not(button[class*="hover:underline"]):not(.btn-input-icon):not([onclick*="toggleStaffPassVisibility"]):not([onclick*="login-password"]):not([onclick*="pos-login-password"]),
-html.dark [role="button"]:active:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    transform: scale(0.97) !important;
+    box-shadow: none !important;
 }
 
-/* 11d. Standarisasi Universal Wadah Ikon (Icon Pods) Neo-Brutalisme */
+/* 11d. Standarisasi Wadah Ikon (Icon Pods) Bersih & Ringan */
 div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
 div[class*="w-9"][class*="h-9"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
 div[class*="w-10"][class*="h-10"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
@@ -8675,8 +8334,9 @@ div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-preview-modal
 div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
 div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
 div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    border-radius: 0.75rem !important;
     box-sizing: border-box !important;
 }
 html.dark div[class*="w-8"][class*="h-8"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
@@ -8687,8 +8347,8 @@ html.dark div[class*="w-12"][class*="h-12"]:not(#thermal-receipt *):not(#doc-pre
 html.dark div[class*="w-13"][class*="h-13"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
 html.dark div[class*="w-14"][class*="h-14"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *),
 html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-preview-modal *):not(.swatch-circle):not(#bottom-nav-bar *) {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* 11e. Pengecualian Khusus & Stepper Controls */
@@ -8704,7 +8364,7 @@ html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-pre
     box-shadow: none !important;
 }
 
-/* Bottom Navigation Bar Items: Clean Native App Dock, Zero Individual Tab Outlines */
+/* Bottom Navigation Bar Items: Clean Native App Dock */
 #bottom-nav-bar button,
 #bottom-nav-bar .bnav-item,
 #bottom-nav-bar button.bnav-item,
@@ -8716,16 +8376,8 @@ html.dark div[class*="w-16"][class*="h-16"]:not(#thermal-receipt *):not(#doc-pre
     background: transparent !important;
     transform: none !important;
 }
-#bnav-home .bnav-hero-button {
-    border: 2.5px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-}
-html.dark #bnav-home .bnav-hero-button {
-    border-color: #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
-}
 
-/* Cashflow Widget & KPI Inline Navigation Links: Clean Unboxed Text Links */
+/* Cashflow Widget & KPI Inline Navigation Links */
 #admin-dashboard-cashflow-slot .bento-island-card button,
 #admin-dashboard-cashflow-slot .bento-island-card button:hover,
 #admin-dashboard-cashflow-slot .bento-island-card button:active,
@@ -8739,7 +8391,7 @@ button[class*="hover:underline"] {
     transform: none !important;
 }
 
-/* Password Eye Toggle Buttons & Form Input Internal Action Buttons: Clean Unboxed Transparent & Centered */
+/* Password Eye Toggle Buttons & Form Input Internal Action Buttons */
 button.btn-input-icon,
 .btn-input-icon,
 .relative > button.btn-input-icon,
@@ -8758,7 +8410,6 @@ button[onclick*="pos-login-password"] {
     transform: translateY(-50%) !important;
     outline: none !important;
 }
-
 button.btn-input-icon:hover,
 .btn-input-icon:hover,
 .relative > button.btn-input-icon:hover,
@@ -8772,7 +8423,6 @@ button[onclick*="pos-login-password"]:hover {
     top: 50% !important;
     transform: translateY(-50%) !important;
 }
-
 button.btn-input-icon:active,
 .btn-input-icon:active,
 .relative > button.btn-input-icon:active,
@@ -8787,12 +8437,12 @@ button[onclick*="pos-login-password"]:active {
     transform: translateY(-50%) scale(0.92) !important;
 }
 
-/* Form Input Login Sanitization: Higienis, Bersih, Kontras Tinggi */
+/* Form Input Login */
 #login-username,
 #login-password {
     background-color: #f8fafc !important;
     color: #0f172a !important;
-    border: 1.5px solid #cbd5e1 !important;
+    border: 1px solid #cbd5e1 !important;
 }
 html.dark #login-username,
 html.dark #login-password {
@@ -8804,141 +8454,128 @@ html.dark #login-password {
 #login-password:focus {
     background-color: #ffffff !important;
     border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15) !important;
     outline: none !important;
 }
 html.dark #login-username:focus,
 html.dark #login-password:focus {
     background-color: #0f172a !important;
     border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.28) !important;
     outline: none !important;
-}
-#login-username::placeholder,
-#login-password::placeholder {
-    color: #94a3b8 !important;
 }
 
 /* Sub-footer Micro-Badges */
 .footer-sub-btn {
-    border: 1px solid #0f172a !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     border-radius: 0.5rem !important;
     transform: none !important;
     min-height: unset !important;
 }
 html.dark .footer-sub-btn {
-    border-color: #475569 !important;
-    box-shadow: 1px 1px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Expense Source Selector Cards (Kas Toko, Transfer Bank, Dana Owner) */
+/* Expense Source Selector Cards */
 .expense-source-card {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 0.75rem !important;
     background-color: #ffffff;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease !important;
     box-sizing: border-box !important;
 }
 html.dark .expense-source-card {
     border-color: #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
     background-color: #1e293b;
 }
 .expense-source-card:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-html.dark .expense-source-card:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 .expense-source-card.is-source-active {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.06) !important;
 }
 html.dark .expense-source-card.is-source-active {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
-    background-color: rgba(var(--color-primary-rgb), 0.2) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.35) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
 }
 
-/* Staff Role Selection Cards in Add Staff Modal */
+/* Staff Role Selection Cards */
 .staff-role-card {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 1rem !important;
     background-color: #ffffff;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease !important;
     box-sizing: border-box !important;
 }
 html.dark .staff-role-card {
     border-color: #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
     background-color: #1e293b;
 }
 .staff-role-card:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-html.dark .staff-role-card:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    transform: scale(0.96) !important;
+    box-shadow: none !important;
 }
 .staff-role-card.is-role-active {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.06) !important;
 }
 html.dark .staff-role-card.is-role-active {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
-    background-color: rgba(var(--color-primary-rgb), 0.2) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.35) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
 }
 
 /* 11f. Standarisasi Modal Pengaturan Printer POS (#printer-settings-modal-box) & Driver Cards */
 #printer-settings-modal-box {
-    border: 2px solid #0f172a !important;
-    box-shadow: 4.5px 4.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+    border-radius: 1.5rem !important;
 }
 html.dark #printer-settings-modal-box {
     border-color: #334155 !important;
-    box-shadow: 4.5px 4.5px 0px #000000 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
 }
 
 .printer-type-card {
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     border-radius: 1rem !important;
     background-color: #ffffff;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
     box-sizing: border-box !important;
 }
 html.dark .printer-type-card {
-    border-color: #475569 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
     background-color: #1e293b;
 }
 .printer-type-card:hover {
-    transform: translate(-1px, -1px) !important;
-    box-shadow: 3px 3px 0px #0f172a !important;
-}
-html.dark .printer-type-card:hover {
-    box-shadow: 3px 3px 0px #000000 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.07) !important;
 }
 .printer-type-card:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-html.dark .printer-type-card:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    transform: scale(0.97) !important;
+    box-shadow: none !important;
 }
 .printer-type-card.printer-card-active {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
-    background-color: rgba(var(--color-primary-rgb), 0.07) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.06) !important;
 }
 html.dark .printer-type-card.printer-card-active {
     border-color: var(--color-primary) !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.35) !important;
     background-color: rgba(var(--color-primary-rgb), 0.15) !important;
 }
 
@@ -8951,19 +8588,136 @@ html.dark .printer-type-card.printer-card-active {
     touch-action: pan-x !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
-    border: 2px solid #0f172a !important;
-    box-shadow: 2px 2px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    border-radius: 0.875rem !important;
+    background-color: #f8fafc !important;
 }
 html.dark .segmented-tabs-bar,
 html.dark #cashier-admin-tabs-bar {
     border-color: #334155 !important;
-    box-shadow: 2px 2px 0px #000000 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+    background-color: #0f172a !important;
 }
 .segmented-tabs-bar::-webkit-scrollbar,
 #cashier-admin-tabs-bar::-webkit-scrollbar {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
+}
+
+/* POS Quick Discount Chips */
+.pos-discount-chip {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    border-radius: 0.625rem !important;
+    font-weight: 700 !important;
+    transition: all 0.15s ease;
+}
+.pos-discount-chip:active {
+    transform: scale(0.95) !important;
+    box-shadow: none !important;
+}
+.pos-discount-chip.active {
+    background-color: var(--color-primary, #800020) !important;
+    color: #ffffff !important;
+    border-color: var(--color-primary, #800020) !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.28) !important;
+}
+
+/* Isolasi Khusus Child Reward Card */
+#reward-catalog-container .reward-card > div:not(.reward-thumb),
+#reward-catalog-container .snap-start > div > div:not(.reward-thumb) {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Tombol Tukar Hadiah Kompak */
+#reward-catalog-container .reward-tukar-btn {
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 0 10px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1 !important;
+    border-radius: 0.5rem !important;
+    border: 1px solid transparent !important;
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.25) !important;
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out !important;
+}
+#reward-catalog-container .reward-tukar-btn:hover {
+    filter: brightness(1.08) !important;
+    box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.35) !important;
+}
+#reward-catalog-container .reward-tukar-btn:active {
+    transform: scale(0.94) !important;
+    box-shadow: none !important;
+}
+
+/* Isolasi Menu Dropdown Ekspor Laporan */
+#report-export-dropdown-menu button {
+    border: none !important;
+    box-shadow: none !important;
+    min-height: auto !important;
+    height: auto !important;
+    border-radius: 0.625rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.25rem !important;
+    font-weight: 600 !important;
+    background-color: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+    transform: none !important;
+}
+#report-export-dropdown-menu button:hover {
+    background-color: rgba(var(--color-primary-rgb, 128, 0, 32), 0.08) !important;
+    color: var(--color-primary, #800020) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+html.dark #report-export-dropdown-menu button {
+    color: #e2e8f0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+html.dark #report-export-dropdown-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+#report-export-dropdown-menu button:active {
+    transform: scale(0.98) !important;
+    box-shadow: none !important;
+}
+
+/* 12. Universal Normalizer: Netralisasi Otomatis Segala Inline Hard Shadows & Outlines */
+[class*="shadow-["][class*="0f172a"],
+[class*="shadow-["][class*="000000"] {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03) !important;
+}
+html.dark [class*="shadow-["][class*="0f172a"],
+html.dark [class*="shadow-["][class*="000000"] {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+[class*="border-2 border-slate-900"],
+[class*="border-2 border-slate-950"],
+[class*="border-2 border-[#0f172a]"] {
+    border-width: 1px !important;
+    border-color: #e2e8f0 !important;
+}
+html.dark [class*="border-2 border-slate-900"],
+html.dark [class*="border-2 border-slate-950"],
+html.dark [class*="border-2 border-[#0f172a]"] {
+    border-color: #334155 !important;
 }
 
 /* 10. Thermal Print & A4 Document Shadow Isolation Engine (Absolute Zero Leak Guarantee) */
@@ -9024,98 +8778,4 @@ html.dark #cashier-admin-tabs-bar {
         text-shadow: none !important;
         filter: none !important;
     }
-}
-
-
-/* POS Quick Discount Neo-Brutalist Chips */
-.pos-discount-chip {
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
-    font-weight: 700 !important;
-    transition: all 0.15s ease;
-}
-.pos-discount-chip:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
-}
-.pos-discount-chip.active {
-    background-color: var(--color-primary, #800020) !important;
-    color: #ffffff !important;
-    box-shadow: 2px 2px 0px #000000 !important;
-}
-
-/* Isolasi Khusus Child Reward Card: Cegah Pembocoran Border & Shadow ke Detail Teks */
-#reward-catalog-container .reward-card > div:not(.reward-thumb),
-#reward-catalog-container .snap-start > div > div:not(.reward-thumb) {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-}
-
-/* Tombol Tukar Hadiah Kompak & Presisi di Baris Aksi */
-#reward-catalog-container .reward-tukar-btn {
-    min-height: 26px !important;
-    height: 26px !important;
-    padding: 0 8px !important;
-    font-size: 10px !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.03em !important;
-    line-height: 1 !important;
-    border-radius: 0.5rem !important;
-    border: 1.5px solid #0f172a !important;
-    box-shadow: 1px 1px 0px #0f172a !important;
-    transition: transform 0.06s ease-out, box-shadow 0.06s ease-out !important;
-}
-html.dark #reward-catalog-container .reward-tukar-btn {
-    border-color: #334155 !important;
-    box-shadow: 1px 1px 0px #000000 !important;
-}
-#reward-catalog-container .reward-tukar-btn:active {
-    transform: translate(1px, 1px) !important;
-    box-shadow: 0px 0px 0px #0f172a !important;
-}
-
-
-/* Isolasi Menu Dropdown Ekspor Laporan: Eliminasi Border Tebal & Shadow di Item Dropdown */
-#report-export-dropdown-menu button {
-    border: none !important;
-    box-shadow: none !important;
-    min-height: auto !important;
-    height: auto !important;
-    border-radius: 0.625rem !important;
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.75rem !important;
-    line-height: 1.25rem !important;
-    font-weight: 600 !important;
-    background-color: transparent !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
-    transition: background-color 0.15s ease, color 0.15s ease !important;
-    transform: none !important;
-}
-
-#report-export-dropdown-menu button:hover {
-    background-color: rgba(var(--color-primary-rgb, 128, 0, 32), 0.08) !important;
-    color: var(--color-primary, #800020) !important;
-    transform: none !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-html.dark #report-export-dropdown-menu button {
-    color: #e2e8f0 !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-html.dark #report-export-dropdown-menu button:hover {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-}
-
-#report-export-dropdown-menu button:active {
-    transform: scale(0.98) !important;
-    box-shadow: none !important;
 }

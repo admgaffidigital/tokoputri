@@ -1644,7 +1644,7 @@ const renderPOItemsTable = () => {
                                         ` : ''}
 
                                         ${item.variantName ? `
-                                            <span class="neo-badge px-2.5 py-0.5 rounded-lg text-[10px] font-black text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                                            <span class="neo-badge px-2.5 py-0.5 rounded-lg text-[10px] font-black text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                                                 Varian: ${esc(item.variantName)}
                                             </span>
                                         ` : ''}
@@ -2419,7 +2419,7 @@ window.openPurchaseDetailModal = (poId) => {
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="w-5 h-5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">#${idx + 1}</span>
                                             <p class="font-black text-sm text-slate-800 dark:text-slate-100">${esc(item.name)}</p>
-                                            ${item.variantName ? `<span class="neo-badge px-2 py-0.5 rounded-md text-[9px] font-black uppercase text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background:var(--color-primary);">Varian: ${esc(item.variantName)}</span>` : ''}
+                                            ${item.variantName ? `<span class="neo-badge px-2 py-0.5 rounded-md text-[9px] font-black uppercase text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background:var(--color-primary);">Varian: ${esc(item.variantName)}</span>` : ''}
                                         </div>
                                         ${item.sku ? `<span class="text-[11px] font-mono text-slate-400 ml-6 block mt-0.5">SKU: ${esc(item.sku)}</span>` : ''}
                                     </div>
@@ -2455,7 +2455,7 @@ window.openPurchaseDetailModal = (poId) => {
                                     <td class="py-3 px-4">
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <p class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">${esc(item.name)}</p>
-                                            ${item.variantName ? `<span class="neo-badge px-2 py-0.5 rounded-md text-[9px] font-black uppercase text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background:var(--color-primary);">Varian: ${esc(item.variantName)}</span>` : ''}
+                                            ${item.variantName ? `<span class="neo-badge px-2 py-0.5 rounded-md text-[9px] font-black uppercase text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background:var(--color-primary);">Varian: ${esc(item.variantName)}</span>` : ''}
                                         </div>
                                         ${item.sku ? `<span class="text-[11px] font-mono text-slate-400">SKU: ${esc(item.sku)}</span>` : ''}
                                     </td>

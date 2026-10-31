@@ -298,10 +298,10 @@ export const renderReportsShell = () => {
     const tabsHTML = tabs.map(tab => {
         const isActive = reportActiveTab === tab.k;
         return `
-            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start border-2 border-slate-900 dark:border-slate-700 ${
+            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start border border-slate-200/90 dark:border-slate-700/80 ${
                 isActive 
-                ? 'bg-[var(--color-primary)] text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] font-black' 
-                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-100 dark:hover:bg-slate-700/60'
+                ? 'bg-[var(--color-primary)] text-white shadow-sm font-black' 
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-xs hover:bg-slate-100 dark:hover:bg-slate-700/60'
             }">
                 <div class="w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} transition-colors">
                     <i class="fa-solid ${tab.i} text-[10px]"></i>
@@ -314,10 +314,10 @@ export const renderReportsShell = () => {
     setH('admin-content', `
         <div class="space-y-4 sm:space-y-6">
             <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU (INDUSTRIAL NEO-BRUTALISM) -->
-            <div class="neo-card rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-3.5 sm:p-5 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] space-y-3.5">
+            <div class="neo-card rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-900 p-3.5 sm:p-5 shadow-sm space-y-3.5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 border-2 border-slate-900 dark:border-slate-700 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-700/80 bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-400 shadow-xs">
                             <i class="fa-solid fa-chart-pie text-lg sm:text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
@@ -334,7 +334,7 @@ export const renderReportsShell = () => {
                     <!-- Global Filter & Actions Bar -->
                     <div class="flex items-center flex-wrap gap-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-slate-800">
                         <!-- Filter Bulan (Zero Double-Boxing) -->
-                        <div class="report-select-wrapper flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 h-9 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] text-slate-800 dark:text-slate-200">
+                        <div class="report-select-wrapper flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 h-9 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs text-slate-800 dark:text-slate-200">
                             <i class="fa-solid fa-calendar-day text-[11px] text-slate-400"></i>
                             <select onchange="changeReportMonth(this.value)" class="report-period-select-raw bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-1 pl-0.5 focus:outline-none cursor-pointer">
                                 <option value="0" ${reportMonth === 0 ? 'selected' : ''}>Setahun Penuh</option>
@@ -343,7 +343,7 @@ export const renderReportsShell = () => {
                         </div>
 
                         <!-- Filter Tahun (Zero Double-Boxing) -->
-                        <div class="report-select-wrapper flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 h-9 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] text-slate-800 dark:text-slate-200">
+                        <div class="report-select-wrapper flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 h-9 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs text-slate-800 dark:text-slate-200">
                             <i class="fa-solid fa-calendar text-[11px] text-slate-400"></i>
                             <select onchange="changeReportYear(this.value)" class="report-period-select-raw bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-1 pl-0.5 focus:outline-none cursor-pointer">
                                 ${yearOptions.map(y => `<option value="${y}" ${y === reportYear ? 'selected' : ''}>${y}</option>`).join('')}
@@ -351,19 +351,19 @@ export const renderReportsShell = () => {
                         </div>
 
                         <!-- Tombol Refresh Data -->
-                        <button type="button" onclick="refreshReportData()" class="neo-btn h-9 w-9 sm:w-auto sm:px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:text-[var(--color-primary)] transition-all cursor-pointer flex items-center justify-center gap-1.5" title="Muat Ulang Data Terbaru">
+                        <button type="button" onclick="refreshReportData()" class="neo-btn h-9 w-9 sm:w-auto sm:px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-xs hover:text-[var(--color-primary)] transition-all cursor-pointer flex items-center justify-center gap-1.5" title="Muat Ulang Data Terbaru">
                             <i class="fa-solid fa-arrows-rotate text-xs"></i>
                             <span class="hidden sm:inline">Segarkan</span>
                         </button>
 
                         <!-- Tombol Ekspor Spreadsheet Excel / CSV -->
                         <div class="relative inline-block text-left" id="report-export-dropdown-container">
-                            <button type="button" onclick="toggleReportExportMenu()" class="neo-btn h-9 w-9 sm:w-auto px-2.5 sm:px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
+                            <button type="button" onclick="toggleReportExportMenu()" class="neo-btn h-9 w-9 sm:w-auto px-2.5 sm:px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs" title="Ekspor Data Laporan ke Spreadsheet Excel / CSV">
                                 <i class="fa-solid fa-file-excel text-xs text-emerald-600 dark:text-emerald-400"></i>
                                 <span class="hidden sm:inline">Ekspor Excel</span>
                                 <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5 hidden sm:inline"></i>
                             </button>
-                            <div id="report-export-dropdown-menu" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000] p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                            <div id="report-export-dropdown-menu" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                                 <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pilih Format Ekspor (.csv / Excel)</p>
                                 </div>
@@ -393,7 +393,7 @@ export const renderReportsShell = () => {
                         </div>
 
                         <!-- Tombol Cetak Dokumen A4 -->
-                        <button type="button" onclick="openReportCurrentDocPreview()" class="neo-btn h-9 w-9 sm:w-auto px-2.5 sm:px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
+                        <button type="button" onclick="openReportCurrentDocPreview()" class="neo-btn h-9 w-9 sm:w-auto px-2.5 sm:px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
                             <i class="fa-solid fa-print text-xs"></i>
                             <span class="hidden sm:inline">Cetak A4</span>
                         </button>
@@ -3223,7 +3223,7 @@ export const renderReportA4DocumentShell = ({
     if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
         logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-14 h-14 object-contain rounded-xl border border-slate-200">`;
     } else {
-        logoHTML = `<div class="w-14 h-14 rounded-xl flex items-center justify-center text-white text-2xl font-black shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]" style="background: var(--color-primary);"><i class="fa-solid fa-store"></i></div>`;
+        logoHTML = `<div class="w-14 h-14 rounded-xl flex items-center justify-center text-white text-2xl font-black shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-sm" style="background: var(--color-primary);"><i class="fa-solid fa-store"></i></div>`;
     }
 
     const kopHtml = `

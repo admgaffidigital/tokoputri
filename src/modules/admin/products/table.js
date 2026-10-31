@@ -322,21 +322,21 @@ window.rAdmL = t => {
             <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center mb-4">
                 <div class="relative flex-1">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input autocomplete='off' id="admin-search-input" name='cari_admin_q' value="${esc(aSq || window.aSq || '')}" placeholder="${(t === 'vouchers' || t === 'discounts') ? 'Cari kode voucher, kupon promo...' : t === 'categories' ? 'Cari kategori material...' : t === 'brands' ? 'Cari merek / brand...' : t === 'suppliers' ? 'Cari nama supplier...' : t === 'customers' ? 'Cari pelanggan...' : 'Cari produk, SKU, varian, barcode...'}" oninput="window.handleAdminSearch(this.value, '${t}')" class="w-full h-12 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-2xl pl-11 pr-20 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all" >
+                    <input autocomplete='off' id="admin-search-input" name='cari_admin_q' value="${esc(aSq || window.aSq || '')}" placeholder="${(t === 'vouchers' || t === 'discounts') ? 'Cari kode voucher, kupon promo...' : t === 'categories' ? 'Cari kategori material...' : t === 'brands' ? 'Cari merek / brand...' : t === 'suppliers' ? 'Cari nama supplier...' : t === 'customers' ? 'Cari pelanggan...' : 'Cari produk, SKU, varian, barcode...'}" oninput="window.handleAdminSearch(this.value, '${t}')" class="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl pl-11 pr-20 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] shadow-sm transition-all" >
                     <button type="button" id="admin-search-clear-btn" onclick="window.clearAdminSearch('${t}')" class="${(aSq || window.aSq) ? '' : 'hidden'} absolute right-11 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-xl transition-all cursor-pointer" title="Hapus Pencarian"><i class="fa-solid fa-circle-xmark text-sm"></i></button>
                     <button onclick="openCameraScanner('admin-search-input')" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl transition-all" title="Scan Barcode"><i class="fa-solid fa-qrcode text-sm"></i></button>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     ${t === 'products' ? `
-                    <button onclick="window.openPriceListExportModal()" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-2 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all shrink-0 cursor-pointer hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200" title="Katalog & Daftar Harga Cepat (PDF A4 / WhatsApp)">
+                    <button onclick="window.openPriceListExportModal()" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200" title="Katalog & Daftar Harga Cepat (PDF A4 / WhatsApp)">
                         <i class="fa-solid fa-file-pdf text-rose-500 text-sm"></i>
                         <span class="hidden sm:inline">Daftar Harga</span>
                     </button>
-                    <button onclick="openAdminTab('stock_opname')" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-2 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all shrink-0 cursor-pointer border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/40 bg-[rgba(var(--color-primary-rgb),0.1)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 hover:brightness-110" title="Stock Opname (Audit Fisik Stok)">
+                    <button onclick="openAdminTab('stock_opname')" class="h-12 w-12 sm:w-auto px-0 sm:px-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer border-[rgba(var(--color-primary-rgb),0.25)] dark:border-rose-500/40 bg-[rgba(var(--color-primary-rgb),0.1)] dark:bg-rose-950/40 text-[var(--color-primary)] dark:text-rose-300 hover:brightness-110" title="Stock Opname (Audit Fisik Stok)">
                         <i class="fa-solid fa-clipboard-check text-sm text-[var(--color-primary)] dark:text-rose-400"></i>
                         <span class="hidden sm:inline">Stock Opname</span>
                     </button>` : ''}
-                    <button onclick="oAAdd()" class="neo-btn h-12 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 cursor-pointer hover:opacity-95 border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] active:translate-x-[1.5px] active:translate-y-[1.5px]" style="background: var(--color-primary);">
+                    <button onclick="oAAdd()" class="neo-btn h-12 px-5 rounded-xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 cursor-pointer hover:opacity-95 border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95" style="background: var(--color-primary);">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Tambah ${t === 'products' ? 'Produk' : t === 'categories' ? 'Kategori' : t === 'brands' ? 'Merek' : (t === 'vouchers' || t === 'discounts') ? 'Voucher' : 'Data'}</span>
                     </button>
@@ -388,7 +388,7 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk Aktif</span>
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                             <i class="fa-solid fa-box-open"></i>
                         </div>
                     </div>
@@ -399,7 +399,7 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-[var(--color-primary)] dark:text-rose-400">Varian Aktif</span>
-                        <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                        <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
                     </div>
@@ -410,7 +410,7 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Kosong / Nonaktif</span>
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: #d97706;">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background-color: #d97706;">
                             <i class="fa-solid fa-triangle-exclamation text-white"></i>
                         </div>
                     </div>
@@ -421,7 +421,7 @@ window.rAdmItms = (t, skipStats = false) => {
                 <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Valuasi Stok</span>
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: #059669;">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background-color: #059669;">
                             <i class="fa-solid fa-warehouse text-white"></i>
                         </div>
                     </div>
@@ -510,8 +510,8 @@ window.rAdmItms = (t, skipStats = false) => {
         const currentLabel = tabLabels[t] || 'Data';
         return setH('admin-list-container', `
             <div class="py-8 sm:py-12">
-                <div class="bento-empty-state-card max-w-md mx-auto p-6 sm:p-8 bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl shadow-[3.5px_3.5px_0px_#0f172a] dark:shadow-[3.5px_3.5px_0px_#000000] text-center">
-                    <div class="relative mx-auto mb-4 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] text-white" style="background: var(--color-primary);">
+                <div class="bento-empty-state-card max-w-md mx-auto p-6 sm:p-8 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl shadow-md text-center">
+                    <div class="relative mx-auto mb-4 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm text-white" style="background: var(--color-primary);">
                         <i class="fa-solid fa-boxes-stacked text-2xl sm:text-3xl text-white"></i>
                     </div>
                     <h3 class="font-black text-base sm:text-lg text-slate-900 dark:text-white mb-1.5 uppercase tracking-wide">Tidak Ada ${currentLabel}</h3>
@@ -520,10 +520,10 @@ window.rAdmItms = (t, skipStats = false) => {
                     </p>
                     <div class="flex flex-wrap items-center justify-center gap-2.5">
                         ${searchVal ? `
-                        <button type="button" onclick="const inEl = document.getElementById('admin-search-input') || document.getElementById('master-search-input'); if(inEl){ inEl.value=''; inEl.dispatchEvent(new Event('input')); }" class="px-4 py-2.5 rounded-xl text-xs font-black text-white border-2 border-slate-900 shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" style="background: var(--color-primary);">
+                        <button type="button" onclick="const inEl = document.getElementById('admin-search-input') || document.getElementById('master-search-input'); if(inEl){ inEl.value=''; inEl.dispatchEvent(new Event('input')); }" class="px-4 py-2.5 rounded-xl text-xs font-black text-white border border-slate-200/90 dark:border-slate-800 shadow-[2px_2px_0px_#000] active:scale-95 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" style="background: var(--color-primary);">
                             <i class="fa-solid fa-rotate-left"></i> Bersihkan Filter
                         </button>` : ''}
-                        <button type="button" onclick="if(typeof window.openAdminModal==='function') window.openAdminModal('${esc(t)}');" class="px-5 py-2.5 rounded-xl text-xs font-black ${searchVal ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200' : 'text-white'} border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" ${searchVal ? '' : 'style="background: var(--color-primary);"'}>
+                        <button type="button" onclick="if(typeof window.openAdminModal==='function') window.openAdminModal('${esc(t)}');" class="px-5 py-2.5 rounded-xl text-xs font-black ${searchVal ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200' : 'text-white'} border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center shrink-0 gap-1.5" ${searchVal ? '' : 'style="background: var(--color-primary);"'}>
                             <i class="fa-solid fa-plus"></i> Tambah ${currentLabel}
                         </button>
                     </div>

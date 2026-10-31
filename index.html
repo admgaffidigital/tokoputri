@@ -1116,18 +1116,18 @@
 
     <!-- Vendor Purchase Return Modal (Retur Pembelian ke Supplier) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-vendor-return" onclick="if (event.target === this) closeVendorReturnModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 dark:border-slate-700 bg-white shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-vendor-return-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 bg-white shadow-2xl transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-vendor-return-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base sm:text-lg shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base sm:text-lg shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
               <i class="fa-solid fa-truck-ramp-box"></i>
             </div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
                 Retur Pembelian ke Supplier
-                <span class="neo-badge text-[9px] font-black px-2.5 py-0.5 rounded-lg text-white uppercase tracking-wider border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">RMA SUPPLIER</span>
+                <span class="neo-badge text-[9px] font-black px-2.5 py-0.5 rounded-lg text-white uppercase tracking-wider border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">RMA SUPPLIER</span>
               </h3>
               <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
                 Pengembalian barang cacat ke pemasok, penyesuaian hutang PO, dan pemotongan stok
@@ -1203,18 +1203,18 @@
 
     <!-- Digital Signature Pad Modal (Tanda Tangan Serah Terima Mandor) -->
     <div class="fixed inset-0 z-[125] flex hidden items-end justify-center bg-slate-950/85 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-4" id="modal-delivery-signature" onclick="if (event.target === this) closeDeliverySignatureModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-lg md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 dark:border-slate-700 bg-white shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-delivery-signature-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-lg md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 bg-white shadow-2xl transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-delivery-signature-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base shrink-0 bg-emerald-50 text-emerald-600 border-2 border-slate-900 dark:border-slate-700 dark:bg-emerald-950/50 dark:text-emerald-400 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base shrink-0 bg-emerald-50 text-emerald-600 border border-slate-200/90 dark:border-slate-700/80 dark:bg-emerald-950/50 dark:text-emerald-400 shadow-xs">
               <i class="fa-solid fa-signature"></i>
             </div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight flex items-center gap-2">
                 Verifikasi Serah Terima
-                <span class="neo-badge text-[9px] font-black px-2 py-0.5 rounded-lg bg-emerald-600 text-white uppercase tracking-wider border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">MANDOR TTD</span>
+                <span class="neo-badge text-[9px] font-black px-2 py-0.5 rounded-lg bg-emerald-600 text-white uppercase tracking-wider border border-slate-900 dark:border-slate-700 shadow-2xs">MANDOR TTD</span>
               </h3>
               <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
                 Goreskan tanda tangan mandor di layar sentuh perangkat
@@ -1242,7 +1242,7 @@
 
     <!-- Factory Reset & Clean Sweep Modal (Pusat Reset ke Setelan Awal & Pembersihan Data Toko) -->
     <div class="fixed inset-0 z-[200] flex hidden items-end justify-center bg-slate-950/85 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-4" id="modal-factory-reset" onclick="if (event.target === this) closeFactoryResetModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 dark:border-slate-700 bg-white shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-factory-reset-box">
+      <div class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 bg-white shadow-2xl transition-transform duration-300 dark:bg-[#0b1121] sm:translate-y-10" id="modal-factory-reset-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <div id="modal-factory-reset-content" class="flex-1 flex flex-col overflow-hidden min-h-0">
           <!-- Diisi dinamis oleh renderFactoryResetModalView() -->
@@ -1561,7 +1561,7 @@
           <div class="pt-3 border-t border-slate-100 dark:border-slate-800/60 space-y-2.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Jumlah Pembelian</span>
-              <div class="product-stepper-control flex h-10 items-center overflow-hidden rounded-xl border-2 border-slate-900 bg-slate-50 shadow-[1.5px_1.5px_0px_#0f172a] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[1.5px_1.5px_0px_#000000]">
+              <div class="product-stepper-control flex h-10 items-center overflow-hidden rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50 shadow-xs dark:border-slate-700 dark:bg-slate-900 dark:shadow-xs">
                 <button type="button" aria-label="Kurangi kuantitas" class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-90" onclick="updateQuickVariantQty(-1)"><i class="fa-solid fa-minus text-xs"></i></button>
                 <input class="stepper-input w-12 border-x border-slate-200 bg-transparent text-center text-sm font-extrabold focus:outline-none dark:border-slate-700 dark:text-white" id="quick-variant-qty-input" min="1" readonly type="number" value="1" />
                 <button type="button" aria-label="Tambah kuantitas" class="hover:bg-[rgba(var(--color-primary-rgb),0.15)] hover:text-[var(--color-primary)] flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors active:scale-90" onclick="updateQuickVariantQty(1)"><i class="fa-solid fa-plus text-xs"></i></button>
@@ -1677,14 +1677,14 @@
       </div>
     </div>    <!-- Modal Pengaturan Perangkat Universal & Printer POS -->
     <div class="fixed inset-0 z-[120] flex hidden items-end sm:items-center justify-center bg-slate-900/80 p-0 sm:p-4 opacity-0 transition-opacity duration-300" id="printer-settings-modal" onclick="if (event.target === this) closePrinterSettingsModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-lg scale-95 sm:scale-100 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border-2 border-slate-900 bg-white shadow-[4.5px_4.5px_0px_#0f172a] transition-all duration-300 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[4.5px_4.5px_0px_#000000]" id="printer-settings-modal-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[90vh] w-full max-w-lg scale-95 sm:scale-100 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-900 dark:shadow-2xl" id="printer-settings-modal-box">
         <!-- DRAG PULL INDICATOR MOBILE -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
           <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
         </div>
         <div class="sticky top-0 z-20 flex items-center justify-between border-b-2 border-slate-900 bg-slate-50 dark:bg-slate-800 px-5 py-3.5 sm:py-4 dark:border-slate-700">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] shrink-0 text-white font-bold" style="background-color: var(--color-primary);">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm border border-slate-200/90 dark:border-slate-700/80 shadow-xs shrink-0 text-white font-bold" style="background-color: var(--color-primary);">
               <i class="fa-solid fa-print"></i>
             </div>
             <div>
@@ -1692,7 +1692,7 @@
               <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Koneksi Bluetooth, USB, Driver POS &amp; Ukuran Kertas</p>
             </div>
           </div>
-          <button class="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-rose-50 hover:text-rose-600 transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer" onclick="closePrinterSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+          <button class="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-xs hover:bg-rose-50 hover:text-rose-600 transition-all active:scale-95 cursor-pointer" onclick="closePrinterSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
         <div class="custom-scrollbar flex-1 overflow-y-auto p-5 pb-12 sm:pb-8 space-y-5 text-xs">
@@ -1700,79 +1700,79 @@
           <div>
             <div class="flex items-center justify-between mb-2.5">
               <label class="block text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Pilih Mode Driver Printer POS</label>
-              <span class="neo-badge text-[9px] font-black px-2.5 py-0.5 rounded-lg border border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-amber-300 text-slate-950 uppercase flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> Rekomendasi: RawBT Free</span>
+              <span class="neo-badge text-[9px] font-black px-2.5 py-0.5 rounded-lg border border-slate-900 shadow-2xs bg-amber-300 text-slate-950 uppercase flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> Rekomendasi: RawBT Free</span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               <!-- RawBT Driver (Rekomendasi No. 1) -->
-              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all flex flex-col items-center text-center gap-2 relative group col-span-2 sm:col-span-1 active:translate-x-[1px] active:translate-y-[1px]" data-type="rawbt" onclick="selectPrinterDeviceTypeUI('rawbt')">
-                <div class="w-9 h-9 rounded-xl border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-amber-400 text-slate-950 flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
+              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm transition-all flex flex-col items-center text-center gap-2 relative group col-span-2 sm:col-span-1 active:scale-95" data-type="rawbt" onclick="selectPrinterDeviceTypeUI('rawbt')">
+                <div class="w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-amber-400 text-slate-950 flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
                   <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center justify-center gap-1.5">
                     <span class="font-black text-xs text-slate-900 dark:text-white">Driver RawBT</span>
-                    <span class="px-1.5 py-0.5 rounded-md border border-slate-900 shadow-[0.5px_0.5px_0px_#0f172a] bg-emerald-400 text-slate-950 text-[8px] font-black uppercase tracking-wider">FREE</span>
+                    <span class="px-1.5 py-0.5 rounded-md border border-slate-900 shadow-none bg-emerald-400 text-slate-950 text-[8px] font-black uppercase tracking-wider">FREE</span>
                   </div>
                   <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mt-0.5">Android Direct 1-Tap</span>
                 </div>
-                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
+                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
               </div>
 
               <!-- Bluetooth POS -->
-              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all flex flex-col items-center text-center gap-2 relative group active:translate-x-[1px] active:translate-y-[1px]" data-type="bluetooth" onclick="selectPrinterDeviceTypeUI('bluetooth')">
-                <div class="w-9 h-9 rounded-xl border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-blue-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
+              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm transition-all flex flex-col items-center text-center gap-2 relative group active:scale-95" data-type="bluetooth" onclick="selectPrinterDeviceTypeUI('bluetooth')">
+                <div class="w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-blue-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
                   <i class="fa-brands fa-bluetooth-b"></i>
                 </div>
                 <div class="min-w-0">
                   <span class="font-black text-xs text-slate-900 dark:text-white block">Bluetooth POS</span>
                   <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mt-0.5">Wireless ESC/POS</span>
                 </div>
-                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
+                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
               </div>
 
               <!-- USB / OTG -->
-              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all flex flex-col items-center text-center gap-2 relative group active:translate-x-[1px] active:translate-y-[1px]" data-type="usb" onclick="selectPrinterDeviceTypeUI('usb')">
-                <div class="w-9 h-9 rounded-xl border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-emerald-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
+              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm transition-all flex flex-col items-center text-center gap-2 relative group active:scale-95" data-type="usb" onclick="selectPrinterDeviceTypeUI('usb')">
+                <div class="w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-emerald-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
                   <i class="fa-brands fa-usb"></i>
                 </div>
                 <div class="min-w-0">
                   <span class="font-black text-xs text-slate-900 dark:text-white block">USB / OTG</span>
                   <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mt-0.5">Kabel Thermal POS</span>
                 </div>
-                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
+                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
               </div>
 
               <!-- System Print -->
-              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all flex flex-col items-center text-center gap-2 relative group active:translate-x-[1px] active:translate-y-[1px]" data-type="system" onclick="selectPrinterDeviceTypeUI('system')">
-                <div class="w-9 h-9 rounded-xl border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-violet-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
+              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm transition-all flex flex-col items-center text-center gap-2 relative group active:scale-95" data-type="system" onclick="selectPrinterDeviceTypeUI('system')">
+                <div class="w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-violet-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
                   <i class="fa-solid fa-print"></i>
                 </div>
                 <div class="min-w-0">
                   <span class="font-black text-xs text-slate-900 dark:text-white block">System Print</span>
                   <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mt-0.5">Android / Windows</span>
                 </div>
-                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
+                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
               </div>
 
               <!-- WiFi / LAN IP -->
-              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all flex flex-col items-center text-center gap-2 relative group col-span-2 sm:col-span-1 active:translate-x-[1px] active:translate-y-[1px]" data-type="network" onclick="selectPrinterDeviceTypeUI('network')">
-                <div class="w-9 h-9 rounded-xl border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-indigo-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
+              <div class="printer-type-card cursor-pointer p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm transition-all flex flex-col items-center text-center gap-2 relative group col-span-2 sm:col-span-1 active:scale-95" data-type="network" onclick="selectPrinterDeviceTypeUI('network')">
+                <div class="w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-indigo-500 text-white flex items-center justify-center text-sm font-black group-hover:scale-105 transition-transform">
                   <i class="fa-solid fa-network-wired"></i>
                 </div>
                 <div class="min-w-0">
                   <span class="font-black text-xs text-slate-900 dark:text-white block">WiFi / LAN IP</span>
                   <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mt-0.5">Network Printer</span>
                 </div>
-                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
+                <div class="printer-check-badge hidden absolute top-2 right-2 w-5 h-5 rounded-lg border border-slate-200/90 dark:border-slate-800 shadow-2xs bg-[var(--color-primary)] text-white text-[9px] flex items-center justify-center font-black"><i class="fa-solid fa-check"></i></div>
               </div>
             </div>
           </div>
 
           <!-- Panduan Cepat & Tombol Aksi RawBT (Gratis) -->
-          <div id="rawbt-quick-guide-box" class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] space-y-3">
+          <div id="rawbt-quick-guide-box" class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-slate-200/90 dark:border-slate-700/80 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2.5">
-                <span class="w-8 h-8 rounded-xl bg-amber-400 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] text-slate-950 flex items-center justify-center text-xs font-black">
+                <span class="w-8 h-8 rounded-xl bg-amber-400 border border-slate-200/90 dark:border-slate-800 shadow-2xs text-slate-950 flex items-center justify-center text-xs font-black">
                   <i class="fa-solid fa-bolt"></i>
                 </span>
                 <div>
@@ -1780,45 +1780,45 @@
                   <p class="text-[10px] text-slate-600 dark:text-slate-400">Support semua printer thermal Bluetooth, USB OTG, &amp; WiFi LAN</p>
                 </div>
               </div>
-              <span class="px-2 py-0.5 rounded-md border border-slate-900 shadow-[0.5px_0.5px_0px_#0f172a] bg-emerald-400 text-slate-950 text-[9px] font-black uppercase">100% FREE</span>
+              <span class="px-2 py-0.5 rounded-md border border-slate-900 shadow-none bg-emerald-400 text-slate-950 text-[9px] font-black uppercase">100% FREE</span>
             </div>
 
-            <div class="text-[11px] text-slate-800 dark:text-slate-200 space-y-2 leading-relaxed bg-white dark:bg-slate-900 p-3.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 space-y-2 leading-relaxed bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
               <div class="flex items-start gap-2.5">
-                <span class="w-5 h-5 rounded-lg border border-slate-900 shadow-[0.5px_0.5px_0px_#0f172a] bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <span class="w-5 h-5 rounded-lg border border-slate-900 shadow-none bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">1</span>
                 <span>Instal aplikasi <b>RawBT Print Service (Gratis)</b> dari Google Play Store di perangkat kasir Anda.</span>
               </div>
               <div class="flex items-start gap-2.5">
-                <span class="w-5 h-5 rounded-lg border border-slate-900 shadow-[0.5px_0.5px_0px_#0f172a] bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">2</span>
+                <span class="w-5 h-5 rounded-lg border border-slate-900 shadow-none bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">2</span>
                 <span>Buka aplikasi RawBT &rarr; Menu Setelan &rarr; Sambungkan printer thermal Anda (Bluetooth / USB OTG / WiFi). Lakukan tes cetak di RawBT sampai berhasil.</span>
               </div>
               <div class="flex items-start gap-2.5">
-                <span class="w-5 h-5 rounded-lg border border-slate-900 shadow-[0.5px_0.5px_0px_#0f172a] bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">3</span>
+                <span class="w-5 h-5 rounded-lg border border-slate-900 shadow-none bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">3</span>
                 <span>Kembali ke Toko Putri, pilih mode <b>"Driver RawBT"</b>. Kini setiap transaksi kasir akan <b>langsung tercetak seketika</b> ke printer thermal!</span>
               </div>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2 pt-1">
-              <button type="button" onclick="window.openRawBTApp()" class="flex-1 py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
+              <button type="button" onclick="window.openRawBTApp()" class="flex-1 py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 border border-slate-200/90 dark:border-slate-800 shadow-sm active:scale-95 transition-all cursor-pointer">
                 <i class="fa-brands fa-google-play"></i> Buka / Unduh RawBT Gratis
               </button>
-              <button type="button" onclick="window.executeRawBTTestPrint()" class="flex-1 py-2.5 px-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-black text-xs flex items-center justify-center gap-1.5 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
+              <button type="button" onclick="window.executeRawBTTestPrint()" class="flex-1 py-2.5 px-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-black text-xs flex items-center justify-center gap-1.5 border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all cursor-pointer">
                 <i class="fa-solid fa-receipt text-amber-500"></i> Tes Cetak RawBT Sekarang
               </button>
             </div>
           </div>
 
           <!-- Tombol Pasangkan / Cari Perangkat Manual (Bluetooth/USB) & Display Nama Bebas Pemotongan -->
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] space-y-3">
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-700/80 shadow-sm space-y-3">
             <div>
               <label class="block text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Nama Perangkat / Driver Tersimpan</label>
-              <input type="text" id="printer-device-name-display" readonly class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" value="Driver RawBT (Printer Thermal Android - Free)" />
+              <input type="text" id="printer-device-name-display" readonly class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs" value="Driver RawBT (Printer Thermal Android - Free)" />
             </div>
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-700/80">
               <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Pindai / Sambungkan Langsung:</span>
               <div class="flex gap-2 w-full sm:w-auto">
-                <button type="button" onclick="scanBluetoothPrinter()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer" title="Cari Printer Bluetooth Direct"><i class="fa-brands fa-bluetooth-b"></i> Scan BT</button>
-                <button type="button" onclick="scanUsbPrinter()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer" title="Deteksi USB OTG"><i class="fa-brands fa-usb"></i> Scan USB</button>
+                <button type="button" onclick="scanBluetoothPrinter()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all border border-slate-200/90 dark:border-slate-800 shadow-xs active:scale-95 cursor-pointer" title="Cari Printer Bluetooth Direct"><i class="fa-brands fa-bluetooth-b"></i> Scan BT</button>
+                <button type="button" onclick="scanUsbPrinter()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all border border-slate-200/90 dark:border-slate-800 shadow-xs active:scale-95 cursor-pointer" title="Deteksi USB OTG"><i class="fa-brands fa-usb"></i> Scan USB</button>
               </div>
             </div>
           </div>
@@ -1826,13 +1826,13 @@
           <!-- Konfigurasi IP jika mode Network -->
           <div id="printer-network-box" class="hidden">
             <label class="block text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">IP Address Printer Jaringan (Port 9100)</label>
-            <input type="text" id="printer-network-ip" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]" placeholder="Contoh: 192.168.1.200:9100" value="192.168.1.200:9100" />
+            <input type="text" id="printer-network-ip" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]" placeholder="Contoh: 192.168.1.200:9100" value="192.168.1.200:9100" />
           </div>
 
           <!-- 2. Ukuran Kertas Struk -->
           <div>
             <label class="block text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-2">Ukuran Kertas Thermal Struk</label>
-            <select id="printer-paper-size" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]">
+            <select id="printer-paper-size" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]">
               <option value="58mm">58mm - Mini Thermal Kasir (32 Karakter / Kolom) [Standar Umum]</option>
               <option value="58mm-compact">58mm - Mini Bluetooth Margin Sempit (30 Karakter / Kolom) [Anti-Potong Tepi]</option>
               <option value="80mm">80mm - Desktop POS Thermal (48 Karakter / Kolom) [Standar Kasir Lebar]</option>
@@ -1844,25 +1844,25 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">Header Khusus Struk (Opsional)</label>
-              <input type="text" id="printer-header-custom" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]" placeholder="Biarkan kosong untuk nama toko default" />
+              <input type="text" id="printer-header-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]" placeholder="Biarkan kosong untuk nama toko default" />
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div>
                 <label class="block text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">Alamat Toko di Struk</label>
-                <input type="text" id="printer-address-custom" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]" placeholder="Kosongkan jika pakai alamat profil" />
+                <input type="text" id="printer-address-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]" placeholder="Kosongkan jika pakai alamat profil" />
               </div>
               <div>
                 <label class="block text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">No. HP / WA di Struk</label>
-                <input type="text" id="printer-phone-custom" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]" placeholder="Contoh: 0812-3456-7890" />
+                <input type="text" id="printer-phone-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]" placeholder="Contoh: 0812-3456-7890" />
               </div>
             </div>
             <div>
               <label class="block text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">Footer / Pesan Penutup Struk</label>
-              <input type="text" id="printer-footer-custom" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]" value="Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami." />
+              <input type="text" id="printer-footer-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]" value="Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami." />
             </div>
             <div>
               <label class="block text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">Kebijakan Retur / Garansi di Struk</label>
-              <input type="text" id="printer-policy-custom" class="w-full bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)]" placeholder="Periksa barang sebelum meninggalkan toko..." value="Periksa kelayakan barang & kembalian sebelum keluar toko. Retur cacat pabrik maks 2x24 jam dengan struk resmi." />
+              <input type="text" id="printer-policy-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none shadow-xs focus:border-[var(--color-primary)]" placeholder="Periksa barang sebelum meninggalkan toko..." value="Periksa kelayakan barang & kembalian sebelum keluar toko. Retur cacat pabrik maks 2x24 jam dengan struk resmi." />
             </div>
           </div>
 
@@ -1870,42 +1870,42 @@
           <div>
             <label class="block text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-2.5">Opsi Fitur Struk Kasir &amp; Pratinjau Dokumen</label>
             <div class="space-y-2.5">
-              <label class="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                 <input type="checkbox" id="printer-opt-direct" class="rounded accent-amber-500 w-4 h-4 shrink-0" />
                 <div class="flex-1">
                   <span class="text-xs text-slate-900 dark:text-slate-100 font-black flex items-center gap-1.5"><i class="fa-solid fa-eye text-amber-500"></i> Mode Bypass Pratinjau (Langsung Kirim Printer)</span>
                   <p class="text-[10px] text-slate-600 dark:text-slate-400 mt-0.5">Jika tidak dicentang (standar aman), seluruh dokumen atau struk akan melalui layar preview terlebih dahulu sebelum dicetak.</p>
                 </div>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-autoprint" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Auto-Print Struk saat Transaksi Kasir Selesai</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-address" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" checked />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Tampilkan Alamat Toko pada Header Struk</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-phone" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" checked />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Tampilkan No HP / Kontak WhatsApp Toko pada Struk</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-npwp" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" checked />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Tampilkan Nomor NPWP / NIB Toko pada Struk (Jika Ada)</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-points" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" checked />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Cetak Saldo Poin &amp; Member Loyalty di Struk</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-barcode" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" checked />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Cetak Barcode Nomor Pesanan di Bawah Struk (ESC/POS Code128)</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-autocut" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" checked />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Kirim Perintah Potong Kertas Otomatis (Auto Cut)</span>
               </label>
-              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]">
+              <label class="flex items-center gap-3 cursor-pointer p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                 <input type="checkbox" id="printer-opt-drawer" class="rounded accent-[var(--color-primary)] w-4 h-4 shrink-0" />
                 <span class="text-xs text-slate-800 dark:text-slate-200 font-bold">Buka Laci Kasir Otomatis saat Bayar Tunai (Cash Drawer Kick)</span>
               </label>
@@ -1914,8 +1914,8 @@
         </div>
 
         <div class="z-20 border-t-2 border-slate-900 bg-white dark:bg-slate-900 p-3.5 sm:p-4 dark:border-slate-700 flex gap-2.5 shrink-0" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
-          <button type="button" class="flex-1 min-h-[44px] py-2.5 px-3.5 sm:px-4 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-black shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all active:translate-x-[1.5px] active:translate-y-[1.5px] flex items-center justify-center gap-2 cursor-pointer" onclick="executeTestPrint()"><i class="fa-solid fa-receipt"></i> Tes Cetak</button>
-          <button type="button" class="flex-1 min-h-[44px] py-2.5 px-3.5 sm:px-4 rounded-xl btn-primary text-xs font-black border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all active:translate-x-[1.5px] active:translate-y-[1.5px] flex items-center justify-center gap-2 cursor-pointer" onclick="savePrinterSettingsFromModal()"><i class="fa-solid fa-check"></i> Simpan Setelan</button>
+          <button type="button" class="flex-1 min-h-[44px] py-2.5 px-3.5 sm:px-4 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-black shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="executeTestPrint()"><i class="fa-solid fa-receipt"></i> Tes Cetak</button>
+          <button type="button" class="flex-1 min-h-[44px] py-2.5 px-3.5 sm:px-4 rounded-xl btn-primary text-xs font-black border border-slate-200/90 dark:border-slate-700/80 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="savePrinterSettingsFromModal()"><i class="fa-solid fa-check"></i> Simpan Setelan</button>
         </div>
       </div>
     </div>
@@ -2102,17 +2102,17 @@
           <div class="mx-auto w-full max-w-full px-2 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] pt-4">
             <div class="bento-island-card mb-3 sm:mb-4 lg:mb-6 flex flex-row items-center justify-between gap-2.5 sm:gap-4 rounded-[1.25rem] sm:rounded-[1.5rem] p-3 sm:p-4 shadow-soft">
               <!-- Kolom Pencarian Desktop Responsif (Industrial Neo-Brutalist, Lebar Dinamis Proporsional) -->
-              <div class="relative hidden sm:flex flex-1 min-w-0 h-11 items-center rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus-within:border-[var(--color-primary)] transition-all">
+              <div class="relative hidden sm:flex flex-1 min-w-0 h-11 items-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 shadow-xs focus-within:border-[var(--color-primary)] transition-all">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-[var(--color-primary)]"></i>
                 <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="search-clean-input w-full h-full rounded-xl bg-transparent pl-10 pr-24 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 placeholder:font-semibold focus:outline-none border-none shadow-none" id="search-input" name="cari_produk_q" oninput="if (window.handleSearch) window.handleSearch(this.value);" placeholder="Cari produk, merk material, atau kode SKU..." type="text" />
-                <button class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 h-8 px-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 text-slate-950 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] text-xs font-black active:translate-x-[1px] active:translate-y-[1px] cursor-pointer transition-all" onclick="openCameraScanner('search-input')" title="Scan Barcode / QR">
+                <button class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 h-8 px-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 text-slate-950 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs text-xs font-black active:scale-95 cursor-pointer transition-all" onclick="openCameraScanner('search-input')" title="Scan Barcode / QR">
                   <i class="fa-solid fa-qrcode text-xs text-slate-950"></i>
                   <span class="text-[10px] font-black tracking-wider hidden md:inline">SCAN</span>
                 </button>
               </div>
               <div class="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start shrink-0">
                 <div class="relative flex-1 sm:w-44 lg:w-48 sm:flex-initial">
-                  <select class="w-full h-11 cursor-pointer appearance-none rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 pl-3.5 pr-8 text-xs sm:text-sm font-bold text-slate-900 dark:text-white shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:border-[var(--color-primary)] focus:outline-none transition-all" id="sort-input" onchange="handleSort(this.value)">
+                  <select class="w-full h-11 cursor-pointer appearance-none rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900 pl-3.5 pr-8 text-xs sm:text-sm font-bold text-slate-900 dark:text-white shadow-xs focus:border-[var(--color-primary)] focus:outline-none transition-all" id="sort-input" onchange="handleSort(this.value)">
                     <option value="newest">Terbaru</option>
                     <option value="cheapest">Termurah</option>
                     <option value="expensive">Termahal</option>
@@ -2120,9 +2120,9 @@
                   </select>
                   <i class="fa-solid fa-chevron-down pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 dark:text-slate-400"></i>
                 </div>
-                <div class="flex shrink-0 h-11 items-center rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-1 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
-                  <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-[var(--color-primary)] shadow-xs transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" id="btn-view-grid" onclick="toggleView('grid')"><i class="fa-solid fa-border-all text-sm"></i></button>
-                  <button class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" id="btn-view-list" onclick="toggleView('list')"><i class="fa-solid fa-list text-sm"></i></button>
+                <div class="flex shrink-0 h-11 items-center rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900 p-1 shadow-xs">
+                  <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-[var(--color-primary)] shadow-xs transition-all cursor-pointer active:scale-95" id="btn-view-grid" onclick="toggleView('grid')"><i class="fa-solid fa-border-all text-sm"></i></button>
+                  <button class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all cursor-pointer active:scale-95" id="btn-view-list" onclick="toggleView('list')"><i class="fa-solid fa-list text-sm"></i></button>
                 </div>
               </div>
             </div>

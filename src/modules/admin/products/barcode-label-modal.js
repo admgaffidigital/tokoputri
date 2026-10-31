@@ -204,7 +204,7 @@ export const renderBarcodeLabelModalContent = () => {
         <!-- 1. HEADER MODAL (SOLID PINNED) -->
         <div class="shrink-0 px-5 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
             <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                     <i class="fa-solid fa-barcode"></i>
                 </div>
                 <div class="min-w-0">

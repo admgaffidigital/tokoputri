@@ -91,15 +91,15 @@ export const renderStorefrontFlashSale = () => {
         return `
         <div class="snap-start shrink-0 flex flex-col w-[150px] sm:w-[172px] md:w-[188px] ${validItems.length <= 4 ? 'lg:w-[220px] xl:w-[240px]' : ''}">
             <div class="flash-sale-card group relative flex flex-1 flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md text-left">
-                <!-- Badge Diskon Petir Harmonis Tema Neo-Brutalist (Proporsional & Nyaman) -->
-                <div class="absolute left-1.5 top-1.5 z-10 flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[8.5px] sm:text-[9px] font-black uppercase tracking-wide text-slate-950 bg-amber-400 border border-slate-950 shadow-[1px_1px_0px_#0f172a]">
-                    <i class="fa-solid fa-bolt text-slate-950 text-[7.5px] sm:text-[8px]"></i>
+                <!-- Badge Diskon Petir (Shopify Clean Pill) -->
+                <div class="absolute left-1.5 top-1.5 z-10 flex items-center gap-1 rounded-full px-2 py-0.5 text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wide text-white bg-rose-600 shadow-xs">
+                    <i class="fa-solid fa-bolt text-amber-300 text-[8px]"></i>
                     <span>-${Math.max(1, discountPct)}%</span>
                 </div>
 
                 ${remaining <= 3 && !isSoldOut && quota > 0 ? `
-                <div class="absolute right-1.5 top-1.5 z-10 flex items-center gap-0.5 rounded-md bg-rose-600 px-1.5 py-0.5 text-[8px] sm:text-[8.5px] font-black text-white shadow-[1px_1px_0px_#0f172a] border border-slate-950">
-                    <span><i class="fa-solid fa-fire text-amber-200 text-[7.5px]"></i> Sisa ${remaining}!</span>
+                <div class="absolute right-1.5 top-1.5 z-10 flex items-center gap-1 rounded-full bg-amber-500 text-slate-950 px-2 py-0.5 text-[8px] sm:text-[8.5px] font-bold shadow-xs">
+                    <span><i class="fa-solid fa-fire text-rose-700 text-[7.5px]"></i> Sisa ${remaining}!</span>
                 </div>` : ''}
 
                 <!-- Foto Produk / Varian: Presisi Full Frame 1:1 Tanpa Padding Menjorok -->
@@ -175,27 +175,27 @@ export const renderStorefrontFlashSale = () => {
     container.classList.remove('hidden');
 
     container.innerHTML = `
-    <div class="bento-island-card relative overflow-hidden rounded-[1.75rem] p-3.5 sm:p-5 shadow-xs border transition-all duration-300" style="border-color: rgba(var(--color-primary-rgb), 0.22);">
-        <!-- Top Caution/Hazard Stripe Accent -->
-        <div class="neo-hazard-stripe-subtle h-1.5 w-full -mx-3.5 -mt-3.5 mb-3 sm:-mx-5 sm:-mt-5 sm:mb-4"></div>
+    <div class="bento-island-card relative overflow-hidden rounded-[1.75rem] p-3.5 sm:p-5 shadow-sm border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all duration-300">
+        <!-- Top Accent Subtle Line -->
+        <div class="h-1 w-full bg-gradient-to-r from-rose-500 via-amber-500 to-[var(--color-primary)] -mx-3.5 -mt-3.5 mb-3 sm:-mx-5 sm:-mt-5 sm:mb-4"></div>
 
         <!-- Header Panggung Flash Sale -->
-        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b pb-3 mb-3" style="border-color: rgba(var(--color-primary-rgb), 0.12);">
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
             <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                <div class="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400 text-slate-950 border-2 border-slate-950 shadow-[2px_2px_0px_#0f172a]">
-                    <i class="fa-solid fa-bolt text-xl sm:text-2xl text-slate-950 animate-pulse"></i>
+                <div class="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-xs">
+                    <i class="fa-solid fa-bolt text-xl sm:text-2xl animate-pulse"></i>
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                        <span class="rounded-md px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs bg-rose-600 border border-slate-950">PROMO KILAT</span>
-                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
+                        <span class="rounded-full px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-white bg-rose-600 shadow-xs">PROMO KILAT</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
                             <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> LIVE
                         </span>
                     </div>
-                    <h3 class="text-sm sm:text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 truncate mt-0.5">
+                    <h3 class="text-sm sm:text-base md:text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 truncate mt-0.5">
                         ${esc(session.title || 'Flash Sale Spesial Hari Ini')}
                     </h3>
-                    <p class="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">
+                    <p class="text-[10px] sm:text-[11px] font-normal text-slate-500 dark:text-slate-400 truncate">
                         Harga spesial terbatas! Segera checkout sebelum waktu atau kuota habis.
                     </p>
                 </div>
@@ -203,27 +203,27 @@ export const renderStorefrontFlashSale = () => {
 
             <!-- Countdown Timer & Navigasi Desktop -->
             <div class="flex items-center justify-between sm:justify-end gap-2 shrink-0 self-stretch sm:self-auto pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
-                <!-- Countdown Timer Block Harmonis Tema (Digital LED Clock) -->
-                <div class="flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-black text-white border-2 border-slate-900 dark:border-slate-700 px-3 py-1.5 shadow-[2px_2px_0px_#0f172a]">
-                    <div class="flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase text-amber-300">
+                <!-- Countdown Timer Block (Shopify Sleek Dark Pill) -->
+                <div class="flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-slate-950 text-white border border-slate-800 px-3 py-1.5 shadow-sm">
+                    <div class="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold uppercase text-amber-400">
                         <i class="fa-solid fa-stopwatch text-rose-500 animate-bounce"></i>
                         <span class="tracking-wider">BERAKHIR:</span>
                     </div>
-                    <div class="flex items-center gap-1 font-mono font-black">
-                        <span id="fs-cd-h" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-slate-800 text-amber-300 px-1 py-0.5 text-xs sm:text-sm font-black border border-slate-700">${cd.h}</span>
+                    <div class="flex items-center gap-1 font-mono font-bold">
+                        <span id="fs-cd-h" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-slate-800 text-amber-300 px-1 py-0.5 text-xs sm:text-sm font-bold border border-slate-700/80">${cd.h}</span>
                         <span class="text-slate-400 font-bold animate-pulse">:</span>
-                        <span id="fs-cd-m" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-slate-800 text-amber-300 px-1 py-0.5 text-xs sm:text-sm font-black border border-slate-700">${cd.m}</span>
+                        <span id="fs-cd-m" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-slate-800 text-amber-300 px-1 py-0.5 text-xs sm:text-sm font-bold border border-slate-700/80">${cd.m}</span>
                         <span class="text-slate-400 font-bold animate-pulse">:</span>
-                        <span id="fs-cd-s" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-rose-600 text-white px-1 py-0.5 text-xs sm:text-sm font-black border border-rose-500">${cd.s}</span>
+                        <span id="fs-cd-s" class="min-w-[24px] sm:min-w-[26px] text-center rounded bg-rose-600 text-white px-1 py-0.5 text-xs sm:text-sm font-bold shadow-xs">${cd.s}</span>
                     </div>
                 </div>
 
                 <!-- Desktop Nav Buttons (< >) -->
                 <div class="hidden sm:flex items-center gap-1.5 ml-1">
-                    <button type="button" onclick="window.scrollFlashSaleLeft && window.scrollFlashSaleLeft()" class="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 active:translate-x-0.5 active:translate-y-0.5 transition-all shadow-[1.5px_1.5px_0px_#0f172a] cursor-pointer" title="Geser Kiri">
+                    <button type="button" onclick="window.scrollFlashSaleLeft && window.scrollFlashSaleLeft()" class="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 active:scale-95 transition-all shadow-xs cursor-pointer" title="Geser Kiri">
                         <i class="fa-solid fa-chevron-left text-xs"></i>
                     </button>
-                    <button type="button" onclick="window.scrollFlashSaleRight && window.scrollFlashSaleRight()" class="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 active:translate-x-0.5 active:translate-y-0.5 transition-all shadow-[1.5px_1.5px_0px_#0f172a] cursor-pointer" title="Geser Kanan">
+                    <button type="button" onclick="window.scrollFlashSaleRight && window.scrollFlashSaleRight()" class="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 active:scale-95 transition-all shadow-xs cursor-pointer" title="Geser Kanan">
                         <i class="fa-solid fa-chevron-right text-xs"></i>
                     </button>
                 </div>

@@ -1396,7 +1396,7 @@ const renderTempoConfirmationsContent = () => {
 
         <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl text-white flex items-center justify-center text-xs font-black border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                <div class="w-10 h-10 rounded-xl text-white flex items-center justify-center text-xs font-black border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                     <i class="fa-solid fa-receipt text-sm"></i>
                 </div>
                 <div>
@@ -2639,11 +2639,11 @@ const renderTempoContent = () => {
         
         ${pendingTempoConfirmations.length > 0 ? `
         <!-- BANNER ANTREAN KONFIRMASI PEMBAYARAN MASUK PELANGGAN -->
-        <div class="neo-card p-4 sm:p-5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="neo-card p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-xl text-white flex items-center justify-center shrink-0 relative border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);">
+                <div class="w-12 h-12 rounded-xl text-white flex items-center justify-center shrink-0 relative border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: var(--color-primary);">
                     <i class="fa-solid fa-receipt text-xl"></i>
-                    <span class="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center justify-center border-2 border-slate-900 animate-bounce">
+                    <span class="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center justify-center border border-slate-200/90 dark:border-slate-800 animate-bounce">
                         ${pendingTempoConfirmations.length}
                     </span>
                 </div>
@@ -2668,8 +2668,8 @@ const renderTempoContent = () => {
 
         <!-- HEADER KARTU STATISTIK METRIK PIUTANG DENGAN INDUSTRIAL NEO-BRUTALISM -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] flex items-center gap-3.5 relative overflow-hidden">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+            <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                     <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
                 </div>
                 <div class="min-w-0">
@@ -2678,8 +2678,8 @@ const renderTempoContent = () => {
                 </div>
             </div>
 
-            <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] flex items-center gap-3.5 relative overflow-hidden">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-400 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+            <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-400 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                     <i class="fa-solid fa-triangle-exclamation text-xl"></i>
                 </div>
                 <div class="min-w-0">
@@ -2688,8 +2688,8 @@ const renderTempoContent = () => {
                 </div>
             </div>
 
-            <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] flex items-center gap-3.5 relative overflow-hidden">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-400 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+            <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-400 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                     <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
                 </div>
                 <div class="min-w-0">
@@ -2703,15 +2703,15 @@ const renderTempoContent = () => {
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-1">
             <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Manajemen Penagihan &amp; Cicilan Piutang Toko</span>
             <div class="flex items-center gap-2 flex-wrap">
-                <button type="button" onclick="window.printTempoRecapA4()" class="neo-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700/60 cursor-pointer" title="Cetak Rekap Buku Piutang Toko A4 / PDF">
+                <button type="button" onclick="window.printTempoRecapA4()" class="neo-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200/90 dark:border-slate-700/80 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/60 cursor-pointer" title="Cetak Rekap Buku Piutang Toko A4 / PDF">
                     <i class="fa-solid fa-print text-xs" style="color: var(--color-primary)"></i>
                     <span>Cetak Rekap A4</span>
                 </button>
-                <button type="button" onclick="window.exportTempoCSV()" class="neo-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer" title="Ekspor data piutang ke Excel / CSV">
+                <button type="button" onclick="window.exportTempoCSV()" class="neo-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-slate-200/90 dark:border-slate-700/80 shadow-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer" title="Ekspor data piutang ke Excel / CSV">
                     <i class="fa-solid fa-file-excel text-xs text-emerald-600"></i>
                     <span>Ekspor CSV</span>
                 </button>
-                <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('debts'), 100);}" class="neo-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer">
+                <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('debts'), 100);}" class="neo-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-slate-200/90 dark:border-slate-700/80 shadow-sm hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer">
                     <i class="fa-solid fa-chart-pie text-xs"></i>
                     <span>Analisis Laporan</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -2720,23 +2720,23 @@ const renderTempoContent = () => {
         </div>
 
         <!-- 3 TAB NAVIGASI UTAMA (ORDERS, CUSTOMERS, INSTALLMENTS) -->
-        <div class="p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] grid grid-cols-3 gap-1.5">
-            <button type="button" onclick="window.switchTempoMainTab('orders')" class="py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'orders' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-slate-900 dark:border-slate-600 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-2 border-transparent'}">
+        <div class="p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="window.switchTempoMainTab('orders')" class="py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'orders' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200/90 dark:border-slate-800 dark:border-slate-600 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-2 border-transparent'}">
                 <i class="fa-solid fa-file-invoice text-xs"></i>
                 <span>Daftar Nota (${cachedPiutangOrders.length})</span>
             </button>
-            <button type="button" onclick="window.switchTempoMainTab('customers')" class="py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'customers' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-slate-900 dark:border-slate-600 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-2 border-transparent'}">
+            <button type="button" onclick="window.switchTempoMainTab('customers')" class="py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'customers' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200/90 dark:border-slate-800 dark:border-slate-600 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-2 border-transparent'}">
                 <i class="fa-solid fa-address-book text-xs text-amber-500"></i>
                 <span>Kartu Pelanggan (${uniqueCustomerKeys.size})</span>
             </button>
-            <button type="button" onclick="window.switchTempoMainTab('installments')" class="py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'installments' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-slate-900 dark:border-slate-600 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-2 border-transparent'}">
+            <button type="button" onclick="window.switchTempoMainTab('installments')" class="py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'installments' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200/90 dark:border-slate-800 dark:border-slate-600 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-2 border-transparent'}">
                 <i class="fa-solid fa-receipt text-xs text-emerald-500"></i>
                 <span>Histori Cicilan (${totalInstallmentsCount})</span>
             </button>
         </div>
 
         <!-- SEARCH BAR INSTAN (GLOBAL UNTUK SEMUA TAB) -->
-        <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] space-y-3">
+        <div class="neo-card bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm space-y-3">
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                 <input type="text" 
@@ -2744,7 +2744,7 @@ const renderTempoContent = () => {
                     value="${esc(tempoSearchQuery)}"
                     placeholder="${activeTempoMainTab === 'orders' ? 'Cari nama pelanggan, nomor WhatsApp, atau ID nota tempo...' : (activeTempoMainTab === 'customers' ? 'Cari nama pelanggan atau nomor WhatsApp...' : 'Cari transaksi cicilan, nama, nomor nota, atau catatan...')}" 
                     oninput="window.onTempoSearch(this.value)"
-                    class="neo-input w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                    class="neo-input w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
                 <button type="button" id="tempo-search-clear-btn" onclick="window.onTempoSearch(''); const ti=el('tempo-search-input'); if(ti){ti.value='';ti.focus();}" class="${tempoSearchQuery ? '' : 'hidden'} absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian">
                     <i class="fa-solid fa-circle-xmark text-sm"></i>
                 </button>

@@ -1405,7 +1405,7 @@ export const openPOSHeldModal = (skipHistory = false) => {
     const listHtml = count === 0
         ? `
         <div class="py-12 px-4 text-center">
-            <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] flex items-center justify-center mx-auto mb-3 text-2xl">
+            <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-center justify-center mx-auto mb-3 text-2xl">
                 <i class="fa-solid fa-hourglass-half"></i>
             </div>
             <h4 class="font-black text-sm text-slate-900 dark:text-white uppercase tracking-wide">Tidak Ada Transaksi Tertahan</h4>
@@ -1420,10 +1420,10 @@ export const openPOSHeldModal = (skipHistory = false) => {
                 const itemsSummary = (item.cart || []).slice(0, 3).map(i => `${esc(i.name)} (${formatQty(i.qty)}x)`).join(', ');
                 const moreCount = (item.cart || []).length > 3 ? ` +${item.cart.length - 3} lainnya` : '';
                 return `
-                <div class="p-3 sm:p-3.5 bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-xl shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="p-3 sm:p-3.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 rounded-xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2 mb-1 flex-wrap">
-                            <span class="px-2 py-0.5 rounded-lg bg-amber-400 text-slate-900 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-black text-[10px] uppercase">
+                            <span class="px-2 py-0.5 rounded-lg bg-amber-400 text-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs font-black text-[10px] uppercase">
                                 #${idx + 1}
                             </span>
                             <h4 class="font-black text-xs sm:text-sm text-slate-900 dark:text-white truncate" title="${esc(item.note)}">
@@ -1443,10 +1443,10 @@ export const openPOSHeldModal = (skipHistory = false) => {
                         </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="window.posDeleteHeldCart('${safeId}')" class="w-8 h-8 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-rose-50 dark:bg-rose-950/40 text-rose-600 shadow-[1.5px_1.5px_0px_#0f172a] hover:bg-rose-100 flex items-center justify-center text-xs transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer" title="Hapus Antrean">
+                        <button onclick="window.posDeleteHeldCart('${safeId}')" class="w-8 h-8 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-rose-50 dark:bg-rose-950/40 text-rose-600 shadow-xs hover:bg-rose-100 flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer" title="Hapus Antrean">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
-                        <button onclick="window.posRecallHeldCart('${safeId}')" class="px-3.5 py-2 rounded-xl text-white font-black text-xs border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer" style="background:var(--color-primary)">
+                        <button onclick="window.posRecallHeldCart('${safeId}')" class="px-3.5 py-2 rounded-xl text-white font-black text-xs border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer" style="background:var(--color-primary)">
                             <i class="fa-solid fa-play text-[10px]"></i>
                             <span>Panggil Antrean</span>
                         </button>
@@ -1457,30 +1457,30 @@ export const openPOSHeldModal = (skipHistory = false) => {
 
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-held-list-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.75)">
-        <div id="pos-held-modal-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] w-full sm:max-w-lg max-h-[85vh] flex flex-col overflow-hidden border-2 border-slate-900 dark:border-slate-700">
+        <div id="pos-held-modal-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col overflow-hidden border border-slate-200/90 dark:border-slate-700/80">
             <div class="p-4 sm:p-5 border-b-2 border-slate-900 dark:border-slate-700 flex items-center justify-between shrink-0 bg-slate-50 dark:bg-slate-800/80">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-amber-400 text-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] flex items-center justify-center text-sm font-bold shrink-0">
+                    <div class="w-9 h-9 rounded-xl bg-amber-400 text-slate-900 border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-sm font-bold shrink-0">
                         <i class="fa-solid fa-hourglass-half"></i>
                     </div>
                     <div>
                         <h3 class="font-black text-sm text-slate-900 dark:text-white leading-tight flex items-center gap-2 uppercase tracking-wide">
                             <span>Daftar Transaksi Tertahan (Parkir)</span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black bg-amber-400 text-slate-900 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">${count}</span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black bg-amber-400 text-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">${count}</span>
                         </h3>
                         <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Panggil kembali belanjaan pelanggan yang diparkir (F8)</p>
                     </div>
                 </div>
-                <button onclick="window.closePOSHeldModal()" class="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] hover:bg-slate-100 text-slate-900 dark:text-white text-base font-black flex items-center justify-center transition-all leading-none cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">×</button>
+                <button onclick="window.closePOSHeldModal()" class="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:bg-slate-100 text-slate-900 dark:text-white text-base font-black flex items-center justify-center transition-all leading-none cursor-pointer active:scale-95">×</button>
             </div>
             <div class="overflow-y-auto flex-1 max-h-[55vh] p-3 space-y-2.5 bg-slate-50/50 dark:bg-slate-950/20">
                 ${listHtml}
             </div>
             <div class="p-3 sm:p-4 border-t-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex justify-between items-center shrink-0">
                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1.5">
-                    <i class="fa-solid fa-keyboard mr-0.5"></i>Tekan <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] rounded text-[9px] font-mono font-black text-slate-900 dark:text-white">F6</kbd> Tahan, <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] rounded text-[9px] font-mono font-black text-slate-900 dark:text-white">F8</kbd> Antrean
+                    <i class="fa-solid fa-keyboard mr-0.5"></i>Tekan <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-800 shadow-2xs rounded text-[9px] font-mono font-black text-slate-900 dark:text-white">F6</kbd> Tahan, <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-800 shadow-2xs rounded text-[9px] font-mono font-black text-slate-900 dark:text-white">F8</kbd> Antrean
                 </p>
-                <button onclick="window.closePOSHeldModal()" class="px-5 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] text-slate-900 dark:text-white font-black text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">
+                <button onclick="window.closePOSHeldModal()" class="px-5 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white font-black text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer active:scale-95">
                     Tutup
                 </button>
             </div>
@@ -1730,7 +1730,7 @@ export const renderCatalog = (isLoadMore = false) => {
         const catHTML = cats.map(c => {
             const isAll  = c === 'Semua';
             const active = isAll ? !posCatFilterVal : posCatFilterVal === c;
-            return `<button type="button" onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'pos-cat-active bg-[var(--color-primary)] text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700'}" ${active ? 'style="background-color:var(--color-primary)!important;color:#ffffff!important;"' : ''}>${esc(c)}</button>`;
+            return `<button type="button" onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 transition-all cursor-pointer touch-manipulation select-none active:scale-95 ${active ? 'pos-cat-active bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700'}" ${active ? 'style="background-color:var(--color-primary)!important;color:#ffffff!important;"' : ''}>${esc(c)}</button>`;
         }).join('');
 
         let subCatHTML = '';
@@ -1751,10 +1751,10 @@ export const renderCatalog = (isLoadMore = false) => {
             if (subCats.length > 0) {
                 subCatHTML = `
                 <div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar pt-1.5 mt-1 border-t-2 border-slate-900 dark:border-slate-700 w-full pr-6">
-                    <button type="button" onclick="window.posSubCatFilter('')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer touch-manipulation select-none border-2 border-slate-900 dark:border-slate-700 active:translate-x-[1px] active:translate-y-[1px] ${!posSubCatFilterVal ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]'}">Semua Jenis</button>
+                    <button type="button" onclick="window.posSubCatFilter('')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer touch-manipulation select-none border border-slate-200/90 dark:border-slate-700/80 active:scale-95 ${!posSubCatFilterVal ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-2xs'}">Semua Jenis</button>
                     ${subCats.map(sc => {
                         const active = posSubCatFilterVal.toLowerCase() === sc.name.toLowerCase();
-                        return `<button type="button" onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black transition-all border-2 border-slate-900 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer touch-manipulation select-none active:translate-x-[1px] active:translate-y-[1px] ${active ? 'pos-subcat-active bg-[var(--color-primary)] text-white shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]'}" ${active ? 'style="background-color:var(--color-primary)!important;color:#ffffff!important;"' : ''}>
+                        return `<button type="button" onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-black transition-all border border-slate-200/90 dark:border-slate-700/80 flex items-center gap-1.5 cursor-pointer touch-manipulation select-none active:scale-95 ${active ? 'pos-subcat-active bg-[var(--color-primary)] text-white shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-2xs'}" ${active ? 'style="background-color:var(--color-primary)!important;color:#ffffff!important;"' : ''}>
                             <span>${esc(sc.name)}</span>
                             <span class="text-[9px] px-1 py-0.5 rounded-full border border-slate-900 ${active ? 'bg-black/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}">${sc.count}</span>
                         </button>`;
@@ -1923,9 +1923,9 @@ export const renderCatalog = (isLoadMore = false) => {
                 if (posCatalogViewMode === 'list') {
                     // ── LIST MODE: Layout Sleek Native App 1:1 Harmonis dengan Storefront ──
                     return `
-                    <div class="pos-list-item w-full bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left shrink-0${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
+                    <div class="pos-list-item w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl shadow-sm transition-all duration-200 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left shrink-0${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                         <!-- Thumbnail Kiri (Ukuran Presisi 80px/96px Bersih Murni Anti-Gepeng) -->
-                        <div class="pos-list-thumb relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl flex items-center justify-center border-1.5 border-slate-900 dark:border-slate-700 overflow-hidden">
+                        <div class="pos-list-thumb relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-950 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-200/90 dark:border-slate-700/80 overflow-hidden">
                             ${stockInfo.isOutOfStock ? `
                                 <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center">
                                     <span class="bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow uppercase tracking-wider flex items-center gap-0.5">
@@ -1967,7 +1967,7 @@ export const renderCatalog = (isLoadMore = false) => {
 
                 // ── GRID MODE (Default): Bento Native App 1:1 Harmonis dengan Storefront ──
                 return `
-                <div class="pos-product-card w-full bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 flex flex-col group relative overflow-hidden text-left${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
+                <div class="pos-product-card w-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl shadow-sm transition-all duration-200 flex flex-col group relative overflow-hidden text-left${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                     <!-- Kotak Gambar Rasio 1:1 Flush Cover Bersih Murni (Tanpa Badge Menutupi Gambar) -->
                     <div class="pos-img-box relative aspect-square w-full bg-white dark:bg-slate-950 flex items-center justify-center shrink-0 border-b-2 border-slate-900 dark:border-slate-700 overflow-hidden">
                         ${stockInfo.isOutOfStock ? `
@@ -4372,31 +4372,31 @@ const buildPOSLayout = ({ isStorefront }) => {
             </div>
 
             <!-- Popover Menu Opsi Kasir Mobile (Industrial Neo-Brutalism) -->
-            <div id="pos-mobile-quick-menu" class="pos-mobile-quick-menu hidden absolute right-2 top-[calc(100%+8px)] z-50 w-72 max-w-[calc(100vw-1rem)] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] border-2 border-slate-900 dark:border-slate-700 py-1 overflow-hidden">
+            <div id="pos-mobile-quick-menu" class="pos-mobile-quick-menu hidden absolute right-2 top-[calc(100%+8px)] z-50 w-72 max-w-[calc(100vw-1rem)] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-700/80 py-1 overflow-hidden">
                 <div class="px-3.5 py-2.5 border-b-2 border-slate-900 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-sliders text-xs text-[var(--color-primary)]"></i>
                         <span class="text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-100">Menu Aksi Kasir</span>
                     </div>
-                    <button onclick="window.closePOSMobileMenu()" class="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white w-6 h-6 rounded-lg border border-slate-900 flex items-center justify-center text-xs cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Tutup Menu">
+                    <button onclick="window.closePOSMobileMenu()" class="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white w-6 h-6 rounded-lg border border-slate-900 flex items-center justify-center text-xs cursor-pointer active:scale-95" title="Tutup Menu">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
                 <div class="p-1.5 space-y-1">
-                    <button onclick="window.closePOSMobileMenu(); window.openPOSHeldModal && window.openPOSHeldModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-amber-300 text-slate-900 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); window.openPOSHeldModal && window.openPOSHeldModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-amber-300 text-slate-900 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-hourglass-half text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Antrean Parkir</span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F8</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-800 shadow-2xs font-mono font-black text-slate-900 dark:text-white">F8</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Daftar transaksi tertahan</div>
                         </div>
                     </button>
-                    <button onclick="window.closePOSMobileMenu(); if(typeof window.toggleTheme==='function') window.toggleTheme();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.toggleTheme==='function') window.toggleTheme();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-circle-half-stroke text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -4406,44 +4406,44 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Gelap / Terang sesuai selera</div>
                         </div>
                     </button>
-                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-sky-200 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-sky-200 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-print text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Printer Thermal</span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F7</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-800 shadow-2xs font-mono font-black text-slate-900 dark:text-white">F7</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Bluetooth ESC/POS & kertas</div>
                         </div>
                     </button>
-                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPOSCashMovementModal==='function') window.openPOSCashMovementModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-200 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPOSCashMovementModal==='function') window.openPOSCashMovementModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-200 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-money-bill-transfer text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Catat Kas Laci</span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F11</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-800 shadow-2xs font-mono font-black text-slate-900 dark:text-white">F11</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Kas masuk / biaya operasional</div>
                         </div>
                     </button>
-                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPOSShiftSummaryModal==='function') window.openPOSShiftSummaryModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-indigo-200 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); if(typeof window.openPOSShiftSummaryModal==='function') window.openPOSShiftSummaryModal();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-200 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-chart-pie text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="text-xs font-black leading-tight flex items-center justify-between text-slate-900 dark:text-white">
                                 <span>Buka / Ringkasan Shift</span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a] font-mono font-black text-slate-900 dark:text-white">F10</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-800 shadow-2xs font-mono font-black text-slate-900 dark:text-white">F10</span>
                             </div>
                             <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">X-Report saldo & rekap kasir</div>
                         </div>
                     </button>
-                    <button onclick="window.closePOSMobileMenu(); window.openShoppingGuideModal && window.openShoppingGuideModal('pos');" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-purple-200 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); window.openShoppingGuideModal && window.openShoppingGuideModal('pos');" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-purple-200 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-circle-question text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -4455,8 +4455,8 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </button>
                 </div>
                 <div class="p-1.5 pt-2 border-t-2 border-slate-900 dark:border-slate-700 bg-rose-50/50 dark:bg-rose-950/20">
-                    <button onclick="window.closePOSMobileMenu(); window.cashierLogout();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
-                        <div class="w-8 h-8 rounded-lg bg-rose-200 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 flex items-center justify-center shrink-0 border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]">
+                    <button onclick="window.closePOSMobileMenu(); window.cashierLogout();" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 active:scale-95 transition-all cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-rose-200 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 flex items-center justify-center shrink-0 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                             <i class="fa-solid fa-power-off text-xs"></i>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -4528,7 +4528,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                             <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode... [F2]" 
                                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                                class="w-full pl-8 pr-8 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-all"
+                                class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 shadow-sm focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)"
                                 onkeydown="window.handlePOSSearchKeydown(event)">
                             <button type="button" onclick="window.posClearSearch()" class="pos-search-clear-btn hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 text-xs p-1 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian (Esc)">
@@ -4536,16 +4536,16 @@ const buildPOSLayout = ({ isStorefront }) => {
                             </button>
                         </div>
                         <!-- Tombol Scan Barcode Kamera HP / Laptop (F9) -->
-                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 text-[var(--color-primary)] text-xs font-black flex items-center gap-1.5 transition-all active:translate-x-[1px] active:translate-y-[1px] border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] shrink-0 cursor-pointer" title="Scan Barcode Kamera (F9)">
+                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 text-[var(--color-primary)] text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 border border-slate-200/90 dark:border-slate-700/80 shadow-sm shrink-0 cursor-pointer" title="Scan Barcode Kamera (F9)">
                             <i class="fa-solid fa-camera text-xs shrink-0"></i>
                             <span class="hidden sm:inline whitespace-nowrap">Scan (F9)</span>
                         </button>
                         <!-- View Switcher (Grid vs List) -->
-                        <div class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] rounded-xl shrink-0">
-                            <button id="pos-view-btn-grid" onclick="window.setPOSViewMode('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'grid' ? 'text-white border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]' : 'text-slate-600 dark:text-slate-400'}" style="${posCatalogViewMode === 'grid' ? 'background: var(--color-primary);' : ''}" title="Tampilan Grid Foto">
+                        <div class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs rounded-xl shrink-0">
+                            <button id="pos-view-btn-grid" onclick="window.setPOSViewMode('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'grid' ? 'text-white border border-slate-200/90 dark:border-slate-800 shadow-2xs' : 'text-slate-600 dark:text-slate-400'}" style="${posCatalogViewMode === 'grid' ? 'background: var(--color-primary);' : ''}" title="Tampilan Grid Foto">
                                 <i class="fa-solid fa-grip"></i>
                             </button>
-                            <button id="pos-view-btn-list" onclick="window.setPOSViewMode('list')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'list' ? 'text-white border-1.5 border-slate-900 shadow-[1px_1px_0px_#0f172a]' : 'text-slate-600 dark:text-slate-400'}" style="${posCatalogViewMode === 'list' ? 'background: var(--color-primary);' : ''}" title="Tampilan List Baris Kompak">
+                            <button id="pos-view-btn-list" onclick="window.setPOSViewMode('list')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'list' ? 'text-white border border-slate-200/90 dark:border-slate-800 shadow-2xs' : 'text-slate-600 dark:text-slate-400'}" style="${posCatalogViewMode === 'list' ? 'background: var(--color-primary);' : ''}" title="Tampilan List Baris Kompak">
                                 <i class="fa-solid fa-list-ul"></i>
                             </button>
                         </div>
@@ -4666,9 +4666,9 @@ const buildPOSLayout = ({ isStorefront }) => {
         <div id="pos-mobile-floating-bar" class="md:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
             <div class="bg-slate-900 dark:bg-slate-950 text-white p-3 rounded-2xl flex items-center justify-between border border-slate-700/80 cursor-pointer active:scale-[0.99] transition-all" onclick="window.openPOSCartDrawer()">
                 <div class="flex items-center gap-2.5">
-                    <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                    <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cart-shopping"></i>
-                        <span class="pos-item-count-target absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center border-2 border-slate-900 shadow-xs">0</span>
+                        <span class="pos-item-count-target absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center border border-slate-200/90 dark:border-slate-800 shadow-xs">0</span>
                     </div>
                     <div>
                         <div class="flex items-center gap-1.5">

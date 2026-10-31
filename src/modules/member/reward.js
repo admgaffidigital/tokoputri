@@ -836,7 +836,7 @@ export const renderRewardCatalog = () => {
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                         <h3 class="text-xs sm:text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white leading-tight truncate">KATALOG REWARD POIN</h3>
-                        <span class="inline-flex items-center gap-1 text-[8px] sm:text-[8.5px] font-black text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-600 dark:border-amber-500 shadow-[1px_1px_0px_#0f172a]">
+                        <span class="inline-flex items-center gap-1 text-[8px] sm:text-[8.5px] font-black text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-600 dark:border-amber-500 shadow-2xs">
                             <i class="fa-solid fa-arrows-left-right text-[7.5px]"></i> Geser
                         </span>
                     </div>
@@ -853,46 +853,44 @@ export const renderRewardCatalog = () => {
             ${activeRewards.map((r) => {
         const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
         return `
-                <div class="reward-slide-item shrink-0 snap-start">
-                    <div class="reward-card group relative flex w-[260px] sm:w-[285px] items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_#0f172a] cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
-                        
-                        <!-- Thumbnail Kompak & Presisi (48px x 48px) -->
-                        <div class="reward-thumb relative w-12 h-12 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shrink-0 shadow-[1px_1px_0px_#0f172a]">
-                            ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
-                            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-black text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
-                                <span class="text-lg">🎁</span>
+                <div class="snap-start shrink-0 flex flex-col w-[150px] sm:w-[172px] md:w-[188px] ${activeRewards.length <= 4 ? 'lg:w-[220px] xl:w-[240px]' : ''}">
+                    <div class="reward-card group relative flex flex-1 flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md text-left">
+                        <!-- Badge Free -->
+                        <div class="absolute left-1.5 top-1.5 z-10 flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wide text-white bg-emerald-600 shadow-xs">
+                            <i class="fa-solid fa-gift text-emerald-200 text-[8px]"></i>
+                            <span>100% Free</span>
+                        </div>
+
+                        <!-- Foto Hadiah 1:1 Aspect Square -->
+                        <div class="relative aspect-square w-full cursor-pointer overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center justify-center border-b border-slate-200 dark:border-slate-800/80 shrink-0" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                            ${r.img ? `<img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+                            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 font-bold text-xs select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
+                                <span class="text-3xl">🎁</span>
                             </div>
                         </div>
 
-                        <!-- Detail & Aksi Terintegrasi (2 Baris Vertikal Bebas Terpotong) -->
-                        <div class="reward-info flex-1 min-w-0">
-                            <!-- Baris 1: Header Reward & Free Badge -->
-                            <div class="flex items-center justify-between gap-1 mb-0.5">
-                                <span class="text-[7.5px] sm:text-[8px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">REWARD POIN</span>
-                                <span class="text-[7.5px] sm:text-[8px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-600/40 uppercase tracking-tight">100% Free</span>
-                            </div>
-                            
-                            <!-- Baris 2: Nama Hadiah (Lebar Penuh Tanpa Truncate Canggung) -->
-                            <h4 class="text-xs sm:text-[12.5px] font-black text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors truncate uppercase leading-tight" title="${esc(r.name)}">
-                                ${esc(r.name)}
-                            </h4>
-                            
-                            <!-- Baris 3: Biaya Poin (Kiri) + Tombol Tukar Proporsional (Kanan) -->
-                            <div class="mt-1.5 flex items-center justify-between gap-1.5">
-                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600/50 dark:border-amber-500/50 shadow-[1px_1px_0px_#0f172a]">
-                                    <i class="fa-solid fa-coins text-amber-600 text-[8px]"></i>
-                                    <span class="text-[11px] font-black font-mono text-amber-950 dark:text-amber-200 leading-none">${ptsCost}</span>
-                                    <span class="text-[7.5px] font-black uppercase text-amber-800 dark:text-amber-300 leading-none">Poin</span>
+                        <!-- Detail & Harga Poin -->
+                        <div class="flex flex-1 flex-col justify-between p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 relative z-10">
+                            <div>
+                                <h4 class="line-clamp-2 text-xs sm:text-[13px] font-bold text-slate-900 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors leading-snug min-h-[2rem] sm:min-h-[2.3rem] cursor-pointer" title="${esc(r.name)}" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                                    ${esc(r.name)}
+                                </h4>
+                                
+                                <!-- Baris Biaya Poin -->
+                                <div class="mt-2 mb-2 flex items-center justify-between">
+                                    <span class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500">Biaya Poin</span>
+                                    <div class="flex items-center gap-1 font-bold text-amber-600 dark:text-amber-400 text-xs sm:text-sm">
+                                        <i class="fa-solid fa-coins text-amber-500 text-[11px]"></i>
+                                        <span>${ptsCost} Poin</span>
+                                    </div>
                                 </div>
+                            </div>
 
-                                <button type="button" 
-                                        onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" 
-                                        class="reward-tukar-btn text-white font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer whitespace-nowrap" 
-                                        style="background: var(--color-primary);"
-                                        title="Tukar Hadiah ${esc(r.name)}" 
-                                        aria-label="Tukar Hadiah ${esc(r.name)}">
-                                    <i class="fa-solid fa-gift text-amber-300 text-[9px]"></i>
-                                    <span>Tukar</span>
+                            <!-- Tombol Tukar Hadiah -->
+                            <div class="mt-auto pt-1">
+                                <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');" class="btn-reward-redeem w-full">
+                                    <i class="fa-solid fa-gift text-amber-300 text-[10px]"></i>
+                                    <span>Tukar Hadiah</span>
                                 </button>
                             </div>
                         </div>
@@ -1071,16 +1069,16 @@ export const openMemberModal = () => {
     }
     const isAlreadyOpen = m.style.display !== 'none' && m.style.opacity === '1';
     m.innerHTML = `
-        <div class="modal-bottom-sheet bg-white dark:bg-slate-900 w-full max-w-lg mx-auto rounded-t-[2rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col border-2 border-slate-900 dark:border-slate-700 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#000000] overflow-hidden" id="member-modal-box">
+        <div class="modal-bottom-sheet bg-white dark:bg-slate-900 w-full max-w-lg sm:max-w-2xl lg:max-w-3xl rounded-t-[2rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col border border-slate-200/90 dark:border-slate-700/80 shadow-2xl overflow-hidden" id="member-modal-box">
             <!-- DRAG PULL INDICATOR MOBILE -->
             <div class="sm:hidden w-full pt-3 pb-1 flex justify-center items-center shrink-0">
                 <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full pull-indicator"></div>
             </div>
 
             <!-- Header Modal -->
-            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b-2 border-slate-900 dark:border-slate-700 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
+            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200/90 dark:border-slate-700/80 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: var(--color-primary);">
                         <i class="fa-solid fa-id-card text-base"></i>
                     </div>
                     <div>
@@ -1090,17 +1088,17 @@ export const openMemberModal = () => {
                 </div>
                 <div class="flex items-center gap-2">
                     <!-- Privacy Eye Shield Toggle -->
-                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
+                    <button type="button" id="member-privacy-toggle-btn" onclick="toggleMemberPrivacyMode()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center transition-all cursor-pointer active:scale-95" title="${isMemberPrivacyHidden ? 'Buka Sensor Angka Finansial' : 'Sensor Angka Finansial'}">
                         <i class="fa-solid ${isMemberPrivacyHidden ? 'fa-eye-slash text-amber-500' : 'fa-eye text-slate-600'} text-xs"></i>
                     </button>
 
                     <!-- Quick Session Lock -->
-                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-rose-100 hover:text-rose-600 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Kunci Sesi Member (Logout Cepat)">
+                    <button type="button" id="member-quick-lock-btn" onclick="lockMemberSession()" class="${currentMember ? '' : 'hidden '}w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-rose-100 hover:text-rose-600 border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Kunci Sesi Member (Logout Cepat)">
                         <i class="fa-solid fa-lock text-xs"></i>
                     </button>
 
                     <!-- Close Button (SVG Cross 100% Anti Hilang) -->
-                    <button type="button" id="member-modal-close-btn" onclick="closeMemberModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:text-rose-600 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" title="Tutup" aria-label="Tutup">
+                    <button type="button" id="member-modal-close-btn" onclick="closeMemberModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:text-rose-600 border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup" aria-label="Tutup">
                         <svg class="w-4 h-4 text-slate-900 dark:text-white stroke-[2.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -1315,8 +1313,8 @@ export const loadMemberPointsHistory = async (phone, force = false) => {
 
     if (!events || !events.length) {
         container.innerHTML = `
-            <div class="p-5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 text-center space-y-2 bg-slate-50 dark:bg-slate-800/80 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]">
-                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center mx-auto text-base border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">
+            <div class="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 text-center space-y-2 bg-slate-50 dark:bg-slate-800/80 shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center mx-auto text-base border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                     <i class="fa-solid fa-coins"></i>
                 </div>
                 <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Belum Ada Mutasi Poin</p>
@@ -1328,8 +1326,8 @@ export const loadMemberPointsHistory = async (phone, force = false) => {
     }
 
     container.innerHTML = events.map(ev => `
-        <div class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] ${ev.bgClass}">
+        <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-900 shadow-xs transition-all">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs ${ev.bgClass}">
                 <i class="fa-solid ${ev.icon}"></i>
             </div>
             <div class="min-w-0 flex-1">
@@ -1523,7 +1521,7 @@ export const rMemberModalBody = () => {
         setH('member-modal-body', `
             <div class="max-w-[360px] mx-auto py-2 flex flex-col items-center text-center select-none">
                 <!-- Icon Badge -->
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg mb-3 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg mb-3 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: var(--color-primary);">
                     <i class="fa-solid ${icon}"></i>
                 </div>
 
@@ -1547,18 +1545,18 @@ export const rMemberModalBody = () => {
                     ${keypadNumbers.map(row => row.map(btn => {
             if (btn === 'cancel') {
                 return `
-                            <button type="button" onclick="cancelMemberPinAuth()" class="neo-btn h-11 sm:h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" title="Batal">
+                            <button type="button" onclick="cancelMemberPinAuth()" class="neo-btn h-11 sm:h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs flex items-center justify-center border border-slate-200/90 dark:border-slate-700/80 shadow-xs active:scale-95 transition-all cursor-pointer" title="Batal">
                                 <i class="fa-solid fa-arrow-left text-sm"></i>
                             </button>`;
             }
             if (btn === 'backspace') {
                 return `
-                            <button type="button" onclick="handleMemberPinBackspace()" class="neo-btn h-11 sm:h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" title="Hapus">
+                            <button type="button" onclick="handleMemberPinBackspace()" class="neo-btn h-11 sm:h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs flex items-center justify-center border border-slate-200/90 dark:border-slate-700/80 shadow-xs active:scale-95 transition-all cursor-pointer" title="Hapus">
                                 <i class="fa-solid fa-delete-left text-base"></i>
                             </button>`;
             }
             return `
-                        <button type="button" onclick="handleMemberPinDigit('${btn}')" class="neo-btn h-11 sm:h-12 rounded-xl bg-white hover:bg-amber-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg flex items-center justify-center border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
+                        <button type="button" onclick="handleMemberPinDigit('${btn}')" class="neo-btn h-11 sm:h-12 rounded-xl bg-white hover:bg-amber-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg flex items-center justify-center border border-slate-200/90 dark:border-slate-700/80 shadow-xs active:scale-95 transition-all cursor-pointer">
                             ${btn}
                         </button>`;
         }).join('')).join('')}
@@ -1598,8 +1596,8 @@ export const rMemberModalBody = () => {
         const canClaim = currentMember && pts >= (parseFloat(r.pointsCost) || 0) && stockOk;
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
-        <div class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${isSelected ? 'bg-amber-50 dark:bg-amber-950/40 shadow-[2.5px_2.5px_0px_#0f172a]' : 'bg-white dark:bg-slate-900 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]'} transition-all">
-            <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 border-2 border-slate-900 dark:border-slate-700 shrink-0 flex items-center justify-center shadow-[1px_1px_0px_#0f172a]">
+        <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 ${isSelected ? 'bg-amber-50 dark:bg-amber-950/40 shadow-sm' : 'bg-white dark:bg-slate-900 shadow-sm'} transition-all">
+            <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 border border-slate-200/90 dark:border-slate-700/80 shrink-0 flex items-center justify-center shadow-2xs">
                 ${r.img ? `<img src="${esc(r.img)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" loading="lazy">` : ''}
                 <div class="w-full h-full flex items-center justify-center text-slate-400 font-black text-sm select-none" style="${r.img ? 'display:none;' : 'display:flex;'}">
                     🎁
@@ -1613,8 +1611,8 @@ export const rMemberModalBody = () => {
                 ${!stockOk ? `<p class="text-[10px] font-black text-rose-500 mt-0.5">Stok hadiah habis</p>` : ''}
             </div>
             ${currentMember ? (isSelected
-                ? `<button type="button" onclick="deselectReward()" class="neo-btn shrink-0 bg-rose-600 text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-xl border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all whitespace-nowrap cursor-pointer">Batal</button>`
-                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward('${esc(String(r.id))}')" class="neo-btn shrink-0 ${canClaim ? 'text-white border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 border border-slate-300 dark:border-slate-600 cursor-not-allowed'} text-[10px] font-black uppercase px-3 py-1.5 rounded-xl transition-all whitespace-nowrap" ${canClaim ? 'style="background:var(--color-primary);"' : ''}>Pilih Hadiah</button>`) : `<span class="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase bg-slate-100 dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] px-2.5 py-1 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
+                ? `<button type="button" onclick="deselectReward()" class="neo-btn shrink-0 bg-rose-600 text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-xs active:scale-95 transition-all whitespace-nowrap cursor-pointer">Batal</button>`
+                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward('${esc(String(r.id))}')" class="neo-btn shrink-0 ${canClaim ? 'text-white border border-slate-200/90 dark:border-slate-800 shadow-xs active:scale-95 cursor-pointer' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 border border-slate-300 dark:border-slate-600 cursor-not-allowed'} text-[10px] font-black uppercase px-3 py-1.5 rounded-xl transition-all whitespace-nowrap" ${canClaim ? 'style="background:var(--color-primary);"' : ''}>Pilih Hadiah</button>`) : `<span class="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs px-2.5 py-1 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
         </div>`;
     }).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-3">Belum ada program hadiah yang tersedia.</p>`;
 
@@ -1626,13 +1624,13 @@ export const rMemberModalBody = () => {
                 
                 <!-- Action Controls: Balik Kartu, Unduh Kartu & Tutup -->
                 <div class="flex items-center justify-between gap-2 mt-3 max-w-[390px] mx-auto">
-                    <button type="button" onclick="flipMemberCard()" class="neo-btn flex-1 py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">
+                    <button type="button" onclick="flipMemberCard()" class="neo-btn flex-1 py-2 px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer">
                         <i class="fa-solid fa-repeat text-[11px] text-amber-600"></i> Balik Kartu
                     </button>
-                    <button type="button" onclick="downloadMemberCard()" class="neo-btn flex-1 py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-white text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" style="background: var(--color-primary, #800020);">
+                    <button type="button" onclick="downloadMemberCard()" class="neo-btn flex-1 py-2 px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 text-white text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary, #800020);">
                         <i class="fa-solid fa-download text-[11px]"></i> Simpan Kartu
                     </button>
-                    <button type="button" onclick="closeMemberModal()" class="neo-btn py-2 px-3.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 hover:text-rose-600 dark:hover:text-white text-xs font-black flex items-center justify-center gap-1 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer" title="Tutup">
+                    <button type="button" onclick="closeMemberModal()" class="neo-btn py-2 px-3.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 hover:text-rose-600 dark:hover:text-white text-xs font-black flex items-center justify-center gap-1 shadow-xs active:scale-95 transition-all cursor-pointer" title="Tutup">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -1644,7 +1642,7 @@ export const rMemberModalBody = () => {
             </div>
 
             <!-- TIER STATUS & PROGRESS LEVEL -->
-            <div class="p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] space-y-3">
+            <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 shadow-sm space-y-3">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Level Keanggotaan</p>
@@ -1700,7 +1698,7 @@ export const rMemberModalBody = () => {
 
                 if (!isActive || limit <= 0) {
                     return `
-                    <div class="p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] relative overflow-hidden">
+                    <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 shadow-sm relative overflow-hidden">
                         <div class="flex items-center justify-between gap-2">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0">
@@ -1888,9 +1886,9 @@ export const rMemberModalBody = () => {
             </div>
 
             <!-- FORM PENCARIAN / CEK KARTU MEMBER -->
-            <div class="p-4 sm:p-5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] space-y-3">
+            <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 shadow-sm space-y-3">
                 <div class="flex items-center gap-2 text-slate-900 dark:text-white font-black text-xs sm:text-sm uppercase tracking-wide">
-                    <div class="w-7 h-7 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 shadow-[1px_1px_0px_#0f172a]" style="background: var(--color-primary, #800020);">
+                    <div class="w-7 h-7 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 shadow-2xs" style="background: var(--color-primary, #800020);">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                     <span>Cek Kartu Member &amp; Saldo Poin</span>
@@ -1901,9 +1899,9 @@ export const rMemberModalBody = () => {
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-700 dark:text-slate-300">+62</span>
-                        <input type="tel" id="member-lookup-input" class="w-full rounded-xl border-2 border-slate-900 bg-white py-2.5 pl-12 pr-3 text-sm sm:text-xs font-black text-slate-900 outline-none focus:bg-amber-50/50 dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-[1.5px_1.5px_0px_#0f172a]" placeholder="81234567890" inputmode="numeric" autocomplete="off" />
+                        <input type="tel" id="member-lookup-input" class="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white py-2.5 pl-12 pr-3 text-sm sm:text-xs font-black text-slate-900 outline-none focus:bg-amber-50/50 dark:border-slate-700 dark:bg-slate-900 dark:text-white shadow-xs" placeholder="81234567890" inputmode="numeric" autocomplete="off" />
                     </div>
-                    <button type="button" onclick="lookupMemberPoints()" class="neo-btn text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider shrink-0 transition-all border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer" style="background: var(--color-primary, #800020);">
+                    <button type="button" onclick="lookupMemberPoints()" class="neo-btn text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider shrink-0 transition-all border border-slate-200/90 dark:border-slate-800 shadow-xs active:scale-95 cursor-pointer" style="background: var(--color-primary, #800020);">
                         Cek Kartu
                     </button>
                 </div>
@@ -1911,7 +1909,7 @@ export const rMemberModalBody = () => {
             </div>
 
             <!-- KEUNTUNGAN MENJADI MEMBER -->
-            <div class="p-4 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-amber-50 dark:bg-amber-950/30 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] text-xs space-y-2">
+            <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-amber-50 dark:bg-amber-950/30 shadow-sm text-xs space-y-2">
                 <h4 class="font-black text-slate-900 dark:text-white flex items-center gap-1.5 uppercase text-xs tracking-wide">
                     <i class="fa-solid fa-sparkles text-amber-500"></i> Keuntungan Menjadi Member Toko Putri:
                 </h4>

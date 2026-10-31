@@ -81,8 +81,8 @@ export const rDyn = () => {
     const welcomeHeroSlide = showHeroSlide ? `
         <div id="banner-slide-0" class="banner-slide-item neo-card w-full min-h-[195px] sm:min-h-[240px] md:min-h-[285px] lg:min-h-[300px] snap-start shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/20"
              style="background: var(--color-primary);">
-            <!-- Industrial Precision Hazard Caution Stripe Accent -->
-            <div class="neo-hazard-stripe-subtle h-1 w-full absolute top-0 inset-x-0 z-30 opacity-70"></div>
+            <!-- Clean Polaris Subtle Top Edge Accent -->
+            <div class="h-1 w-full bg-white/20 absolute top-0 inset-x-0 z-30"></div>
             <!-- Sleek Decorative Geometric Rings & Precision Grid Accents (100% Solid & Crisp) -->
             <div class="absolute -right-12 -top-12 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full border-[12px] sm:border-[16px] border-white/15 pointer-events-none group-hover:scale-105 transition-transform duration-700"></div>
             <div class="absolute -right-4 -top-4 w-32 h-32 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full border-2 border-white/25 pointer-events-none"></div>

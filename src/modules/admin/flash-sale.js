@@ -217,7 +217,7 @@ export const renderFlashSaleAdminView = () => {
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-lg border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background: var(--color-primary);">
+                    <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-lg border border-slate-900 dark:border-slate-700 shadow-2xs" style="background: var(--color-primary);">
                         <i class="fa-solid fa-bolt text-amber-300"></i>
                     </div>
                     <span>Flash Sale &amp; Promo Kilat</span>

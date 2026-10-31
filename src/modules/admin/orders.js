@@ -293,7 +293,7 @@ export const rAdmOrd = () => {
     setH('admin-content', `
         <div class="card-native mb-4 p-4 sm:p-5 rounded-2xl flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background: var(--color-primary);">
+                <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background: var(--color-primary);">
                     <i class="fa-solid fa-satellite-dish text-base"></i>
                 </div>
                 <div>

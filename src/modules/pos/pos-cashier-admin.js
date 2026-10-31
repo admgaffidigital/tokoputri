@@ -112,28 +112,28 @@ export const renderCashierAccounts = async () => {
         <div class="sticky top-0 z-20 py-2 sm:py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-none border-b border-slate-200/80 dark:border-slate-800/80 mb-2">
             <div id="cashier-admin-tabs-bar" class="segmented-tabs-bar p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl w-full mx-auto flex items-center gap-2 overflow-x-auto hide-scrollbar sm:grid sm:grid-cols-5 select-none" style="overflow-x: auto !important; -webkit-overflow-scrolling: touch; touch-action: pan-x; cursor: grab;">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/90 dark:border-slate-800 shadow-sm active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0"
                     style="background: var(--color-primary);">
                     <i class="fa-solid fa-users-gear text-white"></i>
                     <span class="truncate">Staf &amp; Akses</span>
                 </button>
                 <button id="tab-btn-cashier-attendance" onclick="window.switchCashierTab('attendance')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-clipboard-user"></i>
                     <span class="truncate">Absensi Tim</span>
                 </button>
                 <button id="tab-btn-cashier-advances" onclick="window.switchCashierTab('advances')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-hand-holding-dollar"></i>
                     <span class="truncate">Buku Kasbon</span>
                 </button>
                 <button id="tab-btn-cashier-payroll" onclick="window.switchCashierTab('payroll')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-money-check-dollar"></i>
                     <span class="truncate">Gaji &amp; Slip</span>
                 </button>
                 <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" 
-                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
+                    class="min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span class="truncate">Shift Kasir</span>
                 </button>
@@ -247,7 +247,7 @@ const getOwnerCardHtml = (ownerProfile, authStatusBadge) => {
     <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-white/95 dark:bg-slate-800/90 shadow-2xs hover:border-[var(--color-primary)] transition-all">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
             <div class="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0">
-                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg shrink-0 text-white border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background-color: var(--color-primary);">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg shrink-0 text-white border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background-color: var(--color-primary);">
                     <i class="fa-solid fa-crown text-amber-300"></i>
                 </div>
                 <div class="min-w-0 flex-1 space-y-1">
@@ -374,7 +374,7 @@ export const switchCashierTab = (tab) => {
 
     const applyActive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
+        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/90 dark:border-slate-800 shadow-sm active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
         btn.style.background = 'var(--color-primary)';
         btn.style.boxShadow = '';
         btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
@@ -382,7 +382,7 @@ export const switchCashierTab = (tab) => {
 
     const applyInactive = (btn, iconHtml, label) => {
         if (!btn) return;
-        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
+        btn.className = 'min-h-[44px] py-2.5 px-3 sm:px-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0 sm:shrink min-w-[125px] sm:min-w-0';
         btn.style.background = '';
         btn.style.boxShadow = '';
         btn.innerHTML = `${iconHtml}<span class="truncate">${label}</span>`;
@@ -928,25 +928,25 @@ export const openAddStaffModal = () => {
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1.5">Role Pokok Sistem <span class="text-rose-500">*</span></label>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="new-staff-roles-container">
-                        <label class="staff-role-card is-role-active flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
+                        <label class="staff-role-card is-role-active flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-sm transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.CASHIER}" checked onchange="window.applyNewStaffPreset('${ROLES.CASHIER}')" class="sr-only">
                             <i class="fa-solid fa-cash-register text-lg mb-1" style="color: var(--color-primary)"></i>
                             <span class="text-xs font-black">Kasir POS</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Penjualan Fisik</span>
                         </label>
-                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
+                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-sm transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.ADMIN}" onchange="window.applyNewStaffPreset('${ROLES.ADMIN}')" class="sr-only">
                             <i class="fa-solid fa-shield-halved text-lg mb-1 text-blue-500"></i>
                             <span class="text-xs font-black">Admin Toko</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Operasional CMS</span>
                         </label>
-                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
+                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-sm transition-all text-center">
                             <input type="radio" name="new_staff_role" value="${ROLES.STAFF}" onchange="window.applyNewStaffPreset('${ROLES.STAFF}')" class="sr-only">
                             <i class="fa-solid fa-user-gear text-lg mb-1 text-amber-500"></i>
                             <span class="text-xs font-black">Staf Gudang</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Logistik &amp; Rak</span>
                         </label>
-                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center">
+                        <label class="staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-sm transition-all text-center">
                             <input type="radio" name="new_staff_role" value="manager" onchange="window.applyNewStaffPreset('manager')" class="sr-only">
                             <i class="fa-solid fa-user-tie text-lg mb-1 text-purple-500"></i>
                             <span class="text-xs font-black">Manajer</span>
@@ -965,7 +965,7 @@ export const openAddStaffModal = () => {
                             </h4>
                             <p class="text-[10px] text-slate-400">ID karyawan resmi, jabatan terstandarisasi, gaji pokok &amp; rekening pencairan</p>
                         </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800/60 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] whitespace-nowrap shrink-0">
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800/60 shadow-2xs whitespace-nowrap shrink-0">
                             Master HR
                         </span>
                     </div>
@@ -1115,9 +1115,9 @@ export const applyNewStaffPreset = (presetKey) => {
         const label = rb.closest('label');
         if (label) {
             if (rb.value === presetKey) {
-                label.className = 'staff-role-card is-role-active flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] transition-all text-center';
+                label.className = 'staff-role-card is-role-active flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-sm transition-all text-center';
             } else {
-                label.className = 'staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-center';
+                label.className = 'staff-role-card flex flex-col items-center justify-center p-3 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer hover:border-slate-600 shadow-sm transition-all text-center';
             }
         }
     });

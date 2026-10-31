@@ -2815,7 +2815,8 @@ export const showDocModalWithAnim = (pageCount = 1) => {
         window.pushModalHistory('docPreview');
     }
     openModalAnim(mDoc, bDoc);
-    mDoc.classList.remove('hidden', 'pointer-events-none');
+    mDoc.classList.remove('hidden');
+    mDoc.classList.remove('pointer-events-none');
 
     const area = el('doc-paper-scroll-area');
     if (area) area.scrollTop = 0;

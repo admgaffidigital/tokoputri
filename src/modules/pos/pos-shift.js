@@ -414,11 +414,11 @@ export const openPOSOpenShiftModal = async () => {
 
     const html = `
     <div id="pos-open-shift-modal" class="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.75)">
-        <div id="pos-open-shift-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] w-full max-w-md border-2 border-slate-900 dark:border-slate-700 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col">
+        <div id="pos-open-shift-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200/90 dark:border-slate-700/80 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col">
             <!-- Header Modal -->
             <div class="px-5 py-4 border-b-2 border-slate-900 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/80">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0" style="background:var(--color-primary)">
+                    <div class="w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0" style="background:var(--color-primary)">
                         <i class="fa-solid fa-cash-register"></i>
                     </div>
                     <div>
@@ -426,15 +426,15 @@ export const openPOSOpenShiftModal = async () => {
                         <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Modal awal laci &amp; pembukaan kas</p>
                     </div>
                 </div>
-                <button onclick="window.closePOSOpenShiftModal()" class="w-8 h-8 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">×</button>
+                <button onclick="window.closePOSOpenShiftModal()" class="w-8 h-8 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:scale-95">×</button>
             </div>
 
             <!-- Body Modal -->
             <div class="p-5 space-y-4">
                 <!-- Info Petugas & Waktu -->
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] flex items-center justify-between text-xs">
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-center justify-between text-xs">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-black">
+                        <div class="w-8 h-8 rounded-lg border border-slate-200/90 dark:border-slate-700/80 shadow-2xs bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-black">
                             <i class="fa-solid fa-user-check"></i>
                         </div>
                         <div>
@@ -455,22 +455,22 @@ export const openPOSOpenShiftModal = async () => {
                             <i class="fa-solid fa-money-bill-wave text-emerald-600"></i>
                             <span>Modal Awal Laci (Uang Kembalian)</span>
                         </span>
-                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-900 dark:border-slate-700 font-mono shadow-[1px_1px_0px_#0f172a]">CASH FLOAT</span>
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-900 dark:border-slate-700 font-mono shadow-2xs">CASH FLOAT</span>
                     </label>
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-600 dark:text-slate-300 pointer-events-none">Rp</span>
                         <input id="pos-shift-start-cash-input" type="number" min="0" step="1000" placeholder="0" 
                             autocomplete="off" autocorrect="off" spellcheck="false"
-                            class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg focus:outline-none focus:border-[var(--color-primary)] shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-right"
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg focus:outline-none focus:border-[var(--color-primary)] shadow-sm transition-all text-right"
                             value="100000" oninput="window.posUpdateStartCashChips()">
                     </div>
                     <!-- Quick Amount Chips (Industrial Chiclets) -->
                     <div id="pos-shift-preset-chips" class="grid grid-cols-5 gap-1.5 pt-1">
-                        <button type="button" data-amount="0" onclick="window.posSetStartCashPreset(0)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">Rp 0</button>
-                        <button type="button" data-amount="50000" onclick="window.posSetStartCashPreset(50000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">50.000</button>
-                        <button type="button" data-amount="100000" onclick="window.posSetStartCashPreset(100000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-black border-2 border-slate-900 dark:border-slate-700 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]" style="background:var(--color-primary, #800020); color:#ffffff;">100.000</button>
-                        <button type="button" data-amount="200000" onclick="window.posSetStartCashPreset(200000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">200.000</button>
-                        <button type="button" data-amount="500000" onclick="window.posSetStartCashPreset(500000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">500.000</button>
+                        <button type="button" data-amount="0" onclick="window.posSetStartCashPreset(0)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border border-slate-200/90 dark:border-slate-700/80 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-xs transition-all cursor-pointer active:scale-95">Rp 0</button>
+                        <button type="button" data-amount="50000" onclick="window.posSetStartCashPreset(50000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border border-slate-200/90 dark:border-slate-700/80 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-xs transition-all cursor-pointer active:scale-95">50.000</button>
+                        <button type="button" data-amount="100000" onclick="window.posSetStartCashPreset(100000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-black border border-slate-200/90 dark:border-slate-700/80 text-white shadow-sm transition-all cursor-pointer active:scale-95" style="background:var(--color-primary, #800020); color:#ffffff;">100.000</button>
+                        <button type="button" data-amount="200000" onclick="window.posSetStartCashPreset(200000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border border-slate-200/90 dark:border-slate-700/80 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-xs transition-all cursor-pointer active:scale-95">200.000</button>
+                        <button type="button" data-amount="500000" onclick="window.posSetStartCashPreset(500000)" class="pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border border-slate-200/90 dark:border-slate-700/80 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-xs transition-all cursor-pointer active:scale-95">500.000</button>
                     </div>
                 </div>
 
@@ -481,11 +481,11 @@ export const openPOSOpenShiftModal = async () => {
                     </label>
                     <input id="pos-shift-start-notes-input" type="text" placeholder="Contoh: Uang pecahan kecil lengkap, shift pagi"
                         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                        class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-[var(--color-primary)] shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-[var(--color-primary)] shadow-xs">
                 </div>
 
                 <!-- Hint Info Box -->
-                <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] flex items-start gap-2.5 text-[11px] text-amber-900 dark:text-amber-200">
+                <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-start gap-2.5 text-[11px] text-amber-900 dark:text-amber-200">
                     <i class="fa-solid fa-lightbulb text-amber-500 mt-0.5 shrink-0 text-sm"></i>
                     <span class="font-medium leading-relaxed">Modal awal akan dihitung bersama total penjualan tunai saat Anda melakukan tutup kasir (settlement) di akhir shift.</span>
                 </div>
@@ -493,10 +493,10 @@ export const openPOSOpenShiftModal = async () => {
 
             <!-- Footer Action Buttons -->
             <div class="p-4 border-t-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-2.5">
-                <button onclick="window.closePOSOpenShiftModal()" class="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-black text-xs uppercase tracking-wider hover:bg-slate-100 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1.5px] active:translate-y-[1.5px] transition-all cursor-pointer">
+                <button onclick="window.closePOSOpenShiftModal()" class="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 font-black text-xs uppercase tracking-wider hover:bg-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button onclick="window.confirmStartPOSShift()" class="flex-[2] py-3 rounded-xl text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] active:translate-x-[1.5px] active:translate-y-[1.5px] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:var(--color-primary)">
+                <button onclick="window.confirmStartPOSShift()" class="flex-[2] py-3 rounded-xl text-white font-black text-xs uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:var(--color-primary)">
                     <i class="fa-solid fa-check"></i>
                     <span>Buka Shift Sekarang</span>
                 </button>
@@ -547,11 +547,11 @@ export const posUpdateStartCashChips = () => {
     document.querySelectorAll('.pos-preset-chip').forEach(chip => {
         const amt = parseFloat(chip.dataset.amount);
         if (amt === val) {
-            chip.className = 'pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-black border-2 border-slate-900 dark:border-slate-700 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]';
+            chip.className = 'pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-black border border-slate-200/90 dark:border-slate-700/80 text-white shadow-sm transition-all cursor-pointer active:scale-95';
             chip.style.backgroundColor = 'var(--color-primary, #800020)';
             chip.style.color = '#ffffff';
         } else {
-            chip.className = 'pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border-2 border-slate-900 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]';
+            chip.className = 'pos-preset-chip py-2 px-1 text-center rounded-xl text-[11px] font-bold border border-slate-200/90 dark:border-slate-700/80 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-xs transition-all cursor-pointer active:scale-95';
             chip.style.backgroundColor = '';
             chip.style.color = '';
         }
@@ -898,11 +898,11 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
 
     const html = `
     <div id="pos-cash-movement-modal" class="fixed inset-0 z-[10002] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.8)">
-        <div id="pos-cash-movement-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] w-full max-w-md border-2 border-slate-900 dark:border-slate-700 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[92vh]">
+        <div id="pos-cash-movement-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200/90 dark:border-slate-700/80 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[92vh]">
             <!-- Header Modal -->
             <div class="px-5 py-4 border-b-2 border-slate-900 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/80">
                 <div class="flex items-center gap-3">
-                    <div id="pos-cshmv-header-icon" class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] shrink-0 bg-rose-600">
+                    <div id="pos-cshmv-header-icon" class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base border border-slate-200/90 dark:border-slate-800 shadow-xs shrink-0 bg-rose-600">
                         <i class="fa-solid fa-arrow-up-from-bracket"></i>
                     </div>
                     <div>
@@ -910,15 +910,15 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                         <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Shift: <b>${esc(shift.shiftNo || shift.id)}</b> &bull; Laci: <b>${fRp(expectedCash)}</b></p>
                     </div>
                 </div>
-                <button onclick="window.closePOSCashMovementModal()" class="w-8 h-8 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">×</button>
+                <button onclick="window.closePOSCashMovementModal()" class="w-8 h-8 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:scale-95">×</button>
             </div>
 
             <!-- Body Modal -->
             <div class="p-5 space-y-4 overflow-y-auto flex-1">
                 <!-- Tipe Mutasi Tab (Kas Keluar vs Kas Masuk) -->
-                <div class="grid grid-cols-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] gap-1 text-xs">
+                <div class="grid grid-cols-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-xs gap-1 text-xs">
                     <button type="button" id="pos-cshmv-tab-out" onclick="window.setPOSCashMovementType('out')" 
-                        class="py-2.5 rounded-lg font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border-1.5 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] bg-rose-600 text-white active:translate-x-[1px] active:translate-y-[1px]">
+                        class="py-2.5 rounded-lg font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/90 dark:border-slate-800 shadow-xs bg-rose-600 text-white active:scale-95">
                         <i class="fa-solid fa-arrow-up-from-bracket"></i>
                         <span>Kas Keluar (Biaya)</span>
                     </button>
@@ -939,15 +939,15 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-base text-slate-900 dark:text-slate-100 pointer-events-none">Rp</span>
                         <input id="pos-cshmv-amount-input" type="number" min="500" step="1000" placeholder="0" 
                             autocomplete="off" autocorrect="off" spellcheck="false"
-                            class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] focus:outline-none transition-all text-right">
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg shadow-sm focus:outline-none transition-all text-right">
                     </div>
                     <!-- Quick Amount Chips -->
                     <div class="flex items-center gap-1.5 flex-wrap pt-1">
-                        <button type="button" onclick="window.posSetCashMovementPreset(5000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">5.000</button>
-                        <button type="button" onclick="window.posSetCashMovementPreset(10000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">10.000</button>
-                        <button type="button" onclick="window.posSetCashMovementPreset(20000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">20.000</button>
-                        <button type="button" onclick="window.posSetCashMovementPreset(50000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">50.000</button>
-                        <button type="button" onclick="window.posSetCashMovementPreset(100000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer">100.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(5000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-xs active:scale-95 transition-all cursor-pointer">5.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(10000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-xs active:scale-95 transition-all cursor-pointer">10.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(20000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-xs active:scale-95 transition-all cursor-pointer">20.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(50000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-xs active:scale-95 transition-all cursor-pointer">50.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(100000)" class="pos-preset-chip px-3 py-1.5 rounded-xl text-xs font-black border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 shadow-xs active:scale-95 transition-all cursor-pointer">100.000</button>
                     </div>
                 </div>
 
@@ -958,7 +958,7 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                     </label>
                     <input id="pos-cshmv-reason-input" type="text" placeholder="Contoh: Beli kantong kresek / es batu / bensin kurir..."
                         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                        class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:outline-none">
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-xs focus:outline-none">
                 </div>
 
                 <!-- Kategori Pengeluaran (Hanya Tampil Saat Kas Keluar) -->
@@ -966,7 +966,7 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                     <label class="block text-xs font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide">
                         <i class="fa-solid fa-tags text-slate-500 mr-1"></i>Kategori Buku Kas Pengeluaran
                     </label>
-                    <select id="pos-cshmv-category-select" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:outline-none">
+                    <select id="pos-cshmv-category-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-xs focus:outline-none">
                         <option value="kemasan">Kemasan / Lakban / Plastik Kresek</option>
                         <option value="transport">Bensin / Ongkir / Transportasi Kurir</option>
                         <option value="perawatan">Kebersihan / Alat Toko / Perlengkapan</option>
@@ -983,11 +983,11 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
                     </label>
                     <input id="pos-cshmv-recipient-input" type="text" placeholder="Contoh: Toko Plastik Sejahtera / Kasir"
                         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                        class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] focus:outline-none">
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-xs focus:outline-none">
                 </div>
 
                 <!-- Petunjuk Otomatisasi Buku Kas -->
-                <div id="pos-cshmv-auto-note" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] flex items-start gap-2.5 text-[11px] text-amber-900 dark:text-amber-200 font-semibold">
+                <div id="pos-cshmv-auto-note" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-start gap-2.5 text-[11px] text-amber-900 dark:text-amber-200 font-semibold">
                     <i class="fa-solid fa-circle-check text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"></i>
                     <span><b>Otomatis Terhubung:</b> Pengeluaran ini langsung masuk ke <b>Buku Kas Toko</b> dan laporan Laba Rugi owner tanpa perlu input manual lagi.</span>
                 </div>
@@ -995,10 +995,10 @@ export const openPOSCashMovementModal = (defaultType = 'out') => {
 
             <!-- Footer Action Buttons -->
             <div class="p-4 border-t-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-2.5">
-                <button onclick="window.closePOSCashMovementModal()" class="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-black text-xs shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] hover:bg-slate-100 transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">
+                <button onclick="window.closePOSCashMovementModal()" class="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 font-black text-xs shadow-sm hover:bg-slate-100 transition-all cursor-pointer active:scale-95">
                     Batal
                 </button>
-                <button id="pos-cshmv-submit-btn" onclick="window.confirmPOSCashMovement()" class="flex-[2] py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <button id="pos-cshmv-submit-btn" onclick="window.confirmPOSCashMovement()" class="flex-[2] py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-check"></i>
                     <span>Simpan Kas Keluar</span>
                 </button>
@@ -1069,27 +1069,27 @@ export const setPOSCashMovementType = (type) => {
     const amtInp = el('pos-cshmv-amount-input');
 
     if (type === 'out') {
-        if (tabOut) tabOut.className = 'py-2.5 rounded-lg font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border-1.5 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] bg-rose-600 text-white active:translate-x-[1px] active:translate-y-[1px]';
+        if (tabOut) tabOut.className = 'py-2.5 rounded-lg font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/90 dark:border-slate-800 shadow-xs bg-rose-600 text-white active:scale-95';
         if (tabIn)  tabIn.className  = 'py-2.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 hover:text-slate-900';
-        if (icon) { icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center text-white text-base border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] shrink-0 bg-rose-600'; icon.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }
+        if (icon) { icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center text-white text-base border border-slate-200/90 dark:border-slate-800 shadow-xs shrink-0 bg-rose-600'; icon.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }
         if (title) title.innerText = 'Catat Kas Keluar Laci';
         if (typeLbl) { typeLbl.innerText = 'Pengeluaran Laci'; typeLbl.className = 'text-[10px] font-black text-rose-600 uppercase tracking-wider'; }
         if (catWrap) catWrap.classList.remove('hidden');
         if (recLbl) recLbl.innerHTML = '<i class="fa-solid fa-user text-slate-500 mr-1"></i>Penerima Uang (Opsional)';
         if (recInp) recInp.placeholder = 'Contoh: Toko Plastik Sejahtera / Kasir';
         if (autoNote) autoNote.classList.remove('hidden');
-        if (btn) { btn.className = 'flex-[2] py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-2 cursor-pointer'; btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Kas Keluar</span>'; }
+        if (btn) { btn.className = 'flex-[2] py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer'; btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Kas Keluar</span>'; }
     } else {
         if (tabOut) tabOut.className = 'py-2.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 hover:text-slate-900';
-        if (tabIn)  tabIn.className  = 'py-2.5 rounded-lg font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border-1.5 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] bg-emerald-600 text-white active:translate-x-[1px] active:translate-y-[1px]';
-        if (icon) { icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center text-white text-base border-2 border-slate-900 shadow-[1.5px_1.5px_0px_#0f172a] shrink-0 bg-emerald-600'; icon.innerHTML = '<i class="fa-solid fa-arrow-down-to-bracket"></i>'; }
+        if (tabIn)  tabIn.className  = 'py-2.5 rounded-lg font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/90 dark:border-slate-800 shadow-xs bg-emerald-600 text-white active:scale-95';
+        if (icon) { icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center text-white text-base border border-slate-200/90 dark:border-slate-800 shadow-xs shrink-0 bg-emerald-600'; icon.innerHTML = '<i class="fa-solid fa-arrow-down-to-bracket"></i>'; }
         if (title) title.innerText = 'Catat Kas Masuk Laci';
         if (typeLbl) { typeLbl.innerText = 'Penerimaan Laci'; typeLbl.className = 'text-[10px] font-black text-emerald-600 uppercase tracking-wider'; }
         if (catWrap) catWrap.classList.add('hidden');
         if (recLbl) recLbl.innerHTML = '<i class="fa-solid fa-vault text-slate-500 mr-1"></i>Sumber Uang Masuk';
         if (recInp) recInp.placeholder = 'Contoh: Tambah Modal Receh dari Brankas / Kas Induk';
         if (autoNote) autoNote.classList.add('hidden');
-        if (btn) { btn.className = 'flex-[2] py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 shadow-[2.5px_2.5px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-2 cursor-pointer'; btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Kas Masuk</span>'; }
+        if (btn) { btn.className = 'flex-[2] py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer'; btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Kas Masuk</span>'; }
     }
 };
 
@@ -1155,34 +1155,34 @@ export const openShiftSummaryModal = () => {
 
     const html = `
     <div id="pos-shift-summary-modal" class="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.75)">
-        <div id="pos-shift-summary-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] w-full max-w-lg border-2 border-slate-900 dark:border-slate-700 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[92vh]">
+        <div id="pos-shift-summary-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200/90 dark:border-slate-700/80 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[92vh]">
             <!-- Header Modal -->
             <div class="px-5 py-4 border-b-2 border-slate-900 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/80">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0" style="background:var(--color-primary)">
+                    <div class="w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0" style="background:var(--color-primary)">
                         <i class="fa-solid fa-chart-pie"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Ringkasan Shift Kasir</h3>
-                            <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">X-Report</span>
+                            <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">X-Report</span>
                         </div>
                         <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Shift aktif: <b>${esc(shift.shiftNo || shift.id)}</b></p>
                     </div>
                 </div>
-                <button onclick="window.closePOSShiftSummaryModal()" class="w-8 h-8 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">×</button>
+                <button onclick="window.closePOSShiftSummaryModal()" class="w-8 h-8 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:scale-95">×</button>
             </div>
 
             <!-- Body Modal -->
             <div class="p-5 space-y-4 overflow-y-auto flex-1">
                 <!-- Info Kasir & Durasi -->
                 <div class="grid grid-cols-2 gap-2.5">
-                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-sm">
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-bold uppercase tracking-wider">Kasir Bertugas</span>
                         <span class="font-black text-slate-900 dark:text-slate-100 text-xs truncate block">${esc(shift.cashierName)}</span>
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 block font-semibold">Mulai: ${esc(startTimeStr)}</span>
                     </div>
-                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-sm">
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-bold uppercase tracking-wider">Durasi Kerja</span>
                         <span class="font-black text-emerald-600 dark:text-emerald-400 text-xs block">${esc(durationStr)}</span>
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 block font-semibold">${shift.txCount || 0} Struk / ${formatShiftQty(shift.itemCount || 0)} Item</span>
@@ -1190,7 +1190,7 @@ export const openShiftSummaryModal = () => {
                 </div>
 
                 <!-- Kartu Utama: Kas di Laci Saat Ini (Expected Cash) -->
-                <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#000000]">
+                <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-slate-200/90 dark:border-slate-700/80 shadow-md">
                     <div class="flex items-center justify-between">
                         <div>
                             <span class="text-[11px] font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-wider block">Uang Kas di Laci Seharusnya</span>
@@ -1202,19 +1202,19 @@ export const openShiftSummaryModal = () => {
                     </div>
                     <!-- Micro Formula Pills -->
                     <div class="mt-3 pt-2.5 border-t-2 border-slate-900/20 dark:border-slate-700/60 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
-                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">
+                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                             <span class="text-slate-500 dark:text-slate-400 block font-bold">Modal Awal</span>
                             <span class="font-black text-slate-900 dark:text-white">${fRp(shift.startingCash)}</span>
                         </div>
-                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">
+                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                             <span class="text-slate-500 dark:text-slate-400 block font-bold">+ Penjualan Tunai</span>
                             <span class="font-black text-emerald-600 dark:text-emerald-400">+${fRp(shift.cashSales || 0)}</span>
                         </div>
-                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">
+                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                             <span class="text-slate-500 dark:text-slate-400 block font-bold">+ Kas Masuk (In)</span>
                             <span class="font-black text-emerald-600 dark:text-emerald-400">+${fRp(shift.cashIn || 0)}</span>
                         </div>
-                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">
+                        <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
                             <span class="text-slate-500 dark:text-slate-400 block font-bold">- Kas Keluar (Out)</span>
                             <span class="font-black text-rose-600 dark:text-rose-400">-${fRp(shift.cashOut || 0)}</span>
                         </div>
@@ -1224,12 +1224,12 @@ export const openShiftSummaryModal = () => {
                 <!-- Tombol Cepat Arus Kas Laci -->
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" onclick="window.openPOSCashMovementModal('out')" 
-                        class="py-2.5 px-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-800 dark:text-rose-300 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] font-black text-xs flex items-center justify-center gap-2 transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
+                        class="py-2.5 px-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-800 dark:text-rose-300 border border-slate-200/90 dark:border-slate-700/80 shadow-sm font-black text-xs flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer">
                         <i class="fa-solid fa-arrow-up-from-bracket text-xs text-rose-600 dark:text-rose-400"></i>
                         <span>Catat Kas Keluar</span>
                     </button>
                     <button type="button" onclick="window.openPOSCashMovementModal('in')" 
-                        class="py-2.5 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] font-black text-xs flex items-center justify-center gap-2 transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
+                        class="py-2.5 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-slate-200/90 dark:border-slate-700/80 shadow-sm font-black text-xs flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer">
                         <i class="fa-solid fa-arrow-down-to-bracket text-xs text-emerald-600 dark:text-emerald-400"></i>
                         <span>Catat Kas Masuk</span>
                     </button>
@@ -1243,9 +1243,9 @@ export const openShiftSummaryModal = () => {
                     </div>
                     <div class="max-h-36 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
                         ${cashMovements.map(m => `
-                        <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-between text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-between text-xs">
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-6 h-6 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 flex items-center justify-center text-[10px] shrink-0 ${m.type === 'out' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300'}">
+                                <span class="w-6 h-6 rounded-lg border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-center text-[10px] shrink-0 ${m.type === 'out' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300'}">
                                     <i class="fa-solid ${m.type === 'out' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
                                 </span>
                                 <div class="min-w-0">
@@ -1269,38 +1269,38 @@ export const openShiftSummaryModal = () => {
                     </div>
 
                     <div class="space-y-1.5 text-xs">
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                             <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-money-bill-wave"></i></span>
+                                <span class="w-6 h-6 rounded-lg border border-slate-200/90 dark:border-slate-700/80 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-money-bill-wave"></i></span>
                                 <span>Tunai (Cash)</span>
                             </span>
                             <span class="font-black text-slate-900 dark:text-white">${fRp(shift.cashSales || 0)}</span>
                         </div>
                         ${(shift.tempoInstallmentCash || 0) > 0 ? `
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] text-[11px]">
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-slate-200/90 dark:border-slate-700/80 shadow-xs text-[11px]">
                             <span class="text-amber-800 dark:text-amber-300 font-bold flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 bg-amber-100 dark:bg-amber-900/80 text-amber-700 dark:text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                                <span class="w-6 h-6 rounded-lg border border-slate-200/90 dark:border-slate-700/80 bg-amber-100 dark:bg-amber-900/80 text-amber-700 dark:text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-hand-holding-dollar"></i></span>
                                 <span>Dari Cicilan Piutang (Kas Masuk)</span>
                             </span>
                             <span class="font-black text-amber-800 dark:text-amber-300">+${fRp(shift.tempoInstallmentCash)}</span>
                         </div>` : ''}
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                             <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-qrcode"></i></span>
+                                <span class="w-6 h-6 rounded-lg border border-slate-200/90 dark:border-slate-700/80 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-qrcode"></i></span>
                                 <span>QRIS Dinamis</span>
                             </span>
                             <span class="font-black text-slate-900 dark:text-white">${fRp(shift.qrisSales || 0)}</span>
                         </div>
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                             <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-building-columns"></i></span>
+                                <span class="w-6 h-6 rounded-lg border border-slate-200/90 dark:border-slate-700/80 bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-building-columns"></i></span>
                                 <span>Transfer Bank</span>
                             </span>
                             <span class="font-black text-slate-900 dark:text-white">${fRp(shift.bankSales || 0)}</span>
                         </div>
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                             <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg border-1.5 border-slate-900 dark:border-slate-700 bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                <span class="w-6 h-6 rounded-lg border border-slate-200/90 dark:border-slate-700/80 bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-clock-rotate-left"></i></span>
                                 <span>Tempo / Piutang (Sisa)</span>
                             </span>
                             <span class="font-black text-slate-900 dark:text-white">${fRp(shift.tempoSales || 0)}</span>
@@ -1310,11 +1310,11 @@ export const openShiftSummaryModal = () => {
 
                 <!-- Diskon & Poin -->
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                    <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                         <span class="text-[10px] text-rose-700 dark:text-rose-400 block font-bold uppercase tracking-wider">Total Diskon Diberikan</span>
                         <span class="font-black text-rose-700 dark:text-rose-300 text-xs">${fRp(shift.discountTotal || 0)}</span>
                     </div>
-                    <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
+                    <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
                         <span class="text-[10px] text-amber-700 dark:text-amber-400 block font-bold uppercase tracking-wider">Poin Member Dikreditkan</span>
                         <span class="font-black text-amber-700 dark:text-amber-300 text-xs">+${shift.pointsTotal || 0} Poin</span>
                     </div>
@@ -1323,16 +1323,16 @@ export const openShiftSummaryModal = () => {
 
             <!-- Footer Action Buttons -->
             <div class="p-4 border-t-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-2">
-                <button onclick="window.printShiftSettlementReceipt(window.getActiveShift(), true)" class="px-3.5 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-black text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]" title="Preview & Cetak Slip Sementara (X-Report)">
+                <button onclick="window.printShiftSettlementReceipt(window.getActiveShift(), true)" class="px-3.5 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 font-black text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95" title="Preview & Cetak Slip Sementara (X-Report)">
                     <i class="fa-solid fa-eye text-emerald-600"></i>
                     <i class="fa-solid fa-print"></i>
                     <span class="hidden sm:inline">Preview X-Report</span>
                 </button>
-                <button onclick="window.closePOSShiftSummaryModal()" class="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 border-2 border-slate-900 dark:border-slate-700 font-black text-xs transition-all cursor-pointer shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]">
+                <button onclick="window.closePOSShiftSummaryModal()" class="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-black text-xs transition-all cursor-pointer shadow-sm active:scale-95">
                     <span class="sm:hidden">Lanjut Shift</span>
                     <span class="hidden sm:inline">Lanjut Jaga Kasir</span>
                 </button>
-                <button onclick="window.closePOSShiftSummaryModal(); window.openPOSCloseShiftModal();" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                <button onclick="window.closePOSShiftSummaryModal(); window.openPOSCloseShiftModal();" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-lock"></i>
                     <span>Tutup Shift</span>
                 </button>
@@ -1387,28 +1387,28 @@ export const openPOSCloseShiftModal = () => {
 
     const html = `
     <div id="pos-close-shift-modal" class="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.8)">
-        <div id="pos-close-shift-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-[4.5px_4.5px_0px_#0f172a] dark:shadow-[4.5px_4.5px_0px_#000000] w-full max-w-lg border-2 border-slate-900 dark:border-slate-700 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[94vh]">
+        <div id="pos-close-shift-box" class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200/90 dark:border-slate-700/80 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[94vh]">
             <!-- Header Modal -->
             <div class="px-5 py-4 border-b-2 border-slate-900 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/80">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0 bg-rose-600">
+                    <div class="w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0 bg-rose-600">
                         <i class="fa-solid fa-lock"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Rekap &amp; Tutup Shift Kasir</h3>
-                            <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-1.5 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a]">Z-Report</span>
+                            <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">Z-Report</span>
                         </div>
                         <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Rekonsiliasi uang kas di laci kasir</p>
                     </div>
                 </div>
-                <button onclick="window.closePOSCloseShiftModal()" class="w-8 h-8 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]">×</button>
+                <button onclick="window.closePOSCloseShiftModal()" class="w-8 h-8 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-900 dark:text-slate-100 flex items-center justify-center text-base font-black transition-all cursor-pointer active:scale-95">×</button>
             </div>
 
             <!-- Body Modal -->
             <div class="p-5 space-y-4 overflow-y-auto flex-1">
                 <!-- Info Uang Kas Sistem -->
-                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] flex items-center justify-between">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-sm flex items-center justify-between">
                     <div>
                         <span class="text-[10px] uppercase font-black text-slate-500 dark:text-slate-400 block tracking-wider">Uang Kas Sistem (Seharusnya di Laci)</span>
                         <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-semibold">
@@ -1430,8 +1430,8 @@ export const openPOSCloseShiftModal = () => {
                             <i class="fa-solid fa-calculator text-emerald-600"></i>
                             <span>Hitung Uang Fisik di Laci</span>
                         </label>
-                        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl p-1 text-[10px] border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]">
-                            <button type="button" id="pos-count-tab-quick" onclick="window.setPOSCountMode('quick')" class="px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white border-1.5 border-slate-900 dark:border-slate-600 shadow-[1px_1px_0px_#0f172a] transition-all cursor-pointer">Input Cepat</button>
+                        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl p-1 text-[10px] border border-slate-200/90 dark:border-slate-700/80 shadow-xs">
+                            <button type="button" id="pos-count-tab-quick" onclick="window.setPOSCountMode('quick')" class="px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-200/90 dark:border-slate-800 dark:border-slate-600 shadow-2xs transition-all cursor-pointer">Input Cepat</button>
                             <button type="button" id="pos-count-tab-denom" onclick="window.setPOSCountMode('denom')" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer border border-transparent">Lembaran (Denominasi)</button>
                         </div>
                     </div>
@@ -1442,68 +1442,68 @@ export const openPOSCloseShiftModal = () => {
                             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-600 dark:text-slate-300 pointer-events-none">Rp</span>
                             <input id="pos-shift-actual-cash-input" type="number" min="0" step="1000" placeholder="0" 
                                 autocomplete="off" autocorrect="off" spellcheck="false"
-                                class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg focus:outline-none focus:border-[var(--color-primary)] shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all text-right"
+                                class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-black text-lg focus:outline-none focus:border-[var(--color-primary)] shadow-sm transition-all text-right"
                                 value="${expectedCash}" oninput="window.updatePOSShiftDiscrepancy()">
                         </div>
                     </div>
 
                     <!-- Panel Kalkulator Denominasi -->
-                    <div id="pos-count-panel-denom" class="hidden space-y-2 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]">
+                    <div id="pos-count-panel-denom" class="hidden space-y-2 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm">
                         <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 100.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-100k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-100k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 50.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-50k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-50k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 20.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-20k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-20k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 10.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-10k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-10k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 5.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-5k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-5k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 2.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-2k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-2k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Rp 1.000</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">×</span>
-                                    <input type="number" min="0" id="denom-1k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-1k" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-20 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] transition-all">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs transition-all">
                                 <span class="font-black text-slate-800 dark:text-slate-200 text-xs sm:text-[13px] whitespace-nowrap">Koin / Receh</span>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-xs text-slate-500 font-bold">Rp</span>
-                                    <input type="number" min="0" id="denom-coin" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-24 h-9 px-2 text-right font-black text-xs sm:text-sm border-2 border-slate-900 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-coin" placeholder="0" autocomplete="off" autocorrect="off" spellcheck="false" class="w-16 sm:w-24 h-9 px-2 text-right font-black text-xs sm:text-sm border border-slate-200/90 dark:border-slate-700/80 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                         </div>
@@ -1511,9 +1511,9 @@ export const openPOSCloseShiftModal = () => {
                 </div>
 
                 <!-- Kartu Status Selisih Kas (Live Dynamic Calculation) -->
-                <div id="pos-discrepancy-card" class="p-4 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all duration-300 flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40">
+                <div id="pos-discrepancy-card" class="p-4 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm transition-all duration-300 flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40">
                     <div class="flex items-center gap-3">
-                        <div id="pos-discrepancy-icon" class="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0 bg-emerald-600">
+                        <div id="pos-discrepancy-icon" class="w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0 bg-emerald-600">
                             <i class="fa-solid fa-check"></i>
                         </div>
                         <div>
@@ -1533,16 +1533,16 @@ export const openPOSCloseShiftModal = () => {
                         <i class="fa-regular fa-comment-dots text-slate-500 mr-1"></i>Catatan Penutupan Shift
                     </label>
                     <textarea id="pos-shift-close-notes" rows="2" placeholder="Catatan mengenai kondisi laci, sisa kembalian, atau alasan jika terdapat selisih kas..."
-                        class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-[var(--color-primary)] shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000]"></textarea>
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-[var(--color-primary)] shadow-sm"></textarea>
                 </div>
             </div>
 
             <!-- Footer Action Buttons -->
             <div class="p-4 border-t-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-2">
-                <button onclick="window.closePOSCloseShiftModal()" class="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-900 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-black text-xs hover:bg-slate-100 transition-all cursor-pointer shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]">
+                <button onclick="window.closePOSCloseShiftModal()" class="flex-1 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 font-black text-xs hover:bg-slate-100 transition-all cursor-pointer shadow-sm active:scale-95">
                     Batal
                 </button>
-                <button onclick="window.confirmClosePOSShift()" class="flex-[2] py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <button onclick="window.confirmClosePOSShift()" class="flex-[2] py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider border border-slate-200/90 dark:border-slate-700/80 shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-lock"></i>
                     <span>Konfirmasi &amp; Tutup Shift</span>
                 </button>
@@ -1595,13 +1595,13 @@ export const setPOSCountMode = (mode) => {
     const panelDenom = el('pos-count-panel-denom');
 
     if (mode === 'quick') {
-        if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white border-1.5 border-slate-900 dark:border-slate-600 shadow-[1px_1px_0px_#0f172a] transition-all cursor-pointer'; }
+        if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-200/90 dark:border-slate-800 dark:border-slate-600 shadow-2xs transition-all cursor-pointer'; }
         if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer border border-transparent'; }
         if (panelQuick) panelQuick.classList.remove('hidden');
         if (panelDenom) panelDenom.classList.add('hidden');
     } else {
         if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer border border-transparent'; }
-        if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white border-1.5 border-slate-900 dark:border-slate-600 shadow-[1px_1px_0px_#0f172a] transition-all cursor-pointer'; }
+        if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-200/90 dark:border-slate-800 dark:border-slate-600 shadow-2xs transition-all cursor-pointer'; }
         if (panelQuick) panelQuick.classList.add('hidden');
         if (panelDenom) panelDenom.classList.remove('hidden');
         calcPOSDenominations();
@@ -1643,8 +1643,8 @@ export const updatePOSShiftDiscrepancy = () => {
     if (!card || !icon || !status || !desc || !amount) return;
 
     if (diff === 0) {
-        card.className = 'p-4 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all duration-300 flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40';
-        icon.className = 'w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0 bg-emerald-600';
+        card.className = 'p-4 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm transition-all duration-300 flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40';
+        icon.className = 'w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0 bg-emerald-600';
         icon.innerHTML = '<i class="fa-solid fa-check"></i>';
         status.className = 'text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 block';
         status.innerText = 'SEIMBANG (PAS)';
@@ -1653,8 +1653,8 @@ export const updatePOSShiftDiscrepancy = () => {
         amount.className = 'text-base font-black text-emerald-600 dark:text-emerald-400';
         amount.innerText = 'Rp 0';
     } else if (diff > 0) {
-        card.className = 'p-4 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all duration-300 flex items-center justify-between bg-amber-50 dark:bg-amber-950/40';
-        icon.className = 'w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0 bg-amber-500';
+        card.className = 'p-4 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm transition-all duration-300 flex items-center justify-between bg-amber-50 dark:bg-amber-950/40';
+        icon.className = 'w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0 bg-amber-500';
         icon.innerHTML = '<i class="fa-solid fa-plus"></i>';
         status.className = 'text-xs font-black uppercase tracking-wider text-amber-900 dark:text-amber-300 block';
         status.innerText = 'LEBIH (SURPLUS)';
@@ -1663,8 +1663,8 @@ export const updatePOSShiftDiscrepancy = () => {
         amount.className = 'text-base font-black text-amber-600 dark:text-amber-400';
         amount.innerText = '+ ' + fRp(diff);
     } else {
-        card.className = 'p-4 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#000000] transition-all duration-300 flex items-center justify-between bg-rose-50 dark:bg-rose-950/40';
-        icon.className = 'w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] flex items-center justify-center text-white text-base shrink-0 bg-rose-600';
+        card.className = 'p-4 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm transition-all duration-300 flex items-center justify-between bg-rose-50 dark:bg-rose-950/40';
+        icon.className = 'w-10 h-10 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center text-white text-base shrink-0 bg-rose-600';
         icon.innerHTML = '<i class="fa-solid fa-minus"></i>';
         status.className = 'text-xs font-black uppercase tracking-wider text-rose-900 dark:text-rose-300 block';
         status.innerText = 'KURANG (DEFISIT)';
@@ -2160,7 +2160,7 @@ export const loadAdminShiftReports = async () => {
             <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all space-y-3.5">
                 <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3 flex-wrap sm:flex-nowrap">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] ${isClosed ? 'bg-slate-800 dark:bg-slate-700' : ''}" style="${!isClosed ? 'background: var(--color-primary);' : ''}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm text-white shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs ${isClosed ? 'bg-slate-800 dark:bg-slate-700' : ''}" style="${!isClosed ? 'background: var(--color-primary);' : ''}">
                             <i class="fa-solid ${!isClosed ? 'fa-cash-register' : 'fa-receipt'}"></i>
                         </div>
                         <div class="min-w-0">

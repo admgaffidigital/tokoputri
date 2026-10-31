@@ -113,7 +113,7 @@ export const ensureExpenseModals = () => {
                 <!-- Compact Sticky Header Modal -->
                 <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: var(--color-primary);">
+                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background-color: var(--color-primary);">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
@@ -188,7 +188,7 @@ export const ensureExpenseModals = () => {
                             </label>
                             <div class="grid grid-cols-3 gap-1.5" id="exp-source-selector">
                                 ${EXPENSE_SOURCES.map(s => `
-                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="expense-source-card relative flex flex-col items-center justify-center p-2 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer text-center transition-all select-none group active:scale-95 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000] ${s.key === 'cash' ? 'is-source-active' : ''}">
+                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="expense-source-card relative flex flex-col items-center justify-center p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer text-center transition-all select-none group active:scale-95 shadow-xs ${s.key === 'cash' ? 'is-source-active' : ''}">
                                         <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
                                         <i class="fa-solid ${s.icon} text-sm mb-1 ${s.key === 'cash' ? '' : 'text-slate-500'} transition-colors" ${s.key === 'cash' ? 'style="color: var(--color-primary);"' : ''}></i>
                                         <span class="text-[10px] font-black leading-tight transition-colors" ${s.key === 'cash' ? 'style="color: var(--color-primary);"' : 'class="text-slate-800 dark:text-slate-200"'}>${s.shortLabel}</span>
@@ -229,7 +229,7 @@ export const ensureExpenseModals = () => {
                                 <div class="flex-1 space-y-1 min-w-0">
                                     <input type="hidden" id="exp-input-receipt-url" value="">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <label class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000] text-slate-800 dark:text-slate-200 text-[11px] font-bold cursor-pointer transition-all flex items-center gap-1 active:scale-95 shrink-0">
+                                        <label class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-900 dark:border-slate-700 shadow-2xs text-slate-800 dark:text-slate-200 text-[11px] font-bold cursor-pointer transition-all flex items-center gap-1 active:scale-95 shrink-0">
                                             <i class="fa-solid fa-camera text-[10px]" style="color: var(--color-primary)"></i>
                                             <span>Foto / File</span>
                                             <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
@@ -554,7 +554,7 @@ export const renderExpensesAdminView = () => {
             <!-- 1. TOP APP BAR & QUICK ACTION -->
             <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-xl text-white flex items-center justify-center text-xl shrink-0 border-2 border-slate-900 dark:border-slate-700 shadow-[1.5px_1.5px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_#000000]" style="background-color: var(--color-primary);">
+                    <div class="w-12 h-12 rounded-xl text-white flex items-center justify-center text-xl shrink-0 border border-slate-200/90 dark:border-slate-700/80 shadow-xs" style="background-color: var(--color-primary);">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                     </div>
                     <div>
