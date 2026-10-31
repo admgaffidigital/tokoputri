@@ -13,23 +13,27 @@ import { el, show, hide, setIn, setH, esc, fCur, ssL, renderProductCoverHtml, is
  * Membersihkan keranjang dari produk atau varian yang sudah dihapus/dinonaktifkan Admin
  */
 export const sanitizeCart = () => {
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
     const cleanCart = cart.filter(c => {
         const p = appData.products.find(x => x && x.id != null && String(x.id) === String(c.id));
         if (!p || p.isActive === 'false' || p.isActive === false) return false;
         const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+        if (isPreorder) return true;
         
         if (c.variantName) {
             const v = (p.variants || []).find(vv => vv.name === c.variantName);
-            if (!v) return false;
-            if (v.isActive === false || v.isActive === 'false') return false;
+            if (!v || v.isActive === false || v.isActive === 'false') return false;
             const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
-            const vStock = rawV != null && !isNaN(parseFloat(rawV)) ? parseFloat(rawV) : 0;
-            if (useStk && !isPreorder && vStock <= 0) return false;
+            const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+            const vStock = hasVStock ? parseFloat(rawV) : 0;
+            const isManaged = storeUseStock || hasVStock;
+            if (isManaged && vStock <= 0) return false;
         } else {
             const rawP = (p.stock != null && p.stock !== '') ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : null);
-            const pStock = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
-            if (useStk && !isPreorder && pStock <= 0) return false;
+            const hasPStock = rawP != null && !isNaN(parseFloat(rawP));
+            const pStock = hasPStock ? parseFloat(rawP) : 0;
+            const isManaged = storeUseStock || hasPStock;
+            if (isManaged && pStock <= 0) return false;
         }
         return true;
     });
@@ -323,22 +327,26 @@ export const setCQty = (i, v) => {
     if (isNaN(nv) || nv <= 0) { 
         cart.splice(i, 1); 
     } else {
-        const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-        if (useStk) {
-            const ci = cart[i];
-            const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
-            if (p) {
-                const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
-                if (!isPreorder) {
-                    let avail = 0;
-                    if (ci.variantName) {
-                        const vObj = (p.variants || []).find(vv => vv.name === ci.variantName);
-                        const rawV = vObj ? ((vObj.stock != null && vObj.stock !== '') ? vObj.stock : ((vObj.stok != null && vObj.stok !== '') ? vObj.stok : null)) : null;
-                        avail = rawV != null && !isNaN(parseFloat(rawV)) ? parseFloat(rawV) : 0;
-                    } else {
-                        const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
-                        avail = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
-                    }
+        const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+        const ci = cart[i];
+        const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
+        if (p) {
+            const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+            if (!isPreorder) {
+                let avail = 0;
+                let hasStockVal = false;
+                if (ci.variantName) {
+                    const vObj = (p.variants || []).find(vv => vv.name === ci.variantName);
+                    const rawV = vObj ? ((vObj.stock != null && vObj.stock !== '') ? vObj.stock : ((vObj.stok != null && vObj.stok !== '') ? vObj.stok : null)) : null;
+                    hasStockVal = rawV != null && !isNaN(parseFloat(rawV));
+                    avail = hasStockVal ? parseFloat(rawV) : 0;
+                } else {
+                    const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
+                    hasStockVal = rawP != null && !isNaN(parseFloat(rawP));
+                    avail = hasStockVal ? parseFloat(rawP) : 0;
+                }
+                const isManaged = storeUseStock || hasStockVal;
+                if (isManaged) {
                     const multiplier = parseFloat(ci.unitMultiplier) || 1;
                     const neededBase = nv * multiplier;
                     if (neededBase > avail) { 
@@ -369,29 +377,35 @@ export const updCQty = (i, c) => {
     if (nv <= 0) { 
         cart.splice(i, 1); 
     } else {
-        const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-        if (useStk && c > 0) {
+        const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+        if (c > 0) {
             const ci = cart[i];
             const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
             if (p) {
                 const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
                 if (!isPreorder) {
                     let avail = 0;
+                    let hasStockVal = false;
                     if (ci.variantName) {
                         const vObj = (p.variants || []).find(vv => vv.name === ci.variantName);
                         const rawV = vObj ? ((vObj.stock != null && vObj.stock !== '') ? vObj.stock : ((vObj.stok != null && vObj.stok !== '') ? vObj.stok : null)) : null;
-                        avail = rawV != null && !isNaN(parseFloat(rawV)) ? parseFloat(rawV) : 0;
+                        hasStockVal = rawV != null && !isNaN(parseFloat(rawV));
+                        avail = hasStockVal ? parseFloat(rawV) : 0;
                     } else {
                         const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
-                        avail = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
+                        hasStockVal = rawP != null && !isNaN(parseFloat(rawP));
+                        avail = hasStockVal ? parseFloat(rawP) : 0;
                     }
-                    const multiplier = parseFloat(ci.unitMultiplier) || 1;
-                    const neededBase = nv * multiplier;
-                    if (neededBase > avail) { 
-                        const maxUnits = multiplier > 1 ? Math.floor(avail / multiplier) : avail;
-                        nv = maxUnits; 
-                        if (typeof window.showToast === 'function') {
-                            window.showToast(`Kuantitas disesuaikan dengan stok maksimal (${maxUnits} ${ci.unit || 'unit'})`); 
+                    const isManaged = storeUseStock || hasStockVal;
+                    if (isManaged) {
+                        const multiplier = parseFloat(ci.unitMultiplier) || 1;
+                        const neededBase = nv * multiplier;
+                        if (neededBase > avail) { 
+                            const maxUnits = multiplier > 1 ? Math.floor(avail / multiplier) : avail;
+                            nv = maxUnits; 
+                            if (typeof window.showToast === 'function') {
+                                window.showToast(`Kuantitas disesuaikan dengan stok maksimal (${maxUnits} ${ci.unit || 'unit'})`); 
+                            }
                         }
                     }
                 }

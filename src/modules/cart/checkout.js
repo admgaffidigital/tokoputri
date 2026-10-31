@@ -102,6 +102,67 @@ export const validateAndGoToPayment = () => {
         if (typeof window.showToast === 'function') window.showToast("Toko tutup!");
         return;
     }
+    if (!cart || cart.length === 0) {
+        if (typeof window.showToast === 'function') window.showToast("Keranjang belanja masih kosong!");
+        return;
+    }
+
+    // Validasi ketersediaan stok fisik produk di keranjang (Produk Habis Tidak Boleh Transaksi)
+    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    for (const ci of cart) {
+        const serverProd = appData.products.find(p => String(p.id) === String(ci.id));
+        if (!serverProd || serverProd.isActive === false || serverProd.isActive === 'false') {
+            if (typeof window.showToast === 'function') window.showToast(`Produk "${ci.name}" sedang tidak tersedia atau dinonaktifkan.`);
+            return;
+        }
+        const isPreorder = Boolean(serverProd.poTime && String(serverProd.poTime).trim());
+        if (isPreorder) continue;
+
+        const qty = parseFloat(ci.qty) || 0;
+        const multiplier = parseFloat(ci.unitMultiplier) || 1;
+        const neededBaseQty = qty * multiplier;
+
+        if (ci.variantName) {
+            const variant = (serverProd.variants || []).find(v => v.name === ci.variantName);
+            if (!variant || variant.isActive === false || variant.isActive === 'false') {
+                if (typeof window.showToast === 'function') window.showToast(`Varian "${ci.variantName}" untuk produk "${ci.name}" sedang tidak tersedia.`);
+                return;
+            }
+            const rawStk = (variant.stock != null && variant.stock !== '') ? variant.stock : ((variant.stok != null && variant.stok !== '') ? variant.stok : null);
+            const hasVStock = rawStk != null && !isNaN(parseFloat(rawStk));
+            const stk = hasVStock ? parseFloat(rawStk) : 0;
+            const isManaged = storeUseStock || hasVStock;
+
+            if (isManaged) {
+                if (stk <= 0) {
+                    if (typeof window.showToast === 'function') window.showToast(`Produk "${ci.name} (${ci.variantName})" stok habis, tidak dapat membuat transaksi.`);
+                    return;
+                }
+                if (stk < neededBaseQty) {
+                    if (typeof window.showToast === 'function') window.showToast(`Persediaan "${ci.name} (${ci.variantName})" tidak mencukupi (tersisa ${stk} unit).`);
+                    return;
+                }
+            }
+        } else {
+            const rawStk = (serverProd.stock != null && serverProd.stock !== '') ? serverProd.stock : ((serverProd.stok != null && serverProd.stok !== '') ? serverProd.stok : null);
+            const hasPStock = rawStk != null && !isNaN(parseFloat(rawStk));
+            const stk = hasPStock ? parseFloat(rawStk) : 0;
+            const isManaged = storeUseStock || hasPStock;
+
+            if (isManaged) {
+                if (stk <= 0) {
+                    if (typeof window.showToast === 'function') window.showToast(`Produk "${ci.name}" stok habis, tidak dapat membuat transaksi.`);
+                    return;
+                }
+                if (stk < neededBaseQty) {
+                    const maxUnits = multiplier > 1 ? Math.floor(stk / multiplier) : stk;
+                    if (typeof window.showToast === 'function') window.showToast(`Persediaan "${ci.name}" tidak mencukupi (tersisa ${maxUnits} ${ci.unit || 'unit'}).`);
+                    return;
+                }
+            }
+        }
+    }
+
     const n = getV('cust-name');
     const m = (document.querySelector('input[name="delivery-method"]:checked') || {}).value;
     if (!n || !m) {
@@ -482,31 +543,68 @@ export const processOrder = async () => {
             sC = Math.ceil((parseFloat(cust.distance) || 0) * (parseFloat(appData.store.costPerKm) || 0) / 500) * 500;
         }
         
-        const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-        if (useStk) {
-            for (const cartItem of cart) {
-                const serverProd = appData.products.find(p => p.id === cartItem.id);
-                if (!serverProd) continue;
-                const isPreorder = Boolean(serverProd.poTime && String(serverProd.poTime).trim());
-                if (isPreorder) continue; // Barang Pre-Order tidak dibatasi oleh stok fisik nol
-                const qty = parseFloat(cartItem.qty) || 0;
-                if (cartItem.variantName) {
-                    const variant = (serverProd.variants || []).find(v => v.name === cartItem.variantName);
-                    const rawStk = variant ? ((variant.stock != null && variant.stock !== '') ? variant.stock : ((variant.stok != null && variant.stok !== '') ? variant.stok : null)) : null;
-                    const stk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
-                    if (stk < qty) {
+        // Validasi Ketersediaan Stok Fisik Server (Produk Habis Tidak Boleh Transaksi)
+        const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+        for (const cartItem of cart) {
+            const serverProd = appData.products.find(p => String(p.id) === String(cartItem.id));
+            if (!serverProd || serverProd.isActive === false || serverProd.isActive === 'false') {
+                setIsSaving(false); 
+                hLoad();
+                if (typeof window.showToast === 'function') window.showToast(`Produk "${cartItem.name}" sedang tidak tersedia atau dinonaktifkan.`);
+                return;
+            }
+            const isPreorder = Boolean(serverProd.poTime && String(serverProd.poTime).trim());
+            if (isPreorder) continue; // Barang Pre-Order tidak dibatasi oleh stok fisik nol
+
+            const qty = parseFloat(cartItem.qty) || 0;
+            const multiplier = parseFloat(cartItem.unitMultiplier) || 1;
+            const neededBaseQty = qty * multiplier;
+
+            if (cartItem.variantName) {
+                const variant = (serverProd.variants || []).find(v => v.name === cartItem.variantName);
+                if (!variant || variant.isActive === false || variant.isActive === 'false') {
+                    setIsSaving(false); 
+                    hLoad();
+                    if (typeof window.showToast === 'function') window.showToast(`Varian "${cartItem.variantName}" untuk produk "${cartItem.name}" sedang tidak tersedia.`);
+                    return;
+                }
+                const rawStk = (variant.stock != null && variant.stock !== '') ? variant.stock : ((variant.stok != null && variant.stok !== '') ? variant.stok : null);
+                const hasVStock = rawStk != null && !isNaN(parseFloat(rawStk));
+                const stk = hasVStock ? parseFloat(rawStk) : 0;
+                const isManaged = storeUseStock || hasVStock;
+
+                if (isManaged) {
+                    if (stk <= 0) {
                         setIsSaving(false); 
                         hLoad();
-                        if (typeof window.showToast === 'function') window.showToast(`Persediaan ${cartItem.name} (${cartItem.variantName}) tidak mencukupi (tersisa ${stk} unit).`);
+                        if (typeof window.showToast === 'function') window.showToast(`Pesanan ditolak! Persediaan "${cartItem.name} (${cartItem.variantName})" sedang habis.`);
                         return;
                     }
-                } else {
-                    const rawStk = (serverProd.stock != null && serverProd.stock !== '') ? serverProd.stock : ((serverProd.stok != null && serverProd.stok !== '') ? serverProd.stok : null);
-                    const stk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
-                    if (stk < qty) {
+                    if (stk < neededBaseQty) {
                         setIsSaving(false); 
                         hLoad();
-                        if (typeof window.showToast === 'function') window.showToast(`Persediaan ${cartItem.name} tidak mencukupi (tersisa ${stk} unit).`);
+                        if (typeof window.showToast === 'function') window.showToast(`Pesanan ditolak! Persediaan "${cartItem.name} (${cartItem.variantName})" tidak mencukupi (tersisa ${stk} unit).`);
+                        return;
+                    }
+                }
+            } else {
+                const rawStk = (serverProd.stock != null && serverProd.stock !== '') ? serverProd.stock : ((serverProd.stok != null && serverProd.stok !== '') ? serverProd.stok : null);
+                const hasPStock = rawStk != null && !isNaN(parseFloat(rawStk));
+                const stk = hasPStock ? parseFloat(rawStk) : 0;
+                const isManaged = storeUseStock || hasPStock;
+
+                if (isManaged) {
+                    if (stk <= 0) {
+                        setIsSaving(false); 
+                        hLoad();
+                        if (typeof window.showToast === 'function') window.showToast(`Pesanan ditolak! Persediaan "${cartItem.name}" sedang habis.`);
+                        return;
+                    }
+                    if (stk < neededBaseQty) {
+                        setIsSaving(false); 
+                        hLoad();
+                        const maxUnits = multiplier > 1 ? Math.floor(stk / multiplier) : stk;
+                        if (typeof window.showToast === 'function') window.showToast(`Pesanan ditolak! Persediaan "${cartItem.name}" tidak mencukupi (tersisa ${maxUnits} ${cartItem.unit || 'unit'}).`);
                         return;
                     }
                 }

@@ -56,23 +56,23 @@ export const openPOSVariantSheet = (productId) => {
     }
 
     // 2. Validasi Stok Total Produk (Identik Storefront)
-    const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
-    if (useStk) {
-        const totalAvail = (p.variants && p.variants.length)
-            ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => s + (parseFloat(v.stock) || 0), 0)
-            : (parseFloat(p.stock) || 0);
-        if (totalAvail <= 0) {
-            showToast('Maaf, stok produk ini sedang kosong', 'warning');
-            return;
-        }
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+    const sInfo = typeof window.computeTotalProductStock === 'function' ? window.computeTotalProductStock(p) : null;
+    if (sInfo && sInfo.isManaged && !isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+        showToast('Maaf, stok produk ini sedang kosong atau habis', 'warning');
+        return;
     }
 
     // 3. Auto-select varian aktif pertama yang memiliki stok
     if (p.variants && p.variants.length > 0) {
+        const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
         const found = p.variants.findIndex(v => {
             const isActive = v.isActive !== false && v.isActive !== 'false';
-            const stock = parseFloat(v.stock) || 0;
-            return isActive && (!useStk || stock > 0);
+            const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
+            const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+            const stock = hasVStock ? parseFloat(rawV) : 0;
+            const isManaged = storeUseStock || hasVStock;
+            return isActive && (isPreorder || !isManaged || stock > 0);
         });
         _selectedVariantIdx = found >= 0 ? found : 0;
     } else {
@@ -117,6 +117,7 @@ const renderVariantSheetContent = (p) => {
     const vars = p.variants || [];
     const hasVariants = vars.length > 0;
     const useStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
 
     // Hitung harga & stok variant yang dipilih
     const getActiveVariant = () => hasVariants ? vars[_selectedVariantIdx] : null;
@@ -133,12 +134,13 @@ const renderVariantSheetContent = (p) => {
     const hasDefinedStock = rawActiveStock != null && !isNaN(parseFloat(rawActiveStock));
     const activeStock = hasDefinedStock ? parseFloat(rawActiveStock) : 0;
     const isVarActive = activeVar ? (activeVar.isActive !== false && activeVar.isActive !== 'false') : true;
-    const isOutOfStock = useStock && activeStock <= 0;
+    const isManaged = useStock || hasDefinedStock;
+    const isOutOfStock = !isPreorder && isManaged && activeStock <= 0;
 
     let activeStockStr = 'Tersedia';
     if (!isVarActive) {
         activeStockStr = 'Tidak Tersedia';
-    } else if (useStock || hasDefinedStock) {
+    } else if (isManaged) {
         activeStockStr = isOutOfStock ? 'Stok Habis' : `Stok: ${formatQty(activeStock)}`;
     }
 
@@ -161,7 +163,8 @@ const renderVariantSheetContent = (p) => {
         const hasVStock = rawVStock != null && !isNaN(parseFloat(rawVStock));
         const varStock = hasVStock ? parseFloat(rawVStock) : 0;
         const isVActive = v.isActive !== false && v.isActive !== 'false';
-        const isVOutOfStock = useStock && varStock <= 0;
+        const isVManaged = useStock || hasVStock;
+        const isVOutOfStock = !isPreorder && isVManaged && varStock <= 0;
         const isDisabled = !isVActive || isVOutOfStock;
         const isActive = i === _selectedVariantIdx;
         const activeStyle = isActive
@@ -371,11 +374,14 @@ export const confirmPOSVariantAdd = () => {
 
         // 3. Validasi Stok Varian & Akumulasi Keranjang
         const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
-        if (useStock && !isPreorder) {
-            const rawVStock = v.stock != null && v.stock !== '' ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
-            const vStock = rawVStock != null && !isNaN(parseFloat(rawVStock)) ? parseFloat(rawVStock) : 0;
+        const rawVStock = v.stock != null && v.stock !== '' ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+        const hasVStock = rawVStock != null && !isNaN(parseFloat(rawVStock));
+        const vStock = hasVStock ? parseFloat(rawVStock) : 0;
+        const isVManaged = useStock || hasVStock;
+
+        if (isVManaged && !isPreorder) {
             if (vStock <= 0) {
-                showToast(`Maaf, stok varian "${v.name}" sedang kosong!`, 'warning');
+                showToast(`Maaf, stok varian "${v.name}" sedang kosong atau habis!`, 'warning');
                 return;
             }
             const cartKey = `${p.id}__v${_selectedVariantIdx}`;
@@ -394,11 +400,14 @@ export const confirmPOSVariantAdd = () => {
     } else {
         // Non varian — gunakan posAddToCartQty
         const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
-        if (useStock && !isPreorder) {
-            const rawPStock = p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : null);
-            const pStock = rawPStock != null && !isNaN(parseFloat(rawPStock)) ? parseFloat(rawPStock) : 0;
+        const rawPStock = p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : null);
+        const hasPStock = rawPStock != null && !isNaN(parseFloat(rawPStock));
+        const pStock = hasPStock ? parseFloat(rawPStock) : 0;
+        const isPManaged = useStock || hasPStock;
+
+        if (isPManaged && !isPreorder) {
             if (pStock <= 0) {
-                showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
+                showToast(`Maaf, stok "${p.name}" sedang kosong atau habis!`, 'warning');
                 return;
             }
             const existing = (posCart || []).find(i => String(i.id) === String(p.id) && !i.isVariant);

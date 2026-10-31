@@ -784,6 +784,13 @@ export const addToCart = (productId) => {
         return false;
     }
 
+    // 2. Validasi Stok Tersedia (Identik Storefront)
+    const sInfo = getProductStockInfo(p);
+    if (sInfo.isManaged && !sInfo.isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+        showToast(`Persediaan "${p.name}" sedang kosong atau habis.`, 'warning');
+        return false;
+    }
+
     const hasVariants = p.variants && p.variants.length > 0;
     if (hasVariants) {
         // Produk ber-varian → buka sheet pilih varian
@@ -791,13 +798,6 @@ export const addToCart = (productId) => {
             if (typeof window.openPOSVariantSheet === 'function') window.openPOSVariantSheet(productId);
         });
         return true;
-    }
-
-    // 2. Validasi Stok Tersedia (Identik Storefront)
-    const sInfo = getProductStockInfo(p);
-    if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
-        showToast(`Persediaan "${p.name}" sedang kosong.`, 'warning');
-        return false;
     }
 
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
@@ -844,8 +844,8 @@ export const posAddToCartQty = (productId, qty) => {
 
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
-    if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
-        showToast(`Persediaan "${p.name}" sedang kosong.`, 'warning');
+    if (sInfo.isManaged && !sInfo.isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+        showToast(`Persediaan "${p.name}" sedang kosong atau habis.`, 'warning');
         return false;
     }
 
@@ -905,15 +905,20 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
             showToast('Varian produk ini sedang tidak aktif.', 'warning');
             return false;
         }
-        const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
-        if (useStk) {
-            const vStock = parseFloat(v.stock) || 0;
+        const rawVStock = v.stock != null && v.stock !== '' ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+        const hasVStock = rawVStock != null && !isNaN(parseFloat(rawVStock));
+        const vStock = hasVStock ? parseFloat(rawVStock) : 0;
+        const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
+        const isManaged = storeUseStock || hasVStock;
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+
+        if (isManaged && !isPreorder) {
             const cartKey = `${productId}__v${variantIdx}`;
             const existing = posCart.find(i => i.cartKey === cartKey);
             const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
             const numQty = fQty(qty) || 1;
             if (vStock <= 0) {
-                showToast(`Persediaan varian "${v.name}" sedang kosong.`, 'warning');
+                showToast(`Persediaan varian "${v.name}" sedang kosong atau habis.`, 'warning');
                 return false;
             }
             if (inCartQty + numQty > vStock) {
@@ -1066,20 +1071,25 @@ export const updateQty = (cartKey, delta) => {
     if (actualDelta > 0) {
         const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
         if (p) {
-            const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
-            if (useStk) {
+            const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
+            const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+            if (!isPreorder) {
                 if (item.isVariant && p.variants) {
                     const v = p.variants.find(vv => vv.name === item.variantName);
-                    const vStock = parseFloat(v?.stock) || 0;
-                    if (nextQty > vStock) {
-                        showToast(`Stok maksimal "${item.name}" hanya ${formatQty(vStock)}`, 'warning');
-                        return;
+                    const rawV = v ? ((v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null)) : null;
+                    const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+                    const vStock = hasVStock ? parseFloat(rawV) : 0;
+                    if (storeUseStock || hasVStock) {
+                        if (nextQty > vStock) {
+                            showToast(`Stok maksimal "${item.name}" hanya ${formatQty(vStock)}`, 'warning');
+                            return;
+                        }
                     }
                 } else {
                     const sInfo = getProductStockInfo(p);
                     const itemMultiplier = parseFloat(item.unitMultiplier) || 1;
                     const neededBaseNext = nextQty * itemMultiplier;
-                    if (sInfo.isManaged && !sInfo.isPreorder && neededBaseNext > sInfo.totalStock) {
+                    if (sInfo.isManaged && neededBaseNext > sInfo.totalStock) {
                         const maxUnits = itemMultiplier > 1 ? Math.floor(sInfo.totalStock / itemMultiplier) : formatQty(sInfo.totalStock);
                         showToast(`Stok maksimal tersedia: ${maxUnits} ${item.unit || 'pcs'} (${formatQty(sInfo.totalStock)} ${item.baseUnit || p.unit || 'pcs'})`, 'warning');
                         return;
@@ -1104,20 +1114,25 @@ export const setQty = (cartKey, val) => {
     }
     const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
     if (p) {
-        const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
-        if (useStk) {
+        const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+        if (!isPreorder) {
             if (item.isVariant && p.variants) {
                 const v = p.variants.find(vv => vv.name === item.variantName);
-                const vStock = parseFloat(v?.stock) || 0;
-                if (targetQty > vStock) {
-                    showToast(`Stok maksimal "${item.name}" hanya ${formatQty(vStock)}`, 'warning');
-                    targetQty = vStock;
+                const rawV = v ? ((v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null)) : null;
+                const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+                const vStock = hasVStock ? parseFloat(rawV) : 0;
+                if (storeUseStock || hasVStock) {
+                    if (targetQty > vStock) {
+                        showToast(`Stok maksimal "${item.name}" hanya ${formatQty(vStock)}`, 'warning');
+                        targetQty = vStock;
+                    }
                 }
             } else {
                 const sInfo = getProductStockInfo(p);
                 const itemMultiplier = parseFloat(item.unitMultiplier) || 1;
                 const neededBase = targetQty * itemMultiplier;
-                if (sInfo.isManaged && !sInfo.isPreorder && neededBase > sInfo.totalStock) {
+                if (sInfo.isManaged && neededBase > sInfo.totalStock) {
                     const maxUnits = itemMultiplier > 1 ? Math.floor(sInfo.totalStock / itemMultiplier) : sInfo.totalStock;
                     showToast(`Stok maksimal tersedia: ${maxUnits} ${item.unit || 'pcs'} (${formatQty(sInfo.totalStock)} ${item.baseUnit || p.unit || 'pcs'})`, 'warning');
                     targetQty = maxUnits;
@@ -3422,25 +3437,65 @@ export const processPOSTx = async () => {
     const btn         = el('pos-process-btn');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...'; }
 
-    // ── 1. Cek Pengaturan Stok Toko (appData.store.useStock) ────
-    const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
-    if (useStk) {
-        for (const ci of posCart) {
-            const p = (appData.products || []).find(x => String(x.id) === String(ci.id));
-            if (!p) continue;
-            const needQty = parseFloat(ci.qty) || 0;
-            if (ci.variantName && p.variants) {
-                const variant = (p.variants || []).find(v => v.name === ci.variantName);
-                const currentStk = parseFloat(variant && variant.stock !== undefined ? variant.stock : 0);
-                if (currentStk < needQty) {
-                    showToast(`Persediaan ${ci.name} (${ci.variantName}) tidak mencukupi. Sisa stok: ${currentStk}`, 'warning');
+    // ── 1. Cek Validasi Ketersediaan Stok Fisik Kasir (Produk Habis Tidak Boleh Transaksi) ────
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
+    for (const ci of posCart) {
+        const p = (appData.products || []).find(x => String(x.id) === String(ci.id));
+        if (!p) continue;
+        const pActive = p.isActive !== 'false' && p.isActive !== false;
+        if (!pActive) {
+            showToast(`Transaksi ditolak! Produk "${ci.name}" sedang dinonaktifkan.`, 'warning');
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
+            return;
+        }
+
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+        if (isPreorder) continue; // Barang Pre-Order tidak dibatasi oleh stok fisik nol
+
+        const needQty = parseFloat(ci.qty) || 0;
+        const multiplier = parseFloat(ci.unitMultiplier) || 1;
+        const totalNeededBase = needQty * multiplier;
+
+        if (ci.variantName && p.variants) {
+            const variant = (p.variants || []).find(v => v.name === ci.variantName);
+            const vActive = variant ? (variant.isActive !== false && variant.isActive !== 'false') : false;
+            if (!vActive) {
+                showToast(`Transaksi ditolak! Varian "${ci.variantName}" produk "${p.name}" tidak aktif.`, 'warning');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
+                return;
+            }
+            const rawV = variant ? ((variant.stock != null && variant.stock !== '') ? variant.stock : ((variant.stok != null && variant.stok !== '') ? variant.stok : null)) : null;
+            const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+            const currentStk = hasVStock ? parseFloat(rawV) : 0;
+            const isManaged = storeUseStock || hasVStock;
+
+            if (isManaged) {
+                if (currentStk <= 0) {
+                    showToast(`Transaksi ditolak! Stok "${ci.name}" (${ci.variantName}) sedang habis.`, 'warning');
                     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
                     return;
                 }
-            } else {
-                const currentStk = parseFloat(p.stock !== undefined ? p.stock : 0);
-                if (currentStk < needQty) {
-                    showToast(`Persediaan ${ci.name} tidak mencukupi. Sisa stok: ${currentStk}`, 'warning');
+                if (currentStk < totalNeededBase) {
+                    showToast(`Transaksi ditolak! Persediaan "${ci.name}" (${ci.variantName}) tidak mencukupi. Sisa stok: ${formatQty(currentStk)}`, 'warning');
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
+                    return;
+                }
+            }
+        } else {
+            const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
+            const hasPStock = rawP != null && !isNaN(parseFloat(rawP));
+            const currentStk = hasPStock ? parseFloat(rawP) : 0;
+            const isManaged = storeUseStock || hasPStock;
+
+            if (isManaged) {
+                if (currentStk <= 0) {
+                    showToast(`Transaksi ditolak! Stok "${ci.name}" sedang habis.`, 'warning');
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
+                    return;
+                }
+                if (currentStk < totalNeededBase) {
+                    const maxUnits = multiplier > 1 ? Math.floor(currentStk / multiplier) : formatQty(currentStk);
+                    showToast(`Transaksi ditolak! Persediaan "${ci.name}" tidak mencukupi. Sisa stok: ${maxUnits} ${ci.unit || 'pcs'}`, 'warning');
                     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
                     return;
                 }

@@ -41,21 +41,12 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
     // Validasi produk aktif dan stok tersedia
     const pActive = p.isActive !== 'false' && p.isActive !== false;
     const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    let totalAvail = Infinity;
-    if (useStk) {
-        totalAvail = (p.variants && p.variants.length)
-            ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => {
-                const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
-                return s + (rawV != null ? (parseFloat(rawV) || 0) : 0);
-            }, 0)
-            : (parseFloat(p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : 0)) || 0);
-    }
+    const sInfo = typeof window.computeTotalProductStock === 'function' ? window.computeTotalProductStock(p) : null;
     if (!pActive) {
         showToast('Produk ini saat ini belum tersedia untuk pemesanan.');
         return;
     }
-    if (useStk && !isPreorder && totalAvail <= 0) {
+    if (sInfo && sInfo.isManaged && !isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
         showToast('Persediaan produk ini sedang habis. Silakan hubungi admin untuk pemesanan / inden.');
         return;
     }
@@ -84,11 +75,14 @@ export const openProductModal = (i, isFromNavStack = false, targetVariantName = 
             found = p.variants.findIndex(v => v && String(v.name).trim().toLowerCase() === String(targetVariantName).trim().toLowerCase());
         }
         if (found < 0) {
+            const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
             found = p.variants.findIndex(v => {
                 const isActive = v.isActive !== false && v.isActive !== 'false';
                 const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
-                const stock = rawV != null ? (parseFloat(rawV) || 0) : 0;
-                return isActive && (!useStk || isPreorder || stock > 0);
+                const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+                const stock = hasVStock ? parseFloat(rawV) : 0;
+                const isManaged = storeUseStock || hasVStock;
+                return isActive && (isPreorder || !isManaged || stock > 0);
             });
         }
         setCVar(found >= 0 ? found : 0);
@@ -920,7 +914,8 @@ export const rProdMod = () => {
                     const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
                     const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
                     const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
-                    const isVarOutOfStock = useStkV && varStock <= 0;
+                    const isVManaged = useStkV || hasVStock;
+                    const isVarOutOfStock = !isPreorder && isVManaged && varStock <= 0;
                     const isVarSelectable = isVarActive && !isVarOutOfStock;
                     const isSelected = x === cVar;
 
@@ -976,7 +971,8 @@ export const rProdMod = () => {
                     const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
                     const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
                     const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
-                    const isVarOutOfStock = useStkV && varStock <= 0;
+                    const isVManaged = useStkV || hasVStock;
+                    const isVarOutOfStock = !isPreorder && isVManaged && varStock <= 0;
                     let isVarSelectable = isVarActive && !isVarOutOfStock;
                     const isSelected = x === cVar;
                     
@@ -1312,11 +1308,19 @@ export const selectVariant = i => {
 export const confirmAddProductToCart = (sourceEl = null) => {
     if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
     
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    if (useStk) {
-        const v2 = cProd.variants?.[cVar];
-        const vN2 = v2?.name || null;
-        const avail = vN2 ? (parseFloat(v2.stock) || 0) : (parseFloat(cProd.stock) || 0);
+    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
+    const v2 = cProd.variants?.[cVar];
+    const vN2 = v2?.name || null;
+    const rawStk = vN2 ? (v2?.stock != null && v2?.stock !== '' ? v2.stock : (v2?.stok != null && v2?.stok !== '' ? v2.stok : null)) : (cProd?.stock != null && cProd?.stock !== '' ? cProd.stock : (cProd?.stok != null && cProd?.stok !== '' ? cProd.stok : null));
+    const hasStk = rawStk != null && !isNaN(parseFloat(rawStk));
+    const avail = hasStk ? parseFloat(rawStk) : 0;
+    const isManaged = storeUseStock || hasStk;
+
+    if (isManaged && !isPreorder) {
+        if (avail <= 0) {
+            return showToast(`Maaf, produk "${cProd.name}" ${vN2 ? `(${vN2})` : ''} sedang habis.`);
+        }
         const inCart = cart.find(i => i.id === cProd.id && i.variantName === vN2);
         const alreadyInCart = inCart ? parseFloat(inCart.qty) || 0 : 0;
         if (cQty + alreadyInCart > avail) {
@@ -1365,11 +1369,19 @@ export const confirmAddProductToCart = (sourceEl = null) => {
 export const buyNowProduct = () => {
     if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
 
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    if (useStk) {
-        const v2 = cProd.variants?.[cVar];
-        const vN2 = v2?.name || null;
-        const avail = vN2 ? (parseFloat(v2.stock) || 0) : (parseFloat(cProd.stock) || 0);
+    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
+    const v2 = cProd.variants?.[cVar];
+    const vN2 = v2?.name || null;
+    const rawStk = vN2 ? (v2?.stock != null && v2?.stock !== '' ? v2.stock : (v2?.stok != null && v2?.stok !== '' ? v2.stok : null)) : (cProd?.stock != null && cProd?.stock !== '' ? cProd.stock : (cProd?.stok != null && cProd?.stok !== '' ? cProd.stok : null));
+    const hasStk = rawStk != null && !isNaN(parseFloat(rawStk));
+    const avail = hasStk ? parseFloat(rawStk) : 0;
+    const isManaged = storeUseStock || hasStk;
+
+    if (isManaged && !isPreorder) {
+        if (avail <= 0) {
+            return showToast(`Maaf, produk "${cProd.name}" ${vN2 ? `(${vN2})` : ''} sedang habis.`);
+        }
         const inCart = cart.find(i => i.id === cProd.id && i.variantName === vN2);
         const alreadyInCart = inCart ? parseFloat(inCart.qty) || 0 : 0;
         if (cQty + alreadyInCart > avail) {
@@ -1617,19 +1629,30 @@ export const clearQuickPaintSearch = () => {
 export const openQuickVariantSheet = (productId) => {
     const p = appData.products.find(x => String(x.id) === String(productId));
     if (!p) return;
+
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+    const sInfo = typeof window.computeTotalProductStock === 'function' ? window.computeTotalProductStock(p) : null;
+    if (sInfo && sInfo.isManaged && !isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+        showToast(`Stok "${p.name}" sedang kosong atau habis`);
+        return;
+    }
+
     qvProd = p;
     qvQty = 1;
     qvSearch = '';
     qvFamily = 'all';
 
     // Smart Auto-Select: Pilih varian aktif pertama yang memiliki stok
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const storeUseStock = appData.store?.useStock === true || appData.store?.useStock === 'true';
     let defaultIdx = 0;
     if (p.variants && p.variants.length > 0) {
         const found = p.variants.findIndex(v => {
             const isActive = v.isActive !== false && v.isActive !== 'false';
-            const stock = parseFloat(v.stock) || 0;
-            return isActive && (!useStk || stock > 0);
+            const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
+            const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+            const stock = hasVStock ? parseFloat(rawV) : 0;
+            const isManaged = storeUseStock || hasVStock;
+            return isActive && (isPreorder || !isManaged || stock > 0);
         });
         defaultIdx = found >= 0 ? found : 0;
     }
@@ -1737,6 +1760,7 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
     const p = qvProd;
     const v = p.variants?.[qvVar];
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
 
     if (resetFilters) {
         qvSearch = '';
@@ -1942,7 +1966,7 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                     const rawS = (r.stock != null && r.stock !== '') ? r.stock : ((r.stok != null && r.stok !== '') ? r.stok : null);
                     const hasS = rawS != null && !isNaN(parseFloat(rawS));
                     const s = hasS ? parseFloat(rawS) : 0;
-                    const isOOS = useStk && s <= 0;
+                    const isOOS = !isPreorder && (useStk || hasS) && s <= 0;
                     const isSelectable = isVarActive && !isOOS;
                     const isSelected = idx === qvVar;
 
@@ -1991,7 +2015,7 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
                 const rawS = (r.stock != null && r.stock !== '') ? r.stock : ((r.stok != null && r.stok !== '') ? r.stok : null);
                 const hasS = rawS != null && !isNaN(parseFloat(rawS));
                 const s = hasS ? parseFloat(rawS) : 0;
-                const isOOS = useStk && s <= 0;
+                const isOOS = !isPreorder && (useStk || hasS) && s <= 0;
                 const isSelectable = isVarActive && !isOOS;
                 const isSelected = idx === qvVar;
 
@@ -2035,7 +2059,7 @@ export const renderQuickVariantSheet = (resetFilters = false) => {
     updateQuickVariantWishUI();
 
     // Button states
-    const isOutOfStock = useStk && varStock <= 0;
+    const isOutOfStock = !isPreorder && (useStk || hasVStock) && varStock <= 0;
     const btnCart = el('quick-variant-btn-cart');
     const btnBuy = el('quick-variant-btn-buy');
     if (btnCart && btnBuy) {
@@ -2059,14 +2083,24 @@ export const quickVariantAddToCart = (btn = null) => {
     const v = p.variants?.[qvVar];
     if (!v) return showToast('Pilih varian terlebih dahulu');
 
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    const avail = parseFloat(v.stock) || 0;
+    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+    const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
+    const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+    const avail = hasVStock ? parseFloat(rawV) : 0;
+    const isManaged = storeUseStock || hasVStock;
+
     const vN = v.name;
     const existing = cart.find(i => i.id === p.id && i.variantName === vN);
     const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
 
-    if (useStk && (qvQty + inCartQty) > avail) {
-        return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+    if (isManaged && !isPreorder) {
+        if (avail <= 0) {
+            return showToast(`Maaf, stok varian "${vN}" sedang habis.`);
+        }
+        if ((qvQty + inCartQty) > avail) {
+            return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+        }
     }
 
     const unt = v.unit || p.unit || 'pcs';
@@ -2110,14 +2144,24 @@ export const quickVariantBuyNow = () => {
     const v = p.variants?.[qvVar];
     if (!v) return showToast('Pilih varian terlebih dahulu');
 
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    const avail = parseFloat(v.stock) || 0;
+    const storeUseStock = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+    const rawV = (v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null);
+    const hasVStock = rawV != null && !isNaN(parseFloat(rawV));
+    const avail = hasVStock ? parseFloat(rawV) : 0;
+    const isManaged = storeUseStock || hasVStock;
+
     const vN = v.name;
     const existing = cart.find(i => i.id === p.id && i.variantName === vN);
     const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
 
-    if (useStk && (qvQty + inCartQty) > avail) {
-        return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+    if (isManaged && !isPreorder) {
+        if (avail <= 0) {
+            return showToast(`Maaf, stok varian "${vN}" sedang habis.`);
+        }
+        if ((qvQty + inCartQty) > avail) {
+            return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+        }
     }
 
     const unt = v.unit || p.unit || 'pcs';

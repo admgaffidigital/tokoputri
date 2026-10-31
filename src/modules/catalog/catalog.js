@@ -485,6 +485,12 @@ export const quickAddOrOpenProduct = (e, productId) => {
     }
     const p = appData.products.find(x => String(x.id) === String(productId));
     if (!p) return;
+
+    // Validasi stok jika produk habis (Produk Habis Tidak Boleh Transaksi)
+    const sInfo = computeTotalProductStock(p);
+    if (sInfo.isManaged && !sInfo.isPreorder && (sInfo.isOutOfStock || sInfo.totalStock <= 0)) {
+        return showToast(`Stok "${p.name}" sedang kosong atau habis`);
+    }
     
     // Jika punya varian, buka Drawer Pilih Varian Cepat (Quick Variant Bottom Sheet)
     if (p.variants && p.variants.length > 0) {
@@ -498,16 +504,9 @@ export const quickAddOrOpenProduct = (e, productId) => {
         return;
     }
 
-    // Validasi stok jika toko mengaktifkan pembatasan stok
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    const sInfo = computeTotalProductStock(p);
-    if (useStk && !sInfo.isPreorder && sInfo.totalStock <= 0) {
-        return showToast('Stok produk ini sedang kosong');
-    }
-
     const existing = cart.find(i => i.id === p.id && !i.variantName);
     const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
-    if (useStk && !sInfo.isPreorder && inCartQty + 1 > sInfo.totalStock) {
+    if (sInfo.isManaged && !sInfo.isPreorder && inCartQty + 1 > sInfo.totalStock) {
         return showToast(`Maksimal stok tercapai: ${sInfo.totalStock}`);
     }
 
