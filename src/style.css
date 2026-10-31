@@ -1090,8 +1090,9 @@ html.dark .pos-list-item:active {
     box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25), 0 4px 12px rgba(var(--color-primary-rgb), 0.12) !important;
 }
 html.dark .pos-list-item.in-cart {
-    border-color: #334155 !important;
-    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    background: rgba(var(--color-primary-rgb), 0.1) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.35), 0 4px 12px rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
 /* In-Cart Pill Badge untuk Mode List */
@@ -2381,28 +2382,10 @@ html.dark ::-webkit-scrollbar-thumb:hover {
     }
 }
 
-/* === BORDER RADIUS GLOBAL OVERRIDES (TAMPILAN LEBIH TEGAS / KURANG MELENGKUNG) === */
-.rounded-\[2rem\] { border-radius: 12px !important; }
-.rounded-t-\[2rem\] { border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; }
-.rounded-b-\[2rem\] { border-bottom-left-radius: 12px !important; border-bottom-right-radius: 12px !important; }
-
-.rounded-\[1\.5rem\] { border-radius: 10px !important; }
-.rounded-t-\[1\.5rem\] { border-top-left-radius: 10px !important; border-top-right-radius: 10px !important; }
-.rounded-b-\[1\.5rem\] { border-bottom-left-radius: 10px !important; border-bottom-right-radius: 10px !important; }
-
-.rounded-\[1\.25rem\] { border-radius: 8px !important; }
-.rounded-t-\[1\.25rem\] { border-top-left-radius: 8px !important; border-top-right-radius: 8px !important; }
-.rounded-b-\[1\.25rem\] { border-bottom-left-radius: 8px !important; border-bottom-right-radius: 8px !important; }
-
-/* Override default Tailwind border-radius utilities to be less rounded */
-.rounded-3xl { border-radius: 12px !important; }
-.rounded-2xl { border-radius: 8px !important; }
-.rounded-xl { border-radius: 6px !important; }
-.rounded-lg { border-radius: 4px !important; }
-
-/* === TIPOGRAFI INDUSTRIAL HARDWARE DEPOT (PAKET 3: ARCHIVO + BARLOW) === */
+/* === TIPOGRAFI SHOPIFY POLARIS & CLEAN MINIMALIST DESIGN SYSTEM === */
 body {
-    font-family: 'Barlow', system-ui, -apple-system, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    letter-spacing: -0.011em;
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -2412,10 +2395,8 @@ h1, h2, h3, h4, h5, h6,
 .section-title,
 .product-title,
 .category-title,
-.btn-native-action,
-.font-black,
-.font-extrabold {
-    font-family: 'Archivo', 'Barlow', system-ui, -apple-system, sans-serif !important;
+.btn-native-action {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     letter-spacing: -0.015em;
 }
 
@@ -2831,33 +2812,33 @@ html.dark .option-select-card .radio-label {
     color: #cbd5e1;
 }
 
-/* Checked State - Industrial Neo-Brutalist Selection Highlight */
+/* Checked State - Shopify Polaris Clean Selection Ring */
 .custom-radio:checked + .option-select-card {
-    border: 2px solid var(--color-primary) !important;
+    border: 1.5px solid var(--color-primary) !important;
     background-color: #ffffff !important;
-    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2), 0 2px 8px rgba(var(--color-primary-rgb), 0.12) !important;
     outline: none !important;
-    transform: translate(-1px, -1px) !important;
+    transform: none !important;
 }
 
 html.dark .custom-radio:checked + .option-select-card {
-    border: 2px solid var(--color-primary) !important;
+    border: 1.5px solid var(--color-primary) !important;
     background-color: #1e293b !important;
-    box-shadow: 3px 3px 0px var(--color-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.3), 0 2px 8px rgba(var(--color-primary-rgb), 0.2) !important;
     outline: none !important;
-    transform: translate(-1px, -1px) !important;
+    transform: none !important;
 }
 
 .custom-radio:checked + .option-select-card .radio-icon-box {
     background-color: var(--color-primary) !important;
-    border: 2px solid #0f172a !important;
+    border: 1px solid transparent !important;
     color: #ffffff !important;
     transform: scale(1.05);
-    box-shadow: 1.5px 1.5px 0px #0f172a !important;
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.25) !important;
 }
 html.dark .custom-radio:checked + .option-select-card .radio-icon-box {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.35) !important;
 }
 
 .custom-radio:checked + .option-select-card .radio-label {
@@ -3297,14 +3278,14 @@ html.dark #bottom-nav-bar,
     -webkit-backdrop-filter: none !important;
 }
 
-/* ─── SMART DUAL-MODE INDUSTRIAL NEO-BRUTALIST CARDS & BENTO BOXES ─── */
+/* ─── SMART DUAL-MODE SHOPIFY POLARIS CARDS & CLEAN ISLANDS ─── */
 html:not(.dark) .card-modern,
 html:not(.dark) .card-native,
 html:not(.dark) .bento-island-card,
 html:not(.dark)[data-bg-style] .bento-island-card {
     background-color: #ffffff !important;
-    border: 2px solid #0f172a !important;
-    box-shadow: 2.5px 2.5px 0px #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -3317,8 +3298,8 @@ html.dark .bento-island-card,
 .dark .bento-island-card,
 html.dark[data-bg-style] .bento-island-card {
     background-color: #1e293b !important;
-    border: 2px solid #334155 !important;
-    box-shadow: 2.5px 2.5px 0px #000000 !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -3581,22 +3562,22 @@ html.dark .skeleton-shimmer {
     animation: shimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-/* ─── BENTO EMPTY STATE UNIVERSAL CARD (NATIVE ZERO-RESULT ENGINE) ─── */
+/* ─── EMPTY STATE UNIVERSAL CARD (Shopify Polaris Clean Minimalist) ─── */
 .bento-empty-state-card {
     position: relative;
     overflow: hidden;
     background: #ffffff;
-    border: 2px solid #0f172a !important;
-    border-radius: 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 1.25rem !important;
     padding: 2.5rem 1.5rem;
     text-align: center;
-    box-shadow: 3.5px 3.5px 0px #0f172a !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
     transition: all 0.2s ease;
 }
 html.dark .bento-empty-state-card {
     background: #0f172a;
     border-color: #334155 !important;
-    box-shadow: 3.5px 3.5px 0px #000000 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
 }
 .bento-empty-state-card .empty-glow {
     display: none !important;
@@ -4251,41 +4232,20 @@ span[class*="tracking-wider"][class*="rounded-"]:not(.hidden):not([hidden]) {
 }
 .btn-reward-redeem:active,
 .btn-flash-buy:active {
-    transform: scale(0.95) !important;
-    box-shadow: 0 1px 3px rgba(var(--color-primary-rgb), 0.2) !important;
-}
-
-@media (min-width: 640px) {
-    .btn-reward-redeem,
-    .btn-flash-buy {
-        height: 34px !important;
-        min-height: 34px !important;
-        max-height: 34px !important;
-        font-size: 11.5px !important;
-        border-radius: 0.8125rem !important;
-    }
-}
-
-.btn-reward-redeem:hover,
-.btn-flash-buy:hover {
-    filter: brightness(1.08) !important;
-}
-
-.btn-reward-redeem:active,
-.btn-flash-buy:active {
-    transform: translate(1.5px, 1.5px) !important;
-    box-shadow: 0.5px 0.5px 0px #0f172a !important;
+    transform: scale(0.96) !important;
+    box-shadow: 0 1px 2px rgba(var(--color-primary-rgb), 0.15) !important;
 }
 
 html.dark .btn-reward-redeem,
 html.dark .btn-flash-buy {
-    border-color: #475569 !important;
-    box-shadow: 1.5px 1.5px 0px #000000 !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.3) !important;
 }
 
 html.dark .btn-reward-redeem:active,
 html.dark .btn-flash-buy:active {
-    box-shadow: 0.5px 0.5px 0px #000000 !important;
+    transform: scale(0.96) !important;
+    box-shadow: 0 1px 2px rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
 .btn-flash-buy-disabled {
@@ -5241,7 +5201,7 @@ html.dark textarea::placeholder,
 .search-clean-input {
     color: #0f172a !important;
     font-weight: 700 !important;
-    font-family: 'Archivo', 'Barlow', system-ui, -apple-system, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     letter-spacing: -0.015em !important;
 }
 
@@ -5303,7 +5263,7 @@ html.dark .search-clean-input {
 .search-clean-input::placeholder {
     color: #475569 !important;
     font-weight: 600 !important;
-    font-family: 'Archivo', 'Barlow', system-ui, -apple-system, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     opacity: 1 !important;
     letter-spacing: -0.01em !important;
 }
