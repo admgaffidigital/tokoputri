@@ -1,4 +1,4 @@
-import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k,k as f,H as F,aa as B}from"./module-print-DQ3iNST0.js";import{s as N}from"./module-pos-DzvPDcD4.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-Bpdm3rOs.js";import"./module-faq-DpvN096o.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!u("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
+import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k,k as f,H as F,aa as B}from"./module-print-Dr93VD7p.js";import{s as N}from"./module-pos-p8Y31Rkc.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-BIrrpNaK.js";import"./module-faq-C1mbF_8R.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!u("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
@@ -75,7 +75,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
-                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-[1px_1px_0px_#0f172a] dark:shadow-[1px_1px_0px_#000000]" style="background-color: var(--color-primary);">
+                            <div class="w-9 h-9 rounded-xl text-white flex items-center justify-center text-xs shrink-0 border border-slate-900 dark:border-slate-700 shadow-2xs" style="background-color: var(--color-primary);">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                         </div>
@@ -236,7 +236,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
                 </div>
             </div>
         </div>
-    `},_=()=>{const t=u("supplier-cards-list");if(!t){h();return}let e=p.suppliers||[];g==="has_debt"&&(e=e.filter(s=>getSupplierOutstandingDebt(s)>0));const a=(S||"").toLowerCase().trim();a&&(e=e.filter(s=>{const l=(s.name||"").toLowerCase().includes(a),n=(s.code||"").toLowerCase().includes(a),o=(s.phone||"").toLowerCase().includes(a),d=(s.contactPerson||"").toLowerCase().includes(a),c=(s.address||"").toLowerCase().includes(a),x=(s.productsSupplied||"").toLowerCase().includes(a);return l||n||o||d||c||x})),t.innerHTML=e.length===0?`
+    `},K=()=>{const t=u("supplier-cards-list");if(!t){h();return}let e=p.suppliers||[];g==="has_debt"&&(e=e.filter(s=>getSupplierOutstandingDebt(s)>0));const a=(S||"").toLowerCase().trim();a&&(e=e.filter(s=>{const l=(s.name||"").toLowerCase().includes(a),n=(s.code||"").toLowerCase().includes(a),o=(s.phone||"").toLowerCase().includes(a),d=(s.contactPerson||"").toLowerCase().includes(a),c=(s.address||"").toLowerCase().includes(a),x=(s.productsSupplied||"").toLowerCase().includes(a);return l||n||o||d||c||x})),t.innerHTML=e.length===0?`
         <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
             <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                 <i class="fa-solid fa-truck-field"></i>
@@ -244,7 +244,7 @@ import{a as p,e as u,b as A,f as m,i,a5 as T,a6 as R,o as M,v as y,l as D,n as k
             <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Tidak ada supplier yang cocok</p>
             <p class="text-xs text-slate-400 mt-1 max-w-sm">Coba kata kunci pencarian lain atau kosongkan filter pencarian.</p>
         </div>
-    `:e.map(s=>H(s)).join("")};window.handleSupplierSearch=t=>{S=t||"",_()};window.toggleSupplierFilter=()=>{g=g==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(t,r,e)=>{const s=`${e?`Halo Pak/Bu ${e}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
+    `:e.map(s=>H(s)).join("")};window.handleSupplierSearch=t=>{S=t||"",K()};window.toggleSupplierFilter=()=>{g=g==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(t,r,e)=>{const s=`${e?`Halo Pak/Bu ${e}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
 Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;R(t,s)};window.openSupplierFormModal=(t=null)=>{P();const r=p.suppliers||[],e=!!t,a=e?r.find(o=>String(o.id)===String(t))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},s=u("modal-supplier-form"),l=u("modal-supplier-form-box"),n=u("modal-supplier-form-content");!s||!n||(A("modal-supplier-form-content",`
         <!-- Pull Indicator for Mobile Bottom Sheet -->
         <div class="pull-indicator sm:hidden"></div>
@@ -421,7 +421,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
         <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
-            ${b==="products"?K(s,t):""}
+            ${b==="products"?_(s,t):""}
             ${b==="orders"?U(l,t):""}
             ${b==="debt"?q(n,o,t):""}
         </div>
@@ -436,7 +436,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <span>Buat Order Kulakan (PO)</span>
             </button>
         </div>
-    `)},K=(t,r)=>t.length===0?`
+    `)},_=(t,r)=>t.length===0?`
             <div class="text-center py-10 sm:py-12 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-box-open"></i>
@@ -594,4 +594,4 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     `}).join("")}
             </div>
         </div>
-    `};window.quickCreatePOForSupplier=t=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(t)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=O;export{O as computeSupplierMetrics,P as ensureSupplierModals,_ as renderSupplierCardsOnly,h as renderSuppliersView};
+    `};window.quickCreatePOForSupplier=t=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(t)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=O;export{O as computeSupplierMetrics,P as ensureSupplierModals,K as renderSupplierCardsOnly,h as renderSuppliersView};
